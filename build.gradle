@@ -1,0 +1,74 @@
+buildscript {
+    ext {
+        springBootVersion = '1.4.2.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath("io.spring.gradle:dependency-management-plugin:0.6.1.RELEASE")
+    }
+}
+
+apply plugin: 'war'
+apply plugin: 'groovy'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+war {
+    baseName = 'launchpad'
+    version = '1.0.0-SNAPSHOT'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator',    version:"${springBootVersion}"
+//    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jdbc',        version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web',         version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-tomcat',      version:"${springBootVersion}"
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security',    version:"${springBootVersion}"
+
+    compile group: 'org.codehaus.groovy', name: 'groovy',       version:'2.4.7'
+    compile group: 'org.codehaus.groovy', name: 'groovy-json',  version:'2.4.7'
+    compile group: 'org.codehaus.groovy', name: 'groovy-xml',   version:'2.4.7'
+
+//    compile group: 'mysql', name: 'mysql-connector-java', version:'6.0.5'
+
+    // Testing
+    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:"${springBootVersion}") {
+        exclude(module: 'commons-logging')
+    }
+    testCompile group: 'org.spockframework', name: 'spock-core', version:'1.1-groovy-2.4-rc-3'
+    testCompile group: 'org.spockframework', name: 'spock-spring', version:'1.1-groovy-2.4-rc-3'
+    testCompile group: 'cglib', name: 'cglib-nodep', version:'3.2.4'
+}
+
+eclipse {
+    classpath {
+        containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
+        containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+    }
+}
+
+test {
+    reports {
+        junitXml.enabled = true
+        html.enabled = true
+    }
+    filter {
+        includeTestsMatching "*Spec"
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.2.1'
+}
