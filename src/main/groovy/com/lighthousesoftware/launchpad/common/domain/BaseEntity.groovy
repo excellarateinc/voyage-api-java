@@ -11,8 +11,8 @@ abstract class BaseEntity<D> implements GormEntity<D> {
     Long version
     Date createdOn
     Date updatedOn
-    Long createdBy
-    Long updatedBy
+    Long createdBy //TODO: Change this to User object - Jagadeesh Manne 12/09/2016
+    Long updatedBy //TODO: Change this to User object - Jagadeesh Manne 12/09/2016
 
     static constraints = {
         version display:false
@@ -52,13 +52,13 @@ abstract class BaseEntity<D> implements GormEntity<D> {
 
     public initDefaults() {
         if (createdBy == null) {
-            createdBy = 0
+            createdBy = 0 //TODO: Change this to logged in user - Jagadeesh Manne 12/09/2016
         }
         if (createdOn == null) {
             createdOn = DateTimeUtil.now()
         }
         if (updatedBy == null) {
-            updatedBy = 0
+            updatedBy = 0 //TODO: Change this to logged in user- Jagadeesh Manne 12/09/2016
         }
         if (updatedOn == null) {
             updatedOn = DateTimeUtil.now()
