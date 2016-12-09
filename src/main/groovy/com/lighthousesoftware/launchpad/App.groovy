@@ -1,14 +1,19 @@
 package com.lighthousesoftware.launchpad
 
 import org.apache.catalina.connector.Connector
+import org.grails.boot.internal.EnableAutoConfiguration
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.boot.autoconfigure.domain.EntityScan
 
 @SpringBootApplication
+@ComponentScan
+@EnableAutoConfiguration
 public class App {
     @Value('${tomcat.ajp.port}') int ajpPort
     @Value('${tomcat.ajp.enabled}') boolean tomcatAjpEnabled
