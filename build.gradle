@@ -23,8 +23,8 @@ war {
     version = '1.0.0-SNAPSHOT'
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 repositories {
     mavenCentral()
@@ -41,7 +41,13 @@ dependencies {
     compile group: 'org.codehaus.groovy', name: 'groovy-json',  version:'2.4.7'
     compile group: 'org.codehaus.groovy', name: 'groovy-xml',   version:'2.4.7'
 
-//    compile group: 'mysql', name: 'mysql-connector-java', version:'6.0.5'
+    compile group: 'org.hibernate', name: 'hibernate-core', version: '5.1.0.Final'
+    compile group: 'org.grails', name: 'gorm-hibernate5-spring-boot', version: '6.0.3.RELEASE'
+    compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-hibernate5', version: '2.8.5'
+    compile group: 'com.h2database', name: 'h2', version: '1.4.192'
+
+    compile group: 'joda-time', name: 'joda-time', version: '2.7'
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.40'
 
     // Testing
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:"${springBootVersion}") {
