@@ -15,11 +15,11 @@ abstract class BaseEntity<D> implements GormEntity<D> {
     Long updatedBy
 
     static constraints = {
-		version display:false
-		createdOn display:false
-		updatedOn display:false
-		createdBy display:false
-		updatedBy display:false
+        version display:false
+        createdOn display:false
+        updatedOn display:false
+        createdBy display:false
+        updatedBy display:false
     }
 
     static transients = [ "dynamicProps" ]
