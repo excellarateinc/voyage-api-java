@@ -1,7 +1,7 @@
-package com.lighthousesoftware.launchpad.domain
+package launchpad.domain
 
-import com.lighthousesoftware.launchpad.common.domain.BaseEntity
 import grails.persistence.Entity
+import launchpad.common.domain.BaseEntity
 
 @Entity
 class User extends BaseEntity<User> {

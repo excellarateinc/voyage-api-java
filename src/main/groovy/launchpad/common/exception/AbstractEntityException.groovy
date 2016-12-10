@@ -1,4 +1,4 @@
-package com.lighthousesoftware.launchpad.common.exception
+package launchpad.common.exception
 
 class AbstractEntityException extends RuntimeException {
 	def Class clazz

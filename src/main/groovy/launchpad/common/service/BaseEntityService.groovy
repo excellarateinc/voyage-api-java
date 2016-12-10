@@ -1,6 +1,6 @@
-package com.lighthousesoftware.launchpad.common.service
+package launchpad.common.service
 
-import com.lighthousesoftware.launchpad.common.exception.EntityNotFoundException
+import launchpad.common.exception.EntityNotFoundException
 import org.springframework.transaction.annotation.Transactional
 
 @Transactional

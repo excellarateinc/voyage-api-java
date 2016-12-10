@@ -1,4 +1,4 @@
-package com.lighthousesoftware.launchpad.common.exception
+package launchpad.common.exception
 
 class AccessDeniedException extends AbstractEntityException {
 

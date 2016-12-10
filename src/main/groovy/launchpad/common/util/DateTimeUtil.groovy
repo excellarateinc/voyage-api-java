@@ -1,4 +1,4 @@
-package com.lighthousesoftware.launchpad.common.util
+package launchpad.common.util
 
 import org.joda.time.DateTime
 import org.joda.time.Days

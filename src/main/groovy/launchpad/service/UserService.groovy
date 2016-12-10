@@ -1,7 +1,7 @@
-package com.lighthousesoftware.launchpad.service
+package launchpad.service
 
-import com.lighthousesoftware.launchpad.common.service.BaseEntityService
-import com.lighthousesoftware.launchpad.domain.User
+import launchpad.common.service.BaseEntityService
+import launchpad.domain.User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

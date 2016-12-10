@@ -1,4 +1,4 @@
-package com.lighthousesoftware.launchpad.controller
+package launchpad.controller
 
 class BaseController {
     //for future reference

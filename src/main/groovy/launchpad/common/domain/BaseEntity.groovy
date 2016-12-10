@@ -1,8 +1,8 @@
-package com.lighthousesoftware.launchpad.common.domain
+package launchpad.common.domain
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.lighthousesoftware.launchpad.common.util.DateTimeUtil
+import launchpad.common.util.DateTimeUtil
 import org.grails.datastore.gorm.GormEntity
 
 @JsonIgnoreProperties(['dirtyPropertyNames', 'errors', 'dirty', 'attached', 'version'])
