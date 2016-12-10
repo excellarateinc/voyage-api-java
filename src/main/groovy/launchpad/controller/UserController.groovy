@@ -16,41 +16,44 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/users")
-class UserController extends BaseController {
+class UserController {
+    private UserService userService
 
     @Autowired
-    UserService userService;
+    UserController(UserService userService) {
+        this.userService = userService
+    }
 
     @GetMapping
-    ResponseEntity list(){
+    ResponseEntity list() {
         def users = userService.list()
         return new ResponseEntity(users, HttpStatus.OK);
     }
 
-    @PostMapping("/save")
-    ResponseEntity save(@RequestBody User user){
+    @PostMapping
+    ResponseEntity save(@RequestBody User user) {
         //TODO: Add validations - Jagadeesh Manne - 12/09/2016
         userService.save(user)
         return new ResponseEntity(user, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    ResponseEntity get(@PathVariable("id") long id){
+    ResponseEntity get(@PathVariable("id") long id) {
         //TODO: Add validations to check path variable - Jagadeesh Manne - 12/09/2016
         User user = userService.get(id)
         return new ResponseEntity(user, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
-    ResponseEntity delete(@PathVariable("id") long id){
+    ResponseEntity delete(@PathVariable("id") long id) {
         //TODO: Add validations to check path variable - Jagadeesh Manne - 12/09/2016
-        User user = userService.delete(id)
+        userService.delete(id)
         //TODO: return valid response
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PutMapping("/update")
-    ResponseEntity update(@RequestBody User user){
+    @PutMapping("/{id}")
+    ResponseEntity update(@RequestBody User user) {
         //TODO: Add validations - Jagadeesh Manne - 12/09/2016
         userService.update(user)
         return new ResponseEntity(user, HttpStatus.OK);
