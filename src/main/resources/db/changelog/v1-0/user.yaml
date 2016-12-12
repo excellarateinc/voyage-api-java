@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-user-table-create
+      author: Rob Louie
+      changes:
+        - createTable:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+  - changeSet:
+      id: v1.0-user-seed-users
+      author: Rob Louie
+      changes:
+        - insert:
+            tableName: user
+            columns:
+              - column:
+                  name: first_name
+                  value: John
+              - column:
+                  name: last_name
+                  value: Smith
+              - column:
+                  name: email
+                  value: john@smith.com
+        - insert:
+            tableName: user
+            columns:
+              - column:
+                  name: first_name
+                  value: Jane
+              - column:
+                  name: last_name
+                  value: Doe
+              - column:
+                  name: email
+                  value: jane@doe.com

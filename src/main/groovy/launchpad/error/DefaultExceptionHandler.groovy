@@ -16,11 +16,11 @@ import javax.servlet.http.HttpServletResponse
 
 @ControllerAdvice
 @RestController
-class GlobalExceptionHandler implements ErrorController {
+class DefaultExceptionHandler implements ErrorController {
     private ErrorAttributes errorAttributes
 
     @Autowired
-    GlobalExceptionHandler(ErrorAttributes errorAttributes) {
+    DefaultExceptionHandler(ErrorAttributes errorAttributes) {
         this.errorAttributes = errorAttributes
     }
 
