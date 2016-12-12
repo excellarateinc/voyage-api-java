@@ -41,6 +41,7 @@ dependencies {
     compile group: 'org.codehaus.groovy', name: 'groovy-all', version:'2.4.7'
 
     // Database
+    compile group: 'org.liquibase', name:'liquibase-core'
     compile group: 'com.h2database', name: 'h2', version: '1.4.192'
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.40'
 
