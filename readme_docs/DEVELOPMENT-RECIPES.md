@@ -4,6 +4,9 @@ Instructional recipies for how to do something within the codebase.
 > __Keep Organized__ Keep the Table of Contents alphabetized and do your best to extend this document in a way that will be easy to read/scroll for all developers.
 
 ## Table of Contents
+* Return an expected error from a REST controller
+* Version a REST controller
+* 
 * [APIDoc - Document A Web Service](#apidoc---document-a-web-service)
 * [API Versioning](#api-versioning)
 * [Audit - Enable DB Entity Change Tracking](#audit---enable-db-entity-change-tracking)
@@ -52,7 +55,7 @@ Below is an example of the comments used to document an endpoint.
 ### Reusable apiDoc blocks
 apiDoc supports creating reusuable documentation blocks using [@apiDefine](http://apidocjs.com/#param-api-define). This 
 cuts down on repeated comment blocks for shared elements such as errors. 
-All reusable blocks should be placed in  ***Launchpad.Web\\_apidoc.js***
+All reusable blocks should be placed in  ***Launchpad.Web\\apidoc-header.js***
 
 ### Current @apiDefine blocks
 
@@ -82,7 +85,7 @@ To generate the api docs after a change:
 
 1. In ***Launchpad.Web*** execute npm run doc
    - This is an npm script that is defined in package.json
-   - Script: apidoc -o docs -i .\\ -f \".cs$\" -f \"_apidoc.js\"
+   - Script: apidoc -o docs -i .\\ -f \".cs$\" -f \"apidoc-header.js\"
    - This will scan the Controllers folder for endpoints and place the output in \docs
 
 To view the documentation either run the application and navigate to /docs/ or open the static index.html file.
