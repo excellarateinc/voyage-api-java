@@ -2,9 +2,14 @@ package launchpad.user
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.validation.annotation.Validated
+
+import javax.validation.Valid
+import javax.validation.constraints.NotNull
 
 @Transactional
 @Service("userService")
+@Validated
 class UserService {
     private UserRepository userRepository
 
@@ -12,11 +17,11 @@ class UserService {
         this.userRepository = userRepository
     }
 
-    void delete(Long id) {
+    void delete(@NotNull Long id) {
         userRepository.delete(id)
     }
 
-    User get(Long id) {
+    User get(@NotNull Long id) {
         return userRepository.findOne(id)
     }
 
@@ -24,11 +29,11 @@ class UserService {
         return userRepository.findAll()
     }
 
-    User save(User user) {
+    User save(@Valid User user) {
         return userRepository.save(user)
     }
 
-    User update(User user) {
+    User update(@Valid User user) {
         return userRepository.save(user)
     }
 
