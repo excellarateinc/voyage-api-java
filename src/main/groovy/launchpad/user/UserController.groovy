@@ -25,7 +25,7 @@ class UserController {
     /**
      * @api {get} /v1/users Get all users
      * @apiVersion 1.0.0
-     * @apiName GetUsers
+     * @apiName UserList
      * @apiGroup User
      *
      * @apiPermission user.list
@@ -65,24 +65,92 @@ class UserController {
         return new ResponseEntity(users, HttpStatus.OK)
     }
 
+    /**
+     * @api {post} /v1/users Create user
+     * @apiVersion 1.0.0
+     * @apiName UserCreate
+     * @apiGroup User
+     *
+     * @apiPermission lss.permission->create.user
+     *
+     * @apiUse AuthHeader
+     *
+     * @apiHeader (Response Headers) {String} location Location of the newly created resource
+     *
+     * @apiHeaderExample {json} Location-Example
+     * {
+     *     "Location": "http://localhost:52431/api/v1/users/b78ae241-1fa6-498c-aa48-9742245d0d2f"
+     * }
+     *
+     * @apiUse UserRequestModel
+     * @apiUse UserSuccessModel
+     * @apiUse UnauthorizedError
+     **/
     @PostMapping
     ResponseEntity save(@RequestBody User user) {
         user = userService.save(user)
         return new ResponseEntity(user, HttpStatus.OK)
     }
 
+    /**
+     * @api {get} /v1/users/:userId Get a user
+     * @apiVersion 1.0.0
+     * @apiName UserGet
+     * @apiGroup User
+     *
+     * @apiPermission lss.permission->view.user
+     *
+     * @apiUse AuthHeader
+     *
+     * @apiParam {String} userId User ID
+     *
+     * @apiUse UserSuccessModel
+     * @apiUse UnauthorizedError
+     **/
     @GetMapping("/{id}")
     ResponseEntity get(@PathVariable("id") long id) {
         def user = userService.get(id)
         return new ResponseEntity(user, HttpStatus.OK)
     }
 
+    /**
+     * @api {delete} /v1/users/:userId Delete a user
+     * @apiVersion 1.0.0
+     * @apiName UserDelete
+     * @apiGroup User
+     *
+     * @apiPermission lss.permission->delete.user
+     *
+     * @apiUse AuthHeader
+     *
+     * @apiParam {String} userId User ID
+     *
+     * @apiSuccessExample Success-Response:
+     *   HTTP/1.1 204 NO CONTENT
+     *
+     * @apiUse UnauthorizedError
+     * @apiUse BadRequestError
+     **/
     @DeleteMapping("/{id}")
     ResponseEntity delete(@PathVariable("id") long id) {
         userService.delete(id)
         return new ResponseEntity(HttpStatus.OK)
     }
 
+    /**
+     * @api {put} /v1/users/:userId Update a user
+     * @apiVersion 1.0.0
+     * @apiName UserUpdate
+     * @apiGroup User
+     *
+     * @apiPermission user.update
+     *
+     * @apiUse AuthHeader
+     *
+     * @apiUse UserRequestModel
+     * @apiUse UserSuccessModel
+     * @apiUse UnauthorizedError
+     **/
     @PutMapping("/{id}")
     ResponseEntity update(@RequestBody User user) {
         userService.update(user)
