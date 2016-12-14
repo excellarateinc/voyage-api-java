@@ -80,7 +80,7 @@ If you are extending this API to build a new app, then replace this section with
 ### Developers
 * __Team Protocols__
   - Fast learning curve through clear documentation
-  - Easy values, standards, best practices that most developers will aggreement
+  - Easy values, standards, best practices that most developers will agreement
 * __Core Values__
   - Documented core values that we believe will resonate with most development teams
   - Unifies teams and promotes healthy communication
