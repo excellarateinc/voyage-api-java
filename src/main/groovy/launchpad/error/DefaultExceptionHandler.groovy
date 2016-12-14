@@ -14,50 +14,54 @@ import org.springframework.web.context.request.ServletRequestAttributes
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
+/**
+ * This class does exception handling across the application.
+ */
 @ControllerAdvice
 @RestController
 class DefaultExceptionHandler implements ErrorController {
-    private ErrorAttributes errorAttributes
+    private static final String UNDER_SCORE = '_'
+    private final ErrorAttributes errorAttributes
 
     @Autowired
     DefaultExceptionHandler(ErrorAttributes errorAttributes) {
         this.errorAttributes = errorAttributes
     }
 
-    @ExceptionHandler(value = Exception.class)
+    @ExceptionHandler(value = Exception)
     ResponseEntity<Iterable<ErrorResponse>> handleException(Exception e) {
         def errorResponse = new ErrorResponse(
-                code: "error.500_internal_server_error",
-                description: e.toString()
+                code:'error.500_internal_server_error',
+                description:e.toString()
         )
-        return new ResponseEntity([errorResponse], HttpStatus.INTERNAL_SERVER_ERROR)
+        new ResponseEntity([errorResponse], HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
-    @RequestMapping(value = "/error")
+    @RequestMapping(value = '/error')
     ResponseEntity<Iterable<ErrorResponse>> handleError(HttpServletRequest request, HttpServletResponse response) {
         def errorMap = getErrorAttributes(request, false)
         def errorCode = getErrorCode((int)errorMap.status)
         def errorMessage = "${errorMap.status} ${errorMap.error}. ${errorMap.message}"
         def errorResponse = new ErrorResponse(
-                code: errorCode,
-                description: errorMessage
+                code:errorCode,
+                description:errorMessage
         )
-        return new ResponseEntity([errorResponse], HttpStatus.valueOf(response.getStatus()))
+        new ResponseEntity([errorResponse], HttpStatus.valueOf(response.getStatus()))
     }
 
     @Override
     String getErrorPath() {
-        return "/error"
+        '/error'
     }
 
     private static String getErrorCode(int httpStatusCode) {
         def httpStatus = HttpStatus.valueOf(httpStatusCode)
-        def errorCode = "error." + httpStatus.value() + "_" + httpStatus.name()
-        return errorCode.toLowerCase().replace(" ", "_")
+        def errorCode = 'error.' + httpStatus.value() + UNDER_SCORE + httpStatus.name()
+        errorCode.toLowerCase().replace(' ', UNDER_SCORE)
     }
 
     private Map<String, Object> getErrorAttributes(HttpServletRequest request, boolean includeStackTrace = false) {
         def requestAttributes = new ServletRequestAttributes(request)
-        return errorAttributes.getErrorAttributes(requestAttributes, includeStackTrace)
+        errorAttributes.getErrorAttributes(requestAttributes, includeStackTrace)
     }
 }

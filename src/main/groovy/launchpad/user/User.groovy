@@ -5,6 +5,9 @@ import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 
+/**
+ * Entity class to represent a user of the system with attributes such as first-name and last-name.
+ */
 @Entity
 class User {
 

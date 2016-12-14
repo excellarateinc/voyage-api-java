@@ -78,20 +78,22 @@ task wrapper(type: Wrapper) {
     gradleVersion = '3.2.1'
 }
 
-codenarcMain {
-    ignoreFailures false
-    configFile file('standards/codenarc/codenarc-main.rules')
+//CodeNarc analyses for the source code
+codenarc {
+    codenarcMain {
+        ignoreFailures false
+        configFile file('standards/codenarc/codenarc-main.rules')
 
-    maxPriority1Violations 0
-    maxPriority2Violations 5
-    maxPriority3Violations 10
-}
+        maxPriority1Violations 0
+        maxPriority2Violations 5
+        maxPriority3Violations 20
+    }
+    codenarcTest {
+        ignoreFailures true
+        configFile file('standards/codenarc/codenarc-test.rules')
 
-codenarcTest {
-    ignoreFailures true
-    configFile file('standards/codenarc/codenarc-test.rules')
-
-    maxPriority1Violations 0
-    maxPriority2Violations 10
-    maxPriority3Violations 20
+        maxPriority1Violations 0
+        maxPriority2Violations 10
+        maxPriority3Violations 40
+    }
 }
