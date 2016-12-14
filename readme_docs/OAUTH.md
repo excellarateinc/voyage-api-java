@@ -13,4 +13,6 @@ curl -H "Accept: application/json" my-client-with-secret:secret@localhost:8080/o
 
 Apply token to request header
 
+```
 Authorization: Bearer caaafafd-08bb-4b83-b9cc-a3b78e500e91
+```
