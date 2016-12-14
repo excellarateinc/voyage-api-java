@@ -89,6 +89,7 @@ If you are extending this API to build a new app, then replace this section with
   - Industry accepted language coding standards
   - Best practices when developing within the code base
   - See our [Development Team Standards](#development-team-standards)
+  - To ensure that all developers are adhering to pre-defined coding guidelines we are using 'codeNarc' plugin to check for violations within the groovy files. The build will be marked as failed if the violations breach acceptable limit. Please see the build.gradle for the acceptable violation limits.
 
 ### System Administrators
 * __Deploy Instructions__
