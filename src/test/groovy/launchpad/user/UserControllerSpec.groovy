@@ -1,6 +1,8 @@
 package launchpad.user
 
 import groovy.json.JsonSlurper
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import spock.lang.Specification
 
@@ -8,28 +10,87 @@ import spock.lang.Specification
  * Created by dhanumandla on 14/12/16.
  */
 class UserControllerSpec extends Specification {
-    private User user
+    private User user, modifiedUser
     def userService = Mock(UserService)
     def classUnderTest = new UserController(userService)
 
-    def mockMvc = MockMvcBuilders.standaloneSetup(classUnderTest).build()
-
     def setup() {
         user = new User(id: 1, firstName: 'LSS', lastName: 'India')
+        modifiedUser = new User(id: 1, firstName: 'LSS', lastName: 'Inc')
     }
-    def 'User list test hits the REST endpoint and parses the JSON output' () {
-        when: 'rest user url is hit'
-            def response = mockMvc.perform(get('/v1/users')).andReturn().response
-            def content = new JsonSlurper().parseText(response.contentAsString)
-        then: 'securityService correctly returned account in JSON'
+
+    def 'Test to validate LIST method is fetching data from UserService' () {
+        when:
+            ResponseEntity<User> users = classUnderTest.list()
+        then:
             1 * userService.listAll() >> [user]
-            //Testing the HTTP Status code
-            response.status == OK.value()
+            users != null
+            users.statusCode == HttpStatus.OK
 
-            //Showing how a contains test could work
-            response.contentType.contains('application/json')
-            response.contentType == 'application/json;charset=UTF-8'
+        when:
+            classUnderTest.list()
+        then:
+            1 * userService.listAll() >> {throw new Exception()}
+            thrown(Exception)
+    }
 
+    def 'Test to validate FIND method is fetching data from UserService' () {
+        when:
+            ResponseEntity<User> user = classUnderTest.get(1)
+        then:
+            1 * userService.get(1) >> user
+            user != null
+            user.statusCode == HttpStatus.OK
+
+        when:
+            classUnderTest.get(1)
+        then:
+            1 * userService.get(1) >> {throw new Exception()}
+            thrown(Exception)
+    }
+
+    def 'Test to validate CREATE method is fetching data from UserService' () {
+        when:
+            ResponseEntity<User> newUser = classUnderTest.save(user)
+        then:
+            1 * userService.save(user) >> modifiedUser
+            newUser != null
+            newUser.statusCode == HttpStatus.OK
+
+        when:
+            classUnderTest.save(user)
+        then:
+            1 * userService.save(user) >> {throw new Exception()}
+            thrown(Exception)
+    }
+
+    def 'Test to validate UPDATE method is fetching data from UserService' () {
+        when:
+            ResponseEntity<User> updatedUser = classUnderTest.update(modifiedUser)
+        then:
+            1 * userService.update(modifiedUser) >> modifiedUser
+            updatedUser != null
+            updatedUser.statusCode == HttpStatus.OK
+
+        when:
+            classUnderTest.update(modifiedUser)
+        then:
+            1 * userService.update(modifiedUser) >> {throw new Exception()}
+            thrown(Exception)
+    }
+
+    def 'Test to validate DELETE method is fetching data from UserService' () {
+        when:
+            ResponseEntity response = classUnderTest.delete(1)
+        then:
+            1 * userService.delete(1)
+            response.statusCode == HttpStatus.OK
+
+        when:
+            classUnderTest.delete(1)
+        then:
+            1 * userService.delete(1) >> {throw new Exception()}
+            thrown(Exception)
     }
 
 }
