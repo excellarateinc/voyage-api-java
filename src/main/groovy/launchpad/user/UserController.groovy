@@ -88,8 +88,8 @@ class UserController {
      **/
     @PostMapping
     ResponseEntity save(@RequestBody User user) {
-        user = userService.save(user)
-        return new ResponseEntity(user, HttpStatus.OK)
+        def newUser = userService.save(user)
+        return new ResponseEntity(newUser, HttpStatus.OK)
     }
 
     /**
@@ -153,7 +153,7 @@ class UserController {
      **/
     @PutMapping("/{id}")
     ResponseEntity update(@RequestBody User user) {
-        userService.update(user)
-        return new ResponseEntity(user, HttpStatus.OK)
+        def modifiedUser = userService.update(user)
+        return new ResponseEntity(modifiedUser, HttpStatus.OK)
     }
 }

@@ -39,6 +39,8 @@ class UserControllerSpec extends Specification {
             1 * userService.get(1) >> user
             user != null
             user.statusCode == HttpStatus.OK
+            user.body.firstName == 'LSS'
+            user.body.lastName == 'India'
 
         when:
             classUnderTest.get(1)
@@ -54,6 +56,8 @@ class UserControllerSpec extends Specification {
             1 * userService.save(user) >> modifiedUser
             newUser != null
             newUser.statusCode == HttpStatus.OK
+            newUser.body.firstName == 'LSS'
+            newUser.body.lastName == 'Inc'
 
         when:
             classUnderTest.save(user)
