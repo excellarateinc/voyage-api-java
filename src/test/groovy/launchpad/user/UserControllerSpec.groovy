@@ -1,13 +1,11 @@
 package launchpad.user
 
-import groovy.json.JsonSlurper
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import spock.lang.Specification
 
 /**
- * Created by dhanumandla on 14/12/16.
+ * Unit tests to test the UserController by Mocking the 'UserService' external dependency.
  */
 class UserControllerSpec extends Specification {
     private User user, modifiedUser
