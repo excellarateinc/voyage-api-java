@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull
  * Service class which provides the business methods to retrieve, create, update and delete User details.
  */
 @Transactional
-@Service("userService")
+@Service('userService')
 @Validated
 class UserService {
     private final UserRepository userRepository
