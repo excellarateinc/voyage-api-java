@@ -8,20 +8,17 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import spock.lang.Specification
 
-/**
- * Unit tests to test the UserController by Mocking the 'UserService' external dependency.
- */
 class UserControllerIntegrationSpec extends Specification {
-    private User user, modifiedUser
-    private MockMvc mockMvc
-    def userService = Mock(UserService)
-    def classUnderTest = new UserController(userService)
+    User user
+    User modifiedUser
+    MockMvc mockMvc
+    UserService userService = Mock(UserService)
+    UserController userController = new UserController(userService)
 
     def setup() {
         user = new User(id: 1, firstName: 'LSS', lastName: 'India')
         modifiedUser = new User(id: 1, firstName: 'LSS', lastName: 'Inc')
-
-        mockMvc = MockMvcBuilders.standaloneSetup(classUnderTest).build()
+        mockMvc = MockMvcBuilders.standaloneSetup(userController).build()
     }
 
     def 'User list test hits the REST endpoint and parses the JSON output' () {
@@ -34,6 +31,8 @@ class UserControllerIntegrationSpec extends Specification {
             1 * userService.listAll() >> [user]
             response.status == HttpStatus.OK.value()
             response.contentType == MediaType.APPLICATION_JSON_UTF8_VALUE
+            content[0].firstName == 'LSS'
+            content[0].lastName == 'India'
     }
 
     def "User 'get' test hits the REST endpoint and parses the JSON output" () {

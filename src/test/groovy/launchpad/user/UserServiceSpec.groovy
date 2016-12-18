@@ -3,26 +3,21 @@ package launchpad.user
 import spock.lang.Specification
 import spock.lang.Stepwise
 
-/**
- * Created by dhanumandla on 15/12/16.
- */
 @Stepwise
 class UserServiceSpec extends Specification {
-    private User user
-    private User modifiedUser
-    private UserService classUnderTest = new UserService()
-    private UserRepository userRepository = Mock()
+    User user
+    User modifiedUser
+    UserRepository userRepository = Mock()
+    UserService userService = new UserService(userRepository)
 
     def setup() {
         user = new User(id: 1, firstName: 'LSS', lastName: 'India')
         modifiedUser = new User(id: 1, firstName: 'LSS', lastName: 'Inc')
-
-        classUnderTest.userRepository = userRepository
     }
 
     def 'Test the list method of UserService' () {
         when:
-            List<User> userList = classUnderTest.listAll()
+            Iterable<User> userList = userService.listAll()
         then:
             1 * userRepository.findAll() >> [user]
             userList.size() == 1
@@ -30,7 +25,7 @@ class UserServiceSpec extends Specification {
 
     def 'Test save method of UserService' () {
         when:
-            User savedUser = classUnderTest.save(user)
+            User savedUser = userService.save(user)
         then:
             1 * userRepository.save({User user -> user.firstName == 'LSS'}) >> modifiedUser
             savedUser.lastName == 'Inc'
@@ -38,7 +33,7 @@ class UserServiceSpec extends Specification {
 
     def 'Test update method of UserService' () {
         when:
-            User modifiedUser = classUnderTest.update(user)
+            User modifiedUser = userService.update(user)
         then:
             1 * userRepository.save({User user -> user.lastName == 'India'}) >> modifiedUser
             modifiedUser.lastName == 'Inc'
@@ -46,7 +41,7 @@ class UserServiceSpec extends Specification {
 
     def 'Test find method of UserService' () {
         when:
-            User fetchedUser = classUnderTest.get(1)
+            User fetchedUser = userService.get(1)
         then:
             1 * userRepository.findOne(_) >> modifiedUser
             fetchedUser.lastName == 'Inc'
@@ -54,7 +49,7 @@ class UserServiceSpec extends Specification {
 
     def 'Test delete method of UserService' () {
         when:
-            classUnderTest.delete(1)
+            userService.delete(1)
         then:
             1 * userRepository.delete(_)
     }
