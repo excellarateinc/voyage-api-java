@@ -17,6 +17,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'codenarc'
 
 war {
     baseName = 'launchpad'
@@ -71,6 +72,25 @@ test {
     }
     filter {
         includeTestsMatching "*Spec"
+    }
+}
+
+codenarc {
+    codenarcMain {
+        ignoreFailures false
+        configFile file('codenarc/codenarc-main.rules')
+
+        maxPriority1Violations 0
+        maxPriority2Violations 0
+        maxPriority3Violations 0
+    }
+    codenarcTest {
+        ignoreFailures true
+        configFile file('codenarc/codenarc-test.rules')
+
+        maxPriority1Violations 0
+        maxPriority2Violations 10
+        maxPriority3Violations 40
     }
 }
 

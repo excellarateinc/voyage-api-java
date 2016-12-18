@@ -80,7 +80,7 @@ If you are extending this API to build a new app, then replace this section with
 ### Developers
 * __Team Protocols__
   - Fast learning curve through clear documentation
-  - Easy values, standards, best practices that most developers will aggreement
+  - Easy values, standards, best practices that most developers will agree to follow
 * __Core Values__
   - Documented core values that we believe will resonate with most development teams
   - Unifies teams and promotes healthy communication
@@ -88,8 +88,9 @@ If you are extending this API to build a new app, then replace this section with
 * __Coding Standards__ 
   - Industry accepted language coding standards
   - Best practices when developing within the code base
+  - Standard enforced using static code analysis at build time (CodeNarc)
   - See our [Development Team Standards](#development-team-standards)
-
+  
 ### System Administrators
 * __Deploy Instructions__
   - Full instructions on how to properly build, test, and package the API app for deploy

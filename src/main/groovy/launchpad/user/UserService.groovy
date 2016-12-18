@@ -8,10 +8,10 @@ import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
 @Transactional
-@Service("userService")
+@Service('userService')
 @Validated
 class UserService {
-    private UserRepository userRepository
+    private final UserRepository userRepository
 
     UserService(UserRepository userRepository) {
         this.userRepository = userRepository

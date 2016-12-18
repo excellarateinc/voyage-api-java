@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(["/v1/users", "/v1.0/users"])
+@RequestMapping(['/v1/users', '/v1.0/users'])
 class UserController {
-    private UserService userService
+    private final UserService userService
 
     @Autowired
     UserController(UserService userService) {
@@ -62,7 +62,7 @@ class UserController {
      **/
     @GetMapping
     ResponseEntity list() {
-        def users = userService.listAll()
+        Iterable<User> users = userService.listAll()
         return new ResponseEntity(users, HttpStatus.OK)
     }
 
@@ -110,10 +110,10 @@ class UserController {
      * @apiUse UserSuccessModel
      * @apiUse UnauthorizedError
      **/
-    @GetMapping("/{id}")
-    ResponseEntity get(@PathVariable("id") long id) {
-        def user = userService.get(id)
-        return new ResponseEntity(user, HttpStatus.OK)
+    @GetMapping('/{id}')
+    ResponseEntity get(@PathVariable('id') long id) {
+        User userFromDB = userService.get(id)
+        return new ResponseEntity(userFromDB, HttpStatus.OK)
     }
 
     /**
@@ -134,8 +134,8 @@ class UserController {
      * @apiUse UnauthorizedError
      * @apiUse BadRequestError
      **/
-    @DeleteMapping("/{id}")
-    ResponseEntity delete(@PathVariable("id") long id) {
+    @DeleteMapping('/{id}')
+    ResponseEntity delete(@PathVariable('id') long id) {
         userService.delete(id)
         return new ResponseEntity(HttpStatus.OK)
     }
@@ -154,9 +154,9 @@ class UserController {
      * @apiUse UserSuccessModel
      * @apiUse UnauthorizedError
      **/
-    @PutMapping("/{id}")
+    @PutMapping('/{id}')
     ResponseEntity update(@RequestBody User user) {
-        def modifiedUser = userService.update(user)
+        User modifiedUser = userService.update(user)
         return new ResponseEntity(modifiedUser, HttpStatus.OK)
     }
 }
