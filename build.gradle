@@ -17,8 +17,6 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-// The CodeNarc plugin performs quality checks on our project's Groovy source files using CodeNarc
-// and generates reports from these checks.
 apply plugin: 'codenarc'
 
 war {
@@ -77,26 +75,25 @@ test {
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.2.1'
-}
-
-//CodeNarc analyses for the source code
 codenarc {
     codenarcMain {
         ignoreFailures false
-        configFile file('standards/codenarc/codenarc-main.rules')
+        configFile file('codenarc/codenarc-main.rules')
 
         maxPriority1Violations 0
-        maxPriority2Violations 5
-        maxPriority3Violations 20
+        maxPriority2Violations 0
+        maxPriority3Violations 0
     }
     codenarcTest {
         ignoreFailures true
-        configFile file('standards/codenarc/codenarc-test.rules')
+        configFile file('codenarc/codenarc-test.rules')
 
         maxPriority1Violations 0
         maxPriority2Violations 10
         maxPriority3Violations 40
     }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.2.1'
 }

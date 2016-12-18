@@ -12,9 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-/**
- * User Controller class which provides the REST endpoints for the User entity.
- */
 @RestController
 @RequestMapping(['/v1/users', '/v1.0/users'])
 class UserController {
@@ -64,8 +61,8 @@ class UserController {
      **/
     @GetMapping
     ResponseEntity list() {
-        def users = userService.listAll()
-        new ResponseEntity(users, HttpStatus.OK)
+        Iterable<User> users = userService.listAll()
+        return new ResponseEntity(users, HttpStatus.OK)
     }
 
     /**
@@ -92,7 +89,7 @@ class UserController {
     @PostMapping
     ResponseEntity save(@RequestBody User user) {
         User savedUser = userService.save(user)
-        new ResponseEntity(savedUser, HttpStatus.OK)
+        return new ResponseEntity(savedUser, HttpStatus.OK)
     }
 
     /**
@@ -112,8 +109,8 @@ class UserController {
      **/
     @GetMapping('/{id}')
     ResponseEntity get(@PathVariable('id') long id) {
-        def userFromDB = userService.get(id)
-        new ResponseEntity(userFromDB, HttpStatus.OK)
+        User userFromDB = userService.get(id)
+        return new ResponseEntity(userFromDB, HttpStatus.OK)
     }
 
     /**
@@ -137,7 +134,7 @@ class UserController {
     @DeleteMapping('/{id}')
     ResponseEntity delete(@PathVariable('id') long id) {
         userService.delete(id)
-        new ResponseEntity(HttpStatus.OK)
+        return new ResponseEntity(HttpStatus.OK)
     }
 
     /**
@@ -157,6 +154,6 @@ class UserController {
     @PutMapping('/{id}')
     ResponseEntity update(@RequestBody User user) {
         User modifiedUser = userService.update(user)
-        new ResponseEntity(modifiedUser, HttpStatus.OK)
+        return new ResponseEntity(modifiedUser, HttpStatus.OK)
     }
 }

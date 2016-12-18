@@ -2,7 +2,7 @@ ruleset {
 
     description '''
         A Sample Groovy RuleSet containing all CodeNarc Rules, grouped by category.
-        Delete a rule(s) that we feel are too rigid.
+        Delete rule(s) that are too rigid for the team.
         '''
 
     // rulesets/basic.xml
@@ -162,7 +162,7 @@ ruleset {
     BracesForIfElse
     BracesForMethod
     BracesForTryCatchFinally
-    ClassJavadoc
+    // ClassJavadoc
     ClosureStatementOnOpeningLineOfMultipleLineClosure
     ConsecutiveBlankLines
     FileEndsWithoutNewline
@@ -378,7 +378,7 @@ ruleset {
     UnnecessaryPackageReference
     UnnecessaryParenthesesForMethodCallWithClosure
     UnnecessaryPublicModifier
-    UnnecessaryReturnKeyword
+    // UnnecessaryReturnKeyword
     UnnecessarySafeNavigationOperator
     UnnecessarySelfAssignment
     UnnecessarySemicolon

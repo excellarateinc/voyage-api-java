@@ -8,9 +8,6 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.validation.constraints.NotNull
 
-/**
- * Entity class to represent a user of the system with attributes such as first-name and last-name.
- */
 @Entity
 class User {
 
