@@ -91,7 +91,7 @@ ruleset {
     IfStatementCouldBeTernary
     InvertedIfElse
     LongLiteralWithLowerCaseL
-    NoDef
+    // NoDef
     NoTabCharacter
     ParameterReassignment
     TernaryCouldBeElvis
@@ -123,10 +123,10 @@ ruleset {
     ToStringReturnsNull
 
     // rulesets/dry.xml
-    DuplicateListLiteral
-    DuplicateMapLiteral
-    DuplicateNumberLiteral
-    DuplicateStringLiteral
+    // DuplicateListLiteral
+    // DuplicateMapLiteral
+    // DuplicateNumberLiteral
+    // DuplicateStringLiteral
 
     // rulesets/enhanced.xml
     CloneWithoutCloneable
@@ -149,11 +149,11 @@ ruleset {
     MissingNewInThrowStatement
     ReturnNullFromCatchBlock
     SwallowThreadDeath
-    ThrowError
-    ThrowException
-    ThrowNullPointerException
-    ThrowRuntimeException
-    ThrowThrowable
+    // ThrowError
+    // ThrowException
+    // ThrowNullPointerException
+    // ThrowRuntimeException
+    // ThrowThrowable
 
     // rulesets/formatting.xml
     BlankLineBeforePackage
@@ -212,7 +212,7 @@ ruleset {
     // rulesets/groovyism.xml
     AssignCollectionSort
     AssignCollectionUnique
-    ClosureAsLastMethodParameter
+    // ClosureAsLastMethodParameter
     CollectAllIsDeprecated
     ConfusingMultipleReturns
     ExplicitArrayListInstantiation
@@ -304,7 +304,7 @@ ruleset {
     FieldName
     InterfaceName
     InterfaceNameSameAsSuperInterface
-    MethodName
+    // MethodName
     ObjectOverrideMisspelledMethodName
     PackageName
     PackageNameMatchesFilePath

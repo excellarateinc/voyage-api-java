@@ -11,8 +11,8 @@ class UserServiceSpec extends Specification {
     UserService userService = new UserService(userRepository)
 
     def setup() {
-        user = new User(id: 1, firstName: 'LSS', lastName: 'India')
-        modifiedUser = new User(id: 1, firstName: 'LSS', lastName: 'Inc')
+        user = new User(id:1, firstName:'LSS', lastName:'India')
+        modifiedUser = new User(id:1, firstName:'LSS', lastName:'Inc')
     }
 
     def 'Test the list method of UserService' () {
@@ -27,7 +27,7 @@ class UserServiceSpec extends Specification {
         when:
             User savedUser = userService.save(user)
         then:
-            1 * userRepository.save({User user -> user.firstName == 'LSS'}) >> modifiedUser
+            1 * userRepository.save({ User user -> user.firstName == 'LSS' }) >> modifiedUser
             'Inc' == savedUser.lastName
     }
 
@@ -35,7 +35,7 @@ class UserServiceSpec extends Specification {
         when:
             User modifiedUser = userService.update(user)
         then:
-            1 * userRepository.save({User user -> user.lastName == 'India'}) >> modifiedUser
+            1 * userRepository.save({ User user -> user.lastName == 'India' }) >> modifiedUser
             'Inc' == modifiedUser.lastName
     }
 

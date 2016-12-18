@@ -11,8 +11,8 @@ class UserControllerSpec extends Specification {
     UserController userController = new UserController(userService)
 
     def setup() {
-        user = new User(id: 1, firstName: 'LSS', lastName: 'India')
-        modifiedUser = new User(id: 1, firstName: 'LSS', lastName: 'Inc')
+        user = new User(id:1, firstName:'LSS', lastName:'India')
+        modifiedUser = new User(id:1, firstName:'LSS', lastName:'Inc')
     }
 
     def 'Test to validate LIST method is fetching data from UserService'() {
@@ -26,7 +26,7 @@ class UserControllerSpec extends Specification {
         when:
             userController.list()
         then:
-            1 * userService.listAll() >> {throw new Exception()}
+            1 * userService.listAll() >> { throw new Exception() }
             thrown(Exception)
     }
 
@@ -43,7 +43,7 @@ class UserControllerSpec extends Specification {
         when:
             userController.get(1)
         then:
-            1 * userService.get(1) >> {throw new Exception()}
+            1 * userService.get(1) >> { throw new Exception() }
             thrown(Exception)
     }
 
@@ -54,14 +54,14 @@ class UserControllerSpec extends Specification {
             1 * userService.save(user) >> modifiedUser
             response != null
             HttpStatus.CREATED == response.statusCode
-            "/v1/users/1" == response.headers.getLocation().toString()
+            '/v1/users/1' == response.headers.location.toString()
             'LSS' == response.body.firstName
             'Inc' == response.body.lastName
 
         when:
             userController.save(user)
         then:
-            1 * userService.save(user) >> {throw new Exception()}
+            1 * userService.save(user) >> { throw new Exception() }
             thrown(Exception)
     }
 
@@ -76,7 +76,7 @@ class UserControllerSpec extends Specification {
         when:
             userController.update(modifiedUser)
         then:
-            1 * userService.update(modifiedUser) >> {throw new Exception()}
+            1 * userService.update(modifiedUser) >> { throw new Exception() }
             thrown(Exception)
     }
 
@@ -90,7 +90,7 @@ class UserControllerSpec extends Specification {
         when:
             userController.delete(1)
         then:
-            1 * userService.delete(1) >> {throw new Exception()}
+            1 * userService.delete(1) >> { throw new Exception() }
             thrown(Exception)
     }
 
