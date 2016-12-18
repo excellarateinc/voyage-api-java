@@ -1,6 +1,7 @@
 package launchpad.user
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping(['/v1/users', '/v1.0/users'])
 class UserController {
-    private final UserService userService
+    private UserService userService
 
     @Autowired
     UserController(UserService userService) {
@@ -88,8 +89,10 @@ class UserController {
      **/
     @PostMapping
     ResponseEntity save(@RequestBody User user) {
-        User savedUser = userService.save(user)
-        return new ResponseEntity(savedUser, HttpStatus.OK)
+        User newUser = userService.save(user)
+        HttpHeaders headers = new HttpHeaders()
+        headers.set(HttpHeaders.LOCATION, "/v1/users/${newUser.id}")
+        return new ResponseEntity(newUser, headers, HttpStatus.CREATED)
     }
 
     /**
