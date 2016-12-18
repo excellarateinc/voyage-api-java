@@ -7,4 +7,10 @@ Use of "def"
 
 Use of return
 
+Variables
+* one variable definition per line
+
 static
+
+Testing / Asserts
+* [expected] == [actual]

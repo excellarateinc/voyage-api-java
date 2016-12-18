@@ -19,7 +19,10 @@ import javax.validation.ConstraintViolationException
 @ControllerAdvice
 @RestController
 class DefaultExceptionHandler implements ErrorController {
-    private ErrorAttributes errorAttributes
+    private static final String UNDER_SCORE = '_'
+    private final ErrorAttributes errorAttributes
+
+    String errorPath = '/error' // Overrides ErrorController.getErrorPath()
 
     @Autowired
     DefaultExceptionHandler(ErrorAttributes errorAttributes) {
@@ -28,11 +31,11 @@ class DefaultExceptionHandler implements ErrorController {
 
     @ExceptionHandler
     ResponseEntity<Iterable<ErrorResponse>> handle(ConstraintViolationException e) {
-        def errorResponses = []
+        List errorResponses = []
         e.constraintViolations.each { violation ->
-            def errorResponse = new ErrorResponse(
-                code: formatToCode(violation.getPropertyPath().toString() + "." + violation.message),
-                description: violation.message
+            ErrorResponse errorResponse = new ErrorResponse(
+                code:formatToCode(violation.propertyPath.toString() + '.' + violation.message),
+                description:violation.message,
             )
             errorResponses.add(errorResponse)
         }
@@ -41,55 +44,50 @@ class DefaultExceptionHandler implements ErrorController {
 
     @ExceptionHandler
     ResponseEntity<Iterable<ErrorResponse>> handle(MethodArgumentNotValidException e) {
-        def errorResponses = []
+        List errorResponses = []
         e.bindingResult.fieldErrors.each { fieldError ->
-            def errorResponse = new ErrorResponse(
-                code: fieldError.code,
-                description: fieldError.defaultMessage
+            ErrorResponse errorResponse = new ErrorResponse(
+                code:fieldError.code,
+                description:fieldError.defaultMessage,
             )
             errorResponses.add(errorResponse)
         }
         return new ResponseEntity(errorResponses, HttpStatus.BAD_REQUEST)
     }
 
-    @ExceptionHandler(value = Exception.class)
+    @ExceptionHandler(value = Exception)
     ResponseEntity<Iterable<ErrorResponse>> handle(Exception e) {
-        def errorResponse = new ErrorResponse(
-                code: "error.500_internal_server_error",
-                description: e.toString()
+        ErrorResponse errorResponse = new ErrorResponse(
+                code:'error.500_internal_server_error',
+                description:e.toString(),
         )
         return new ResponseEntity([errorResponse], HttpStatus.INTERNAL_SERVER_ERROR)
     }
 
-    @RequestMapping(value = "/error")
+    @RequestMapping(value = '/error')
     ResponseEntity<Iterable<ErrorResponse>> handleError(HttpServletRequest request, HttpServletResponse response) {
-        def errorMap = getErrorAttributes(request, false)
-        def errorCode = getErrorCode((int)errorMap.status)
-        def errorMessage = "${errorMap.status} ${errorMap.error}. ${errorMap.message}"
-        def errorResponse = new ErrorResponse(
-                code: errorCode,
-                description: errorMessage
+        Map errorMap = getErrorAttributes(request, false)
+        String errorCode = getErrorCode((int)errorMap.status)
+        String errorMessage = "${errorMap.status} ${errorMap.error}. ${errorMap.message}"
+        ErrorResponse errorResponse = new ErrorResponse(
+                code:errorCode,
+                description:errorMessage,
         )
-        return new ResponseEntity([errorResponse], HttpStatus.valueOf(response.getStatus()))
-    }
-
-    @Override
-    String getErrorPath() {
-        return "/error"
+        return new ResponseEntity([errorResponse], HttpStatus.valueOf(response.status))
     }
 
     private static String getErrorCode(int httpStatusCode) {
-        def httpStatus = HttpStatus.valueOf(httpStatusCode)
-        def errorCode = httpStatus.value() + "_" + httpStatus.name()
+        HttpStatus httpStatus = HttpStatus.valueOf(httpStatusCode)
+        String errorCode = httpStatus.value() + UNDER_SCORE + httpStatus.name()
         return formatToCode(errorCode)
     }
 
     private Map<String, Object> getErrorAttributes(HttpServletRequest request, boolean includeStackTrace = false) {
-        def requestAttributes = new ServletRequestAttributes(request)
+        ServletRequestAttributes requestAttributes = new ServletRequestAttributes(request)
         return errorAttributes.getErrorAttributes(requestAttributes, includeStackTrace)
     }
 
     private static String formatToCode(String description) {
-        return description.toLowerCase().replace(" ", "_")
+        return description.toLowerCase().replace(' ', UNDER_SCORE)
     }
 }
