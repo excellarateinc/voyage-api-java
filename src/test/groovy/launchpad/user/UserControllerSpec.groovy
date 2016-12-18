@@ -21,7 +21,7 @@ class UserControllerSpec extends Specification {
         then:
             1 * userService.listAll() >> [user]
             users != null
-            users.statusCode == HttpStatus.OK
+            HttpStatus.OK == users.statusCode
 
         when:
             userController.list()
@@ -36,9 +36,9 @@ class UserControllerSpec extends Specification {
         then:
             1 * userService.get(1) >> user
             user != null
-            user.statusCode == HttpStatus.OK
-            user.body.firstName == 'LSS'
-            user.body.lastName == 'India'
+            HttpStatus.OK == user.statusCode
+            'LSS' == user.body.firstName
+            'India' == user.body.lastName
 
         when:
             userController.get(1)
@@ -49,13 +49,14 @@ class UserControllerSpec extends Specification {
 
     def 'Test to validate CREATE method is fetching data from UserService'() {
         when:
-            ResponseEntity<User> newUser = userController.save(user)
+            ResponseEntity<User> response = userController.save(user)
         then:
             1 * userService.save(user) >> modifiedUser
-            newUser != null
-            newUser.statusCode == HttpStatus.OK
-            newUser.body.firstName == 'LSS'
-            newUser.body.lastName == 'Inc'
+            response != null
+            HttpStatus.CREATED == response.statusCode
+            "/v1/users/1" == response.headers.getLocation().toString()
+            'LSS' == response.body.firstName
+            'Inc' == response.body.lastName
 
         when:
             userController.save(user)
@@ -70,7 +71,7 @@ class UserControllerSpec extends Specification {
         then:
             1 * userService.update(modifiedUser) >> modifiedUser
             updatedUser != null
-            updatedUser.statusCode == HttpStatus.OK
+            HttpStatus.OK == updatedUser.statusCode
 
         when:
             userController.update(modifiedUser)
@@ -84,7 +85,7 @@ class UserControllerSpec extends Specification {
             ResponseEntity response = userController.delete(1)
         then:
             1 * userService.delete(1)
-            response.statusCode == HttpStatus.OK
+            HttpStatus.OK == response.statusCode
 
         when:
             userController.delete(1)

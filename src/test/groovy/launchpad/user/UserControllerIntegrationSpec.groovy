@@ -1,6 +1,7 @@
 package launchpad.user
 
 import groovy.json.JsonSlurper
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
@@ -29,10 +30,10 @@ class UserControllerIntegrationSpec extends Specification {
             def content = new JsonSlurper().parseText(response.contentAsString)
         then: 'verify the HTTP response'
             1 * userService.listAll() >> [user]
-            response.status == HttpStatus.OK.value()
-            response.contentType == MediaType.APPLICATION_JSON_UTF8_VALUE
-            content[0].firstName == 'LSS'
-            content[0].lastName == 'India'
+            HttpStatus.OK.value() == response.status
+            MediaType.APPLICATION_JSON_UTF8_VALUE == response.contentType
+            'LSS' == content[0].firstName
+            'India' ==  content[0].lastName
     }
 
     def "User 'get' test hits the REST endpoint and parses the JSON output" () {
@@ -43,10 +44,10 @@ class UserControllerIntegrationSpec extends Specification {
             def content = new JsonSlurper().parseText(response.contentAsString)
         then: 'verify the HTTP response'
             1 * userService.get(1) >> user
-            response.status == HttpStatus.OK.value()
-            response.contentType == MediaType.APPLICATION_JSON_UTF8_VALUE
-            content.firstName == 'LSS'
-            content.lastName == 'India'
+            HttpStatus.OK.value() == response.status
+            MediaType.APPLICATION_JSON_UTF8_VALUE == response.contentType
+            'LSS' == content.firstName
+            'India' == content.lastName
     }
 
     def "User 'delete' test hits the REST endpoint and parses the JSON output" () {
@@ -56,7 +57,7 @@ class UserControllerIntegrationSpec extends Specification {
                     .andReturn().response
         then: 'verify the HTTP response'
             1 * userService.delete(1)
-            response.status == HttpStatus.OK.value()
+            HttpStatus.OK.value() == response.status
     }
 
     def "User 'create' test hits the REST endpoint and parses the JSON output" () {
@@ -69,10 +70,11 @@ class UserControllerIntegrationSpec extends Specification {
             def content = new JsonSlurper().parseText(response.contentAsString)
         then: 'verify the HTTP response'
             1 * userService.save(_) >> {new User(id: 1, firstName: 'Test', lastName: 'User')}
-            response.status == HttpStatus.OK.value()
-            response.contentType == MediaType.APPLICATION_JSON_UTF8_VALUE
-            content.firstName == 'Test'
-            content.lastName == 'User'
+            HttpStatus.CREATED.value() == response.status
+            MediaType.APPLICATION_JSON_UTF8_VALUE == response.contentType
+            "/v1/users/1" == response.getHeaderValue(HttpHeaders.LOCATION)
+            'Test' == content.firstName
+            'User' == content.lastName
     }
 
     def "User 'update' test hits the REST endpoint and parses the JSON output" () {
@@ -85,9 +87,9 @@ class UserControllerIntegrationSpec extends Specification {
             def content = new JsonSlurper().parseText(response.contentAsString)
         then: 'verify the HTTP response'
             1 * userService.update(_) >> {new User(id: 1, firstName: 'Test1', lastName: 'User1')}
-            response.status == HttpStatus.OK.value()
-            response.contentType == MediaType.APPLICATION_JSON_UTF8_VALUE
-            content.firstName == 'Test1'
-            content.lastName == 'User1'
+            HttpStatus.OK.value() == response.status
+            MediaType.APPLICATION_JSON_UTF8_VALUE == response.contentType
+            'Test1' == content.firstName
+            'User1' == content.lastName
     }
 }

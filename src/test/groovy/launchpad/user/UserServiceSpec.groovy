@@ -20,7 +20,7 @@ class UserServiceSpec extends Specification {
             Iterable<User> userList = userService.listAll()
         then:
             1 * userRepository.findAll() >> [user]
-            userList.size() == 1
+            1 == userList.size()
     }
 
     def 'Test save method of UserService' () {
@@ -28,7 +28,7 @@ class UserServiceSpec extends Specification {
             User savedUser = userService.save(user)
         then:
             1 * userRepository.save({User user -> user.firstName == 'LSS'}) >> modifiedUser
-            savedUser.lastName == 'Inc'
+            'Inc' == savedUser.lastName
     }
 
     def 'Test update method of UserService' () {
@@ -36,7 +36,7 @@ class UserServiceSpec extends Specification {
             User modifiedUser = userService.update(user)
         then:
             1 * userRepository.save({User user -> user.lastName == 'India'}) >> modifiedUser
-            modifiedUser.lastName == 'Inc'
+            'Inc' == modifiedUser.lastName
     }
 
     def 'Test find method of UserService' () {
@@ -44,7 +44,7 @@ class UserServiceSpec extends Specification {
             User fetchedUser = userService.get(1)
         then:
             1 * userRepository.findOne(_) >> modifiedUser
-            fetchedUser.lastName == 'Inc'
+            'Inc' == fetchedUser.lastName
     }
 
     def 'Test delete method of UserService' () {
