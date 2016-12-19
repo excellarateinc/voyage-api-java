@@ -4,20 +4,15 @@
 ### Actors (aka Users) 
 
 ### Roles
-
-Convention: ROLE_SUPER, ROLE_ADMIN, ROLE_DOCTOR, ROLE_REGISTERED_NURSE, ROLE_NURSE_PRACTITIONER
-
-Convention: role.super_user, role.administrator, role.doctor, role.registered_nurse
-
+Convention: role.super, role.admin, role.doctor, role.nurse
 
 ### Permissions
+Convention: api.roles.list, api.roles.get, api.roles.create, api.roles.update, api.roles.delete
+api.user.list, api.user.get, api.user.create, api.user.update, api.user.delete
 
-Convention: PERMISSION_ROLES_LIST, permission.roles.list, permission.roles.get, permission.roles.create, permission.roles.update, permission.roles.delete
-
-permission.account.get, permission.account.update
+api.account.get, api.account.update
 
 ## OAuth2
-
 Properties
 * URL: /api/oauth/token
 * Post Body: grant_type=client_credentials
