@@ -33,7 +33,7 @@ class RoleControllerSpec extends Specification {
             ResponseEntity<Role> role = roleController.get(1)
         then:
             1 * roleService.get(1) >> role
-        role != null
+            role != null
             HttpStatus.OK == role.statusCode
             'Super User' == role.body.name
             'ROLE_SUPER' == role.body.authority
@@ -75,7 +75,7 @@ class RoleControllerSpec extends Specification {
             HttpStatus.OK == updatedRole.statusCode
 
         when:
-        roleController.update(modifiedRole)
+            roleController.update(modifiedRole)
         then:
             1 * roleService.update(modifiedRole) >> { throw new Exception() }
             thrown(Exception)
