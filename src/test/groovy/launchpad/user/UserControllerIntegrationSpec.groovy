@@ -11,14 +11,12 @@ import spock.lang.Specification
 
 class UserControllerIntegrationSpec extends Specification {
     User user
-    User modifiedUser
     MockMvc mockMvc
     UserService userService = Mock(UserService)
     UserController userController = new UserController(userService)
 
     def setup() {
         user = new User(id:1, firstName:'LSS', lastName:'India')
-        modifiedUser = new User(id:1, firstName:'LSS', lastName:'Inc')
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build()
     }
 
