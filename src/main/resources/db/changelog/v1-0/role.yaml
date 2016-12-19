@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-role-table-create
+      author: Jagadeesh Manne
+      changes:
+        - createTable:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: authority
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-role-seed-roles
+      author: Jagadeesh Manne
+      changes:
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: name
+                  value: Super User
+              - column:
+                  name: authority
+                  value: ROLE_SUPER
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: name
+                  value: Admin
+              - column:
+                  name: authority
+                  value: ROLE_ADMIN

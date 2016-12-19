@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-user-role-table-create
+      author: Jagadeesh Manne
+      changes:
+        - createTable:
+            tableName: user_role
+            columns:
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: int
+                  constraints:
+                    nullable: false
+  - changeSet:
+        id: v1.0-user-role-table-add-composite-key
+        author: Jagadeesh Manne
+        changes:
+          - addPrimaryKey:
+              columnNames: user_id, role_id
+              tableName: user_role
+          - addForeignKeyConstraint:
+              baseColumnNames: user_id
+              baseTableName: user_role
+              constraintName: fk_user_id
+              referencedColumnNames: id
+              referencedTableName: user
+          - addForeignKeyConstraint:
+              baseColumnNames: role_id
+              baseTableName: user_role
+              constraintName: fk_role_id
+              referencedColumnNames: id
+              referencedTableName: role
+
