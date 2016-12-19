@@ -1,4 +1,4 @@
-package launchpad.user
+package launchpad.role
 
 import groovy.transform.EqualsAndHashCode
 import org.hibernate.validator.constraints.Email
