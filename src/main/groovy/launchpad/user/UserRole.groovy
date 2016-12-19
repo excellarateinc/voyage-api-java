@@ -19,12 +19,12 @@ class UserRole {
     Long id
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = 'user_id', nullable = false)
     @NotNull
     User user
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id", nullable = false)
+    @JoinColumn(name = 'role_id', nullable = false)
     @NotNull
     Role role
 }

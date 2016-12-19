@@ -26,6 +26,6 @@ class User {
     @Email
     String email
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = 'user')
     Set<UserRole> userRoles
 }
