@@ -47,8 +47,8 @@ class PermissionServiceSpec extends Specification {
         Permission fetchedPermission = permissionService.get(1)
         then:
             1 * permissionRepository.findOne(_) >> modifiedPermission
-            'permission.write' == fetchedPermission.name
-            'Write permission only' == fetchedPermission.description
+            'permission.read' == fetchedPermission.name
+            'Read permission only' == fetchedPermission.description
     }
 
     def 'Test delete method of PermissionService' () {

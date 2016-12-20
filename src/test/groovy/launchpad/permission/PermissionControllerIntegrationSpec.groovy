@@ -75,7 +75,7 @@ class PermissionControllerIntegrationSpec extends Specification {
             MediaType.APPLICATION_JSON_UTF8_VALUE == response.contentType
             '/v1/permissions/1' == response.getHeaderValue(HttpHeaders.LOCATION)
             'permission.write' == content.name
-            'Write permission only' == content.authority
+            'Write permission only' == content.description
     }
 
     def "Permission 'update' test hits the REST endpoint and parses the JSON output"() {
