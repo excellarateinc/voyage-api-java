@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-permission-table-create
+      author: Jagadeesh Manne
+      changes:
+        - createTable:
+            tableName: permission
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-permission-seed-permissions
+      author: Jagadeesh Manne
+      changes:
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: permission.read
+              - column:
+                  name: description
+                  value: Read only permssion
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: permission.write
+              - column:
+                  name: description
+                  value: Write permission

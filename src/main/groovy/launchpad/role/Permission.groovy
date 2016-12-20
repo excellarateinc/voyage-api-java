@@ -1,15 +1,13 @@
 package launchpad.role
 
 import javax.persistence.Entity
-import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
-import javax.persistence.OneToMany
 import javax.validation.constraints.NotNull
 
 @Entity
-class Role {
+class Permission {
 
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
@@ -18,9 +16,5 @@ class Role {
     @NotNull
     String name
 
-    @NotNull
-    String authority
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = 'role')
-    Set<RolePermission> rolePermissions
+    String description
 }
