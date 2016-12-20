@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.annotation.Secured
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -29,7 +30,7 @@ class RoleController {
      * @apiName RoleList
      * @apiGroup Role
      *
-     * @apiPermission api.role.list
+     * @apiPermission api.roles.list
      *
      * @apiUse AuthHeader
      *
@@ -51,6 +52,7 @@ class RoleController {
      * @apiUse UnauthorizedError
      **/
     @GetMapping
+    @Secured(['api.roles.list'])
     ResponseEntity list() {
         Iterable<Role> roles = roleService.listAll()
         return new ResponseEntity(roles, HttpStatus.OK)
@@ -62,7 +64,7 @@ class RoleController {
      * @apiName RoleCreate
      * @apiGroup Role
      *
-     * @apiPermission lss.permission->api.roles.create
+     * @apiPermission api.roles.create
      *
      * @apiUse AuthHeader
      *
@@ -78,6 +80,7 @@ class RoleController {
      * @apiUse UnauthorizedError
      **/
     @PostMapping
+    @Secured(['api.roles.create'])
     ResponseEntity save(@RequestBody Role role) {
         Role newRole = roleService.save(role)
         HttpHeaders headers = new HttpHeaders()
@@ -91,7 +94,7 @@ class RoleController {
      * @apiName RoleGet
      * @apiGroup Role
      *
-     * @apiPermission lss.permission->api.roles.get
+     * @apiPermission api.roles.get
      *
      * @apiUse AuthHeader
      *
@@ -101,6 +104,7 @@ class RoleController {
      * @apiUse UnauthorizedError
      **/
     @GetMapping('/{id}')
+    @Secured(['api.roles.get'])
     ResponseEntity get(@PathVariable('id') long id) {
         Role roleFromDB = roleService.get(id)
         return new ResponseEntity(roleFromDB, HttpStatus.OK)
@@ -112,7 +116,7 @@ class RoleController {
      * @apiName RoleDelete
      * @apiGroup Role
      *
-     * @apiPermission lss.permission->api.roles.delete
+     * @apiPermission api.roles.delete
      *
      * @apiUse AuthHeader
      *
@@ -125,6 +129,7 @@ class RoleController {
      * @apiUse BadRequestError
      **/
     @DeleteMapping('/{id}')
+    @Secured(['api.roles.delete'])
     ResponseEntity delete(@PathVariable('id') long id) {
         roleService.delete(id)
         return new ResponseEntity(HttpStatus.OK)
@@ -145,6 +150,7 @@ class RoleController {
      * @apiUse UnauthorizedError
      **/
     @PutMapping('/{id}')
+    @Secured(['api.roles.update'])
     ResponseEntity update(@RequestBody Role role) {
         Role modifiedRole = roleService.update(role)
         return new ResponseEntity(modifiedRole, HttpStatus.OK)

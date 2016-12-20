@@ -17,22 +17,53 @@ databaseChangeLog:
                   constraints:
                     nullable: false
   - changeSet:
-        id: v1.0-user-role-table-add-composite-key
-        author: Jagadeesh Manne
-        changes:
-          - addPrimaryKey:
-              columnNames: user_id, role_id
-              tableName: user_role
-          - addForeignKeyConstraint:
-              baseColumnNames: user_id
-              baseTableName: user_role
-              constraintName: fk_user_id
-              referencedColumnNames: id
-              referencedTableName: user
-          - addForeignKeyConstraint:
-              baseColumnNames: role_id
-              baseTableName: user_role
-              constraintName: fk_role_id
-              referencedColumnNames: id
-              referencedTableName: role
+      id: v1.0-user-role-table-add-composite-key
+      author: Jagadeesh Manne
+      changes:
+        - addPrimaryKey:
+            columnNames: user_id, role_id
+            tableName: user_role
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: user_role
+            constraintName: fk_user_id
+            referencedColumnNames: id
+            referencedTableName: user
+        - addForeignKeyConstraint:
+            baseColumnNames: role_id
+            baseTableName: user_role
+            constraintName: fk_role_id
+            referencedColumnNames: id
+            referencedTableName: role
 
+  - changeSet:
+      id: v1.0-user_role-seed-1
+      author: Rob Louie
+      changes:
+        - insert:
+            tableName: user_role
+            columns:
+              - column:
+                  name: user_id
+                  value: 1
+              - column:
+                  name: role_id
+                  value: 1
+        - insert:
+            tableName: user_role
+            columns:
+              - column:
+                  name: user_id
+                  value: 2
+              - column:
+                  name: role_id
+                  value: 2
+        - insert:
+            tableName: user_role
+            columns:
+              - column:
+                  name: user_id
+                  value: 3
+              - column:
+                  name: role_id
+                  value: 3

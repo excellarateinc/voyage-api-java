@@ -21,6 +21,10 @@ class UserService {
         userRepository.delete(id)
     }
 
+    User findByUsername(@NotNull String username) {
+        userRepository.findByUsername(username)
+    }
+
     User get(@NotNull Long id) {
         return userRepository.findOne(id)
     }
