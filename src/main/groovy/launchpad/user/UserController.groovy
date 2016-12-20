@@ -29,7 +29,7 @@ class UserController {
      * @apiName UserList
      * @apiGroup User
      *
-     * @apiPermission user.list
+     * @apiPermission api.user.list
      *
      * @apiUse AuthHeader
      *
@@ -47,7 +47,7 @@ class UserController {
      *   HTTP/1.1 200 OK
      *   [
      *       {
-     *           "id": "A8DCF6EA-85A9-4D90-B722-3F4B9DE6642A",
+     *           "id": "1",
      *           "userName": "admin",
      *           "email": "admin@admin.com",
      *           "firstName": "Admin_First",
@@ -72,7 +72,7 @@ class UserController {
      * @apiName UserCreate
      * @apiGroup User
      *
-     * @apiPermission lss.permission->create.user
+     * @apiPermission lss.permission->api.user.create
      *
      * @apiUse AuthHeader
      *
@@ -80,7 +80,7 @@ class UserController {
      *
      * @apiHeaderExample {json} Location-Example
      * {
-     *     "Location": "http://localhost:52431/api/v1/users/b78ae241-1fa6-498c-aa48-9742245d0d2f"
+     *     "Location": "http://localhost:52431/api/v1/users/1"
      * }
      *
      * @apiUse UserRequestModel
@@ -101,7 +101,7 @@ class UserController {
      * @apiName UserGet
      * @apiGroup User
      *
-     * @apiPermission lss.permission->view.user
+     * @apiPermission lss.permission->api.user.get
      *
      * @apiUse AuthHeader
      *
@@ -122,7 +122,7 @@ class UserController {
      * @apiName UserDelete
      * @apiGroup User
      *
-     * @apiPermission lss.permission->delete.user
+     * @apiPermission lss.permission->api.user.delete
      *
      * @apiUse AuthHeader
      *
@@ -146,7 +146,7 @@ class UserController {
      * @apiName UserUpdate
      * @apiGroup User
      *
-     * @apiPermission user.update
+     * @apiPermission api.user.update
      *
      * @apiUse AuthHeader
      *
