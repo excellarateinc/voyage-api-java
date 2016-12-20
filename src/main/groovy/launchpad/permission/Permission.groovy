@@ -1,4 +1,4 @@
-package launchpad.role
+package launchpad.permission
 
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue

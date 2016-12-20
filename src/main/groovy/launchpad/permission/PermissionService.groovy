@@ -1,4 +1,4 @@
-package launchpad.role
+package launchpad.permission
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

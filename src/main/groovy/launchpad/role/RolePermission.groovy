@@ -1,6 +1,7 @@
 package launchpad.role
 
 import groovy.transform.EqualsAndHashCode
+import launchpad.permission.Permission
 
 import javax.persistence.Entity
 import javax.persistence.FetchType
