@@ -29,7 +29,7 @@ class RoleController {
      * @apiName RoleList
      * @apiGroup Role
      *
-     * @apiPermission role.list
+     * @apiPermission api.role.list
      *
      * @apiUse AuthHeader
      *
@@ -42,9 +42,9 @@ class RoleController {
      *   HTTP/1.1 200 OK
      *   [
      *       {
-     *           "id": "A8DCF6EA-85A9-4D90-B722-3F4B9DE6642A",
-     *           "name": "Admin",
-     *           "authority": "ROLE_ADMIN"
+     *           "id": "1",
+     *           "name": "Super User",
+     *           "authority": "role.super"
      *       }
      *   ]
      *
@@ -62,7 +62,7 @@ class RoleController {
      * @apiName RoleCreate
      * @apiGroup Role
      *
-     * @apiPermission lss.permission->create.role
+     * @apiPermission lss.permission->api.roles.create
      *
      * @apiUse AuthHeader
      *
@@ -70,7 +70,7 @@ class RoleController {
      *
      * @apiHeaderExample {json} Location-Example
      * {
-     *     "Location": "http://localhost:52431/api/v1/roles/b78ae241-1fa6-498c-aa48-9742245d0d2f"
+     *     "Location": "http://localhost:52431/api/v1/roles/1"
      * }
      *
      * @apiUse RoleRequestModel
@@ -91,7 +91,7 @@ class RoleController {
      * @apiName RoleGet
      * @apiGroup Role
      *
-     * @apiPermission lss.permission->view.role
+     * @apiPermission lss.permission->api.roles.get
      *
      * @apiUse AuthHeader
      *
@@ -112,7 +112,7 @@ class RoleController {
      * @apiName RoleDelete
      * @apiGroup Role
      *
-     * @apiPermission lss.permission->delete.role
+     * @apiPermission lss.permission->api.roles.delete
      *
      * @apiUse AuthHeader
      *
@@ -136,7 +136,7 @@ class RoleController {
      * @apiName RoleUpdate
      * @apiGroup Role
      *
-     * @apiPermission role.update
+     * @apiPermission api.roles.update
      *
      * @apiUse AuthHeader
      *

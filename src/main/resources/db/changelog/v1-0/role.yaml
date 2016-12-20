@@ -35,13 +35,22 @@ databaseChangeLog:
                   value: Super User
               - column:
                   name: authority
-                  value: ROLE_SUPER
+                  value: role.super
         - insert:
             tableName: role
             columns:
               - column:
                   name: name
-                  value: Admin
+                  value: Read Only
               - column:
                   name: authority
-                  value: ROLE_ADMIN
+                  value: role.readonly
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: name
+                  value: Standard User
+              - column:
+                  name: authority
+                  value: role.standard_user
