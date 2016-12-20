@@ -1,9 +1,7 @@
 package launchpad.role
 
 import spock.lang.Specification
-import spock.lang.Stepwise
 
-@Stepwise
 class RoleServiceSpec extends Specification {
     Role role
     Role modifiedRole

@@ -1,9 +1,7 @@
 package launchpad.user
 
 import spock.lang.Specification
-import spock.lang.Stepwise
 
-@Stepwise
 class UserServiceSpec extends Specification {
     User user
     User modifiedUser
