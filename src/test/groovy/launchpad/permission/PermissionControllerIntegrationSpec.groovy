@@ -58,7 +58,7 @@ class PermissionControllerIntegrationSpec extends Specification {
                     .andReturn().response
         then: 'verify the HTTP response'
             1 * permissionService.delete(1)
-            HttpStatus.OK.value() == response.status
+            HttpStatus.NO_CONTENT.value() == response.status
     }
 
     def "Permission 'create' test hits the REST endpoint and parses the JSON output"() {
@@ -87,7 +87,7 @@ class PermissionControllerIntegrationSpec extends Specification {
                     .andReturn().response
             def content = new JsonSlurper().parseText(response.contentAsString)
         then: 'verify the HTTP response'
-            1 * permissionService.update(_) >> { new Permission(id:1,  name:'permission.read', description:'Read permission only') }
+            1 * permissionService.save(_) >> { new Permission(id:1,  name:'permission.read', description:'Read permission only') }
             HttpStatus.OK.value() == response.status
             MediaType.APPLICATION_JSON_UTF8_VALUE == response.contentType
             'permission.read' == content.name

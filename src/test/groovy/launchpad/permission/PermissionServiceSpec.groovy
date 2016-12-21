@@ -35,7 +35,7 @@ class PermissionServiceSpec extends Specification {
 
     def 'Test update method of PermissionService' () {
         when:
-        Permission updatedPermission = permissionService.update(modifiedPermission)
+        Permission updatedPermission = permissionService.save(modifiedPermission)
         then:
             1 * permissionRepository.save({ Permission permission -> permission.name == 'permission.read' }) >> modifiedPermission
             'permission.read' == updatedPermission.name

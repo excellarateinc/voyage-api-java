@@ -31,7 +31,7 @@ class UserServiceSpec extends Specification {
 
     def 'Test update method of UserService' () {
         when:
-            User modifiedUser = userService.update(user)
+            User modifiedUser = userService.save(user)
         then:
             1 * userRepository.save({ User user -> user.lastName == 'India' }) >> modifiedUser
             'Inc' == modifiedUser.lastName

@@ -84,7 +84,7 @@ class RoleControllerIntegrationSpec extends Specification {
                     .andReturn().response
             def content = new JsonSlurper().parseText(response.contentAsString)
         then: 'verify the HTTP response'
-            1 * roleService.update(_) >> { new Role(id:1,  name:'Admin', authority:'ADMIN') }
+            1 * roleService.save(_) >> { new Role(id:1,  name:'Admin', authority:'ADMIN') }
             HttpStatus.OK.value() == response.status
             MediaType.APPLICATION_JSON_UTF8_VALUE == response.contentType
             'Admin' == content.name

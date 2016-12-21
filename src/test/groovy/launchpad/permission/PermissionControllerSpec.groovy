@@ -73,14 +73,14 @@ class PermissionControllerSpec extends Specification {
         when:
             ResponseEntity<Permission> updatedPermission = permissionController.update(modifiedPermission)
         then:
-            1 * permissionService.update(modifiedPermission) >> modifiedPermission
+            1 * permissionService.save(modifiedPermission) >> modifiedPermission
             updatedPermission != null
             HttpStatus.OK == updatedPermission.statusCode
 
         when:
             permissionController.update(modifiedPermission)
         then:
-            1 * permissionService.update(modifiedPermission) >> { throw new Exception() }
+            1 * permissionService.save(modifiedPermission) >> { throw new Exception() }
             thrown(Exception)
     }
 
@@ -89,7 +89,7 @@ class PermissionControllerSpec extends Specification {
             ResponseEntity response = permissionController.delete(1)
         then:
             1 * permissionService.delete(1)
-            HttpStatus.OK == response.statusCode
+            HttpStatus.NO_CONTENT == response.statusCode
 
         when:
             permissionController.delete(1)

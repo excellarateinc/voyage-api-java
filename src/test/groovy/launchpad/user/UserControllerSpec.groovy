@@ -69,14 +69,14 @@ class UserControllerSpec extends Specification {
         when:
             ResponseEntity<User> updatedUser = userController.update(modifiedUser)
         then:
-            1 * userService.update(modifiedUser) >> modifiedUser
+            1 * userService.save(modifiedUser) >> modifiedUser
             updatedUser != null
             HttpStatus.OK == updatedUser.statusCode
 
         when:
             userController.update(modifiedUser)
         then:
-            1 * userService.update(modifiedUser) >> { throw new Exception() }
+            1 * userService.save(modifiedUser) >> { throw new Exception() }
             thrown(Exception)
     }
 

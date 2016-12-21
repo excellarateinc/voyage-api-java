@@ -70,14 +70,14 @@ class RoleControllerSpec extends Specification {
         when:
             ResponseEntity<Role> updatedRole = roleController.update(modifiedRole)
         then:
-            1 * roleService.update(modifiedRole) >> modifiedRole
+            1 * roleService.save(modifiedRole) >> modifiedRole
             updatedRole != null
             HttpStatus.OK == updatedRole.statusCode
 
         when:
             roleController.update(modifiedRole)
         then:
-            1 * roleService.update(modifiedRole) >> { throw new Exception() }
+            1 * roleService.save(modifiedRole) >> { throw new Exception() }
             thrown(Exception)
     }
 

@@ -32,7 +32,7 @@ class RoleServiceSpec extends Specification {
 
     def 'Test update method of RoleService' () {
         when:
-            Role updatedRole = roleService.update(modifiedRole)
+            Role updatedRole = roleService.save(modifiedRole)
         then:
             1 * roleRepository.save({ Role role -> role.name == 'Super Admin' }) >> modifiedRole
             'Super Admin' == updatedRole.name
