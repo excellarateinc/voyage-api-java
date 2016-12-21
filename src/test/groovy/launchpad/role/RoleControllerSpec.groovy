@@ -86,7 +86,7 @@ class RoleControllerSpec extends Specification {
             ResponseEntity response = roleController.delete(1)
         then:
             1 * roleService.delete(1)
-            HttpStatus.OK == response.statusCode
+            HttpStatus.NO_CONTENT == response.statusCode
 
         when:
             roleController.delete(1)

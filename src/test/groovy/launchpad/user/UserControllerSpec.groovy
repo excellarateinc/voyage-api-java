@@ -85,7 +85,7 @@ class UserControllerSpec extends Specification {
             ResponseEntity response = userController.delete(1)
         then:
             1 * userService.delete(1)
-            HttpStatus.OK == response.statusCode
+            HttpStatus.NO_CONTENT == response.statusCode
 
         when:
             userController.delete(1)

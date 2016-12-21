@@ -55,7 +55,7 @@ class RoleControllerIntegrationSpec extends Specification {
                     .andReturn().response
         then: 'verify the HTTP response'
             1 * roleService.delete(1)
-            HttpStatus.OK.value() == response.status
+            HttpStatus.NO_CONTENT.value() == response.status
     }
 
     def "Role 'create' test hits the REST endpoint and parses the JSON output"() {
