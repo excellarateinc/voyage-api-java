@@ -1,10 +1,13 @@
 package launchpad.permission
 
+import launchpad.error.ImmutableRecordException
 import launchpad.error.UnknownIdentifierException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
 
+import javax.validation.ConstraintViolation
+import javax.validation.ConstraintViolationException
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
@@ -37,6 +40,12 @@ class PermissionService {
     }
 
     Permission save(@Valid Permission permission) {
+        if (permission.id) {
+            Permission existingPermission = get(permission.id)
+            if (existingPermission.isImmutable) {
+                throw new ImmutableRecordException()
+            }
+        }
         return permissionRepository.save(permission)
     }
 }
