@@ -55,7 +55,7 @@ class UserControllerIntegrationSpec extends Specification {
                     .andReturn().response
         then: 'verify the HTTP response'
             1 * userService.delete(1)
-            HttpStatus.OK.value() == response.status
+            HttpStatus.NO_CONTENT.value() == response.status
     }
 
     def "User 'create' test hits the REST endpoint and parses the JSON output"() {
