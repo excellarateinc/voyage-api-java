@@ -21,6 +21,9 @@ class Role {
     @NotNull
     String authority
 
+    @NotNull
+    Boolean isSystemRole
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = 'role')
     Set<RolePermission> rolePermissions
 }

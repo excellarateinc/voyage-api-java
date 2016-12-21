@@ -23,6 +23,12 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+              - column:
+                  name: is_system_role
+                  type: bit(1)
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
   - changeSet:
       id: v1.0-role-seed-roles
       author: Jagadeesh Manne
@@ -36,6 +42,9 @@ databaseChangeLog:
               - column:
                   name: authority
                   value: role.super
+              - column:
+                  name: is_system_role
+                  valueBoolean: true
         - insert:
             tableName: role
             columns:
@@ -45,6 +54,9 @@ databaseChangeLog:
               - column:
                   name: authority
                   value: role.readonly
+              - column:
+                  name: is_system_role
+                  valueBoolean: true
         - insert:
             tableName: role
             columns:
@@ -54,3 +66,6 @@ databaseChangeLog:
               - column:
                   name: authority
                   value: role.standard_user
+              - column:
+                  name: is_system_role
+                  valueBoolean: true
