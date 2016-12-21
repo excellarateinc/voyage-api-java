@@ -1,5 +1,7 @@
 package launchpad.role
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
@@ -22,6 +24,7 @@ class Role {
     String authority
 
     @NotNull
+    @JsonIgnore
     Boolean isDeleted
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = 'role')

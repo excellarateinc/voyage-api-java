@@ -1,5 +1,6 @@
 package launchpad.user
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.hibernate.validator.constraints.Email
 
 import javax.persistence.Entity
@@ -47,6 +48,7 @@ class User {
     Boolean isCredentialsExpired
 
     @NotNull
+    @JsonIgnore
     Boolean isDeleted
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = 'user')

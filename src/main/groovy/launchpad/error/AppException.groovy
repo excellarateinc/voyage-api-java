@@ -14,8 +14,8 @@ class AppException extends RuntimeException {
     }
 
     AppException(HttpStatus httpStatus) {
-        this.httpStatus = httpStatus
         super()
+        this.httpStatus = httpStatus
     }
 
     AppException(String message) {
@@ -23,8 +23,8 @@ class AppException extends RuntimeException {
     }
 
     AppException(HttpStatus httpStatus, String message) {
-        this.httpStatus = httpStatus
         super(message)
+        this.httpStatus = httpStatus
     }
 
     HttpStatus getHttpStatus() {

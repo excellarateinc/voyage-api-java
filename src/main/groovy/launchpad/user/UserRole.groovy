@@ -1,5 +1,6 @@
 package launchpad.user
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import launchpad.role.Role
 
 import javax.persistence.Entity
@@ -29,5 +30,6 @@ class UserRole {
     Role role
 
     @NotNull
+    @JsonIgnore
     Boolean isDeleted
 }

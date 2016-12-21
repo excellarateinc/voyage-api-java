@@ -1,5 +1,6 @@
 package launchpad.role
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import groovy.transform.EqualsAndHashCode
 import launchpad.permission.Permission
 
@@ -31,5 +32,6 @@ class RolePermission {
     Permission permission
 
     @NotNull
+    @JsonIgnore
     Boolean isDeleted
 }
