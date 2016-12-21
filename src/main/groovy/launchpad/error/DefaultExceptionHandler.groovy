@@ -56,12 +56,12 @@ class DefaultExceptionHandler implements ErrorController {
     }
 
     @ExceptionHandler
-    ResponseEntity<Iterable<ErrorResponse>> handle(UnknownIdentifierException e) {
+    ResponseEntity<Iterable<ErrorResponse>> handle(AppException e) {
         ErrorResponse errorResponse = new ErrorResponse(
-            code:getErrorCode(HttpStatus.NOT_FOUND),
+            code:getErrorCode(e.httpStatus.value()),
             description:e.message,
         )
-        return new ResponseEntity([errorResponse], HttpStatus.NOT_FOUND)
+        return new ResponseEntity([errorResponse], e.httpStatus)
     }
 
     @ExceptionHandler(value = Exception)
