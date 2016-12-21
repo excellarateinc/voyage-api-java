@@ -9,8 +9,8 @@ class RoleServiceSpec extends Specification {
     RoleService roleService = new RoleService(roleRepository)
 
     def setup() {
-        role = new Role(id:1, name:'Super User', authority: 'ROLE_SUPER')
-        modifiedRole = new Role(id:1, name:'Super Admin', authority: 'ROLE_SUPER')
+        role = new Role(name:'Super User', authority: 'ROLE_SUPER')
+        modifiedRole = new Role(name:'Super Admin', authority: 'ROLE_SUPER')
     }
 
     def 'Test the list method of RoleService' () {

@@ -9,8 +9,8 @@ class UserServiceSpec extends Specification {
     UserService userService = new UserService(userRepository)
 
     def setup() {
-        user = new User(id:1, firstName:'LSS', lastName:'India')
-        modifiedUser = new User(id:1, firstName:'LSS', lastName:'Inc')
+        user = new User(firstName:'LSS', lastName:'India')
+        modifiedUser = new User(firstName:'LSS', lastName:'Inc')
     }
 
     def 'Test the list method of UserService' () {
@@ -47,7 +47,7 @@ class UserServiceSpec extends Specification {
 
     def 'Test delete method of UserService' () {
         when:
-            userService.delete(1)
+            userService.delete(user.id)
         then:
             1 * userRepository.delete(_)
     }

@@ -12,8 +12,8 @@ class PermissionServiceSpec extends Specification {
     PermissionService permissionService = new PermissionService(permissionRepository)
 
     def setup() {
-        permission = new Permission(id:1, name:'permission.write', description: 'Write permission only')
-        modifiedPermission = new Permission(id:1, name:'permission.read', description: 'Read permission only')
+        permission = new Permission(name:'permission.write', description: 'Write permission only')
+        modifiedPermission = new Permission(name:'permission.read', description: 'Read permission only')
     }
 
     def 'Test the list method of PermissionService' () {
