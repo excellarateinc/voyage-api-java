@@ -152,7 +152,7 @@ class RoleController {
     @PutMapping('/{id}')
     @Secured(['api.roles.update'])
     ResponseEntity update(@RequestBody Role role) {
-        Role modifiedRole = roleService.update(role)
+        Role modifiedRole = roleService.save(role)
         return new ResponseEntity(modifiedRole, HttpStatus.OK)
     }
 }

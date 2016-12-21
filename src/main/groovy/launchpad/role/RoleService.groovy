@@ -1,5 +1,6 @@
 package launchpad.role
 
+import launchpad.error.UnknownIdentifierException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
@@ -18,11 +19,17 @@ class RoleService {
     }
 
     void delete(@NotNull Long id) {
-        roleRepository.delete(id)
+        Role role = get(id)
+        role.isDeleted = true
+        save(role)
     }
 
     Role get(@NotNull Long id) {
-        return roleRepository.findOne(id)
+        Role role = roleRepository.findOne(id)
+        if (!role) {
+            throw new UnknownIdentifierException()
+        }
+        return role
     }
 
     Iterable<Role> listAll() {
@@ -30,11 +37,9 @@ class RoleService {
     }
 
     Role save(@Valid Role role) {
+        if (role.id) {
+            get(role.id)
+        }
         return roleRepository.save(role)
     }
-
-    Role update(@Valid Role role) {
-        return roleRepository.save(role)
-    }
-
 }

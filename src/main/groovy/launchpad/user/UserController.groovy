@@ -162,7 +162,7 @@ class UserController {
     @PutMapping('/{id}')
     @Secured(['api.users.update'])
     ResponseEntity update(@RequestBody User user) {
-        User modifiedUser = userService.update(user)
+        User modifiedUser = userService.save(user)
         return new ResponseEntity(modifiedUser, HttpStatus.OK)
     }
 }

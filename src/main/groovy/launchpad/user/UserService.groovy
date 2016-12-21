@@ -1,5 +1,6 @@
 package launchpad.user
 
+import launchpad.error.UnknownIdentifierException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
@@ -18,7 +19,9 @@ class UserService {
     }
 
     void delete(@NotNull Long id) {
-        userRepository.delete(id)
+        User user = get(id)
+        user.isDeleted = true
+        save(user)
     }
 
     User findByUsername(@NotNull String username) {
@@ -26,7 +29,11 @@ class UserService {
     }
 
     User get(@NotNull Long id) {
-        return userRepository.findOne(id)
+        User user = userRepository.findOne(id)
+        if (!user) {
+            throw new UnknownIdentifierException()
+        }
+        return user
     }
 
     Iterable<User> listAll() {
@@ -34,11 +41,9 @@ class UserService {
     }
 
     User save(@Valid User user) {
+        if (user.id) {
+            get(user.id)
+        }
         return userRepository.save(user)
     }
-
-    User update(@Valid User user) {
-        return userRepository.save(user)
-    }
-
 }
