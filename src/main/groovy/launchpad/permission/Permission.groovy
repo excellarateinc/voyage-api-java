@@ -17,4 +17,10 @@ class Permission {
     String name
 
     String description
+
+    @NotNull
+    Boolean isImmutable
+
+    @NotNull
+    Boolean isDeleted
 }

@@ -29,4 +29,7 @@ class RolePermission {
     @JoinColumn(name = 'permission_id', nullable = false)
     @NotNull
     Permission permission
+
+    @NotNull
+    Boolean isDeleted
 }

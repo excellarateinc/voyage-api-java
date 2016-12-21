@@ -16,6 +16,11 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
   - changeSet:
       id: v1.0-user-role-table-add-composite-key
       author: Jagadeesh Manne
@@ -49,6 +54,9 @@ databaseChangeLog:
               - column:
                   name: role_id
                   value: 1
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
         - insert:
             tableName: user_role
             columns:
@@ -58,6 +66,9 @@ databaseChangeLog:
               - column:
                   name: role_id
                   value: 2
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
         - insert:
             tableName: user_role
             columns:
@@ -67,3 +78,6 @@ databaseChangeLog:
               - column:
                   name: role_id
                   value: 3
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

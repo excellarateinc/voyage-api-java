@@ -27,4 +27,7 @@ class UserRole {
     @JoinColumn(name = 'role_id', nullable = false)
     @NotNull
     Role role
+
+    @NotNull
+    Boolean isDeleted
 }

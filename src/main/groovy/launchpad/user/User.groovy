@@ -46,6 +46,9 @@ class User {
     @NotNull
     Boolean isCredentialsExpired
 
+    @NotNull
+    Boolean isDeleted
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = 'user')
     Set<UserRole> userRoles
 }

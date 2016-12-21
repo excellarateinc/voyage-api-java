@@ -132,7 +132,7 @@ class RoleController {
     @Secured(['api.roles.delete'])
     ResponseEntity delete(@PathVariable('id') long id) {
         roleService.delete(id)
-        return new ResponseEntity(HttpStatus.OK)
+        return new ResponseEntity(HttpStatus.NO_CONTENT)
     }
 
     /**

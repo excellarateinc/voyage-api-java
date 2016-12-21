@@ -142,7 +142,7 @@ class UserController {
     @Secured(['api.users.delete'])
     ResponseEntity delete(@PathVariable('id') long id) {
         userService.delete(id)
-        return new ResponseEntity(HttpStatus.OK)
+        return new ResponseEntity(HttpStatus.NO_CONTENT)
     }
 
     /**

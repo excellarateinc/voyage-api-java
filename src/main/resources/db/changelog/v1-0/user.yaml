@@ -53,7 +53,11 @@ databaseChangeLog:
                   type: bit(1)
                   constraints:
                     nullable: false
-
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
   - changeSet:
       id: v1.0-user-seed-users
       author: Rob Louie
@@ -85,6 +89,9 @@ databaseChangeLog:
               - column:
                   name: is_account_locked
                   valueBoolean: false
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
         - insert:
             tableName: user
             columns:
@@ -112,6 +119,9 @@ databaseChangeLog:
               - column:
                   name: is_account_locked
                   valueBoolean: false
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
         - insert:
             tableName: user
             columns:
@@ -138,4 +148,7 @@ databaseChangeLog:
                   valueBoolean: false
               - column:
                   name: is_account_locked
+                  valueBoolean: false
+              - column:
+                  name: is_deleted
                   valueBoolean: false

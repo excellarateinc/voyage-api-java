@@ -1,5 +1,6 @@
 package launchpad.security
 
+import launchpad.role.Role
 import launchpad.user.User
 import launchpad.user.UserRole
 import launchpad.user.UserService
@@ -37,18 +38,16 @@ class PermissionBasedUserDetailsService implements UserDetailsService {
         Set<SimpleGrantedAuthority> authList = new TreeSet<SimpleGrantedAuthority>(new SimpleGrantedAuthorityComparator())
         userRoles.each { userRole ->
             authList.add(new SimpleGrantedAuthority(userRole.role.authority))
-            // TODO Uncomment this when Permission + RolePermission has been implemented
-            //authList.addAll(getGrantedAuthorities(userRole.role))
+            authList.addAll(getGrantedAuthorities(userRole.role))
         }
         return authList
     }
 
-    // TODO Uncomment this when Permission + RolePermission has been implemented
-//    private static Set<SimpleGrantedAuthority> getGrantedAuthorities(Role role) {
-//        Set<SimpleGrantedAuthority> authorities = new HashSet<SimpleGrantedAuthority>()
-//        role.rolePermissions.each { rolePermission ->
-//            authorities.add(new SimpleGrantedAuthority(rolePermission.permission.getName()))
-//        }
-//        return authorities
-//    }
+    private static Set<SimpleGrantedAuthority> getGrantedAuthorities(Role role) {
+        Set<SimpleGrantedAuthority> authorities = new HashSet<SimpleGrantedAuthority>()
+        role.rolePermissions.each { rolePermission ->
+            authorities.add(new SimpleGrantedAuthority(rolePermission.permission.name))
+        }
+        return authorities
+    }
 }

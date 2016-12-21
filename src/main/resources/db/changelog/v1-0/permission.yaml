@@ -23,8 +23,18 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+              - column:
+                  name: is_immutable
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
   - changeSet:
-      id: v1.0-permission-seed-permissions
+      id: v1.0-permission-seed-users-api
       author: Jagadeesh Manne
       changes:
         - insert:
@@ -32,16 +42,231 @@ databaseChangeLog:
             columns:
               - column:
                   name: name
-                  value: permission.read
+                  value: api.users.list
               - column:
                   name: description
-                  value: Read only permssion
+                  value: /users GET web service endpoint to return a full list of users
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
         - insert:
             tableName: permission
             columns:
               - column:
                   name: name
-                  value: permission.write
+                  value: api.users.get
               - column:
                   name: description
-                  value: Write permission
+                  value: /users/:id GET web service endpoint to retrieve a specific user record by :id
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: api.users.create
+              - column:
+                  name: description
+                  value: /users POST web service endpoint to create a new user
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: api.users.update
+              - column:
+                  name: description
+                  value: /users/:id PUT web service endpoint to update a specific user by :id
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: api.users.delete
+              - column:
+                  name: description
+                  value: /users/:id DELETE web service endpoint to delete a specific user by :id
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+  - changeSet:
+      id: v1.0-permission-seed-roles-api
+      author: Jagadeesh Manne
+      changes:
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: api.roles.list
+              - column:
+                  name: description
+                  value: /roles GET web service endpoint to return a full list of security roles
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: api.roles.get
+              - column:
+                  name: description
+                  value: /roles/:id GET web service endpoint to retrieve a specific security role record by :id
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: api.roles.create
+              - column:
+                  name: description
+                  value: /roles POST web service endpoint to create a new security role
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: api.roles.update
+              - column:
+                  name: description
+                  value: /roles/:id PUT web service endpoint to update a specific security role by :id
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: api.roles.delete
+              - column:
+                  name: description
+                  value: /roles/:id DELETE web service endpoint to delete a specific security role by :id
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+  - changeSet:
+      id: v1.0-permission-seed-permissions-api
+      author: Jagadeesh Manne
+      changes:
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: api.permissions.list
+              - column:
+                  name: description
+                  value: /permissions GET web service endpoint to return a full list of security permissions
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: api.permissions.get
+              - column:
+                  name: description
+                  value: /permissions/:id GET web service endpoint to retrieve a specific security permissions record by :id
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: api.permissions.create
+              - column:
+                  name: description
+                  value: /permissions POST web service endpoint to create a new security permissions
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: api.permissions.update
+              - column:
+                  name: description
+                  value: /permissions/:id PUT web service endpoint to update a specific security permissions by :id
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: api.permissions.delete
+              - column:
+                  name: description
+                  value: /permissions/:id DELETE web service endpoint to delete a specific security permissions by :id
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

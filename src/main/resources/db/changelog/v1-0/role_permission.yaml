@@ -16,6 +16,11 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
   - changeSet:
       id: v1.0-role-permission-table-add-composite-key
       author: Jagadeesh Manne
@@ -35,44 +40,9 @@ databaseChangeLog:
             constraintName: fk_role_permission_table_permission_id
             referencedColumnNames: id
             referencedTableName: permission
-
   - changeSet:
-      id: v1.0-role-permission-seed-1
+      id: v1.0-role-permission-seed-super-user
       author: Rob Louie
       changes:
-        - insert:
-            tableName: role_permission
-            columns:
-              - column:
-                  name: role_id
-                  value: 1
-              - column:
-                  name: permission_id
-                  value: 1
-        - insert:
-            tableName: role_permission
-            columns:
-              - column:
-                  name: role_id
-                  value: 1
-              - column:
-                  name: permission_id
-                  value: 2
-        - insert:
-            tableName: role_permission
-            columns:
-              - column:
-                  name: role_id
-                  value: 2
-              - column:
-                  name: permission_id
-                  value: 2
-        - insert:
-            tableName: role_permission
-            columns:
-              - column:
-                  name: role_id
-                  value: 3
-              - column:
-                  name: permission_id
-                  value: 1
+        - sql:
+            sql: insert into role_permission select 1, id, 0 from permission

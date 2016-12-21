@@ -127,7 +127,7 @@ class PermissionController {
     @Secured(['api.permissions.delete'])
     ResponseEntity delete(@PathVariable('id') long id) {
         permissionService.delete(id)
-        return new ResponseEntity(HttpStatus.OK)
+        return new ResponseEntity(HttpStatus.NO_CONTENT)
     }
 
     /**
@@ -147,7 +147,7 @@ class PermissionController {
     @PutMapping('/{id}')
     @Secured(['api.permissions.update'])
     ResponseEntity update(@RequestBody Permission permission) {
-        Permission modifiedPermission = permissionService.update(permission)
+        Permission modifiedPermission = permissionService.save(permission)
         return new ResponseEntity(modifiedPermission, HttpStatus.OK)
     }
 }
