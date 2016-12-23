@@ -14,44 +14,50 @@ class RoleServiceSpec extends Specification {
     }
 
     def 'Test the list method of RoleService' () {
+        setup:
+            roleRepository.findAll() >> [role]
         when:
             Iterable<Role> roleList = roleService.listAll()
         then:
-            1 * roleRepository.findAll() >> [role]
             1 == roleList.size()
     }
 
     def 'Test save method of RoleService' () {
+        setup:
+            roleRepository.save(_) >> role
         when:
             Role savedRole = roleService.save(role)
         then:
-            1 * roleRepository.save({ Role role -> role.name == 'Super User' }) >> role
             'Super User' == savedRole.name
             'ROLE_SUPER' == savedRole.authority
     }
 
     def 'Test update method of RoleService' () {
+        setup:
+            roleRepository.save(_) >> modifiedRole
         when:
             Role updatedRole = roleService.save(modifiedRole)
         then:
-            1 * roleRepository.save({ Role role -> role.name == 'Super Admin' }) >> modifiedRole
             'Super Admin' == updatedRole.name
             'ROLE_SUPER' == updatedRole.authority
     }
 
     def 'Test find method of RoleService' () {
+        setup:
+            roleRepository.findOne(_) >> role
         when:
             Role fetchedRole = roleService.get(1)
         then:
-            1 * roleRepository.findOne(_) >> modifiedRole
-            'Super Admin' == fetchedRole.name
+            'Super User' == fetchedRole.name
             'ROLE_SUPER' == fetchedRole.authority
     }
 
     def 'Test delete method of RoleService' () {
+        setup:
+            roleRepository.findOne(_) >> role
         when:
             roleService.delete(1)
         then:
-            1 * roleRepository.delete(_)
+            role.isDeleted
     }
 }

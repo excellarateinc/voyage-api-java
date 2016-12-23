@@ -17,44 +17,51 @@ class PermissionServiceSpec extends Specification {
     }
 
     def 'Test the list method of PermissionService' () {
+        setup:
+            permissionRepository.findAll() >> [permission]
         when:
             Iterable<Permission> permissionList = permissionService.listAll()
         then:
-            1 * permissionRepository.findAll() >> [permission]
             1 == permissionList.size()
     }
 
     def 'Test save method of PermissionService' () {
+        setup:
+            permissionRepository.save(_) >> permission
         when:
-        Permission savedPermission = permissionService.save(permission)
+            Permission savedPermission = permissionService.save(permission)
         then:
-            1 * permissionRepository.save({ Permission permission -> permission.name == 'permission.write' }) >> permission
             'permission.write' == savedPermission.name
             'Write permission only' == savedPermission.description
     }
 
     def 'Test update method of PermissionService' () {
+        setup:
+            permissionRepository.save(_) >> modifiedPermission
         when:
-        Permission updatedPermission = permissionService.save(modifiedPermission)
+            Permission updatedPermission = permissionService.save(modifiedPermission)
         then:
-            1 * permissionRepository.save({ Permission permission -> permission.name == 'permission.read' }) >> modifiedPermission
             'permission.read' == updatedPermission.name
             'Read permission only' == updatedPermission.description
     }
 
     def 'Test find method of PermissionService' () {
+        setup:
+            permissionRepository.findOne(_) >> permission
         when:
-        Permission fetchedPermission = permissionService.get(1)
+            Permission fetchedPermission = permissionService.get(1)
         then:
-            1 * permissionRepository.findOne(_) >> modifiedPermission
-            'permission.read' == fetchedPermission.name
-            'Read permission only' == fetchedPermission.description
+            'permission.write' == fetchedPermission.name
+            'Write permission only' == fetchedPermission.description
     }
 
     def 'Test delete method of PermissionService' () {
+        setup:
+            permissionRepository.findOne(_) >> permission
+            permissionRepository.save(_) >> permission
         when:
-        permissionService.delete(1)
+            permissionService.delete(1)
         then:
-            1 * permissionRepository.delete(_)
+            permission.isDeleted
     }
 }
