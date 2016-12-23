@@ -55,6 +55,15 @@ class DefaultExceptionHandler implements ErrorController {
         return new ResponseEntity(errorResponses, HttpStatus.BAD_REQUEST)
     }
 
+    @ExceptionHandler
+    ResponseEntity<Iterable<ErrorResponse>> handle(AppException e) {
+        ErrorResponse errorResponse = new ErrorResponse(
+            code:getErrorCode(e.httpStatus.value()),
+            description:e.message,
+        )
+        return new ResponseEntity([errorResponse], e.httpStatus)
+    }
+
     @ExceptionHandler(value = Exception)
     ResponseEntity<Iterable<ErrorResponse>> handle(Exception e) {
         ErrorResponse errorResponse = new ErrorResponse(

@@ -1,9 +1,7 @@
 package launchpad.user
 
 import spock.lang.Specification
-import spock.lang.Stepwise
 
-@Stepwise
 class UserServiceSpec extends Specification {
     User user
     User modifiedUser
@@ -11,46 +9,55 @@ class UserServiceSpec extends Specification {
     UserService userService = new UserService(userRepository)
 
     def setup() {
-        user = new User(id:1, firstName:'LSS', lastName:'India')
-        modifiedUser = new User(id:1, firstName:'LSS', lastName:'Inc')
+        user = new User(firstName:'LSS', lastName:'India')
+        modifiedUser = new User(firstName:'LSS', lastName:'Inc')
     }
 
     def 'Test the list method of UserService' () {
+        setup:
+            userRepository.findAll() >> [user]
         when:
             Iterable<User> userList = userService.listAll()
         then:
-            1 * userRepository.findAll() >> [user]
             1 == userList.size()
     }
 
     def 'Test save method of UserService' () {
+        setup:
+            userRepository.save(_) >> user
         when:
             User savedUser = userService.save(user)
         then:
-            1 * userRepository.save({ User user -> user.firstName == 'LSS' }) >> modifiedUser
-            'Inc' == savedUser.lastName
+            'LSS' == savedUser.firstName
+            'India' == savedUser.lastName
     }
 
     def 'Test update method of UserService' () {
+        setup:
+            userRepository.save(_) >> modifiedUser
         when:
-            User modifiedUser = userService.update(user)
+            User modifiedUser = userService.save(user)
         then:
-            1 * userRepository.save({ User user -> user.lastName == 'India' }) >> modifiedUser
+            'LSS' == modifiedUser.firstName
             'Inc' == modifiedUser.lastName
     }
 
     def 'Test find method of UserService' () {
+        setup:
+            userRepository.findOne(_) >> user
         when:
             User fetchedUser = userService.get(1)
         then:
-            1 * userRepository.findOne(_) >> modifiedUser
-            'Inc' == fetchedUser.lastName
+            'LSS' == fetchedUser.firstName
+            'India' == fetchedUser.lastName
     }
 
     def 'Test delete method of UserService' () {
+        setup:
+            userRepository.findOne(_) >> user
         when:
-            userService.delete(1)
+            userService.delete(user.id)
         then:
-            1 * userRepository.delete(_)
+            user.isDeleted
     }
 }

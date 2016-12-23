@@ -11,14 +11,12 @@ import spock.lang.Specification
 
 class UserControllerIntegrationSpec extends Specification {
     User user
-    User modifiedUser
     MockMvc mockMvc
     UserService userService = Mock(UserService)
     UserController userController = new UserController(userService)
 
     def setup() {
         user = new User(id:1, firstName:'LSS', lastName:'India')
-        modifiedUser = new User(id:1, firstName:'LSS', lastName:'Inc')
         mockMvc = MockMvcBuilders.standaloneSetup(userController).build()
     }
 
@@ -57,7 +55,7 @@ class UserControllerIntegrationSpec extends Specification {
                     .andReturn().response
         then: 'verify the HTTP response'
             1 * userService.delete(1)
-            HttpStatus.OK.value() == response.status
+            HttpStatus.NO_CONTENT.value() == response.status
     }
 
     def "User 'create' test hits the REST endpoint and parses the JSON output"() {
@@ -86,7 +84,7 @@ class UserControllerIntegrationSpec extends Specification {
                     .andReturn().response
             def content = new JsonSlurper().parseText(response.contentAsString)
         then: 'verify the HTTP response'
-            1 * userService.update(_) >> { new User(id:1, firstName:'Test1', lastName:'User1') }
+            1 * userService.save(_) >> { new User(id:1, firstName:'Test1', lastName:'User1') }
             HttpStatus.OK.value() == response.status
             MediaType.APPLICATION_JSON_UTF8_VALUE == response.contentType
             'Test1' == content.firstName

@@ -24,10 +24,40 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
                   name: email
                   type: varchar(255)
                   constraints:
                     nullable: true
+              - column:
+                  name: is_enabled
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_account_expired
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_credentials_expired
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_account_locked
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
   - changeSet:
       id: v1.0-user-seed-users
       author: Rob Louie
@@ -37,22 +67,88 @@ databaseChangeLog:
             columns:
               - column:
                   name: first_name
-                  value: John
+                  value: Super
               - column:
                   name: last_name
-                  value: Smith
+                  value: User
+              - column:
+                  name: username
+                  value: super
               - column:
                   name: email
-                  value: john@smith.com
+                  value: super@user.com
+              - column:
+                  name: is_enabled
+                  valueBoolean: true
+              - column:
+                  name: is_account_expired
+                  valueBoolean: false
+              - column:
+                  name: is_credentials_expired
+                  valueBoolean: false
+              - column:
+                  name: is_account_locked
+                  valueBoolean: false
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
         - insert:
             tableName: user
             columns:
               - column:
                   name: first_name
-                  value: Jane
+                  value: Readonly
               - column:
                   name: last_name
-                  value: Doe
+                  value: User
+              - column:
+                  name: username
+                  value: readonly
               - column:
                   name: email
-                  value: jane@doe.com
+                  value: readonly@user.com
+              - column:
+                  name: is_enabled
+                  valueBoolean: true
+              - column:
+                  name: is_account_expired
+                  valueBoolean: false
+              - column:
+                  name: is_credentials_expired
+                  valueBoolean: false
+              - column:
+                  name: is_account_locked
+                  valueBoolean: false
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: user
+            columns:
+              - column:
+                  name: first_name
+                  value: Standard
+              - column:
+                  name: last_name
+                  value: User
+              - column:
+                  name: username
+                  value: standard
+              - column:
+                  name: email
+                  value: standard@user.com
+              - column:
+                  name: is_enabled
+                  valueBoolean: true
+              - column:
+                  name: is_account_expired
+                  valueBoolean: false
+              - column:
+                  name: is_credentials_expired
+                  valueBoolean: false
+              - column:
+                  name: is_account_locked
+                  valueBoolean: false
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

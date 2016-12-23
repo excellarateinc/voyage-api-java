@@ -1,0 +1,70 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-role-table-create
+      author: Jagadeesh Manne
+      changes:
+        - createTable:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: authority
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-role-seed-roles
+      author: Jagadeesh Manne
+      changes:
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: name
+                  value: Super User
+              - column:
+                  name: authority
+                  value: role.super
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: name
+                  value: Read Only
+              - column:
+                  name: authority
+                  value: role.readonly
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: name
+                  value: Standard User
+              - column:
+                  name: authority
+                  value: role.standard_user
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

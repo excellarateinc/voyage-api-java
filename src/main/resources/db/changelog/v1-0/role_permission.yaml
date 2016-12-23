@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-role-permission-table-create
+      author: Jagadeesh Manne
+      changes:
+        - createTable:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: role_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: permission_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-role-permission-table-add-composite-key
+      author: Jagadeesh Manne
+      changes:
+        - addPrimaryKey:
+            columnNames: role_id, permission_id
+            tableName: role_permission
+        - addForeignKeyConstraint:
+            baseColumnNames: role_id
+            baseTableName: role_permission
+            constraintName: fk_role_permission_table_role_id
+            referencedColumnNames: id
+            referencedTableName: role
+        - addForeignKeyConstraint:
+            baseColumnNames: permission_id
+            baseTableName: role_permission
+            constraintName: fk_role_permission_table_permission_id
+            referencedColumnNames: id
+            referencedTableName: permission
+  - changeSet:
+      id: v1.0-role-permission-seed-super-user
+      author: Rob Louie
+      changes:
+        - sql:
+            sql: insert into role_permission select 1, id, 0 from permission
