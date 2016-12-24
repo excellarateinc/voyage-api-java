@@ -4,15 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.annotation.Secured
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping(['/v1/roles', '/v1.0/roles'])
@@ -52,7 +52,7 @@ class RoleController {
      * @apiUse UnauthorizedError
      **/
     @GetMapping
-    @Secured(['api.roles.list'])
+    @PreAuthorize("hasAuthority('api.roles.list')")
     ResponseEntity list() {
         Iterable<Role> roles = roleService.listAll()
         return new ResponseEntity(roles, HttpStatus.OK)
@@ -80,7 +80,7 @@ class RoleController {
      * @apiUse UnauthorizedError
      **/
     @PostMapping
-    @Secured(['api.roles.create'])
+    @PreAuthorize("hasAuthority('api.roles.create')")
     ResponseEntity save(@RequestBody Role role) {
         Role newRole = roleService.save(role)
         HttpHeaders headers = new HttpHeaders()
@@ -104,7 +104,7 @@ class RoleController {
      * @apiUse UnauthorizedError
      **/
     @GetMapping('/{id}')
-    @Secured(['api.roles.get'])
+    @PreAuthorize("hasAuthority('api.roles.get')")
     ResponseEntity get(@PathVariable('id') long id) {
         Role roleFromDB = roleService.get(id)
         return new ResponseEntity(roleFromDB, HttpStatus.OK)
@@ -129,7 +129,7 @@ class RoleController {
      * @apiUse BadRequestError
      **/
     @DeleteMapping('/{id}')
-    @Secured(['api.roles.delete'])
+    @PreAuthorize("hasAuthority('api.roles.delete')")
     ResponseEntity delete(@PathVariable('id') long id) {
         roleService.delete(id)
         return new ResponseEntity(HttpStatus.NO_CONTENT)
@@ -150,7 +150,7 @@ class RoleController {
      * @apiUse UnauthorizedError
      **/
     @PutMapping('/{id}')
-    @Secured(['api.roles.update'])
+    @PreAuthorize("hasAuthority('api.roles.update')")
     ResponseEntity update(@RequestBody Role role) {
         Role modifiedRole = roleService.save(role)
         return new ResponseEntity(modifiedRole, HttpStatus.OK)

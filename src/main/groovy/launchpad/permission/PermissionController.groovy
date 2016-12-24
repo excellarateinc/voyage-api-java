@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.annotation.Secured
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -52,7 +52,7 @@ class PermissionController {
      * @apiUse UnauthorizedError
      **/
     @GetMapping
-    @Secured(['api.permissions.list'])
+    @PreAuthorize("hasAuthority('api.permissions.list')")
     ResponseEntity list() {
         Iterable<Permission> permissions = permissionService.listAll()
         return new ResponseEntity(permissions, HttpStatus.OK)
@@ -80,7 +80,7 @@ class PermissionController {
      * @apiUse UnauthorizedError
      **/
     @PostMapping
-    @Secured(['api.permissions.create'])
+    @PreAuthorize("hasAuthority('api.permissions.create')")
     ResponseEntity save(@RequestBody Permission permission) {
         Permission newPermission = permissionService.save(permission)
         HttpHeaders headers = new HttpHeaders()
@@ -104,7 +104,7 @@ class PermissionController {
      * @apiUse UnauthorizedError
      **/
     @GetMapping('/{id}')
-    @Secured(['api.permissions.get'])
+    @PreAuthorize("hasAuthority('api.permissions.get')")
     ResponseEntity get(@PathVariable('id') long id) {
         Permission permissionFromDB = permissionService.get(id)
         return new ResponseEntity(permissionFromDB, HttpStatus.OK)
@@ -129,7 +129,7 @@ class PermissionController {
      * @apiUse BadRequestError
      **/
     @DeleteMapping('/{id}')
-    @Secured(['api.permissions.delete'])
+    @PreAuthorize("hasAuthority('api.permissions.delete')")
     ResponseEntity delete(@PathVariable('id') long id) {
         permissionService.delete(id)
         return new ResponseEntity(HttpStatus.NO_CONTENT)
@@ -150,7 +150,7 @@ class PermissionController {
      * @apiUse UnauthorizedError
      **/
     @PutMapping('/{id}')
-    @Secured(['api.permissions.update'])
+    @PreAuthorize("hasAuthority('api.permissions.update')")
     ResponseEntity update(@RequestBody Permission permission) {
         Permission modifiedPermission = permissionService.save(permission)
         return new ResponseEntity(modifiedPermission, HttpStatus.OK)

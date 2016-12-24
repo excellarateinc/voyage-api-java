@@ -16,11 +16,6 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
-              - column:
-                  name: is_deleted
-                  type: bit(1)
-                  constraints:
-                    nullable: false
   - changeSet:
       id: v1.0-role-permission-table-add-composite-key
       author: Jagadeesh Manne
@@ -45,4 +40,4 @@ databaseChangeLog:
       author: Rob Louie
       changes:
         - sql:
-            sql: insert into role_permission select 1, id, 0 from permission
+            sql: insert into role_permission select 1, id from permission
