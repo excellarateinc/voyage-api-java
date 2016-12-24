@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.annotation.Secured
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -62,7 +62,7 @@ class UserController {
      * @apiUse UnauthorizedError
      **/
     @GetMapping
-    @Secured(['api.users.list'])
+    @PreAuthorize("hasAuthority('api.users.list')")
     ResponseEntity list() {
         Iterable<User> users = userService.listAll()
         return new ResponseEntity(users, HttpStatus.OK)
@@ -90,7 +90,7 @@ class UserController {
      * @apiUse UnauthorizedError
      **/
     @PostMapping
-    @Secured(['api.users.create'])
+    @PreAuthorize("hasAuthority('api.users.create')")
     ResponseEntity save(@RequestBody User user) {
         User newUser = userService.save(user)
         HttpHeaders headers = new HttpHeaders()
@@ -114,7 +114,7 @@ class UserController {
      * @apiUse UnauthorizedError
      **/
     @GetMapping('/{id}')
-    @Secured(['api.users.get'])
+    @PreAuthorize("hasAuthority('api.users.get')")
     ResponseEntity get(@PathVariable('id') long id) {
         User userFromDB = userService.get(id)
         return new ResponseEntity(userFromDB, HttpStatus.OK)
@@ -139,7 +139,7 @@ class UserController {
      * @apiUse BadRequestError
      **/
     @DeleteMapping('/{id}')
-    @Secured(['api.users.delete'])
+    @PreAuthorize("hasAuthority('api.users.delete')")
     ResponseEntity delete(@PathVariable('id') long id) {
         userService.delete(id)
         return new ResponseEntity(HttpStatus.NO_CONTENT)
@@ -160,7 +160,7 @@ class UserController {
      * @apiUse UnauthorizedError
      **/
     @PutMapping('/{id}')
-    @Secured(['api.users.update'])
+    @PreAuthorize("hasAuthority('api.users.update')")
     ResponseEntity update(@RequestBody User user) {
         User modifiedUser = userService.save(user)
         return new ResponseEntity(modifiedUser, HttpStatus.OK)
