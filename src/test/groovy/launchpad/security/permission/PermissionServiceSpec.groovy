@@ -2,8 +2,6 @@ package launchpad.security.permission
 
 import spock.lang.Specification
 
-// TODO Add tests to verify permission.isDeleted for each method
-// TODO Refactor to have the same test method names as RoleServiceSpec
 class PermissionServiceSpec extends Specification {
     Permission permission
     Permission modifiedPermission
@@ -15,7 +13,7 @@ class PermissionServiceSpec extends Specification {
         modifiedPermission = new Permission(name:'permission.read', description:'Read permission only')
     }
 
-    def 'Test the list method of PermissionService' () {
+    def 'listAll - returns a single result' () {
         setup:
             permissionRepository.findAll() >> [permission]
         when:
@@ -24,7 +22,7 @@ class PermissionServiceSpec extends Specification {
             1 == permissionList.size()
     }
 
-    def 'Test save method of PermissionService' () {
+    def 'save - applies the values and calls the permissionRepository' () {
         setup:
             permissionRepository.save(_) >> permission
         when:
@@ -32,19 +30,10 @@ class PermissionServiceSpec extends Specification {
         then:
             'permission.write' == savedPermission.name
             'Write permission only' == savedPermission.description
+            !savedPermission.isDeleted
     }
 
-    def 'Test update method of PermissionService' () {
-        setup:
-            permissionRepository.save(_) >> modifiedPermission
-        when:
-            Permission updatedPermission = permissionService.save(modifiedPermission)
-        then:
-            'permission.read' == updatedPermission.name
-            'Read permission only' == updatedPermission.description
-    }
-
-    def 'Test find method of PermissionService' () {
+    def 'get - calls the permissionRepository.findOne' () {
         setup:
             permissionRepository.findOne(_) >> permission
         when:
@@ -52,9 +41,10 @@ class PermissionServiceSpec extends Specification {
         then:
             'permission.write' == fetchedPermission.name
             'Write permission only' == fetchedPermission.description
+            !fetchedPermission.isDeleted
     }
 
-    def 'Test delete method of PermissionService' () {
+    def 'delete - verifies the object and calls permissionRepository.delete' () {
         setup:
             permissionRepository.findOne(_) >> permission
             permissionRepository.save(_) >> permission
