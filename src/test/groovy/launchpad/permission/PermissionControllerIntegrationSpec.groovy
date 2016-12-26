@@ -1,9 +1,6 @@
 package launchpad.permission
 
 import groovy.json.JsonSlurper
-import launchpad.permission.Permission
-import launchpad.permission.PermissionController
-import launchpad.permission.PermissionService
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -12,6 +9,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import spock.lang.Specification
 
+// TODO Replace the contents of this test to be like UserControllerIntegrationSpec, but for PermissionController
 class PermissionControllerIntegrationSpec extends Specification {
     Permission permission
     MockMvc mockMvc
@@ -19,7 +17,7 @@ class PermissionControllerIntegrationSpec extends Specification {
     PermissionController permissionController = new PermissionController(permissionService)
 
     def setup() {
-        permission = new Permission(id:1, name:'permission.write', description: 'Write permission only')
+        permission = new Permission(id:1, name:'permission.write', description:'Write permission only')
         mockMvc = MockMvcBuilders.standaloneSetup(permissionController).build()
     }
 

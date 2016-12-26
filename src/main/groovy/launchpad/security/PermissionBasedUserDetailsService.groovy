@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @Transactional(readOnly = true)
 class PermissionBasedUserDetailsService implements UserDetailsService {
-    private UserService userService
-    private PermissionService permissionService
+    private final UserService userService
+    private final PermissionService permissionService
 
     @Autowired
     PermissionBasedUserDetailsService(UserService userService, PermissionService permissionService) {
@@ -34,7 +34,7 @@ class PermissionBasedUserDetailsService implements UserDetailsService {
     }
 
     private Collection<? extends GrantedAuthority> getAuthorities(User user) {
-        Set<SimpleGrantedAuthority> authorities = new HashSet<SimpleGrantedAuthority>()
+        Set<SimpleGrantedAuthority> authorities = [] as Set<SimpleGrantedAuthority>
         Iterable<Permission> permissions = permissionService.findAllByUser(user.id)
         permissions?.each { permission ->
             authorities.add(new SimpleGrantedAuthority(permission.name))

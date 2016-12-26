@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus
  */
 class UnknownIdentifierException extends AppException {
     private static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST
-    private static final String DEFAULT_MESSAGE = "Unknown record identifier provided"
+    private static final String DEFAULT_MESSAGE = 'Unknown record identifier provided'
 
     UnknownIdentifierException() {
         super(HTTP_STATUS, DEFAULT_MESSAGE)

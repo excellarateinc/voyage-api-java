@@ -2,7 +2,6 @@ package launchpad.permission
 
 import launchpad.error.ImmutableRecordException
 import launchpad.error.UnknownIdentifierException
-import launchpad.user.User
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
@@ -24,6 +23,14 @@ class PermissionService {
         Permission permission = get(id)
         permission.isDeleted = true
         save(permission)
+    }
+
+    Permission findByName(@NotNull String name) {
+        Permission permission = permissionRepository.findByName(name)
+        if (!permission) {
+            throw new UnknownIdentifierException("Unknown permission name given: ${permissionName}")
+        }
+        return permission
     }
 
     Iterable<Permission> findAllByUser(@NotNull Long userId) {

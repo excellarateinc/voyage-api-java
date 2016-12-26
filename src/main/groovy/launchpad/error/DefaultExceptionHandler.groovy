@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.web.ErrorAttributes
 import org.springframework.boot.autoconfigure.web.ErrorController
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -27,6 +28,15 @@ class DefaultExceptionHandler implements ErrorController {
     @Autowired
     DefaultExceptionHandler(ErrorAttributes errorAttributes) {
         this.errorAttributes = errorAttributes
+    }
+
+    @ExceptionHandler
+    ResponseEntity<Iterable<ErrorResponse>> handle(AccessDeniedException ignore) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                code:getErrorCode(HttpStatus.UNAUTHORIZED.value()),
+                description:'401 Unauthorized. Access Denied',
+        )
+        return new ResponseEntity([errorResponse], HttpStatus.UNAUTHORIZED)
     }
 
     @ExceptionHandler

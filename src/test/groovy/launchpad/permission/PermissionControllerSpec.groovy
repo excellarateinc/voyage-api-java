@@ -1,8 +1,5 @@
 package launchpad.permission
 
-import launchpad.permission.Permission
-import launchpad.permission.PermissionController
-import launchpad.permission.PermissionService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
@@ -13,15 +10,15 @@ class PermissionControllerSpec extends Specification {
     PermissionController permissionController = new PermissionController(permissionService)
 
     def setup() {
-        permission = new Permission(id:1, name:'permission.write', description: 'Write permission only')
+        permission = new Permission(id:1, name:'permission.write', description:'Write permission only')
     }
 
-    def 'Test to validate LIST method is fetching data from PermissionService'() {
+    def 'list - fetch data from PermissionService'() {
         when:
             ResponseEntity<Permission> permissions = permissionController.list()
         then:
             1 * permissionService.listAll() >> [permission]
-        permissions != null
+            permissions != null
             HttpStatus.OK == permissions.statusCode
 
         when:
@@ -31,12 +28,12 @@ class PermissionControllerSpec extends Specification {
             thrown(Exception)
     }
 
-    def 'Test to validate FIND method is fetching data from PermissionService'() {
+    def 'get - fetch data from PermissionService'() {
         when:
             ResponseEntity<Permission> permission = permissionController.get(1)
         then:
             1 * permissionService.get(1) >> permission
-        permission != null
+            permission != null
             HttpStatus.OK == permission.statusCode
             'permission.write' == permission.body.name
             'Write permission only' == permission.body.description
@@ -48,7 +45,7 @@ class PermissionControllerSpec extends Specification {
             thrown(Exception)
     }
 
-    def 'Test to validate CREATE method is fetching data from PermissionService'() {
+    def 'save - calling permissionService to save object'() {
         when:
             ResponseEntity<Permission> response = permissionController.save(permission)
         then:
@@ -66,9 +63,9 @@ class PermissionControllerSpec extends Specification {
             thrown(Exception)
     }
 
-    def 'Test to validate UPDATE method is fetching data from PermissionService'() {
+    def 'update - calling permissionService to save incoming object'() {
         setup:
-            Permission modifiedPermission = new Permission(id:1, name:'permission.write', description: 'Write permission only')
+            Permission modifiedPermission = new Permission(id:1, name:'permission.write', description:'Write permission only')
 
         when:
             ResponseEntity<Permission> updatedPermission = permissionController.update(modifiedPermission)
@@ -84,7 +81,7 @@ class PermissionControllerSpec extends Specification {
             thrown(Exception)
     }
 
-    def 'Test to validate DELETE method is fetching data from PermissionService'() {
+    def 'delete - calling permissionService with the permission id'() {
         when:
             ResponseEntity response = permissionController.delete(1)
         then:

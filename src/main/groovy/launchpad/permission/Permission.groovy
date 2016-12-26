@@ -1,6 +1,7 @@
 package launchpad.permission
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import groovy.transform.EqualsAndHashCode
 
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
@@ -9,6 +10,7 @@ import javax.persistence.Id
 import javax.validation.constraints.NotNull
 
 @Entity
+@EqualsAndHashCode
 class Permission {
 
     @Id

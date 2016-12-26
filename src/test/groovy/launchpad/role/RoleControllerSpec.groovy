@@ -4,13 +4,14 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 
+// TODO Rename the test method names to be similar to PermissionControllerSpec
 class RoleControllerSpec extends Specification {
     Role role
     RoleService roleService = Mock(RoleService)
     RoleController roleController = new RoleController(roleService)
 
     def setup() {
-        role = new Role(id:1, name:'Super User', authority: 'ROLE_SUPER')
+        role = new Role(id:1, name:'Super User', authority:'ROLE_SUPER')
     }
 
     def 'Test to validate LIST method is fetching data from RoleService'() {
@@ -65,7 +66,7 @@ class RoleControllerSpec extends Specification {
 
     def 'Test to validate UPDATE method is fetching data from RoleService'() {
         setup:
-            Role modifiedRole = new Role(id:1, name:'Super User', authority: 'ROLE_ADMIN')
+            Role modifiedRole = new Role(id:1, name:'Super User', authority:'ROLE_ADMIN')
 
         when:
             ResponseEntity<Role> updatedRole = roleController.update(modifiedRole)

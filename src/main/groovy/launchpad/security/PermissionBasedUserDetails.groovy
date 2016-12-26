@@ -5,8 +5,8 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
 class PermissionBasedUserDetails implements UserDetails {
-    private User user
-    private Set<GrantedAuthority> authorities
+    private final User user
+    private final Set<GrantedAuthority> authorities
 
     PermissionBasedUserDetails(User user, Collection<? extends GrantedAuthority> authorities) {
         this.user = user

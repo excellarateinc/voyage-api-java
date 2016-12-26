@@ -7,10 +7,11 @@ import org.springframework.http.HttpStatus
  * will be translated into a general error back to the API consumer.
  */
 class AppException extends RuntimeException {
-    private HttpStatus httpStatus = HttpStatus.BAD_REQUEST
+    private final HttpStatus httpStatus
 
     AppException() {
         super()
+        httpStatus = HttpStatus.BAD_REQUEST
     }
 
     AppException(HttpStatus httpStatus) {
@@ -20,6 +21,7 @@ class AppException extends RuntimeException {
 
     AppException(String message) {
         super(message)
+        httpStatus = HttpStatus.BAD_REQUEST
     }
 
     AppException(HttpStatus httpStatus, String message) {
