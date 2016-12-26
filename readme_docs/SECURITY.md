@@ -1,4 +1,19 @@
 
+## OWASP
+
+### Cross-Site Request Forgery (CSRF)
+Provide an example or link to the OWASP cheat sheet for CSRF
+
+Discuss how the CSRF token is generated and what happens if/when it expires, or if/when it is invalid (401 Access Denied)
+
+X-CSRF-TOKEN is provided on every response
+
+X-CSRF-TOKEN is required on any "save" HTTP methods: POST, PUT, PATCH, DELETE.
+
+/getCsrfToken web service endpoint is available to obtain a valid token when the X-CSRF-TOKEN is not available. 
+
+Walk through some examples of how to use this when saving. 
+
 ## Role Based Access Control
 
 ### Actors (aka Users) 
