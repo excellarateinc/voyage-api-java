@@ -4,6 +4,9 @@
 ### Cross-Site Request Forgery (CSRF)
 Provide an example or link to the OWASP cheat sheet for CSRF (https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet)
 
+Launchpad uses JWT that is transmitted through HTTP Request Headers, no Cookies used. HTTP Basic Auth is disabled. 
+
+
 Discuss how the CSRF token is generated and what happens if/when it expires, or if/when it is invalid (401 Access Denied. CSRF token was not valid)
 * Get the token from the response header and retry the request
 * Token is alive for the duration of the session, so if the session invalidates on the server or if the user is routed to a different web server instance (via load balancer), then 
@@ -15,6 +18,9 @@ X-CSRF-TOKEN is required on any "save" HTTP methods: POST, PUT, PATCH, DELETE.
 /getCsrfToken web service endpoint is available to obtain a valid token when the X-CSRF-TOKEN is not available. 
 
 Walk through some examples of how to use this when saving. 
+
+## Stateless Server Authentication
+JWT provides for for stateless authentication so that we don't have to worry about storing the token in the backend server. This should avoid having to do OAuth2 token storage. 
 
 ## Role Based Access Control
 
