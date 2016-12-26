@@ -29,9 +29,10 @@ class Role {
 
     @NotNull
     @JsonIgnore
-    Boolean isDeleted
+    Boolean isDeleted = Boolean.FALSE
 
     @ManyToMany
     @JoinTable(name='role_permission', joinColumns=@JoinColumn(name='role_id'), inverseJoinColumns=@JoinColumn(name='permission_id'))
+    @JsonIgnore
     Set<Permission> permissions
 }

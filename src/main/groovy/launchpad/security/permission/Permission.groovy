@@ -23,9 +23,9 @@ class Permission {
     String description
 
     @NotNull
-    Boolean isImmutable
+    Boolean isImmutable = Boolean.FALSE
 
     @NotNull
     @JsonIgnore
-    Boolean isDeleted
+    Boolean isDeleted = Boolean.FALSE
 }

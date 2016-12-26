@@ -22,7 +22,7 @@ class PermissionService {
     void delete(@NotNull Long id) {
         Permission permission = get(id)
         permission.isDeleted = true
-        save(permission)
+        permissionRepository.save(permission)
     }
 
     Permission findByName(@NotNull String name) {

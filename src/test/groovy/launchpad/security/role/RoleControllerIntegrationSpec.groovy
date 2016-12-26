@@ -1,94 +1,375 @@
 package launchpad.security.role
 
-import groovy.json.JsonSlurper
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.http.ResponseEntity
+import org.springframework.test.annotation.Rollback
 import spock.lang.Specification
 
-// TODO Replace the contents of this test to be like UserControllerIntegrationSpec, but for PermissionController
+@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RoleControllerIntegrationSpec extends Specification {
-    Role role
-    MockMvc mockMvc
-    RoleService roleService = Mock(RoleService)
-    RoleController roleController = new RoleController(roleService)
+    private static final Long ROLE_STANDARD_ID = 3
 
-    def setup() {
-        role = new Role(id:1, name:'Super User', authority:'ROLE_SUPER')
-        mockMvc = MockMvcBuilders.standaloneSetup(roleController).build()
+    @Autowired
+    private TestRestTemplate restTemplate
+
+    @Autowired
+    private RoleService roleService
+
+    def '/v1/roles GET - Anonymous access denied'() {
+        when:
+        ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                        .getForEntity('/v1/roles', Iterable)
+
+        then:
+        responseEntity.statusCode.value() == 401
+        responseEntity.body.size() == 1
+        responseEntity.body[0].code == '401_unauthorized'
+        responseEntity.body[0].description == '401 Unauthorized. Full authentication is required to access this resource'
     }
 
-    def 'Role list test hits the REST endpoint and parses the JSON output'() {
-        when: 'consume the REST URL to retrieve all Roles'
-            def response = mockMvc
-                    .perform(MockMvcRequestBuilders.get(new URI('/v1/roles')))
-                    .andReturn().response
-            def content = new JsonSlurper().parseText(response.contentAsString)
-        then: 'verify the HTTP response'
-            1 * roleService.listAll() >> [role]
-            HttpStatus.OK.value() == response.status
-            MediaType.APPLICATION_JSON_UTF8_VALUE == response.contentType
-            'Super User' == content[0].name
-            'ROLE_SUPER' ==  content[0].authority
+    def '/v1/roles GET - Super User access granted'() {
+        when:
+        ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                        .withBasicAuth('super', 'password')
+                        .getForEntity('/v1/roles', Iterable)
+
+        then:
+        responseEntity.statusCode.value() == 200
+        responseEntity.body.size() == 3
+        responseEntity.body[0].id == 1L
+        responseEntity.body[0].name == 'Super User'
+        responseEntity.body[0].authority == 'role.super'
     }
 
-    def "Role 'get' test hits the REST endpoint and parses the JSON output"() {
-        when: 'consume the REST URL to retrieve a specific Role'
-            def response = mockMvc
-                    .perform(MockMvcRequestBuilders.get(new URI('/v1/roles/1')))
-                    .andReturn().response
-            def content = new JsonSlurper().parseText(response.contentAsString)
-        then: 'verify the HTTP response'
-            1 * roleService.get(1) >> role
-            HttpStatus.OK.value() == response.status
-            MediaType.APPLICATION_JSON_UTF8_VALUE == response.contentType
-            'Super User' == content.name
-            'ROLE_SUPER' ==  content.authority
+    def '/v1/roles GET - Standard User access denied'() {
+        when:
+        ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                        .withBasicAuth('standard', 'password')
+                        .getForEntity('/v1/roles', Iterable)
+
+        then:
+        responseEntity.statusCode.value() == 401
+        responseEntity.body.size() == 1
+        responseEntity.body[0].code == '401_unauthorized'
+        responseEntity.body[0].description == '401 Unauthorized. Access Denied'
     }
 
-    def "Role 'delete' test hits the REST endpoint and parses the JSON output"() {
-        when: 'consume the REST URL to delete a specific Role'
-            def response = mockMvc
-                    .perform(MockMvcRequestBuilders.delete(new URI('/v1/roles/1')))
-                    .andReturn().response
-        then: 'verify the HTTP response'
-            1 * roleService.delete(1)
-            HttpStatus.NO_CONTENT.value() == response.status
+    @Rollback
+    def '/v1/roles GET - Standard User with permission "api.roles.list" access granted'() {
+        given:
+        roleService.addPermission(ROLE_STANDARD_ID, 'api.roles.list')
+
+        when:
+        ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                        .withBasicAuth('standard', 'password')
+                        .getForEntity('/v1/roles', Iterable)
+
+        then:
+        responseEntity.statusCode.value() == 200
+        responseEntity.body.size() == 3
+        responseEntity.body[0].id == 1L
+        responseEntity.body[0].name == 'Super User'
+        responseEntity.body[0].authority == 'role.super'
     }
 
-    def "Role 'create' test hits the REST endpoint and parses the JSON output"() {
-        when: 'consume the REST URL to create a new Role'
-            def response = mockMvc
-                    .perform(MockMvcRequestBuilders.post(new URI('/v1/roles'))
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .content('{"name": "Admin", "authority": "ADMIN"}'))
-                    .andReturn().response
-            def content = new JsonSlurper().parseText(response.contentAsString)
-        then: 'verify the HTTP response'
-            1 * roleService.save(_) >> { new Role(id:1, name:'Admin', authority:'ADMIN') }
-            HttpStatus.CREATED.value() == response.status
-            MediaType.APPLICATION_JSON_UTF8_VALUE == response.contentType
-            '/v1/roles/1' == response.getHeaderValue(HttpHeaders.LOCATION)
-            'Admin' == content.name
-            'ADMIN' == content.authority
+    def '/v1/roles POST - Anonymous access denied'() {
+        when:
+        ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                        .postForEntity('/v1/roles', null, Iterable, Collections.EMPTY_MAP)
+
+        then:
+        responseEntity.statusCode.value() == 401
+        responseEntity.body.size() == 1
+        responseEntity.body[0].code == '401_unauthorized'
+        responseEntity.body[0].description == '401 Unauthorized. Full authentication is required to access this resource'
     }
 
-    def "Role 'update' test hits the REST endpoint and parses the JSON output"() {
-        when: 'consume the REST URL to update a Role'
-            def response = mockMvc
-                    .perform(MockMvcRequestBuilders.put(new URI('/v1/roles/1'))
-                    .contentType(MediaType.APPLICATION_JSON_UTF8)
-                    .content('{"id": 1, "name": "Admin", "authority": "ADMIN"}'))
-                    .andReturn().response
-            def content = new JsonSlurper().parseText(response.contentAsString)
-        then: 'verify the HTTP response'
-            1 * roleService.save(_) >> { new Role(id:1,  name:'Admin', authority:'ADMIN') }
-            HttpStatus.OK.value() == response.status
-            MediaType.APPLICATION_JSON_UTF8_VALUE == response.contentType
-            'Admin' == content.name
-            'ADMIN' == content.authority
+    def '/v1/roles POST - Super User access granted'() {
+        given:
+        Role role = new Role(name:'Role-Name-1', authority:'test.role.authority.1')
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(MediaType.APPLICATION_JSON)
+        HttpEntity<Role> httpEntity = new HttpEntity<Role>(role, headers)
+
+        when:
+        ResponseEntity<Role> responseEntity =
+                restTemplate
+                        .withBasicAuth('super', 'password')
+                        .postForEntity('/v1/roles', httpEntity, Role)
+
+        then:
+        responseEntity.statusCode.value() == 201
+        responseEntity.headers.getFirst('location') == '/v1/roles/4'
+        responseEntity.body.id
+        responseEntity.body.name == 'Role-Name-1'
+        responseEntity.body.authority == 'test.role.authority.1'
+    }
+
+    def '/v1/roles POST - Standard User access denied'() {
+        given:
+        Role role = new Role(name:'Role-Name-2', authority:'test.role.authority.2')
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(MediaType.APPLICATION_JSON)
+        HttpEntity<Role> httpEntity = new HttpEntity<Role>(role, headers)
+
+        when:
+        ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                        .withBasicAuth('standard', 'password')
+                        .postForEntity('/v1/roles', httpEntity, Iterable)
+
+        then:
+        responseEntity.statusCode.value() == 401
+        responseEntity.body.size() == 1
+        responseEntity.body[0].code == '401_unauthorized'
+        responseEntity.body[0].description == '401 Unauthorized. Access Denied'
+    }
+
+    @Rollback
+    def '/v1/roles POST - Standard User with permission "api.roles.create" access granted'() {
+        given:
+        roleService.addPermission(ROLE_STANDARD_ID, 'api.roles.create')
+
+        Role role = new Role(name:'Role-Name-3', authority:'test.role.authority.3')
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(MediaType.APPLICATION_JSON)
+        HttpEntity<Role> httpEntity = new HttpEntity<Role>(role, headers)
+
+        when:
+        ResponseEntity<Role> responseEntity =
+                restTemplate
+                        .withBasicAuth('standard', 'password')
+                        .postForEntity('/v1/roles', httpEntity, Role)
+
+        then:
+        responseEntity.statusCode.value() == 201
+        responseEntity.headers.getFirst('location') == '/v1/roles/5'
+        responseEntity.body.id
+        responseEntity.body.name == 'Role-Name-3'
+        responseEntity.body.authority == 'test.role.authority.3'
+    }
+
+    def '/v1/roles/{id} GET - Anonymous access denied'() {
+        when:
+        ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                        .getForEntity('/v1/roles/1', Iterable)
+
+        then:
+        responseEntity.statusCode.value() == 401
+        responseEntity.body.size() == 1
+        responseEntity.body[0].code == '401_unauthorized'
+        responseEntity.body[0].description == '401 Unauthorized. Full authentication is required to access this resource'
+    }
+
+    def '/v1/roles/{id} GET - Super User access granted'() {
+        when:
+        ResponseEntity<Role> responseEntity =
+                restTemplate
+                        .withBasicAuth('super', 'password')
+                        .getForEntity('/v1/roles/1', Role)
+
+        then:
+        responseEntity.statusCode.value() == 200
+        responseEntity.body.id == 1L
+        responseEntity.body.name == 'Super User'
+        responseEntity.body.authority == 'role.super'
+    }
+
+    def '/v1/roles/{id} GET - Standard User access denied'() {
+        when:
+        ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                        .withBasicAuth('standard', 'password')
+                        .getForEntity('/v1/roles/1', Iterable)
+
+        then:
+        responseEntity.statusCode.value() == 401
+        responseEntity.body.size() == 1
+        responseEntity.body[0].code == '401_unauthorized'
+        responseEntity.body[0].description == '401 Unauthorized. Access Denied'
+    }
+
+    @Rollback
+    def '/v1/roles/{id} GET - Standard User with permission "api.roles.get" access granted'() {
+        given:
+        roleService.addPermission(ROLE_STANDARD_ID, 'api.roles.get')
+
+        when:
+        ResponseEntity<Role> responseEntity =
+                restTemplate
+                        .withBasicAuth('standard', 'password')
+                        .getForEntity('/v1/roles/1', Role)
+
+        then:
+        responseEntity.statusCode.value() == 200
+        responseEntity.body.id == 1L
+        responseEntity.body.name == 'Super User'
+        responseEntity.body.authority == 'role.super'
+    }
+
+    def '/v1/roles/{id} PUT - Anonymous access denied'() {
+        given:
+        Role role = new Role(name:'Role-Name-3', authority:'test.role.authority.3')
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(MediaType.APPLICATION_JSON)
+        HttpEntity<Role> httpEntity = new HttpEntity<Role>(role, headers)
+
+        when:
+        ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                        .exchange('/v1/roles/1', HttpMethod.PUT, httpEntity, Iterable, Collections.EMPTY_MAP)
+
+        then:
+        responseEntity.statusCode.value() == 401
+        responseEntity.body.size() == 1
+        responseEntity.body[0].code == '401_unauthorized'
+        responseEntity.body[0].description == '401 Unauthorized. Full authentication is required to access this resource'
+    }
+
+    @Rollback
+    def '/v1/roles/{id} PUT - Super User access granted'() {
+        given:
+        Role role = new Role(name:'Role-Name-3', authority:'test.role.authority.3')
+        role = roleService.save(role)
+
+        role.name = 'Role-Name-3-Updated'
+
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(MediaType.APPLICATION_JSON)
+        HttpEntity<Role> httpEntity = new HttpEntity<Role>(role, headers)
+
+        when:
+        ResponseEntity<Role> responseEntity =
+                restTemplate
+                        .withBasicAuth('super', 'password')
+                        .exchange('/v1/roles/1', HttpMethod.PUT, httpEntity, Role)
+
+        then:
+        responseEntity.statusCode.value() == 200
+        responseEntity.body.id == role.id
+        responseEntity.body.name == 'Role-Name-3-Updated'
+        responseEntity.body.authority == 'test.role.authority.3'
+    }
+
+    def '/v1/roles/{id} PUT - Standard User access denied'() {
+        given:
+        Role role = new Role(name:'Role-Name-4', authority:'test.role.authority.4')
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(MediaType.APPLICATION_JSON)
+        HttpEntity<Role> httpEntity = new HttpEntity<Role>(role, headers)
+
+        when:
+        ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                        .withBasicAuth('standard', 'password')
+                        .exchange('/v1/roles/1', HttpMethod.PUT, httpEntity, Iterable, Collections.EMPTY_MAP)
+
+        then:
+        responseEntity.statusCode.value() == 401
+        responseEntity.body.size() == 1
+        responseEntity.body[0].code == '401_unauthorized'
+        responseEntity.body[0].description == '401 Unauthorized. Access Denied'
+    }
+
+    @Rollback
+    def '/v1/roles/{id} PUT - Standard User with permission "api.roles.update" access granted'() {
+        given:
+        roleService.addPermission(ROLE_STANDARD_ID, 'api.roles.update')
+
+        Role role = new Role(name:'Role-Name-5', authority:'test.role.authority.5')
+        role = roleService.save(role)
+
+        role.name = 'Role-Name-5-Updated'
+
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(MediaType.APPLICATION_JSON)
+        HttpEntity<Role> httpEntity = new HttpEntity<Role>(role, headers)
+
+        when:
+        ResponseEntity<Role> responseEntity =
+                restTemplate
+                        .withBasicAuth('standard', 'password')
+                        .exchange('/v1/roles/1', HttpMethod.PUT, httpEntity, Role)
+
+        then:
+        responseEntity.statusCode.value() == 200
+        responseEntity.body.id == role.id
+        responseEntity.body.name == 'Role-Name-5-Updated'
+        responseEntity.body.authority == 'test.role.authority.5'
+    }
+
+    def '/v1/roles/{id} DELETE - Anonymous access denied'() {
+        when:
+        ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                        .exchange('/v1/roles/1', HttpMethod.DELETE, null, Iterable, Collections.EMPTY_MAP)
+
+        then:
+        responseEntity.statusCode.value() == 401
+        responseEntity.body.size() == 1
+        responseEntity.body[0].code == '401_unauthorized'
+        responseEntity.body[0].description == '401 Unauthorized. Full authentication is required to access this resource'
+    }
+
+    def '/v1/roles/{id} DELETE - Super User access granted'() {
+        given:
+        Role role = new Role(name:'Role-Name-5', authority:'test.role.authority.5')
+        role = roleService.save(role)
+
+        when:
+        ResponseEntity<String> responseEntity =
+                restTemplate
+                        .withBasicAuth('super', 'password')
+                        .exchange("/v1/roles/${role.id}", HttpMethod.DELETE, null, String, Collections.EMPTY_MAP)
+
+        then:
+        responseEntity.statusCode.value() == 204
+        responseEntity.body == null
+    }
+
+    def '/v1/roles/{id} DELETE - Standard User access denied'() {
+        when:
+        ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                        .withBasicAuth('standard', 'password')
+                        .exchange('/v1/roles/1', HttpMethod.DELETE, null, Iterable, Collections.EMPTY_MAP)
+
+        then:
+        responseEntity.statusCode.value() == 401
+        responseEntity.body.size() == 1
+        responseEntity.body[0].code == '401_unauthorized'
+        responseEntity.body[0].description == '401 Unauthorized. Access Denied'
+    }
+
+    @Rollback
+    def '/v1/roles/{id} DELETE - Standard User with permission "api.roless.delete" access granted'() {
+        given:
+        roleService.addPermission(ROLE_STANDARD_ID, 'api.roles.delete')
+
+        Role role = new Role(name:'Role-Name-6', authority:'test.role.authority.6')
+        role = roleService.save(role)
+
+        when:
+        ResponseEntity<String> responseEntity =
+                restTemplate
+                        .withBasicAuth('standard', 'password')
+                        .exchange("/v1/roles/${role.id}", HttpMethod.DELETE, null, String, Collections.EMPTY_MAP)
+
+        then:
+        responseEntity.statusCode.value() == 204
+        responseEntity.body == null
     }
 }
