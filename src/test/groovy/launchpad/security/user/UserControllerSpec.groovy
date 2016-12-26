@@ -1,4 +1,4 @@
-package launchpad.user
+package launchpad.security.user
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

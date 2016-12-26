@@ -1,6 +1,6 @@
 package launchpad.security
 
-import launchpad.user.User
+import launchpad.security.user.User
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 

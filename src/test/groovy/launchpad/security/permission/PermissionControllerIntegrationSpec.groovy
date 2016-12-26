@@ -1,4 +1,4 @@
-package launchpad.permission
+package launchpad.security.permission
 
 import groovy.json.JsonSlurper
 import org.springframework.http.HttpHeaders

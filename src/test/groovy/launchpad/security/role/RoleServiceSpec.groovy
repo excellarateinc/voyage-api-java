@@ -1,6 +1,6 @@
-package launchpad.role
+package launchpad.security.role
 
-import launchpad.permission.PermissionService
+import launchpad.security.permission.PermissionService
 import spock.lang.Specification
 
 // TODO Add tests to verify role.isDeleted for each method

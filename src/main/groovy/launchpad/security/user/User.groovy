@@ -1,8 +1,8 @@
-package launchpad.user
+package launchpad.security.user
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import groovy.transform.EqualsAndHashCode
-import launchpad.role.Role
+import launchpad.security.role.Role
 import org.hibernate.validator.constraints.Email
 
 import javax.persistence.Entity

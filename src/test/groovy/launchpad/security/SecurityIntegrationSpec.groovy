@@ -1,7 +1,7 @@
 package launchpad.security
 
-import launchpad.permission.Permission
-import launchpad.permission.PermissionService
+import launchpad.security.permission.Permission
+import launchpad.security.permission.PermissionService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate

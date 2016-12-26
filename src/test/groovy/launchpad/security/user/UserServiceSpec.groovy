@@ -1,4 +1,4 @@
-package launchpad.user
+package launchpad.security.user
 
 import spock.lang.Specification
 

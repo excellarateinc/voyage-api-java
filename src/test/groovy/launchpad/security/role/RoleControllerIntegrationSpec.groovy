@@ -1,4 +1,4 @@
-package launchpad.role
+package launchpad.security.role
 
 import groovy.json.JsonSlurper
 import org.springframework.http.HttpHeaders

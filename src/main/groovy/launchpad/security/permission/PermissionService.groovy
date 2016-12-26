@@ -1,4 +1,4 @@
-package launchpad.permission
+package launchpad.security.permission
 
 import launchpad.error.ImmutableRecordException
 import launchpad.error.UnknownIdentifierException

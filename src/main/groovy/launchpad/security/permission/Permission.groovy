@@ -1,4 +1,4 @@
-package launchpad.permission
+package launchpad.security.permission
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import groovy.transform.EqualsAndHashCode

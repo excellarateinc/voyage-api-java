@@ -1,4 +1,4 @@
-package launchpad.permission
+package launchpad.security.permission
 
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository

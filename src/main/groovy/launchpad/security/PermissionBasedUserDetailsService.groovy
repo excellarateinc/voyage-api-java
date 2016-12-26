@@ -1,9 +1,9 @@
 package launchpad.security
 
-import launchpad.permission.Permission
-import launchpad.permission.PermissionService
-import launchpad.user.User
-import launchpad.user.UserService
+import launchpad.security.permission.Permission
+import launchpad.security.permission.PermissionService
+import launchpad.security.user.User
+import launchpad.security.user.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority

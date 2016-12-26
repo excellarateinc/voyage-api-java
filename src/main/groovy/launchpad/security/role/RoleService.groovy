@@ -1,8 +1,8 @@
-package launchpad.role
+package launchpad.security.role
 
 import launchpad.error.UnknownIdentifierException
-import launchpad.permission.Permission
-import launchpad.permission.PermissionService
+import launchpad.security.permission.Permission
+import launchpad.security.permission.PermissionService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated

@@ -1,8 +1,8 @@
-package launchpad.role
+package launchpad.security.role
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import groovy.transform.EqualsAndHashCode
-import launchpad.permission.Permission
+import launchpad.security.permission.Permission
 
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue

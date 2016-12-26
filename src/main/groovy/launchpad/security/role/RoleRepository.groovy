@@ -1,4 +1,4 @@
-package launchpad.role
+package launchpad.security.role
 
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
