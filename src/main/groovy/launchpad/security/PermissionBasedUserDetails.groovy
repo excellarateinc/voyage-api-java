@@ -4,6 +4,8 @@ import launchpad.security.user.User
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
+// TODO Create a unit test for this class
+
 class PermissionBasedUserDetails implements UserDetails {
     private final User user
     private final Set<GrantedAuthority> authorities
