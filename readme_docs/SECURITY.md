@@ -2,9 +2,11 @@
 ## OWASP
 
 ### Cross-Site Request Forgery (CSRF)
-Provide an example or link to the OWASP cheat sheet for CSRF
+Provide an example or link to the OWASP cheat sheet for CSRF (https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet)
 
-Discuss how the CSRF token is generated and what happens if/when it expires, or if/when it is invalid (401 Access Denied)
+Discuss how the CSRF token is generated and what happens if/when it expires, or if/when it is invalid (401 Access Denied. CSRF token was not valid)
+* Get the token from the response header and retry the request
+* Token is alive for the duration of the session, so if the session invalidates on the server or if the user is routed to a different web server instance (via load balancer), then 
 
 X-CSRF-TOKEN is provided on every response
 
