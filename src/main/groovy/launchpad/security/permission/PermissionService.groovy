@@ -28,7 +28,7 @@ class PermissionService {
     Permission findByName(@NotNull String name) {
         Permission permission = permissionRepository.findByName(name)
         if (!permission) {
-            throw new UnknownIdentifierException("Unknown permission name given: ${permissionName}")
+            throw new UnknownIdentifierException("Unknown permission name given: ${name}")
         }
         return permission
     }
