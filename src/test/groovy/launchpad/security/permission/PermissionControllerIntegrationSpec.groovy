@@ -298,7 +298,7 @@ class PermissionControllerIntegrationSpec extends Specification {
             // Delete the permission created by this test
             deletePermission('Permission-Name-4')
     }
-    
+
     def '/v1/permissions/{id} PUT - Standard User with permission "api.permissions.update" access granted'() {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.permissions.update')

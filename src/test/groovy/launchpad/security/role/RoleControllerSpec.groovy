@@ -28,7 +28,7 @@ class RoleControllerSpec extends Specification {
             thrown(Exception)
     }
 
-    def 'get - fetch data from RoleService'(){
+    def 'get - fetch data from RoleService'() {
         when:
             ResponseEntity<Role> role = roleController.get(1)
         then:
