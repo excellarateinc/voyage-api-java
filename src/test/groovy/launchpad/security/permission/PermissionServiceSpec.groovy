@@ -2,8 +2,6 @@ package launchpad.security.permission
 
 import spock.lang.Specification
 
-// TODO Add tests to verify permission.isDeleted for each method
-// TODO Refactor to have the same test method names as RoleServiceSpec
 class PermissionServiceSpec extends Specification {
     Permission permission
     Permission modifiedPermission
