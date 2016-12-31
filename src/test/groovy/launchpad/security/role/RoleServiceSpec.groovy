@@ -57,12 +57,12 @@ class RoleServiceSpec extends Specification {
 
     def 'addPermission - inserts the permission if it does not already exist'() {
         setup:
-        roleRepository.save(_) >> role
+            roleRepository.save(_) >> role
         when:
-        Role savedRole = roleService.save(role)
+            Role savedRole = roleService.save(role)
         then:
-        'Super User' == savedRole.name
-        'ROLE_SUPER' == savedRole.authority
-        !savedRole.isDeleted
+            'Super User' == savedRole.name
+            'ROLE_SUPER' == savedRole.authority
+            !savedRole.isDeleted
     }
 }

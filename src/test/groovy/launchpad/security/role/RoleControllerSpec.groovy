@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 
+// TODO Rename the test method names to be similar to PermissionControllerSpec
 class RoleControllerSpec extends Specification {
     Role role
     RoleService roleService = Mock(RoleService)

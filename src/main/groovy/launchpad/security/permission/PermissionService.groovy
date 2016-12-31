@@ -33,6 +33,14 @@ class PermissionService {
         return permission
     }
 
+    Permission findByName(@NotNull String name) {
+        Permission permission = permissionRepository.findByName(name)
+        if (!permission) {
+            throw new UnknownIdentifierException("Unknown permission name given: ${permissionName}")
+        }
+        return permission
+    }
+
     Iterable<Permission> findAllByUser(@NotNull Long userId) {
         permissionRepository.findAllByUserId(userId)
     }
