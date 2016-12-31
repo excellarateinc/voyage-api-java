@@ -1,3 +1,6 @@
+## Setup
+1. Generate Private/Public keys for OAUTH2 /src/main/resources/application.yaml
+
 
 ## OWASP
 
