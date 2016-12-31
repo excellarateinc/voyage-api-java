@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 
-// TODO Rename the test method names to be similar to PermissionControllerSpec
 class RoleControllerSpec extends Specification {
     Role role
     RoleService roleService = Mock(RoleService)
@@ -14,7 +13,7 @@ class RoleControllerSpec extends Specification {
         role = new Role(id:1, name:'Super User', authority:'ROLE_SUPER')
     }
 
-    def 'Test to validate LIST method is fetching data from RoleService'() {
+    def 'list - fetch data from RoleService'() {
         when:
             ResponseEntity<Role> roles = roleController.list()
         then:
@@ -29,7 +28,7 @@ class RoleControllerSpec extends Specification {
             thrown(Exception)
     }
 
-    def 'Test to validate FIND method is fetching data from RoleService'() {
+    def 'get - fetch data from RoleService'() {
         when:
             ResponseEntity<Role> role = roleController.get(1)
         then:
@@ -46,7 +45,7 @@ class RoleControllerSpec extends Specification {
             thrown(Exception)
     }
 
-    def 'Test to validate CREATE method is fetching data from RoleService'() {
+    def 'save - calling RoleService to save object'() {
         when:
             ResponseEntity<Role> response = roleController.save(role)
         then:
@@ -64,7 +63,7 @@ class RoleControllerSpec extends Specification {
             thrown(Exception)
     }
 
-    def 'Test to validate UPDATE method is fetching data from RoleService'() {
+    def 'update - calling RoleService to save incoming object'() {
         setup:
             Role modifiedRole = new Role(id:1, name:'Super User', authority:'ROLE_ADMIN')
 
@@ -82,7 +81,7 @@ class RoleControllerSpec extends Specification {
             thrown(Exception)
     }
 
-    def 'Test to validate DELETE method is fetching data from RoleService'() {
+    def 'delete - calling RoleService with the role id'() {
         when:
             ResponseEntity response = roleController.delete(1)
         then:
@@ -95,5 +94,4 @@ class RoleControllerSpec extends Specification {
             1 * roleService.delete(1) >> { throw new Exception() }
             thrown(Exception)
     }
-
 }

@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 
-// TODO Rename the test method names to be similar to PermissionControllerSpec
 class UserControllerSpec extends Specification {
     User user
     User modifiedUser
@@ -31,7 +30,7 @@ class UserControllerSpec extends Specification {
             thrown(Exception)
     }
 
-    def 'Test to validate FIND method is fetching data from UserService'() {
+    def 'get - fetch data from UserService'() {
         when:
             ResponseEntity<User> user = userController.get(1)
         then:
@@ -48,7 +47,7 @@ class UserControllerSpec extends Specification {
             thrown(Exception)
     }
 
-    def 'Test to validate CREATE method is fetching data from UserService'() {
+    def 'save - calling UserService to save object'() {
         when:
             ResponseEntity<User> response = userController.save(user)
         then:
@@ -66,7 +65,7 @@ class UserControllerSpec extends Specification {
             thrown(Exception)
     }
 
-    def 'Test to validate UPDATE method is fetching data from UserService'() {
+    def 'update - calling UserService to save incoming object'() {
         when:
             ResponseEntity<User> updatedUser = userController.update(modifiedUser)
         then:
@@ -81,7 +80,7 @@ class UserControllerSpec extends Specification {
             thrown(Exception)
     }
 
-    def 'Test to validate DELETE method is fetching data from UserService'() {
+    def 'delete - calling UserService with the user id'() {
         when:
             ResponseEntity response = userController.delete(1)
         then:

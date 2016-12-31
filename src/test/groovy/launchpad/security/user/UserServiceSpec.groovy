@@ -2,8 +2,6 @@ package launchpad.security.user
 
 import spock.lang.Specification
 
-// TODO Rename the test method names to be similar to RoleServiceSpec
-// TODO Add tests to verify user.isDeleted for each method
 class UserServiceSpec extends Specification {
     User user
     User modifiedUser
@@ -15,7 +13,7 @@ class UserServiceSpec extends Specification {
         modifiedUser = new User(firstName:'LSS', lastName:'Inc')
     }
 
-    def 'Test the list method of UserService' () {
+    def 'listAll - returns a single result' () {
         setup:
             userRepository.findAll() >> [user]
         when:
@@ -24,7 +22,7 @@ class UserServiceSpec extends Specification {
             1 == userList.size()
     }
 
-    def 'Test save method of UserService' () {
+    def 'save - applies the values and calls the userRepository' () {
         setup:
             userRepository.save(_) >> user
         when:
@@ -32,19 +30,10 @@ class UserServiceSpec extends Specification {
         then:
             'LSS' == savedUser.firstName
             'India' == savedUser.lastName
+            !savedUser.isDeleted
     }
 
-    def 'Test update method of UserService' () {
-        setup:
-            userRepository.save(_) >> modifiedUser
-        when:
-            User modifiedUser = userService.save(user)
-        then:
-            'LSS' == modifiedUser.firstName
-            'Inc' == modifiedUser.lastName
-    }
-
-    def 'Test find method of UserService' () {
+    def 'get - calls the userRepository.findOne' () {
         setup:
             userRepository.findOne(_) >> user
         when:
@@ -52,9 +41,10 @@ class UserServiceSpec extends Specification {
         then:
             'LSS' == fetchedUser.firstName
             'India' == fetchedUser.lastName
+            !fetchedUser.isDeleted
     }
 
-    def 'Test delete method of UserService' () {
+    def 'delete - verifies the object and calls userRepository.delete' () {
         setup:
             userRepository.findOne(_) >> user
         when:

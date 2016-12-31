@@ -89,7 +89,7 @@ codenarc {
         maxPriority3Violations 0
     }
     codenarcTest {
-        ignoreFailures true
+        ignoreFailures false
         configFile file('codenarc/codenarc-test.rules')
 
         maxPriority1Violations 0

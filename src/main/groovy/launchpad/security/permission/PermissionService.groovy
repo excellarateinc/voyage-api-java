@@ -22,13 +22,13 @@ class PermissionService {
     void delete(@NotNull Long id) {
         Permission permission = get(id)
         permission.isDeleted = true
-        save(permission)
+        permissionRepository.save(permission)
     }
 
     Permission findByName(@NotNull String name) {
         Permission permission = permissionRepository.findByName(name)
         if (!permission) {
-            throw new UnknownIdentifierException("Unknown permission name given: ${permissionName}")
+            throw new UnknownIdentifierException("Unknown permission name given: ${name}")
         }
         return permission
     }

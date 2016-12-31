@@ -25,7 +25,7 @@ class RoleService {
     void delete(@NotNull Long id) {
         Role role = get(id)
         role.isDeleted = true
-        save(role)
+        roleRepository.save(role)
     }
 
     Role get(@NotNull Long id) {

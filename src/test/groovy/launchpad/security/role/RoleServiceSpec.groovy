@@ -3,7 +3,6 @@ package launchpad.security.role
 import launchpad.security.permission.PermissionService
 import spock.lang.Specification
 
-// TODO Add tests to verify role.isDeleted for each method
 class RoleServiceSpec extends Specification {
     Role role
     Role modifiedRole
@@ -33,6 +32,7 @@ class RoleServiceSpec extends Specification {
         then:
             'Super User' == savedRole.name
             'ROLE_SUPER' == savedRole.authority
+            !savedRole.isDeleted
     }
 
     def 'get - calls the roleRepository.findOne' () {
@@ -43,6 +43,7 @@ class RoleServiceSpec extends Specification {
         then:
             'Super User' == fetchedRole.name
             'ROLE_SUPER' == fetchedRole.authority
+            !fetchedRole.isDeleted
     }
 
     def 'delete - verifies the object and calls roleRepository.delete' () {
@@ -56,11 +57,12 @@ class RoleServiceSpec extends Specification {
 
     def 'addPermission - inserts the permission if it does not already exist'() {
         setup:
-        roleRepository.save(_) >> role
+            roleRepository.save(_) >> role
         when:
-        Role savedRole = roleService.save(role)
+            Role savedRole = roleService.save(role)
         then:
-        'Super User' == savedRole.name
-        'ROLE_SUPER' == savedRole.authority
+            'Super User' == savedRole.name
+            'ROLE_SUPER' == savedRole.authority
+            !savedRole.isDeleted
     }
 }
