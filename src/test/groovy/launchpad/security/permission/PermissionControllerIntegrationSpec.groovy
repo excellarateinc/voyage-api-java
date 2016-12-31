@@ -1,7 +1,6 @@
 package launchpad.security.permission
 
 import launchpad.error.UnknownIdentifierException
-import launchpad.security.role.Role
 import launchpad.security.role.RoleService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -107,7 +106,7 @@ class PermissionControllerIntegrationSpec extends Specification {
             HttpEntity<Permission> httpEntity = new HttpEntity<Permission>(permission, headers)
 
         when:
-            ResponseEntity<Role> responseEntity =
+            ResponseEntity<Permission> responseEntity =
                     restTemplate
                             .withBasicAuth('super', 'password')
                             .postForEntity('/v1/permissions', httpEntity, Permission)
@@ -153,7 +152,7 @@ class PermissionControllerIntegrationSpec extends Specification {
             HttpEntity<Permission> httpEntity = new HttpEntity<Permission>(permission, headers)
 
         when:
-            ResponseEntity<Role> responseEntity =
+            ResponseEntity<Permission> responseEntity =
                 restTemplate
                     .withBasicAuth('standard', 'password')
                     .postForEntity('/v1/permissions', httpEntity, Permission)
@@ -184,7 +183,7 @@ class PermissionControllerIntegrationSpec extends Specification {
 
     def '/v1/permissions/{id} GET - Super User access granted'() {
         when:
-            ResponseEntity<Role> responseEntity =
+            ResponseEntity<Permission> responseEntity =
                 restTemplate
                     .withBasicAuth('super', 'password')
                     .getForEntity('/v1/permissions/1', Permission)
@@ -227,6 +226,20 @@ class PermissionControllerIntegrationSpec extends Specification {
             responseEntity.body.description == '/users GET web service endpoint to return a full list of users'
     }
 
+    def '/v1/permissions/{id} GET - Invalid ID returns a 400 Bad Request response'() {
+        when:
+            ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                    .withBasicAuth('super', 'password')
+                    .getForEntity('/v1/permissions/999999', Iterable)
+
+        then:
+            responseEntity.statusCode.value() == 400
+            responseEntity.body.size() == 1
+            responseEntity.body[0].code == '400_bad_request'
+            responseEntity.body[0].description == 'Unknown record identifier provided'
+    }
+
     def '/v1/permissions/{id} PUT - Anonymous access denied'() {
         given:
             Permission permission = new Permission(name:'Permission-Name-4', description:'test permission 4')
@@ -261,7 +274,7 @@ class PermissionControllerIntegrationSpec extends Specification {
             HttpEntity<Permission> httpEntity = new HttpEntity<Permission>(permission, headers)
 
         when:
-            ResponseEntity<Role> responseEntity =
+            ResponseEntity<Permission> responseEntity =
                 restTemplate
                     .withBasicAuth('super', 'password')
                     .exchange('/v1/permissions/1', HttpMethod.PUT, httpEntity, Permission)
@@ -326,6 +339,47 @@ class PermissionControllerIntegrationSpec extends Specification {
 
             // Delete the permission created by this method
             deletePermission('Permission-Name-5-Updated')
+    }
+
+    def '/v1/permissions/{id} PUT - Invalid ID returns a 400 Bad Request response'() {
+        given:
+            Permission permission = new Permission(id:9999, name:'Permission-Name-4', description:'test permission 4')
+
+            HttpHeaders headers = new HttpHeaders()
+            headers.setContentType(MediaType.APPLICATION_JSON)
+            HttpEntity<Permission> httpEntity = new HttpEntity<Permission>(permission, headers)
+
+        when:
+            ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                    .withBasicAuth('super', 'password')
+                    .exchange('/v1/permissions/9999', HttpMethod.PUT, httpEntity, Iterable)
+
+        then:
+            responseEntity.statusCode.value() == 400
+            responseEntity.body[0].code == "400_bad_request"
+            responseEntity.body[0].description == 'Unknown record identifier provided'
+    }
+
+    def '/v1/permissions/{id} PUT - Updating an immutable permission returns a 400 Bad Request response'() {
+        given:
+            Permission permission = new Permission(id: 1, name:'Permission-Name-4', description:'test permission 4')
+
+            HttpHeaders headers = new HttpHeaders()
+            headers.setContentType(MediaType.APPLICATION_JSON)
+            HttpEntity<Permission> httpEntity = new HttpEntity<Permission>(permission, headers)
+
+        when:
+            ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                    .withBasicAuth('super', 'password')
+                    .exchange('/v1/permissions/1', HttpMethod.PUT, httpEntity, Iterable)
+
+        then:
+            responseEntity.statusCode.value() == 400
+            responseEntity.body.size() == 1
+            responseEntity.body[0].code == '400_bad_request'
+            responseEntity.body[0].description == 'The requested record is immutable. No changes to this record are allowed.'
     }
 
     def '/v1/permissions/{id} DELETE - Anonymous access denied'() {
@@ -393,6 +447,34 @@ class PermissionControllerIntegrationSpec extends Specification {
 
             // Delete the permission created by this method
             deletePermission('Permission-Name-7')
+    }
+
+    def '/v1/permissions/{id} DELETE - Invalid ID returns a 400 Bad Request response'() {
+        when:
+           ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                        .withBasicAuth('super', 'password')
+                        .exchange("/v1/permissions/9999", HttpMethod.DELETE, null, Iterable, Collections.EMPTY_MAP)
+
+        then:
+            responseEntity.statusCode.value() == 400
+            responseEntity.body.size() == 1
+            responseEntity.body[0].code == "400_bad_request"
+            responseEntity.body[0].description == "Unknown record identifier provided"
+    }
+
+    def '/v1/permissions/{id} DELETE - Deleting an immutable permission returns a 400 Bad Request response'() {
+        when:
+            ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                    .withBasicAuth('super', 'password')
+                    .exchange("/v1/permissions/1", HttpMethod.DELETE, null, Iterable, Collections.EMPTY_MAP)
+
+        then:
+            responseEntity.statusCode.value() == 400
+            responseEntity.body.size() == 1
+            responseEntity.body[0].code == "400_bad_request"
+            responseEntity.body[0].description == "The requested record is immutable. No changes to this record are allowed."
     }
 
     private void deletePermission(String permissionName) {

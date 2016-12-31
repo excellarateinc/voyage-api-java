@@ -4,6 +4,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 
+// TODO Needs to be rewritten to focus on inputs and outputs. Right now these tests are not validating the entire JSON response or JSON request
+// TODO Remove the Exception tests because they do NOTHING! What's the point of these at all?
+// TODO Add NEW exception tests for exceptions that are actually thrown by the Service classes (ImmutableRecordException, UnknownIdentifierException, ValidationException...)
 class RoleControllerSpec extends Specification {
     Role role
     RoleService roleService = Mock(RoleService)

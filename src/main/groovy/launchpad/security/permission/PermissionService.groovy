@@ -21,6 +21,9 @@ class PermissionService {
 
     void delete(@NotNull Long id) {
         Permission permission = get(id)
+        if (permission.isImmutable) {
+            throw new ImmutableRecordException()
+        }
         permission.isDeleted = true
         permissionRepository.save(permission)
     }

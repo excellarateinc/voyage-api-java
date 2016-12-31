@@ -3,7 +3,7 @@ package launchpad.error
 import org.springframework.http.HttpStatus
 
 class ImmutableRecordException extends AppException {
-    private static final HttpStatus HTTP_STATUS = HttpStatus.NOT_FOUND
+    private static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST
     private static final String DEFAULT_MESSAGE = 'The requested record is immutable. No changes to this record are allowed.'
 
     ImmutableRecordException() {

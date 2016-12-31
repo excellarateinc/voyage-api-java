@@ -9,7 +9,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.test.annotation.Rollback
 import spock.lang.Specification
 
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -74,7 +73,6 @@ class UserControllerIntegrationSpec extends Specification {
             responseEntity.body[0].description == '401 Unauthorized. Access Denied'
     }
 
-    @Rollback
     def '/v1/users GET - Standard User with permission "api.users.list" access granted'() {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.users.list')
@@ -148,7 +146,6 @@ class UserControllerIntegrationSpec extends Specification {
             responseEntity.body[0].description == '401 Unauthorized. Access Denied'
     }
 
-    @Rollback
     def '/v1/users POST - Standard User with permission "api.users.create" access granted'() {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.users.create')
@@ -218,7 +215,6 @@ class UserControllerIntegrationSpec extends Specification {
             responseEntity.body[0].description == '401 Unauthorized. Access Denied'
     }
 
-    @Rollback
     def '/v1/users/{id} GET - Standard User with permission "api.users.get" access granted'() {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.users.get')
@@ -243,6 +239,20 @@ class UserControllerIntegrationSpec extends Specification {
             !responseEntity.body.isAccountLocked
     }
 
+    def '/v1/users/{id} GET - Invalid ID returns a 400 Bad Request response'() {
+        when:
+           ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                        .withBasicAuth('super', 'password')
+                        .getForEntity('/v1/users/999999', Iterable)
+
+        then:
+            responseEntity.statusCode.value() == 400
+            responseEntity.body.size() == 1
+            responseEntity.body[0].code == '400_bad_request'
+            responseEntity.body[0].description == 'Unknown record identifier provided'
+    }
+
     def '/v1/users/{id} PUT - Anonymous access denied'() {
         given:
             User user = new User(firstName:'Test3', lastName:'User', username:'username', email:'test@test.com', password:'password')
@@ -262,7 +272,6 @@ class UserControllerIntegrationSpec extends Specification {
             responseEntity.body[0].description == '401 Unauthorized. Full authentication is required to access this resource'
     }
 
-    @Rollback
     def '/v1/users/{id} PUT - Super User access granted'() {
         given:
             User user = new User(
@@ -312,7 +321,6 @@ class UserControllerIntegrationSpec extends Specification {
         responseEntity.body[0].description == '401 Unauthorized. Access Denied'
     }
 
-    @Rollback
     def '/v1/users/{id} PUT - Standard User with permission "api.users.update" access granted'() {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.users.update')
@@ -340,6 +348,26 @@ class UserControllerIntegrationSpec extends Specification {
             responseEntity.body.username == 'username'
             responseEntity.body.email == 'test@test.com'
             responseEntity.body.password == 'password'
+    }
+
+    def '/v1/users/{id} PUT - Invalid ID returns a 400 Bad Request response'() {
+        given:
+            User user = new User(id: 9999, firstName:'Test4', lastName:'User', username:'username', email:'test@test.com', password:'password')
+
+            HttpHeaders headers = new HttpHeaders()
+            headers.setContentType(MediaType.APPLICATION_JSON)
+            HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
+
+        when:
+            ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                    .withBasicAuth('super', 'password')
+                    .exchange('/v1/users/9999', HttpMethod.PUT, httpEntity, Iterable)
+
+        then:
+            responseEntity.statusCode.value() == 400
+            responseEntity.body[0].code == "400_bad_request"
+            responseEntity.body[0].description == 'Unknown record identifier provided'
     }
 
     def '/v1/users/{id} DELETE - Anonymous access denied'() {
@@ -385,7 +413,6 @@ class UserControllerIntegrationSpec extends Specification {
             responseEntity.body[0].description == '401 Unauthorized. Access Denied'
     }
 
-    @Rollback
     def '/v1/users/{id} DELETE - Standard User with permission "api.users.delete" access granted'() {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.users.delete')
@@ -402,5 +429,19 @@ class UserControllerIntegrationSpec extends Specification {
         then:
             responseEntity.statusCode.value() == 204
             responseEntity.body == null
+    }
+
+    def '/v1/users/{id} DELETE - Invalid ID returns a 400 Bad Request response'() {
+        when:
+           ResponseEntity<Iterable> responseEntity =
+                restTemplate
+                    .withBasicAuth('super', 'password')
+                    .exchange("/v1/users/9999", HttpMethod.DELETE, null, Iterable, Collections.EMPTY_MAP)
+
+        then:
+            responseEntity.statusCode.value() == 400
+            responseEntity.body.size() == 1
+            responseEntity.body[0].code == "400_bad_request"
+            responseEntity.body[0].description == "Unknown record identifier provided"
     }
 }
