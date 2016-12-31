@@ -1,10 +1,9 @@
-package launchpad.permission
+package launchpad.security.permission
 
-import launchpad.permission.Permission
-import launchpad.permission.PermissionRepository
-import launchpad.permission.PermissionService
 import spock.lang.Specification
 
+// TODO Add tests to verify permission.isDeleted for each method
+// TODO Refactor to have the same test method names as RoleServiceSpec
 class PermissionServiceSpec extends Specification {
     Permission permission
     Permission modifiedPermission
@@ -12,8 +11,8 @@ class PermissionServiceSpec extends Specification {
     PermissionService permissionService = new PermissionService(permissionRepository)
 
     def setup() {
-        permission = new Permission(name:'permission.write', description: 'Write permission only')
-        modifiedPermission = new Permission(name:'permission.read', description: 'Read permission only')
+        permission = new Permission(name:'permission.write', description:'Write permission only')
+        modifiedPermission = new Permission(name:'permission.read', description:'Read permission only')
     }
 
     def 'Test the list method of PermissionService' () {

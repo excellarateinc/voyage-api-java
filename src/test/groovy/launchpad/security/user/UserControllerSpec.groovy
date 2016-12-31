@@ -1,9 +1,10 @@
-package launchpad.user
+package launchpad.security.user
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 
+// TODO Rename the test method names to be similar to PermissionControllerSpec
 class UserControllerSpec extends Specification {
     User user
     User modifiedUser

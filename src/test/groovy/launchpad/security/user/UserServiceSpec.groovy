@@ -1,7 +1,9 @@
-package launchpad.user
+package launchpad.security.user
 
 import spock.lang.Specification
 
+// TODO Rename the test method names to be similar to RoleServiceSpec
+// TODO Add tests to verify user.isDeleted for each method
 class UserServiceSpec extends Specification {
     User user
     User modifiedUser

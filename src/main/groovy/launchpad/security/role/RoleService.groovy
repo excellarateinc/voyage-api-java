@@ -1,6 +1,8 @@
-package launchpad.role
+package launchpad.security.role
 
 import launchpad.error.UnknownIdentifierException
+import launchpad.security.permission.Permission
+import launchpad.security.permission.PermissionService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
@@ -13,9 +15,11 @@ import javax.validation.constraints.NotNull
 @Validated
 class RoleService {
     private final RoleRepository roleRepository
+    private final PermissionService permissionService
 
-    RoleService(RoleRepository roleRepository) {
+    RoleService(RoleRepository roleRepository, PermissionService permissionService) {
         this.roleRepository = roleRepository
+        this.permissionService = permissionService
     }
 
     void delete(@NotNull Long id) {
@@ -41,5 +45,16 @@ class RoleService {
             get(role.id)
         }
         return roleRepository.save(role)
+    }
+
+    /**
+     * Used by integration tests to quickly add a permission to validate that access is allowing/denying based on the
+     * permission name.
+     */
+    void addPermission(@NotNull Long roleId, @NotNull String permissionName) {
+        Permission permission = permissionService.findByName(permissionName)
+        Role role = get(roleId)
+        role.permissions.add(permission)
+        save(role)
     }
 }

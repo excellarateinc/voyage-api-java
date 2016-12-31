@@ -84,7 +84,7 @@ databaseChangeLog:
                   value: $2a$10$.Qa2l9VysOeG5M8HhgUbQ.h8KlTBLdMY/slPwMtL/I5OYibYUFQle
               - column:
                   name: email
-                  value: super@user.com
+                  value: support@LighthouseSoftware.com
               - column:
                   name: is_enabled
                   valueBoolean: true

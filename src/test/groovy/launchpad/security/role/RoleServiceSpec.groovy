@@ -1,19 +1,22 @@
-package launchpad.role
+package launchpad.security.role
 
+import launchpad.security.permission.PermissionService
 import spock.lang.Specification
 
+// TODO Add tests to verify role.isDeleted for each method
 class RoleServiceSpec extends Specification {
     Role role
     Role modifiedRole
     RoleRepository roleRepository = Mock()
-    RoleService roleService = new RoleService(roleRepository)
+    PermissionService permissionService = Mock()
+    RoleService roleService = new RoleService(roleRepository, permissionService)
 
     def setup() {
-        role = new Role(name:'Super User', authority: 'ROLE_SUPER')
-        modifiedRole = new Role(name:'Super Admin', authority: 'ROLE_SUPER')
+        role = new Role(name:'Super User', authority:'ROLE_SUPER')
+        modifiedRole = new Role(name:'Super Admin', authority:'ROLE_SUPER')
     }
 
-    def 'Test the list method of RoleService' () {
+    def 'listAll - returns a single result' () {
         setup:
             roleRepository.findAll() >> [role]
         when:
@@ -22,7 +25,7 @@ class RoleServiceSpec extends Specification {
             1 == roleList.size()
     }
 
-    def 'Test save method of RoleService' () {
+    def 'save - applies the values and calls the roleRepository' () {
         setup:
             roleRepository.save(_) >> role
         when:
@@ -32,17 +35,7 @@ class RoleServiceSpec extends Specification {
             'ROLE_SUPER' == savedRole.authority
     }
 
-    def 'Test update method of RoleService' () {
-        setup:
-            roleRepository.save(_) >> modifiedRole
-        when:
-            Role updatedRole = roleService.save(modifiedRole)
-        then:
-            'Super Admin' == updatedRole.name
-            'ROLE_SUPER' == updatedRole.authority
-    }
-
-    def 'Test find method of RoleService' () {
+    def 'get - calls the roleRepository.findOne' () {
         setup:
             roleRepository.findOne(_) >> role
         when:
@@ -52,12 +45,22 @@ class RoleServiceSpec extends Specification {
             'ROLE_SUPER' == fetchedRole.authority
     }
 
-    def 'Test delete method of RoleService' () {
+    def 'delete - verifies the object and calls roleRepository.delete' () {
         setup:
             roleRepository.findOne(_) >> role
         when:
             roleService.delete(1)
         then:
             role.isDeleted
+    }
+
+    def 'addPermission - inserts the permission if it does not already exist'() {
+        setup:
+        roleRepository.save(_) >> role
+        when:
+        Role savedRole = roleService.save(role)
+        then:
+        'Super User' == savedRole.name
+        'ROLE_SUPER' == savedRole.authority
     }
 }

@@ -34,7 +34,7 @@ class HelloController {
      **/
     @GetMapping
     ResponseEntity list() {
-        Map<String, String> response = [status:"alive", datetime:getCurrentDate()]
+        Map<String, String> response = [status:'alive', datetime:currentDate]
         return new ResponseEntity(response, HttpStatus.OK)
     }
 

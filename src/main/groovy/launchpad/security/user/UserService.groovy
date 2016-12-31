@@ -1,4 +1,4 @@
-package launchpad.user
+package launchpad.security.user
 
 import launchpad.error.UnknownIdentifierException
 import org.springframework.stereotype.Service
@@ -21,11 +21,11 @@ class UserService {
     void delete(@NotNull Long id) {
         User user = get(id)
         user.isDeleted = true
-        save(user)
+        userRepository.save(user)
     }
 
     User findByUsername(@NotNull String username) {
-        userRepository.findByUsername(username)
+        return userRepository.findByUsername(username)
     }
 
     User get(@NotNull Long id) {
@@ -40,10 +40,22 @@ class UserService {
         return userRepository.findAll()
     }
 
-    User save(@Valid User user) {
-        if (user.id) {
-            get(user.id)
+    User save(@Valid User userIn) {
+        if (userIn.id) {
+            User user = get(userIn.id)
+            user.with {
+                firstName = userIn.firstName
+                lastName = userIn.lastName
+                username = userIn.username
+                email = userIn.email
+                password = userIn.password
+                isEnabled = userIn.isEnabled
+                isAccountExpired = userIn.isAccountExpired
+                isAccountLocked = userIn.isAccountLocked
+                isCredentialsExpired = userIn.isCredentialsExpired
+            }
+            return userRepository.save(user)
         }
-        return userRepository.save(user)
+        return userRepository.save(userIn)
     }
 }

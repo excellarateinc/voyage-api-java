@@ -1,4 +1,4 @@
-package launchpad.role
+package launchpad.security.role
 
 import groovy.json.JsonSlurper
 import org.springframework.http.HttpHeaders
@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import spock.lang.Specification
 
+// TODO Replace the contents of this test to be like UserControllerIntegrationSpec, but for PermissionController
 class RoleControllerIntegrationSpec extends Specification {
     Role role
     MockMvc mockMvc
@@ -16,7 +17,7 @@ class RoleControllerIntegrationSpec extends Specification {
     RoleController roleController = new RoleController(roleService)
 
     def setup() {
-        role = new Role(id:1, name:'Super User', authority: 'ROLE_SUPER')
+        role = new Role(id:1, name:'Super User', authority:'ROLE_SUPER')
         mockMvc = MockMvcBuilders.standaloneSetup(roleController).build()
     }
 
