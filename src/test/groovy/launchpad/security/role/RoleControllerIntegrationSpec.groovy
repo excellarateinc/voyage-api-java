@@ -334,7 +334,7 @@ class RoleControllerIntegrationSpec extends Specification {
 
         then:
             responseEntity.statusCode.value() == 400
-            responseEntity.body[0].code == "400_bad_request"
+            responseEntity.body[0].code == '400_bad_request'
             responseEntity.body[0].description == 'Unknown record identifier provided'
     }
 
@@ -404,12 +404,12 @@ class RoleControllerIntegrationSpec extends Specification {
            ResponseEntity<Iterable> responseEntity =
                 restTemplate
                         .withBasicAuth('super', 'password')
-                        .exchange("/v1/roles/9999", HttpMethod.DELETE, null, Iterable, Collections.EMPTY_MAP)
+                        .exchange('/v1/roles/9999', HttpMethod.DELETE, null, Iterable, Collections.EMPTY_MAP)
 
         then:
             responseEntity.statusCode.value() == 400
             responseEntity.body.size() == 1
-            responseEntity.body[0].code == "400_bad_request"
-            responseEntity.body[0].description == "Unknown record identifier provided"
+            responseEntity.body[0].code == '400_bad_request'
+            responseEntity.body[0].description == 'Unknown record identifier provided'
     }
 }

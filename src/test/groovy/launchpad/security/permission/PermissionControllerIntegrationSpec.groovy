@@ -357,13 +357,13 @@ class PermissionControllerIntegrationSpec extends Specification {
 
         then:
             responseEntity.statusCode.value() == 400
-            responseEntity.body[0].code == "400_bad_request"
+            responseEntity.body[0].code == '400_bad_request'
             responseEntity.body[0].description == 'Unknown record identifier provided'
     }
 
     def '/v1/permissions/{id} PUT - Updating an immutable permission returns a 400 Bad Request response'() {
         given:
-            Permission permission = new Permission(id: 1, name:'Permission-Name-4', description:'test permission 4')
+            Permission permission = new Permission(id:1, name:'Permission-Name-4', description:'test permission 4')
 
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
@@ -454,13 +454,13 @@ class PermissionControllerIntegrationSpec extends Specification {
            ResponseEntity<Iterable> responseEntity =
                 restTemplate
                         .withBasicAuth('super', 'password')
-                        .exchange("/v1/permissions/9999", HttpMethod.DELETE, null, Iterable, Collections.EMPTY_MAP)
+                        .exchange('/v1/permissions/9999', HttpMethod.DELETE, null, Iterable, Collections.EMPTY_MAP)
 
         then:
             responseEntity.statusCode.value() == 400
             responseEntity.body.size() == 1
-            responseEntity.body[0].code == "400_bad_request"
-            responseEntity.body[0].description == "Unknown record identifier provided"
+            responseEntity.body[0].code == '400_bad_request'
+            responseEntity.body[0].description == 'Unknown record identifier provided'
     }
 
     def '/v1/permissions/{id} DELETE - Deleting an immutable permission returns a 400 Bad Request response'() {
@@ -468,13 +468,13 @@ class PermissionControllerIntegrationSpec extends Specification {
             ResponseEntity<Iterable> responseEntity =
                 restTemplate
                     .withBasicAuth('super', 'password')
-                    .exchange("/v1/permissions/1", HttpMethod.DELETE, null, Iterable, Collections.EMPTY_MAP)
+                    .exchange('/v1/permissions/1', HttpMethod.DELETE, null, Iterable, Collections.EMPTY_MAP)
 
         then:
             responseEntity.statusCode.value() == 400
             responseEntity.body.size() == 1
-            responseEntity.body[0].code == "400_bad_request"
-            responseEntity.body[0].description == "The requested record is immutable. No changes to this record are allowed."
+            responseEntity.body[0].code == '400_bad_request'
+            responseEntity.body[0].description == 'The requested record is immutable. No changes to this record are allowed.'
     }
 
     private void deletePermission(String permissionName) {
