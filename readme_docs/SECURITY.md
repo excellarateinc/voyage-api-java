@@ -6,6 +6,10 @@
 * If someone somehow steals the token, they can impersonate that user completely. 
 * Keeping a short expiration on the token is a way to force the client to "re up", typically using the stored refresh token. 
 * What is the default TTL for the tokens for the API? 
+* Tokens
+  * User Tokens: /authorize grant=token
+  * Client/App Token: /token (w/ client_id & secret)
+  * Following Facebook's explanations: https://developers.facebook.com/docs/facebook-login/access-tokens
 
 ## OWASP
 
