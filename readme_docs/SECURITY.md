@@ -6,6 +6,9 @@
 * If someone somehow steals the token, they can impersonate that user completely. 
 * Keeping a short expiration on the token is a way to force the client to "re up", typically using the stored refresh token. 
 * What is the default TTL for the tokens for the API? 
+  * Mobile apps get long-lived-tokens in Facebook
+  * Web apps get short-lived-tokens in Facebook
+  * Short lived tokens can be exchanged for long lived tokens. The implementor can essentially decide.
 * Tokens
   * User Tokens: /authorize grant=token
   * Client/App Token: /token (w/ client_id & secret)
