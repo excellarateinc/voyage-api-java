@@ -1,6 +1,11 @@
 ## Setup
 1. Generate Private/Public keys for OAUTH2 /src/main/resources/application.yaml
 
+## Tokens
+* Since we are using JWT, we don't have an easy way to revoke tokens other than the expiration date since we do not store these tokens in the database. 
+* If someone somehow steals the token, they can impersonate that user completely. 
+* Keeping a short expiration on the token is a way to force the client to "re up", typically using the stored refresh token. 
+* What is the default TTL for the tokens for the API? 
 
 ## OWASP
 
