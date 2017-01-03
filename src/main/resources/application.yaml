@@ -38,6 +38,20 @@ spring:
     #minEvictableIdleTimeMillis: 30000
     #timeBetweenEvictionRunsMillis: 30000
 
+  mail:
+      host: smtp.gmail.com
+      port: 587
+      username: username #Replace this field with your Gmail username.
+      password: password           #Replace this field with your Gmail password.
+      protocol: smtp
+      properties.mail.smtp:
+          auth: true
+          starttls.enable: true
+          ssl.trust: smtp.gmail.com
+
+  velocity:
+    resourceLoaderPath: classpath:/email/
+
 #######################################################################################################################
 # Spring Boot Web / Embedded Tomcat
 #######################################################################################################################

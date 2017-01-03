@@ -8,6 +8,7 @@ class MailMessage {
     String bcc
     String subject
     String template
-    Map<String, Object> model
+    Map<Object, Object> model
+    String text
 
 }

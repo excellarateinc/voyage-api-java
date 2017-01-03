@@ -63,6 +63,8 @@ dependencies {
     testCompile group: 'org.spockframework', name: 'spock-spring', version:'1.1-groovy-2.4-rc-3'
     testCompile group: 'cglib', name: 'cglib-nodep', version:'3.2.4'
     testCompile group: 'org.apache.httpcomponents', name: 'httpclient'
+    testCompile group: 'com.icegreen', name: 'greenmail', version: '1.5.2'
+
 }
 
 eclipse {
