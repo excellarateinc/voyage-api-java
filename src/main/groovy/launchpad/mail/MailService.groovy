@@ -22,19 +22,29 @@ class MailService {
 
     @Async
     boolean send(MailMessage mailMessage) {
+        //TODO: support attachments
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
         mimeMessageHelper.setFrom(mailMessage.from);
         mimeMessageHelper.setTo(mailMessage.to);
         mimeMessageHelper.setSubject(mailMessage.subject);
         if (mailMessage.template) {
-            String text = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, mailMessage.template, "UTF-8", mailMessage.model);
+            String text = geContentFromTemplate(mailMessage.model, mailMessage.template)
             mimeMessageHelper.setText(text, true);
         } else if (mailMessage.text) {
             mimeMessageHelper.setText(mailMessage.text, true);
         }
+        javaMailSender.send(mimeMessageHelper.getMimeMessage());
 
-        javaMailSender.send(mimeMessage);
+    }
 
+    String geContentFromTemplate(Map<String, Object> model, String template) {
+        StringBuffer content = new StringBuffer();
+        try {
+            content.append(VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, template, model));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return content.toString();
     }
 }
