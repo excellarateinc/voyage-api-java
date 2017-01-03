@@ -49,8 +49,10 @@ spring:
           starttls.enable: true
           ssl.trust: smtp.gmail.com
 
-  velocity:
-    resourceLoaderPath: classpath:/email/
+  freemarker:
+    template-loader-path: classpath:/email/
+    charset: UTF-8
+    suffix: .ftl
 
 #######################################################################################################################
 # Spring Boot Web / Embedded Tomcat

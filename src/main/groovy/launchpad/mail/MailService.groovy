@@ -1,12 +1,12 @@
 package launchpad.mail
 
+import freemarker.template.Configuration
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.apache.velocity.app.VelocityEngine;
-import org.springframework.ui.velocity.VelocityEngineUtils
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import javax.mail.internet.MimeMessage;
 
@@ -18,11 +18,11 @@ class MailService {
     private JavaMailSender javaMailSender;
 
     @Autowired
-    private VelocityEngine velocityEngine;
+    Configuration freeMarkerConfig;
 
     @Async
     boolean send(MailMessage mailMessage) {
-        //TODO: support attachments
+        //TODO: support attachments and override to address, default from address
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
         mimeMessageHelper.setFrom(mailMessage.from);
@@ -41,7 +41,7 @@ class MailService {
     String geContentFromTemplate(Map<String, Object> model, String template) {
         StringBuffer content = new StringBuffer();
         try {
-            content.append(VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, template, model));
+            content.append(FreeMarkerTemplateUtils.processTemplateIntoString(freeMarkerConfig.getTemplate(template), model));
         } catch (Exception e) {
             e.printStackTrace();
         }
