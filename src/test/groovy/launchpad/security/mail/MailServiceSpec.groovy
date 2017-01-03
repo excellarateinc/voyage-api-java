@@ -7,7 +7,6 @@ import launchpad.mail.MailMessage
 import launchpad.mail.MailService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import spock.lang.Shared
 import spock.lang.Specification
 
 import javax.mail.Message
@@ -18,7 +17,6 @@ class MailServiceSpec extends Specification {
     @Autowired
     MailService mailService
 
-    @Shared
     private GreenMail greenMailSMTP
 
     def setup() {
