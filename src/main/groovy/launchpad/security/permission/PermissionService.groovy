@@ -9,8 +9,8 @@ import org.springframework.validation.annotation.Validated
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
+@Service
 @Transactional
-@Service('permissionService')
 @Validated
 class PermissionService {
     private final PermissionRepository permissionRepository
@@ -38,6 +38,10 @@ class PermissionService {
 
     Iterable<Permission> findAllByUser(@NotNull Long userId) {
         permissionRepository.findAllByUserId(userId)
+    }
+
+    Iterable<Permission> findAllByClient(@NotNull Long clientId) {
+        permissionRepository.findAllByClientId(clientId)
     }
 
     Permission get(@NotNull Long id) {

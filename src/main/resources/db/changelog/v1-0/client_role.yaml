@@ -1,0 +1,60 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-client-role-table-create
+      author: Jagadeesh Manne
+      changes:
+        - createTable:
+            tableName: client_role
+            columns:
+              - column:
+                  name: client_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: int
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-client-role-table-add-composite-key
+      author: Jagadeesh Manne
+      changes:
+        - addPrimaryKey:
+            columnNames: client_id, role_id
+            tableName: client_role
+        - addForeignKeyConstraint:
+            baseColumnNames: client_id
+            baseTableName: client_role
+            constraintName: fk_client_role_table_client_id
+            referencedColumnNames: id
+            referencedTableName: client
+        - addForeignKeyConstraint:
+            baseColumnNames: role_id
+            baseTableName: client_role
+            constraintName: fk_client_role_table_role_id
+            referencedColumnNames: id
+            referencedTableName: role
+
+  - changeSet:
+      id: v1.0-client_role-seed-1
+      author: Rob Louie
+      changes:
+        - insert:
+            tableName: client_role
+            columns:
+              - column:
+                  name: client_id
+                  value: 1
+              - column:
+                  name: role_id
+                  value: 1
+        - insert:
+            tableName: client_role
+            columns:
+              - column:
+                  name: client_id
+                  value: 2
+              - column:
+                  name: role_id
+                  value: 2
