@@ -1,6 +1,6 @@
 package launchpad.error
 
 class ErrorResponse {
-    String code
-    String description
+    String error
+    String errorDescription
 }

@@ -1,0 +1,135 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-client-table-create
+      author: Rob Louie
+      changes:
+        - createTable:
+            tableName: client
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: client_identifier
+                  type: varchar(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: client_secret
+                  type: varchar(1000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_secret_required
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_scoped
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_auto_approve
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: access_token_validity_seconds
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: refresh_token_validity_seconds
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_enabled
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-client-seed
+      author: Rob Louie
+      changes:
+        - insert:
+            tableName: client
+            columns:
+              - column:
+                  name: name
+                  value: Launchpad AngularJS v1
+              - column:
+                  name: client_identifier
+                  value: angularv1
+              - column:
+                  name: client_secret
+                  value: $2a$10$.Qa2l9VysOeG5M8HhgUbQ.h8KlTBLdMY/slPwMtL/I5OYibYUFQle
+              - column:
+                  name: is_secret_required
+                  valueBoolean: false
+              - column:
+                  name: is_scoped
+                  valueBoolean: false
+              - column:
+                  name: is_auto_approve
+                  valueBoolean: false
+              - column:
+                  name: access_token_validity_seconds
+                  valueNumeric: 7200
+              - column:
+                  name: refresh_token_validity_seconds
+                  valueNumeric: 86400
+              - column:
+                  name: is_enabled
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: client
+            columns:
+              - column:
+                  name: name
+                  value: Generic Server-to-Server
+              - column:
+                  name: client_identifier
+                  value: servertoserver
+              - column:
+                  name: client_secret
+                  value: $2a$10$.Qa2l9VysOeG5M8HhgUbQ.h8KlTBLdMY/slPwMtL/I5OYibYUFQle
+              - column:
+                  name: is_secret_required
+                  valueBoolean: true
+              - column:
+                  name: is_scoped
+                  valueBoolean: false
+              - column:
+                  name: is_auto_approve
+                  valueBoolean: true
+              - column:
+                  name: access_token_validity_seconds
+                  valueNumeric: 7200
+              - column:
+                  name: refresh_token_validity_seconds
+                  valueNumeric: 86400
+              - column:
+                  name: is_enabled
+                  valueBoolean: true
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

@@ -4,7 +4,6 @@ import launchpad.security.permission.Permission
 import launchpad.security.permission.PermissionService
 import launchpad.security.user.User
 import launchpad.security.user.UserService
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetailsService
@@ -20,7 +19,6 @@ class PermissionBasedUserDetailsService implements UserDetailsService {
     private final UserService userService
     private final PermissionService permissionService
 
-    @Autowired
     PermissionBasedUserDetailsService(UserService userService, PermissionService permissionService) {
         this.userService = userService
         this.permissionService = permissionService

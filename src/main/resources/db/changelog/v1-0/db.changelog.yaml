@@ -9,3 +9,15 @@ databaseChangeLog:
       file: db/changelog/v1-0/permission.yaml
   - include:
       file: db/changelog/v1-0/role_permission.yaml
+  - include:
+      file: db/changelog/v1-0/client.yaml
+  - include:
+      file: db/changelog/v1-0/client_grant.yaml
+  - include:
+      file: db/changelog/v1-0/client_redirect_uri.yaml
+  - include:
+      file: db/changelog/v1-0/client_role.yaml
+  - include:
+        file: db/changelog/v1-0/client_scope_type.yaml
+  - include:
+      file: db/changelog/v1-0/client_scope.yaml

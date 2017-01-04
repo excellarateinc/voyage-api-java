@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
@@ -43,11 +44,16 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests().anyRequest().authenticated().and()
 
             // Enable HTTP Basic Authentication as a means to accept a username and password
-            // TODO REMOVE THIS WHEN JWT IS IMPLEMENTED
+            // TODO Disable Basic Auth since it's not needed. /authorize accepts POSTS and should redirec to /login
+            //      /token should accept posts with no basic auth.
+            //      I've read that all endpoints should be covered by a generic basic auth?
             .httpBasic().and()
 
             // Enable HTML form login page as a means to accept a username and password
-            .formLogin().and()
+            //.formLogin().permitAll().and()
+
+            // Disable Sessions to avoid security hacks with the JSESSIONID
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
             // Disable CSRF because security is handled through Cookie-less JWT tokens in the request header. No CSRF Risk.
             .csrf().disable()

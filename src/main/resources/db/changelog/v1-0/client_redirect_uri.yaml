@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-client-redirect-uri-table-create
+      author: Jagadeesh Manne
+      changes:
+        - createTable:
+            tableName: client_redirect_uri
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: client_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    referencedTableName: client
+                    referencedColumnName: id
+              - column:
+                  name: uri
+                  type: varchar(1000)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-client-redirect-uri-seed
+      author: Jagadeesh Manne
+      changes:
+        - insert:
+            tableName: client_redirect_uri
+            columns:
+              - column:
+                  name: client_id
+                  valueNumeric: 1
+              - column:
+                  name: uri
+                  value: http://localhost:8080/oauth
+        - insert:
+            tableName: client_redirect_uri
+            columns:
+              - column:
+                  name: client_id
+                  valueNumeric: 2
+              - column:
+                  name: uri
+                  value: http://localhost:8080/oauth
