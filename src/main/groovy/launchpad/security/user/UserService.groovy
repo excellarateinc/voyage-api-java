@@ -72,6 +72,7 @@ class UserService {
     }
 
     void sendVerificationEmail(User user) {
+        //TODO: Set expiry date for the token. Once user used that token set it to current date
         Token token = tokenService.generate(user, TokenType.EMAIL_VERIFICATION)
         MailMessage mailMessage = new MailMessage()
         mailMessage.to = user.email
