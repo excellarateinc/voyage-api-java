@@ -20,6 +20,11 @@ spring:
     driver-class-name: org.h2.Driver
 
   mail:
-    host: localhost
-    port: 3025
-    protocol: smtp
+      host: localhost
+      port: 3025
+      protocol: smtp
+
+  freemarker:
+      template-loader-path: classpath:/email/
+      charset: UTF-8
+      suffix: .ftl

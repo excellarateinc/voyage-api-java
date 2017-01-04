@@ -20,7 +20,7 @@ class MailServiceSpec extends Specification {
     private GreenMail greenMailSMTP
 
     def setup() {
-        ServerSetup setup = new ServerSetup(3025, "localhost", ServerSetup.PROTOCOL_SMTP);
+        ServerSetup setup = new ServerSetup(3025, 'localhost', ServerSetup.PROTOCOL_SMTP)
         greenMailSMTP = new GreenMail(setup)
         greenMailSMTP.start()
     }
@@ -36,14 +36,12 @@ class MailServiceSpec extends Specification {
             mailMessage.from = 'sender@launchpad.com'
             mailMessage.subject = 'test subject'
             mailMessage.text = 'test message'
-            mailMessage.cc = 'cc-receiver@launchpad.com'
-            mailMessage.bcc = 'bcc-receiver@launchpad.com'
         when:
             mailService.send(mailMessage)
         then:
-            Message[] messages = greenMailSMTP.getReceivedMessages()
+            Message[] messages = greenMailSMTP.receivedMessages
             assert 1 == messages.length
-            assert 'test subject' == messages[0].getSubject()
-            assert GreenMailUtil.getBody(messages[0]).contains('test message');
+            assert 'test subject' == messages[0].subject
+            assert GreenMailUtil.getBody(messages[0]).contains('test message')
     }
 }

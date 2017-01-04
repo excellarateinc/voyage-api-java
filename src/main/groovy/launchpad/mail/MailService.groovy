@@ -1,50 +1,56 @@
 package launchpad.mail
 
 import freemarker.template.Configuration
+import freemarker.template.TemplateException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import org.springframework.mail.javamail.JavaMailSender
+import org.springframework.mail.javamail.MimeMessageHelper
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils
 
-import javax.mail.internet.MimeMessage;
-
+import javax.mail.internet.MimeMessage
 
 @Service('mailService')
 class MailService {
 
-    @Autowired
-    private JavaMailSender javaMailSender;
+    private static final Logger LOGGER = LoggerFactory.getLogger(this.getClass())
 
     @Autowired
-    Configuration freeMarkerConfig;
+    private JavaMailSender javaMailSender
+
+    @Autowired
+    Configuration freeMarkerConfig
 
     @Async
     boolean send(MailMessage mailMessage) {
         //TODO: support attachments and override to address, default from address
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-        mimeMessageHelper.setFrom(mailMessage.from);
-        mimeMessageHelper.setTo(mailMessage.to);
-        mimeMessageHelper.setSubject(mailMessage.subject);
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage()
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true)
+        mimeMessageHelper.setFrom(mailMessage.from)
+        mimeMessageHelper.setTo(mailMessage.to)
+        mimeMessageHelper.setSubject(mailMessage.subject)
         if (mailMessage.template) {
             String text = geContentFromTemplate(mailMessage.model, mailMessage.template)
-            mimeMessageHelper.setText(text, true);
+            mimeMessageHelper.setText(text, true)
         } else if (mailMessage.text) {
-            mimeMessageHelper.setText(mailMessage.text, true);
+            mimeMessageHelper.setText(mailMessage.text, true)
         }
-        javaMailSender.send(mimeMessageHelper.getMimeMessage());
+        javaMailSender.send(mimeMessageHelper.mimeMessage)
 
     }
 
     String geContentFromTemplate(Map<String, Object> model, String template) {
-        StringBuffer content = new StringBuffer();
+        StringBuffer content = new StringBuffer()
         try {
-            content.append(FreeMarkerTemplateUtils.processTemplateIntoString(freeMarkerConfig.getTemplate(template), model));
-        } catch (Exception e) {
-            e.printStackTrace();
+            content.append(FreeMarkerTemplateUtils.processTemplateIntoString(freeMarkerConfig.getTemplate(template), model))
+        } catch (IOException e) {
+            LOGGER.error('Template {} was not found or could not be read, exception : {}', template, e.message)
+        } catch (TemplateException e) {
+            LOGGER.error('Template {} rendering failed, exception : {}', template, e.message)
         }
-        return content.toString();
+        return content.toString()
     }
 }

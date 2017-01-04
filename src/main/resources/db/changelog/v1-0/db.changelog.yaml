@@ -9,3 +9,5 @@ databaseChangeLog:
       file: db/changelog/v1-0/permission.yaml
   - include:
       file: db/changelog/v1-0/role_permission.yaml
+  - include:
+      file: db/changelog/v1-0/token.yaml
