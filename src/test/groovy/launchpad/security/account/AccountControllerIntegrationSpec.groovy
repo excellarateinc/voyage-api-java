@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 import javax.mail.Message
 
+//TODO: Update tests to cover all the actions in the controller
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AccountControllerIntegrationSpec extends Specification {
 
@@ -42,7 +43,7 @@ class AccountControllerIntegrationSpec extends Specification {
             ResponseEntity<User> responseEntity =
                     restTemplate
                             .withBasicAuth('super', 'password')
-                            .postForEntity('/v1/account', httpEntity, User)
+                            .postForEntity('/v1/account/register', httpEntity, User)
 
         then:
             responseEntity.statusCode.value() == 201

@@ -71,14 +71,45 @@ class UserService {
         return userRepository.save(userIn)
     }
 
+    User findUserByToken(@NotNull String tokenValue) {
+        Token token = tokenService.findByValue(tokenValue)
+        User user = get(token.entityId)
+        return user
+    }
+
+    boolean validateUserByToken(@NotNull String tokenValue) {
+        User user = findUserByToken(tokenValue)
+        return (user != null)
+    }
+
+    User activate(@NotNull String tokenValue) {
+        Token token = tokenService.findByValue(tokenValue)
+        User user = get(token.entityId)
+        user.isEnabled = true
+        userRepository.save(user)
+        token.expiresOn = new Date()
+        tokenService.save(token)
+        return user
+    }
+
     void sendVerificationEmail(User user) {
-        //TODO: Set expiry date for the token. Once user used that token set it to current date
         Token token = tokenService.generate(user, TokenType.EMAIL_VERIFICATION)
         MailMessage mailMessage = new MailMessage()
         mailMessage.to = user.email
         mailMessage.model = ['token':token, 'user':user]
         mailMessage.subject = 'Account information'
         mailMessage.template = 'email-verification.ftl'
+        mailMessage.from = 'support@launchpad.com'
+        mailService.send(mailMessage)
+    }
+
+    void sendPasswordResetEmail(User user) {
+        Token token = tokenService.generate(user, TokenType.RESET_PASSWORD)
+        MailMessage mailMessage = new MailMessage()
+        mailMessage.to = user.email
+        mailMessage.model = ['token':token, 'user':user]
+        mailMessage.subject = 'Password reset information'
+        mailMessage.template = 'reset-password-email'
         mailMessage.from = 'support@launchpad.com'
         mailService.send(mailMessage)
     }

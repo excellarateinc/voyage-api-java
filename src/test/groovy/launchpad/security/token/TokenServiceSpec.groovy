@@ -3,6 +3,7 @@ package launchpad.security.token
 import launchpad.security.user.User
 import spock.lang.Specification
 
+//TODO: Update tests to cover all the methods in the service
 class TokenServiceSpec extends Specification {
 
     TokenRepository tokenRepository = Mock()
