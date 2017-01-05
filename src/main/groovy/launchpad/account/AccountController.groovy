@@ -50,7 +50,7 @@ class AccountController {
      * @apiUse UnauthorizedError
      **/
     @PostMapping('/register')
-    ResponseEntity save(@RequestBody User user) {
+    ResponseEntity register(@RequestBody User user) {
         user.isEnabled = false
         User newUser = userService.save(user)
         userService.sendVerificationEmail(user)
@@ -172,7 +172,7 @@ class AccountController {
      * @apiParam {String} token Verification Token
      *
      * @apiSuccessExample Success-Response:
-     *   HTTP/1.1 204 NO CONTENT
+     *   HTTP/1.1 200
      *
      * @apiUse BadRequestError
      **/

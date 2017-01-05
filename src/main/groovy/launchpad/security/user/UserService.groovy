@@ -99,7 +99,7 @@ class UserService {
         mailMessage.model = ['token':token, 'user':user]
         mailMessage.subject = 'Account information'
         mailMessage.template = 'email-verification.ftl'
-        mailMessage.from = 'support@launchpad.com'
+        mailMessage.from = 'support@launchpad.com' //TODO: ignore this when default email configured in properties
         mailService.send(mailMessage)
     }
 
@@ -110,7 +110,7 @@ class UserService {
         mailMessage.model = ['token':token, 'user':user]
         mailMessage.subject = 'Password reset information'
         mailMessage.template = 'reset-password-email'
-        mailMessage.from = 'support@launchpad.com'
+        mailMessage.from = 'noreply@launchpad.com' //TODO: ignore this when default email configured in properties
         mailService.send(mailMessage)
     }
 }

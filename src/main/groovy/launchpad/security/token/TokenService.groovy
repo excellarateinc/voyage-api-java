@@ -22,9 +22,7 @@ class TokenService {
 
     Token generate(Object entity, TokenType tokenType, Date expiresOn = null) {
         Token token = tokenRepository.find(entity.id, entity.class.name, tokenType)
-        if (!token) {
-            token = new Token()
-        }
+        token = token ?: new Token()
         token.entityType = entity.class.name
         token.entityId = entity.id
         token.expiresOn = expiresOn
