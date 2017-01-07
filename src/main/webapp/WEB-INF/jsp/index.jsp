@@ -9,7 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-    <title>Log in with your account</title>
+    <title>I think you're lost!</title>
+
     <link href="${contextPath}/resources/css/bootstrap.min.css" rel="stylesheet">
     <link href="${contextPath}/resources/css/common.css" rel="stylesheet">
 </head>
@@ -18,19 +19,23 @@
 
 <div class="container">
 
-    <form method="POST" action="${contextPath}/login" class="form-signin">
+    <div class="text-content">
+        <h2 class="form-heading">I think you're lost!</h2>
 
-        <h2 class="form-heading">Log in</h2>
+        <p>
+            You successfully logged in, but this probably isn't the page you are looking for.
+        </p>
+        <p>
+            Try clicking 'Back' in your app or web browser to see if you can try the
+            action again.
+        </p>
+        <br />
+        <p>
+            Contact <a href="mailto:support@LighthouseSoftware.com">support@LighthouseSoftware.com</a>
+            if you need further assistance.
+        </p>
 
-        <div class="form-group ${param.error != null ? 'has-error' : ''}">
-            <input name="username" type="text" class="form-control" placeholder="Username" autofocus="autofocus" />
-            <input name="password" type="password" class="form-control" placeholder="Password"/>
-            <span>${param.error != null ? 'Invalid Log In credentials. Please try again.' : ''}</span>
-
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
-        </div>
-
-    </form>
+    </div>
 
 </div>
 <!-- /container -->

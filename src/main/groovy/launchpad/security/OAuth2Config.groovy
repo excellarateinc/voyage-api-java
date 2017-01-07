@@ -8,7 +8,6 @@ import org.springframework.core.io.ClassPathResource
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer
@@ -96,7 +95,8 @@ class OAuth2Config {
         void configure(HttpSecurity http) throws Exception {
             http
 
-                // Limit this Config to only handling /api requests
+                // Limit this Config to only handling /api requests. This will also disable authentication filters on
+                // /api requests and enable the OAuth2 token filter as the only means of stateless authentication.
                 .requestMatchers()
                     .antMatchers('/api/**')
                     .and()
