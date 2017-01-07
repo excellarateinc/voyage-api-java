@@ -96,9 +96,6 @@ class OAuth2Config {
         void configure(HttpSecurity http) throws Exception {
             http
 
-                // Required to process form-based login
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
-
                 // Limit this Config to only handling /api requests
                 .requestMatchers()
                     .antMatchers('/api/**')
