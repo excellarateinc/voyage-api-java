@@ -95,7 +95,7 @@ class Client {
      *
      * See the OAuth2 specs for more information on these types at http://oauth.com
      */
-    @OneToMany(fetch=FetchType.EAGER, mappedBy="client")
+    @OneToMany(fetch=FetchType.EAGER, mappedBy='client')
     Set<ClientGrant> clientGrants
 
     /**
@@ -103,7 +103,7 @@ class Client {
      *
      * Scope examples could be: Read Your Contacts, Scan Your Inbox, Send Email To Your Mother
      */
-    @OneToMany(fetch=FetchType.EAGER, mappedBy="client")
+    @OneToMany(fetch=FetchType.EAGER, mappedBy='client')
     Set<ClientScope> clientScopes
 
     /**
@@ -114,7 +114,7 @@ class Client {
      * require a redirect. If the given redirect URI exactly matches a URI in the database for the client, then the
      * given URI will be used for the redirect process.
      */
-    @OneToMany(fetch=FetchType.EAGER, mappedBy="client")
+    @OneToMany(fetch=FetchType.EAGER, mappedBy='client')
     Set<ClientRedirectUri> clientRedirectUris
 
     /**

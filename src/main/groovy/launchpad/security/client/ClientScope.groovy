@@ -14,10 +14,10 @@ class ClientScope {
     Long id
 
     @ManyToOne
-    @JoinColumn(name="client_id")
+    @JoinColumn(name='client_id')
     Client client
 
     @ManyToOne
-    @JoinColumn(name="client_scope_type_id")
+    @JoinColumn(name='client_scope_type_id')
     ClientScopeType clientScopeType
 }

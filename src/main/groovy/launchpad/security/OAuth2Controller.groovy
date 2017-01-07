@@ -10,27 +10,27 @@ import org.springframework.web.util.HtmlUtils
 import javax.servlet.http.HttpServletRequest
 
 @Controller
-@SessionAttributes("authorizationRequest")
+@SessionAttributes('authorizationRequest')
 class OAuth2Controller {
 
-    @RequestMapping("/oauth/confirm_access")
+    @RequestMapping('/oauth/confirm_access')
     ModelAndView getAccessConfirmation(Map<String, Object> model) throws Exception {
-        return new ModelAndView("oauth-confirm-access", model)
+        return new ModelAndView('oauth-confirm-access', model)
     }
 
-    @RequestMapping("/oauth/error")
+    @RequestMapping('/oauth/error')
     ModelAndView handleError(HttpServletRequest request) {
-        Map<String, Object> model = new HashMap<String, Object>()
-        Object error = request.getAttribute("error")
+        Map<String, Object> model = [:]
+        Object error = request.getAttribute('error')
         // The error summary may contain malicious user input, it needs to be escaped to prevent XSS
         String errorSummary
         if (error instanceof OAuth2Exception) {
             OAuth2Exception oauthError = (OAuth2Exception) error
-            errorSummary = HtmlUtils.htmlEscape(oauthError.getSummary())
+            errorSummary = HtmlUtils.htmlEscape(oauthError.summary)
         } else {
-            errorSummary = "Unknown error"
+            errorSummary = 'Unknown error'
         }
-        model.put("errorSummary", errorSummary)
-        return new ModelAndView("oauth-error", model)
+        model.put('errorSummary', errorSummary)
+        return new ModelAndView('oauth-error', model)
     }
 }

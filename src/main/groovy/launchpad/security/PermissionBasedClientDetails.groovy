@@ -20,8 +20,7 @@ class PermissionBasedClientDetails implements ClientDetails {
 
     @Override
     Set<String> getResourceIds() {
-        // Not implemented since security is governed by permissions of the client
-        return null
+        return Collections.EMPTY_SET
     }
 
     @Override
@@ -78,7 +77,7 @@ class PermissionBasedClientDetails implements ClientDetails {
 
     @Override
     Integer getRefreshTokenValiditySeconds() {
-        return client.getRefreshTokenValiditySeconds()
+        return client.refreshTokenValiditySeconds
     }
 
     @Override
@@ -88,7 +87,6 @@ class PermissionBasedClientDetails implements ClientDetails {
 
     @Override
     Map<String, Object> getAdditionalInformation() {
-        // Not Implemented
-        return null
+        return Collections.EMPTY_MAP
     }
 }

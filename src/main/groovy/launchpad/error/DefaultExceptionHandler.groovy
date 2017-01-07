@@ -23,7 +23,7 @@ import javax.validation.ConstraintViolationException
 @RestController
 class DefaultExceptionHandler implements ErrorController {
     private static final String UNDER_SCORE = '_'
-    private final Logger log = LoggerFactory.getLogger(this.getClass())
+    private static final Logger LOG = LoggerFactory.getLogger(this.getClass())
     private final ErrorAttributes errorAttributes
 
     String errorPath = '/error' // Overrides ErrorController.getErrorPath()
@@ -36,8 +36,8 @@ class DefaultExceptionHandler implements ErrorController {
     @ExceptionHandler
     ResponseEntity<Iterable<ErrorResponse>> handle(AccessDeniedException ignore) {
         ErrorResponse errorResponse = new ErrorResponse(
-                error:getErrorCode(HttpStatus.UNAUTHORIZED.value()),
-                errorDescription:'401 Unauthorized. Access Denied',
+            error:getErrorCode(HttpStatus.UNAUTHORIZED.value()),
+            errorDescription:'401 Unauthorized. Access Denied',
         )
         return new ResponseEntity([errorResponse], HttpStatus.UNAUTHORIZED)
     }
@@ -79,11 +79,11 @@ class DefaultExceptionHandler implements ErrorController {
 
     @ExceptionHandler(value = Exception)
     ResponseEntity<Iterable<ErrorResponse>> handle(Exception e) {
-        log.error("Unexpected error occurred", e)
+        LOG.error('Unexpected error occurred', e)
 
         ErrorResponse errorResponse = new ErrorResponse(
-                error:'error.500_internal_server_error',
-                errorDescription:e.toString(),
+            error:'error.500_internal_server_error',
+            errorDescription:e.toString(),
         )
         return new ResponseEntity([errorResponse], HttpStatus.INTERNAL_SERVER_ERROR)
     }
@@ -94,8 +94,8 @@ class DefaultExceptionHandler implements ErrorController {
         String errorCode = getErrorCode((int)errorMap.status)
         String errorMessage = "${errorMap.status} ${errorMap.error}. ${errorMap.message}"
         ErrorResponse errorResponse = new ErrorResponse(
-                error:errorCode,
-                errorDescription:errorMessage,
+            error:errorCode,
+            errorDescription:errorMessage,
         )
         return new ResponseEntity([errorResponse], HttpStatus.valueOf(response.status))
     }

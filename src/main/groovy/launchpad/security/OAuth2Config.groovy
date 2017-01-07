@@ -91,6 +91,10 @@ class OAuth2Config {
     @Configuration
     @EnableResourceServer
     class ResourceServerConfig extends ResourceServerConfigurerAdapter {
+        private static final String ANY = '/**'
+        private static final String READ = "#oauth2.hasScope('Read_Data')"
+        private static final String WRITE = "#oauth2.hasScope('Write_Data')"
+
         @Override
         void configure(HttpSecurity http) throws Exception {
             http
@@ -103,10 +107,11 @@ class OAuth2Config {
 
                 // Enforce client 'scope' permissions once authenticated
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.GET, '/**').access("#oauth2.hasScope('Read_Data')")
-                    .antMatchers(HttpMethod.POST, '/**').access("#oauth2.hasScope('Write_Data')")
-                    .antMatchers(HttpMethod.PUT, '/**').access("#oauth2.hasScope('Write_Data')")
-                    .antMatchers(HttpMethod.DELETE, '/**').access("#oauth2.hasScope('Write_Data')")
+                    .antMatchers(HttpMethod.GET, ANY).access(READ)
+                    .antMatchers(HttpMethod.POST, ANY).access(WRITE)
+                    .antMatchers(HttpMethod.PUT, ANY).access(WRITE)
+                    .antMatchers(HttpMethod.PATCH, ANY).access(WRITE)
+                    .antMatchers(HttpMethod.DELETE, ANY).access(WRITE)
                     .and()
         }
     }

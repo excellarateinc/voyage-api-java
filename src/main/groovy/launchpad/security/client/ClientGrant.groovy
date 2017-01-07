@@ -16,7 +16,7 @@ class ClientGrant {
     Long id
 
     @ManyToOne
-    @JoinColumn(name="client_id")
+    @JoinColumn(name='client_id')
     Client client
 
     @Enumerated(EnumType.STRING)

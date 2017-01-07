@@ -15,7 +15,7 @@ class ClientRedirectUri {
     Long id
 
     @ManyToOne
-    @JoinColumn(name="client_id")
+    @JoinColumn(name='client_id')
     Client client
 
     @NotNull
