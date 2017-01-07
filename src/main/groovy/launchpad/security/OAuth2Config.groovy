@@ -86,8 +86,8 @@ class OAuth2Config {
      * OAuth2AuthenticationProcessingFilter into the servlet filter chain AND extends the HTTP Security policy that are
      * OAuth2 specific.
      *
-     * It's important to know that the ResourceServerConfig is ordered ahead of the WebSecurityConfig, so whatever is
-     * configured in this class for http authorizations will be executed BEFORE the rules defined in WebSecurityConfig.
+     * NOTE: This config is limited to only handling RESOURCE authorizations extending from /api. All other web security
+     * rules belong in the WebSecurityConfig, like authentication providers and other access permissions.
      */
     @Configuration
     @EnableResourceServer
@@ -96,20 +96,13 @@ class OAuth2Config {
         void configure(HttpSecurity http) throws Exception {
             http
 
-                // Allow any user to access 'login' and web 'resources' like CSS/JS
-                .authorizeRequests()
-                    .antMatchers('/resources/**', 'login').permitAll()
+                // Required to process form-based login
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
+
+                // Limit this Config to only handling /api requests
+                .requestMatchers()
+                    .antMatchers('/api/**')
                     .and()
-
-                // Enforce every request to be authenticated
-//                .authorizeRequests()
-//                    .anyRequest().authenticated()
-//                    .and()
-
-                // Force any request to /oauth/authorize to require an authenticated user. This will essentially redirect
-                // to the user login page.
-                .authorizeRequests()
-                    .antMatchers('/oauth/authorize').authenticated().and()
 
                 // Enforce client 'scope' permissions once authenticated
                 .authorizeRequests()
@@ -118,29 +111,6 @@ class OAuth2Config {
                     .antMatchers(HttpMethod.PUT, '/**').access("#oauth2.hasScope('Write_Data')")
                     .antMatchers(HttpMethod.DELETE, '/**').access("#oauth2.hasScope('Write_Data')")
                     .and()
-
-                // Required to process form-based login
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
-
-
-                // Enable Form Login for users.
-                //
-                // DEVELOPER NOTE
-                // For whatever reason, the .formLogin() definitions need to be in both the WebSecurityConfig and
-                // the ResourceServerConfig (this config). If only WebSecurityConfig has the .formLogin() definition,
-                // then the ResourceServerConfig wont inject the OAuth2AuthenticationProcessingFilter into the servlet
-                // filter chain for handling incoming Authorization bear tokens. If only ResourceServerConfig has the
-                // .formLogin() definition, then WebSecurityConfig wont inject the UsernamePasswordAuthenticationFilter
-                // or the BasicAuthenticationFilter. Including .formLogin() in both config files ensures all 3 filters
-                // are included. Based on StackOverflow chatter, this is a known bug for SpringBoot 1.4 w/ Spring Security
-                // + OAuth2. -- Tim Michalski 1/6/2017
-                .formLogin()
-                    .loginPage('/login').permitAll()
-                    .and()
-
-                // Enable Basic Auth login for users and clients. This is primarily for client login directly to the
-                // /oauth/token service.
-                .httpBasic()
         }
     }
 }

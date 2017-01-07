@@ -53,22 +53,17 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
 
+            // Allow any user to access 'login' and web 'resources' like CSS/JS
+            .authorizeRequests()
+                .antMatchers('/resources/**', 'login').permitAll()
+                .and()
+
             // Enforce every request to be authenticated
             .authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
 
             // Enable Form Login for users.
-            //
-            // DEVELOPER NOTE
-            // For whatever reason, the .formLogin() definitions need to be in both the WebSecurityConfig and
-            // the ResourceServerConfig (this config). If only WebSecurityConfig has the .formLogin() definition,
-            // then the ResourceServerConfig wont inject the OAuth2AuthenticationProcessingFilter into the servlet
-            // filter chain for handling incoming Authorization bear tokens. If only ResourceServerConfig has the
-            // .formLogin() definition, then WebSecurityConfig wont inject the UsernamePasswordAuthenticationFilter
-            // or the BasicAuthenticationFilter. Including .formLogin() in both config files ensures all 3 filters
-            // are included. Based on StackOverflow chatter, this is a known bug for SpringBoot 1.4 w/ Spring Security
-            // + OAuth2. -- Tim Michalski 1/6/2017
             .formLogin()
                 .loginPage('/login').permitAll()
                 .and()

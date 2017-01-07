@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(['/v1/permissions', '/v1.0/permissions'])
+@RequestMapping(['/api/v1/permissions', '/api/v1.0/permissions'])
 class PermissionController {
     private final PermissionService permissionService
 
