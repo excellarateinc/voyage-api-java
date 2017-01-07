@@ -1,0 +1,4 @@
+<html><head></head><body data-pinterest-extension-installed="sa1.37.01"><h1>Tim's OAuth Approval</h1>
+<p>Do you authorize 'client' to access your protected resources?</p>
+<form id="confirmationForm" name="confirmationForm" action="/api/oauth/authorize" method="post"><input name="user_oauth_approval" value="true" type="hidden"><label><input name="authorize" value="Authorize" type="submit"></label></form>
+<form id="denialForm" name="denialForm" action="/api/oauth/authorize" method="post"><input name="user_oauth_approval" value="false" type="hidden"><label><input name="deny" value="Deny" type="submit"></label></form></body></html>

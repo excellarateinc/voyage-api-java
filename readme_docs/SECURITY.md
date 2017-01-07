@@ -1,6 +1,76 @@
 ## Setup
-1. Generate Private/Public keys for OAUTH2 /src/main/resources/application.yaml
 
+### Configure Spring OAuth with JWT & asymmetric RSA keypair
+Following the example found in https://beku8.wordpress.com/2015/03/31/configuring-spring-oauth2-with-jwt-asymmetric-rsa-keypair/
+
+#### Generate Private/Public keys for OAUTH2 JWT
+```
+keytool -genkeypair -alias jwt -keyalg RSA \
+-dname "CN=Web Server,OU=Unit,O=Organization,L=City,S=State,C=US" \
+-keypass changeme -keystore jwt.jks -storepass changeme
+```
+
+* Revise the keytool statement above with your own personalized parameters
+* Copy the jwt.jks to your /src/main/resources folder so that it is available on the classpath
+
+> NOTE: These are the default settings. Be sure to document any changes in the "keypass" or "storepass" in a _secure location_
+(ie not .MD files in source control) so that you don't lose these!  
+
+#### Export the Public Key
+```
+keytool -export -keystore jwt.jks -alias jwt -file jwt.cer
+```
+* Enter the password used to generate the keystore (ie changeme)
+* The key will be exported to jwt.cer
+ 
+```
+openssl x509 -inform der -in jwt.cer -pubkey -noout
+```
+
+The output will be the public key, which should look something like:
+
+```
+-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4REj5EYufU5OUnv9nij+
+j9irwALL3BwX9XxB7oDx3uj93P5h8rzTTdG/suaG3aBqRr5rqXpmTgwG1nf6FBfR
+8kiPp9R196cAT9g4OInsdNbux7oy5akUVsRo9pagEL0JB7eGbASi0z5A38QkpbjB
+MhIN0W9zwghsGNbf7N6wTVQN1NFHDW9zMdWUS9VBPeEGUZAMkKElGltHVhCdJGBf
+OdriLIO2KdimjO5q9Q9+qG2B96DFGNYvmuDlDLM11Q2fsre305CV1HN0vQulLhlr
+MJo9QdZt1g2d1VN5uIKid5dxWTAuUvJhgla6yCaTfYeV1OGq5C3DFV7tKDGNAIXL
+TQIDAQAB
+-----END PUBLIC KEY-----
+```
+
+Copy the public key into the /src/main/resources/application.yaml file along with the JWT keystore
+and private key information, like:
+
+```
+security:
+  oauth2:
+    resource:
+      id: launchpad
+      jwt:
+        key-value: |
+          -----BEGIN PUBLIC KEY-----
+          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4REj5EYufU5OUnv9nij+
+          j9irwALL3BwX9XxB7oDx3uj93P5h8rzTTdG/suaG3aBqRr5rqXpmTgwG1nf6FBfR
+          8kiPp9R196cAT9g4OInsdNbux7oy5akUVsRo9pagEL0JB7eGbASi0z5A38QkpbjB
+          MhIN0W9zwghsGNbf7N6wTVQN1NFHDW9zMdWUS9VBPeEGUZAMkKElGltHVhCdJGBf
+          OdriLIO2KdimjO5q9Q9+qG2B96DFGNYvmuDlDLM11Q2fsre305CV1HN0vQulLhlr
+          MJo9QdZt1g2d1VN5uIKid5dxWTAuUvJhgla6yCaTfYeV1OGq5C3DFV7tKDGNAIXL
+          TQIDAQAB
+          -----END PUBLIC KEY-----
+
+  # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
+  # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+  jwt:
+    key-store-filename: jwt.jks
+    key-store-password: changeme
+    private-key-name: jwt
+    private-key-password: changeme       
+```
+
+#### 
 
 ## OWASP
 
