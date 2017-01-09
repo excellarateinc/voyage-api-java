@@ -45,6 +45,15 @@ databaseChangeLog:
             columns:
               - column:
                   name: client_id
+                  valueNumeric: 1
+              - column:
+                  name: client_scope_type_id
+                  valueNumeric: 2
+        - insert:
+            tableName: client_scope
+            columns:
+              - column:
+                  name: client_id
                   valueNumeric: 2
               - column:
                   name: client_scope_type_id

@@ -31,7 +31,7 @@
 <div class="container">
     <div class="text-content">
         <h2 class="form-heading">Authorization Error</h2>
-        <p>An unexpected error occurred during the authorization process.</p>
+        <p>An error occurred during the authorization process.</p>
 
         <div id="chips">
             <span class="chip">${errorSummary}</span>

@@ -56,7 +56,7 @@ class PermissionControllerSpec extends Specification {
             1 * permissionService.save(permission) >> permission
             response != null
             HttpStatus.CREATED == response.statusCode
-            '/v1/permissions/1' == response.headers.location[0]
+            '/api/v1/permissions/1' == response.headers.location[0]
             'permission.write' == response.body.name
             'Write permission only' == response.body.description
 

@@ -84,7 +84,7 @@ class PermissionController {
     ResponseEntity save(@RequestBody Permission permission) {
         Permission newPermission = permissionService.save(permission)
         HttpHeaders headers = new HttpHeaders()
-        headers.set(HttpHeaders.LOCATION, "/v1/permissions/${newPermission.id}")
+        headers.set(HttpHeaders.LOCATION, "/api/v1/permissions/${newPermission.id}")
         return new ResponseEntity(newPermission, headers, HttpStatus.CREATED)
     }
 

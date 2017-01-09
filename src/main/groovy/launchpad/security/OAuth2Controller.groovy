@@ -25,10 +25,13 @@ class OAuth2Controller {
         // The error summary may contain malicious user input, it needs to be escaped to prevent XSS
         String errorSummary
         if (error instanceof OAuth2Exception) {
-            OAuth2Exception oauthError = (OAuth2Exception) error
+            OAuth2Exception oauthError = (OAuth2Exception)error
             errorSummary = HtmlUtils.htmlEscape(oauthError.summary)
+        } else if (error instanceof Exception) {
+            Exception oauthError = (Exception)error
+            errorSummary = oauthError.message
         } else {
-            errorSummary = 'Unknown error'
+            errorSummary = error.toString()
         }
         model.put('errorSummary', errorSummary)
         return new ModelAndView('oauth-error', model)

@@ -84,7 +84,7 @@ class RoleController {
     ResponseEntity save(@RequestBody Role role) {
         Role newRole = roleService.save(role)
         HttpHeaders headers = new HttpHeaders()
-        headers.set(HttpHeaders.LOCATION, "/v1/roles/${newRole.id}")
+        headers.set(HttpHeaders.LOCATION, "/api/v1/roles/${newRole.id}")
         return new ResponseEntity(newRole, headers, HttpStatus.CREATED)
     }
 

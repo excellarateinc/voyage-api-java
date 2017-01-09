@@ -22,7 +22,6 @@ import javax.validation.ConstraintViolationException
 @ControllerAdvice
 @RestController
 class DefaultExceptionHandler implements ErrorController {
-    private static final String UNDER_SCORE = '_'
     private static final Logger LOG = LoggerFactory.getLogger(this.getClass())
     private final ErrorAttributes errorAttributes
 
@@ -36,7 +35,7 @@ class DefaultExceptionHandler implements ErrorController {
     @ExceptionHandler
     ResponseEntity<Iterable<ErrorResponse>> handle(AccessDeniedException ignore) {
         ErrorResponse errorResponse = new ErrorResponse(
-            error:getErrorCode(HttpStatus.UNAUTHORIZED.value()),
+            error:ErrorUtils.createErrorCode(HttpStatus.UNAUTHORIZED.value()),
             errorDescription:'401 Unauthorized. Access Denied',
         )
         return new ResponseEntity([errorResponse], HttpStatus.UNAUTHORIZED)
@@ -47,7 +46,7 @@ class DefaultExceptionHandler implements ErrorController {
         List errorResponses = []
         e.constraintViolations.each { violation ->
             ErrorResponse errorResponse = new ErrorResponse(
-                error:formatToCode(violation.propertyPath.toString() + '.' + violation.message),
+                error:ErrorUtils.formatErrorCode(violation.propertyPath.toString() + '.' + violation.message),
                 errorDescription:violation.message,
             )
             errorResponses.add(errorResponse)
@@ -71,7 +70,7 @@ class DefaultExceptionHandler implements ErrorController {
     @ExceptionHandler
     ResponseEntity<Iterable<ErrorResponse>> handle(AppException e) {
         ErrorResponse errorResponse = new ErrorResponse(
-            error:getErrorCode(e.httpStatus.value()),
+            error:ErrorUtils.createErrorCode(e.httpStatus.value()),
             errorDescription:e.message,
         )
         return new ResponseEntity([errorResponse], e.httpStatus)
@@ -82,7 +81,7 @@ class DefaultExceptionHandler implements ErrorController {
         LOG.error('Unexpected error occurred', e)
 
         ErrorResponse errorResponse = new ErrorResponse(
-            error:'error.500_internal_server_error',
+            error:'500_internal_server_error',
             errorDescription:e.toString(),
         )
         return new ResponseEntity([errorResponse], HttpStatus.INTERNAL_SERVER_ERROR)
@@ -91,7 +90,7 @@ class DefaultExceptionHandler implements ErrorController {
     @RequestMapping(value = '/error')
     ResponseEntity<Iterable<ErrorResponse>> handleError(HttpServletRequest request, HttpServletResponse response) {
         Map errorMap = getErrorAttributes(request, false)
-        String errorCode = getErrorCode((int)errorMap.status)
+        String errorCode = ErrorUtils.createErrorCode((int)errorMap.status)
         String errorMessage = "${errorMap.status} ${errorMap.error}. ${errorMap.message}"
         ErrorResponse errorResponse = new ErrorResponse(
             error:errorCode,
@@ -100,18 +99,8 @@ class DefaultExceptionHandler implements ErrorController {
         return new ResponseEntity([errorResponse], HttpStatus.valueOf(response.status))
     }
 
-    private static String getErrorCode(int httpStatusCode) {
-        HttpStatus httpStatus = HttpStatus.valueOf(httpStatusCode)
-        String errorCode = httpStatus.value() + UNDER_SCORE + httpStatus.name()
-        return formatToCode(errorCode)
-    }
-
     private Map<String, Object> getErrorAttributes(HttpServletRequest request, boolean includeStackTrace = false) {
         ServletRequestAttributes requestAttributes = new ServletRequestAttributes(request)
         return errorAttributes.getErrorAttributes(requestAttributes, includeStackTrace)
-    }
-
-    private static String formatToCode(String description) {
-        return description.toLowerCase().replace(' ', UNDER_SCORE)
     }
 }

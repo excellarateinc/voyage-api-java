@@ -52,6 +52,15 @@ databaseChangeLog:
             columns:
               - column:
                   name: client_id
+                  valueNumeric: 1
+              - column:
+                  name: grant_type
+                  value: CLIENT_CREDENTIALS
+        - insert:
+            tableName: client_grant
+            columns:
+              - column:
+                  name: client_id
                   valueNumeric: 2
               - column:
                   name: grant_type

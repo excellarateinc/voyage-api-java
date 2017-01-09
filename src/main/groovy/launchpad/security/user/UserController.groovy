@@ -94,7 +94,7 @@ class UserController {
     ResponseEntity save(@RequestBody User user) {
         User newUser = userService.save(user)
         HttpHeaders headers = new HttpHeaders()
-        headers.set(HttpHeaders.LOCATION, "/v1/users/${newUser.id}")
+        headers.set(HttpHeaders.LOCATION, "/api/v1/users/${newUser.id}")
         return new ResponseEntity(newUser, headers, HttpStatus.CREATED)
     }
 

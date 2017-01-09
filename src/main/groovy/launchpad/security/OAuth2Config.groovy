@@ -1,5 +1,6 @@
 package launchpad.security
 
+import launchpad.error.WebResponseExceptionTranslator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -15,8 +16,13 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer
+import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer
+import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler
+import org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory
+import org.springframework.security.web.AuthenticationEntryPoint
+import org.springframework.security.web.access.AccessDeniedHandler
 
 import java.security.KeyPair
 
@@ -49,6 +55,9 @@ class OAuth2Config {
         @Autowired
         private PermissionBasedClientDetailsService permissionBasedClientDetailsService
 
+        @Autowired
+        private WebResponseExceptionTranslator apiWebResponseExceptionTranslator
+
         @Bean
         JwtAccessTokenConverter accessTokenConverter() {
             KeyStoreKeyFactory keyFactory = new KeyStoreKeyFactory(new ClassPathResource(keyStoreFileName), keyStorePassword.toCharArray())
@@ -71,7 +80,10 @@ class OAuth2Config {
 
         @Override
         void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-            endpoints.authenticationManager(authenticationManager).accessTokenConverter(accessTokenConverter())
+            endpoints
+                    .authenticationManager(authenticationManager)
+                    .accessTokenConverter(accessTokenConverter())
+                    .exceptionTranslator(apiWebResponseExceptionTranslator)
         }
 
         @Override
@@ -95,6 +107,9 @@ class OAuth2Config {
         private static final String READ = "#oauth2.hasScope('Read_Data')"
         private static final String WRITE = "#oauth2.hasScope('Write_Data')"
 
+        @Autowired
+        private WebResponseExceptionTranslator apiWebResponseExceptionTranslator
+
         @Override
         void configure(HttpSecurity http) throws Exception {
             http
@@ -113,6 +128,34 @@ class OAuth2Config {
                     .antMatchers(HttpMethod.PATCH, ANY).access(WRITE)
                     .antMatchers(HttpMethod.DELETE, ANY).access(WRITE)
                     .and()
+        }
+
+        @Override
+        void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+            resources
+                // Override exception formatting by injecting the accessDeniedHandler & authenticationEntryPoint
+                .accessDeniedHandler(accessDeniedHandler())
+                .authenticationEntryPoint(authenticationEntryPoint())
+        }
+
+        /**
+         * Inject the custom exception translator into the Authentication Entry Point
+         */
+        @Bean
+        AuthenticationEntryPoint authenticationEntryPoint() {
+            OAuth2AuthenticationEntryPoint entryPoint = new OAuth2AuthenticationEntryPoint()
+            entryPoint.setExceptionTranslator(apiWebResponseExceptionTranslator)
+            return entryPoint
+        }
+
+        /**
+         * Override the AccessDeniedHandler to use the custom API exception translator
+         */
+        @Bean
+        AccessDeniedHandler accessDeniedHandler() {
+            OAuth2AccessDeniedHandler handler = new OAuth2AccessDeniedHandler()
+            handler.setExceptionTranslator(apiWebResponseExceptionTranslator)
+            return handler
         }
     }
 }
