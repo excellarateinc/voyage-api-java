@@ -1,0 +1,76 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-client-grant-table-create
+      author: Jagadeesh Manne
+      changes:
+        - createTable:
+            tableName: client_grant
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: client_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    referencedTableName: client
+                    referencedColumnName: id
+              - column:
+                  name: grant_type
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-client-grant-seed
+      author: Jagadeesh Manne
+      changes:
+        - insert:
+            tableName: client_grant
+            columns:
+              - column:
+                  name: client_id
+                  valueNumeric: 1
+              - column:
+                  name: grant_type
+                  value: IMPLICIT
+        - insert:
+            tableName: client_grant
+            columns:
+              - column:
+                  name: client_id
+                  valueNumeric: 1
+              - column:
+                  name: grant_type
+                  value: REFRESH_TOKEN
+        - insert:
+            tableName: client_grant
+            columns:
+              - column:
+                  name: client_id
+                  valueNumeric: 1
+              - column:
+                  name: grant_type
+                  value: CLIENT_CREDENTIALS
+        - insert:
+            tableName: client_grant
+            columns:
+              - column:
+                  name: client_id
+                  valueNumeric: 2
+              - column:
+                  name: grant_type
+                  value: CLIENT_CREDENTIALS
+        - insert:
+            tableName: client_grant
+            columns:
+              - column:
+                  name: client_id
+                  valueNumeric: 2
+              - column:
+                  name: grant_type
+                  value: AUTHORIZATION_CODE

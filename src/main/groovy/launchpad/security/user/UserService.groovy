@@ -9,7 +9,7 @@ import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
 @Transactional
-@Service('userService')
+@Service
 @Validated
 class UserService {
     private final UserRepository userRepository

@@ -6,6 +6,11 @@ spring:
   profiles:
     active: test
 
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+
   jpa:
     hibernate:
       ddl-auto: none
@@ -18,3 +23,37 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+
+#######################################################################################################################
+# Spring Security
+#######################################################################################################################
+security:
+  oauth2:
+    resource:
+      id: launchpad
+      jwt:
+        key-value: |
+          -----BEGIN PUBLIC KEY-----
+          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4REj5EYufU5OUnv9nij+
+          j9irwALL3BwX9XxB7oDx3uj93P5h8rzTTdG/suaG3aBqRr5rqXpmTgwG1nf6FBfR
+          8kiPp9R196cAT9g4OInsdNbux7oy5akUVsRo9pagEL0JB7eGbASi0z5A38QkpbjB
+          MhIN0W9zwghsGNbf7N6wTVQN1NFHDW9zMdWUS9VBPeEGUZAMkKElGltHVhCdJGBf
+          OdriLIO2KdimjO5q9Q9+qG2B96DFGNYvmuDlDLM11Q2fsre305CV1HN0vQulLhlr
+          MJo9QdZt1g2d1VN5uIKid5dxWTAuUvJhgla6yCaTfYeV1OGq5C3DFV7tKDGNAIXL
+          TQIDAQAB
+          -----END PUBLIC KEY-----
+
+  jwt:
+    key-store-filename: jwt.jks
+    key-store-password: changeme
+    private-key-name: jwt
+    private-key-password: changeme
+
+  test:
+    clients:
+        super-client:
+          client-id: client-super
+          client-secret: secret
+        standard-client:
+          client-id: client-standard
+          client-secret: secret

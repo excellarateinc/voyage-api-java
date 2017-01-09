@@ -58,12 +58,3 @@ databaseChangeLog:
               - column:
                   name: role_id
                   value: 2
-        - insert:
-            tableName: user_role
-            columns:
-              - column:
-                  name: user_id
-                  value: 3
-              - column:
-                  name: role_id
-                  value: 3

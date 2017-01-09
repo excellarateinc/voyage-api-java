@@ -1,0 +1,69 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-client-scope-table-create
+      author: Jagadeesh Manne
+      changes:
+        - createTable:
+            tableName: client_scope
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: client_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    referencedTableName: client
+                    referencedColumnName: id
+              - column:
+                  name: client_scope_type_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    referencedTableName: client_scope_type
+                    referencedColumnName: id
+  - changeSet:
+      id: v1.0-client-scope-seed
+      author: Jagadeesh Manne
+      changes:
+        - insert:
+            tableName: client_scope
+            columns:
+              - column:
+                  name: client_id
+                  valueNumeric: 1
+              - column:
+                  name: client_scope_type_id
+                  valueNumeric: 1
+        - insert:
+            tableName: client_scope
+            columns:
+              - column:
+                  name: client_id
+                  valueNumeric: 1
+              - column:
+                  name: client_scope_type_id
+                  valueNumeric: 2
+        - insert:
+            tableName: client_scope
+            columns:
+              - column:
+                  name: client_id
+                  valueNumeric: 2
+              - column:
+                  name: client_scope_type_id
+                  valueNumeric: 1
+        - insert:
+            tableName: client_scope
+            columns:
+              - column:
+                  name: client_id
+                  valueNumeric: 2
+              - column:
+                  name: client_scope_type_id
+                  valueNumeric: 2

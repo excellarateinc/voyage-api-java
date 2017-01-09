@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-client-scope-type-table-create
+      author: Jagadeesh Manne
+      changes:
+        - createTable:
+            tableName: client_scope_type
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: varchar(1000)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-client-scope-type-seed
+      author: Jagadeesh Manne
+      changes:
+        - insert:
+            tableName: client_scope_type
+            columns:
+              - column:
+                  name: name
+                  value: Read_Data
+              - column:
+                  name: description
+                  value: Read data on behalf of the user
+        - insert:
+            tableName: client_scope_type
+            columns:
+              - column:
+                  name: name
+                  value: Write_Data
+              - column:
+                  name: description
+                  value: Write data on behalf of the user

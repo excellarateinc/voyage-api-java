@@ -58,7 +58,7 @@ class UserControllerSpec extends Specification {
             1 * userService.save(user) >> modifiedUser
             response != null
             HttpStatus.CREATED == response.statusCode
-            '/v1/users/1' == response.headers.location[0]
+            '/api/v1/users/1' == response.headers.location[0]
             'LSS' == response.body.firstName
             'Inc' == response.body.lastName
 

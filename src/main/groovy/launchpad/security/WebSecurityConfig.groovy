@@ -4,19 +4,23 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 
+/**
+ * General Spring Web Security configuration that defines a custom UserDetailsService for looking up and authenticating
+ * users of the app. Also configures security rules and methods of authenticating.
+ *
+ * NOTE: The OAuth2Config.ResourceServerConfig has a higher order than this WebSecurityConfig. The rules defined in
+ * this class will be executed AFTER the ResourceServerConfig rules.
+ */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled=true)
-class SecurityConfig extends WebSecurityConfigurerAdapter {
+class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private PermissionBasedUserDetailsService permissionBasedUserDetailsService
@@ -29,6 +33,7 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
+
             // Register the custom Permission Based User Details Service
             .userDetailsService(permissionBasedUserDetailsService)
 
@@ -36,26 +41,38 @@ class SecurityConfig extends WebSecurityConfigurerAdapter {
             .passwordEncoder(passwordEncoder())
     }
 
+    /**
+     * HTTP authorizations are applied to each request in the order that they appear below. The first matcher to match
+     * the request will be applied.
+     *
+     * NOTE: The OAuth2Config.ResourceServerConfig has a higher order than this WebSecurityConfig. The rules defined in
+     * this class will be executed AFTER the ResourceServerConfig rules.
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            // Enforce authorization on any incoming request and required authentication to access any resources
-            .authorizeRequests().anyRequest().authenticated().and()
 
-            // Enable HTTP Basic Authentication as a means to accept a username and password
-            // TODO REMOVE THIS WHEN JWT IS IMPLEMENTED
+            // Allow any user to access 'login' and web 'resources' like CSS/JS
+            .authorizeRequests()
+                .antMatchers('/resources/**', 'login').permitAll()
+                .and()
+
+            // Enforce every request to be authenticated
+            .authorizeRequests()
+                .anyRequest().authenticated()
+                .and()
+
+            // Enable Form Login for users.
+            .formLogin()
+                .loginPage('/login').permitAll()
+                .and()
+
+            // Enable Basic Auth login for users and clients. This is primarily for client login directly to the
+            // /oauth/token service.
             .httpBasic().and()
 
-            // Enable HTML form login page as a means to accept a username and password
-            .formLogin().and()
-
-            // Disable CSRF because security is handled through Cookie-less JWT tokens in the request header. No CSRF Risk.
+            // Disable CSRF due to this app being an API using JWT bearer token and not session based for resources.
             .csrf().disable()
-
-            // Enable logging out (primarily for manual testing purposes).
-            // - Bypass CSRF by adding a request matcher since this is a REST API. CSRF is only used on login.
-            // TODO Lock this down to only the TEST environment
-            .logout().logoutRequestMatcher(new AntPathRequestMatcher('/logout'))
     }
 
     @Override

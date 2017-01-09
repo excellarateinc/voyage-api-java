@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(['/v1/roles', '/v1.0/roles'])
+@RequestMapping(['/api/v1/roles', '/api/v1.0/roles'])
 class RoleController {
     private final RoleService roleService
 
@@ -84,7 +84,7 @@ class RoleController {
     ResponseEntity save(@RequestBody Role role) {
         Role newRole = roleService.save(role)
         HttpHeaders headers = new HttpHeaders()
-        headers.set(HttpHeaders.LOCATION, "/v1/roles/${newRole.id}")
+        headers.set(HttpHeaders.LOCATION, "/api/v1/roles/${newRole.id}")
         return new ResponseEntity(newRole, headers, HttpStatus.CREATED)
     }
 
