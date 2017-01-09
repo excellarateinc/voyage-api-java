@@ -20,42 +20,47 @@ import spock.lang.Specification
 class AbstractIntegrationTest extends Specification {
 
     @Autowired
-    TestRestTemplate restTemplate
+    protected TestRestTemplate restTemplate
 
     @LocalServerPort
-    int httpPort
+    protected int httpPort
 
     @Autowired
-    SuperClient superClient
+    protected SuperClient superClient
 
     @Autowired
-    StandardClient standardClient
+    protected StandardClient standardClient
 
-    public <T> ResponseEntity<T> GET(String uri, Class<T> responseType, TestClient testClient = null) {
+    protected <T> ResponseEntity<T> GET(String uri, Class<T> responseType, TestClient testClient = null) {
         if (testClient) {
             return restTemplate.exchange(uri, HttpMethod.GET, authorize(testClient), responseType, Collections.EMPTY_MAP)
-        } else {
-            return restTemplate.getForEntity(uri, responseType)
         }
+        return restTemplate.getForEntity(uri, responseType)
     }
 
-    public <T> ResponseEntity<T> POST(String uri, Class<T> responseType) {
+    protected <T> ResponseEntity<T> POST(String uri, Class<T> responseType) {
         return restTemplate.postForEntity(uri, null, responseType, Collections.EMPTY_MAP)
     }
 
-    public <T> ResponseEntity<T> POST(String uri, HttpEntity<T> httpEntity, Class<T> responseType, TestClient testClient) {
-        if (testClient) httpEntity = authorize(testClient, httpEntity)
+    protected <T> ResponseEntity<T> POST(String uri, HttpEntity<T> httpEntity, Class<T> responseType, TestClient testClient) {
+        if (testClient) {
+            httpEntity = authorize(testClient, httpEntity)
+        }
         return restTemplate.exchange(uri, HttpMethod.POST, httpEntity, responseType, Collections.EMPTY_MAP)
     }
 
-    public <T> ResponseEntity<T> PUT(String uri, HttpEntity<T> httpEntity, Class<T> responseType, TestClient testClient = null) {
-        if (testClient) httpEntity = authorize(testClient, httpEntity)
+    protected <T> ResponseEntity<T> PUT(String uri, HttpEntity<T> httpEntity, Class<T> responseType, TestClient testClient = null) {
+        if (testClient) {
+            httpEntity = authorize(testClient, httpEntity)
+        }
         return restTemplate.exchange(uri, HttpMethod.PUT, httpEntity, responseType, Collections.EMPTY_MAP)
     }
 
-    public <T> ResponseEntity<T> DELETE(String uri, Class<T> responseType, TestClient testClient = null) {
+    protected <T> ResponseEntity<T> DELETE(String uri, Class<T> responseType, TestClient testClient = null) {
         HttpEntity httpEntity = null
-        if (testClient) httpEntity = authorize(testClient)
+        if (testClient) {
+            httpEntity = authorize(testClient)
+        }
         return restTemplate.exchange(uri, HttpMethod.DELETE, httpEntity, responseType, Collections.EMPTY_MAP)
     }
 
@@ -68,16 +73,16 @@ class AbstractIntegrationTest extends Specification {
         httpHeaders.add('Authorization', "Bearer ${getAccessToken(testClient)}")
 
         // Create a new HttpEntity since the given one (if given) is immutable
-        if (!httpEntity?.body) {
-            httpEntity = new HttpEntity<>(httpHeaders)
-        } else {
+        if (httpEntity?.body) {
             httpEntity = new HttpEntity<T>(httpEntity.body, httpHeaders)
+        } else {
+            httpEntity = new HttpEntity<>(httpHeaders)
         }
 
         return httpEntity
     }
 
-    String getAccessToken(TestClient testClient) {
+    protected String getAccessToken(TestClient testClient) {
         MultiValueMap<String, String> credentials = new LinkedMultiValueMap<String, String>()
         credentials.client_id = testClient.clientId
         credentials.client_secret = testClient.clientSecret
@@ -101,7 +106,7 @@ class AbstractIntegrationTest extends Specification {
         Set readOnlyHeaders = httpHeaders.entrySet()
         Map<String, List<String>> writeableHeaders = new LinkedCaseInsensitiveMap<List<String>>(readOnlyHeaders.size(), Locale.ENGLISH)
         for (Map.Entry<String, List<String>> entry : readOnlyHeaders) {
-            writeableHeaders.put(entry.getKey(), entry.getValue())
+            writeableHeaders.put(entry.key, entry.value)
         }
         return writeableHeaders
     }

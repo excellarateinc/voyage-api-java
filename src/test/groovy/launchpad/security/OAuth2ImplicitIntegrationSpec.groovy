@@ -86,61 +86,9 @@ class OAuth2ImplicitIntegrationSpec extends AbstractIntegrationTest {
             response.statusLine.statusCode == 200
 
             response.close()
-
-//        when:
-//            MultiValueMap<String, String> postBody = new LinkedMultiValueMap<String, String>()
-//            postBody.client_id = superClient.clientId
-//            postBody.redirect_uri = 'http://localhost:8080/oauth'
-//            postBody.response_type = 'token'
-//
-//            HttpHeaders headers = new HttpHeaders()
-//            headers.add('Content-Type', MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-
-        //HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<MultiValueMap<String, String>>(postBody, headers)
-
-        // TestRestTemplate myRestTemplate = new TestRestTemplate(TestRestTemplate.HttpClientOption.ENABLE_COOKIES, TestRestTemplate.HttpClientOption.ENABLE_REDIRECTS)
-
-//            RestTemplate myRestTemplate = new RestTemplate(new SimpleClientHttpRequestFactory() {
-//                protected void prepareConnection(HttpURLConnection connection, String httpMethod) throws IOException {
-//                    super.prepareConnection(connection, httpMethod)
-//                    connection.
-//                    connection.setInstanceFollowRedirects(true)
-//                }
-//            })
-
-//            HttpEntity<String> response = myRestTemplate.exchange("http://localhost:${httpPort}/oauth/authorize", HttpMethod.POST, httpEntity, String)
-//
-//        then:
-//            response.statusCode.value() == 302
-//            response.headers.getFirst('Location').indexOf('/login') > 0
-//
-//        when:
-//            postBody = new LinkedMultiValueMap<String, String>()
-//            postBody.username = 'super'
-//            postBody.password = 'password'
-//
-//            httpEntity = new HttpEntity<MultiValueMap<String, String>>(postBody, headers)
-//            response = myRestTemplate.exchange("http://localhost:${httpPort}/login", HttpMethod.POST, httpEntity, String)
-//
-//        then:
-//            response.statusCode.value() == 302
-//            //response.headers.getFirst('Location').indexOf('/') == 0
-//
-//        when:
-//            postBody = new LinkedMultiValueMap<String, String>()
-//            postBody.client_id = superClient.clientId
-//            postBody.redirect_uri = 'http://localhost:8080/oauth'
-//            postBody.response_type = 'token'
-//
-//            httpEntity = new HttpEntity<MultiValueMap<String, String>>(postBody, headers)
-//
-//            response = myRestTemplate.exchange("http://localhost:${httpPort}/oauth/authorize", HttpMethod.POST, httpEntity, String)
-//        then:
-//            response.statusCode.value() == 302
-//            response.headers.getFirst('Location').indexOf('/') == 0
     }
 
-    def 'OAuth2 implicit authentication without authorization returns valid token'() {
+    //def 'OAuth2 implicit authentication without authorization returns valid token'() {
 
         // Setup the super client to bypass user authorization
 
@@ -151,5 +99,5 @@ class OAuth2ImplicitIntegrationSpec extends AbstractIntegrationTest {
         // -- get/set cookie JSESSIONID from prior request
         // -- expect a JSON response with a token
 
-    }
+    //}
 }

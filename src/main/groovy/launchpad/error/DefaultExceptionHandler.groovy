@@ -35,7 +35,7 @@ class DefaultExceptionHandler implements ErrorController {
     @ExceptionHandler
     ResponseEntity<Iterable<ErrorResponse>> handle(AccessDeniedException ignore) {
         ErrorResponse errorResponse = new ErrorResponse(
-            error:ErrorUtils.createErrorCode(HttpStatus.UNAUTHORIZED.value()),
+            error:ErrorUtils.getErrorCode(HttpStatus.UNAUTHORIZED.value()),
             errorDescription:'401 Unauthorized. Access Denied',
         )
         return new ResponseEntity([errorResponse], HttpStatus.UNAUTHORIZED)
@@ -70,7 +70,7 @@ class DefaultExceptionHandler implements ErrorController {
     @ExceptionHandler
     ResponseEntity<Iterable<ErrorResponse>> handle(AppException e) {
         ErrorResponse errorResponse = new ErrorResponse(
-            error:ErrorUtils.createErrorCode(e.httpStatus.value()),
+            error:ErrorUtils.getErrorCode(e.httpStatus.value()),
             errorDescription:e.message,
         )
         return new ResponseEntity([errorResponse], e.httpStatus)
@@ -90,7 +90,7 @@ class DefaultExceptionHandler implements ErrorController {
     @RequestMapping(value = '/error')
     ResponseEntity<Iterable<ErrorResponse>> handleError(HttpServletRequest request, HttpServletResponse response) {
         Map errorMap = getErrorAttributes(request, false)
-        String errorCode = ErrorUtils.createErrorCode((int)errorMap.status)
+        String errorCode = ErrorUtils.getErrorCode((int)errorMap.status)
         String errorMessage = "${errorMap.status} ${errorMap.error}. ${errorMap.message}"
         ErrorResponse errorResponse = new ErrorResponse(
             error:errorCode,

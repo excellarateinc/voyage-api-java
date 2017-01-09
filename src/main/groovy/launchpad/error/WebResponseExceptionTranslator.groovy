@@ -13,18 +13,17 @@ class WebResponseExceptionTranslator implements org.springframework.security.oau
         if (e instanceof OAuth2Exception) {
             OAuth2Exception oAuth2Exception = (OAuth2Exception) e
             return ResponseEntity
-                    .status(oAuth2Exception.getHttpErrorCode())
+                    .status(oAuth2Exception.httpErrorCode)
                     .body(new AppOAuth2Exception(HttpStatus.valueOf(oAuth2Exception.httpErrorCode), oAuth2Exception.message))
 
         } else if (e instanceof AuthenticationException) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(new AppOAuth2Exception(HttpStatus.UNAUTHORIZED, e.message))
-
-        } else {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new AppOAuth2Exception(HttpStatus.BAD_REQUEST, e.message))
         }
+
+        return ResponseEntity
+                .badRequest()
+                .body(new AppOAuth2Exception(HttpStatus.BAD_REQUEST, e.message))
     }
 }

@@ -18,11 +18,13 @@ class AppOAuth2ExceptionSerializer extends StdSerializer<AppOAuth2Exception> {
 
     @Override
     void serialize(AppOAuth2Exception ex, JsonGenerator gen, SerializerProvider provider) throws IOException {
-        gen.writeStartArray()
-            gen.writeStartObject()
-                gen.writeStringField("error", ErrorUtils.createErrorCode(ex.httpStatus.value()))
-                gen.writeStringField("errorDescription", "${ex.httpStatus.value()} ${ex.httpStatus.reasonPhrase}. ${ex.message}")
-            gen.writeEndObject()
-        gen.writeEndArray()
+        gen.with {
+            writeStartArray()
+                writeStartObject()
+                    writeStringField('error', ErrorUtils.getErrorCode(ex.httpStatus.value()))
+                    writeStringField('errorDescription', "${ex.httpStatus.value()} ${ex.httpStatus.reasonPhrase}. ${ex.message}")
+                writeEndObject()
+            writeEndArray()
+        }
     }
 }
