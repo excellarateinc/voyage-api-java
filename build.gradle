@@ -25,7 +25,7 @@ apply plugin: 'codenarc'
 
 war {
     baseName = 'launchpad'
-    version = '1.0.0-SNAPSHOT'
+    version = '1.0'
 }
 
 sourceCompatibility = 1.8
@@ -131,5 +131,5 @@ cobertura {
 test.finalizedBy(project.tasks.cobertura)
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.2.1'
+    gradleVersion = '3.3'
 }
