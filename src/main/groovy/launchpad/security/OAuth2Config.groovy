@@ -104,8 +104,8 @@ class OAuth2Config {
     @EnableResourceServer
     class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         private static final String ANY = '/**'
-        private static final String READ = "#oauth2.hasScope('Read_Data')"
-        private static final String WRITE = "#oauth2.hasScope('Write_Data')"
+        private static final String READ = "#oauth2.hasScope('Read Data')"
+        private static final String WRITE = "#oauth2.hasScope('Write Data')"
 
         @Autowired
         private WebResponseExceptionTranslator apiWebResponseExceptionTranslator

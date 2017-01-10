@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.provider.expression.OAuth2MethodSecur
 
 /**
  * Enables security at the app method level using @PreAuthorize annotations. This configuration extends the expression
- * handler to allow for OAuth2 expressions like "#oauth2.hasScope('Read_Data')".
+ * handler to allow for OAuth2 expressions like "#oauth2.hasScope('Read Data')".
  */
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)

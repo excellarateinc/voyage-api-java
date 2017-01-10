@@ -44,7 +44,7 @@ class PermissionBasedClientDetails implements ClientDetails {
         client.clientScopes?.each { clientScope ->
             scopes << clientScope.clientScopeType.name
         }
-        return scopes
+        return scopes.toSorted { a, b -> a <=> b }
     }
 
     @Override
@@ -53,7 +53,7 @@ class PermissionBasedClientDetails implements ClientDetails {
         client.clientGrants?.each { clientGrantType ->
             grants << clientGrantType.grantType.code
         }
-        return grants
+        return grants.toSorted { a, b -> a <=> b }
     }
 
     @Override

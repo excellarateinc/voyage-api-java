@@ -40,7 +40,7 @@ class UserService {
         return userRepository.findAll()
     }
 
-    User save(@Valid User userIn) {
+    User saveDetached(@Valid User userIn) {
         if (userIn.id) {
             User user = get(userIn.id)
             user.with {

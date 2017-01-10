@@ -72,7 +72,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: name
-                  value: Launchpad AngularJS v1
+                  value: Super Client
               - column:
                   name: client_identifier
                   value: client-super
@@ -105,7 +105,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: name
-                  value: Generic Server-to-Server
+                  value: Standard Client
               - column:
                   name: client_identifier
                   value: client-standard
