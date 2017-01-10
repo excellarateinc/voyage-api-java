@@ -93,6 +93,8 @@ test {
 }
 
 codenarc {
+    toolVersion = "0.25.1"
+
     codenarcMain {
         ignoreFailures false
         configFile file('codenarc/codenarc-main.rules')
