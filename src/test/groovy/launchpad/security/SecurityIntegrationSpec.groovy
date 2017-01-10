@@ -4,14 +4,10 @@ import launchpad.security.permission.Permission
 import launchpad.security.permission.PermissionService
 import launchpad.test.AbstractIntegrationTest
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.ResponseEntity
 
 class SecurityIntegrationSpec extends AbstractIntegrationTest {
     private static final Long SUPER_USER_ID = 1L
-
-    @Autowired
-    private TestRestTemplate restTemplate
 
     @Autowired
     private PermissionService permissionService
@@ -35,9 +31,9 @@ class SecurityIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.statusCode.value() == 200
     }
 
-    def 'Anonymous access to "/resources/js" is valid'() {
+    def 'Anonymous access to "/webjars/**" is valid'() {
         when:
-            ResponseEntity<String> responseEntity = GET('/resources/js/bootstrap.min.js', String)
+            ResponseEntity<String> responseEntity = GET('/webjars/bootstrap/css/bootstrap.min.css', String)
 
         then:
             responseEntity.statusCode.value() == 200

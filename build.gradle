@@ -54,6 +54,10 @@ dependencies {
     compile group: 'org.apache.tomcat.embed',  name: 'tomcat-embed-jasper'
     compile group: 'javax.servlet',            name: 'jstl'
 
+    // Webjars (for css/js libs)
+    compile group: 'org.webjars',   name: 'webjars-locator',    version: '0.30'
+    compile group: 'org.webjars',   name: 'bootstrap',          version: '3.3.7'
+
     // Other
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
     

@@ -92,7 +92,7 @@ class UserController {
     @PostMapping
     @PreAuthorize("hasAuthority('api.users.create')")
     ResponseEntity save(@RequestBody User user) {
-        User newUser = userService.save(user)
+        User newUser = userService.saveDetached(user)
         HttpHeaders headers = new HttpHeaders()
         headers.set(HttpHeaders.LOCATION, "/api/v1/users/${newUser.id}")
         return new ResponseEntity(newUser, headers, HttpStatus.CREATED)
@@ -162,7 +162,7 @@ class UserController {
     @PutMapping('/{id}')
     @PreAuthorize("hasAuthority('api.users.update')")
     ResponseEntity update(@RequestBody User user) {
-        User modifiedUser = userService.save(user)
+        User modifiedUser = userService.saveDetached(user)
         return new ResponseEntity(modifiedUser, HttpStatus.OK)
     }
 }

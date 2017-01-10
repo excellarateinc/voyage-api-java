@@ -54,7 +54,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
             // Allow any user to access 'login' and web 'resources' like CSS/JS
             .authorizeRequests()
-                .antMatchers('/resources/**', 'login').permitAll()
+                .antMatchers('/resources/**', '/webjars/**', 'login').permitAll()
                 .and()
 
             // Enforce every request to be authenticated

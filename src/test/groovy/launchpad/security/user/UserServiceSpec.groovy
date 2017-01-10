@@ -26,7 +26,7 @@ class UserServiceSpec extends Specification {
         setup:
             userRepository.save(_) >> user
         when:
-            User savedUser = userService.save(user)
+            User savedUser = userService.saveDetached(user)
         then:
             'LSS' == savedUser.firstName
             'India' == savedUser.lastName
