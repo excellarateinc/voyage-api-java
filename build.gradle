@@ -11,6 +11,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'net.saliman.cobertura' version '2.4.0'
+}
+
 apply plugin: 'war'
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
@@ -92,6 +96,10 @@ codenarc {
     codenarcMain {
         ignoreFailures false
         configFile file('codenarc/codenarc-main.rules')
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
 
         maxPriority1Violations 0
         maxPriority2Violations 0
@@ -100,12 +108,25 @@ codenarc {
     codenarcTest {
         ignoreFailures false
         configFile file('codenarc/codenarc-test.rules')
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
 
         maxPriority1Violations 0
         maxPriority2Violations 0
         maxPriority3Violations 0
     }
 }
+
+cobertura {
+    coverageFormats = ['html', 'xml']
+    coverageIgnoreTrivial = true
+    coverageIgnores = ['org.slf4j.Logger.*']
+    coverageReportDir = new File("$buildDir/reports/cobertura")
+}
+
+test.finalizedBy(project.tasks.cobertura)
 
 task wrapper(type: Wrapper) {
     gradleVersion = '3.2.1'
