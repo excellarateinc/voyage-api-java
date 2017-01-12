@@ -92,9 +92,9 @@ class DefaultExceptionHandler implements ErrorController {
         Map errorMap = getErrorAttributes(request, false)
 
         // Handle AppExceptions by the definition embedded in the exception
-        // TODO find a way to throw a better AppException or just handle the JSON output in the Servlet Filter
-        if (errorMap.exception instanceof AppException) {
-            return handle((AppException)errorMap.exception)
+        Exception exception = request.getAttribute('javax.servlet.error.exception')
+        if (exception instanceof AppException) {
+            return handle((AppException)exception)
         }
 
         // Handle unknown exceptions based on the error details given
