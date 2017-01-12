@@ -34,13 +34,14 @@ import java.security.Principal
 @Component
 class UserVerificationServletFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(UserVerificationServletFilter)
-    private UserService userService
+    private final UserService userService
+
+    @Value('${security.user-verification.exclude-resources}')
     private String[] resourcePathExclusions
 
     @Autowired
-    UserVerificationServletFilter(UserService userService, @Value('${security.user-verification.exclude-resources}') String[] exclusions) {
+    UserVerificationServletFilter(UserService userService) {
         this.userService = userService
-        this.resourcePathExclusions = exclusions
     }
 
     @Override
@@ -72,7 +73,7 @@ class UserVerificationServletFilter implements Filter {
     }
 
     private boolean isUserVerificationRequired(HttpServletRequest httpRequest) {
-        Principal authenticatedUser = httpRequest.getUserPrincipal()
+        Principal authenticatedUser = httpRequest.userPrincipal
         if (authenticatedUser) {
             if (authenticatedUser instanceof Authentication) {
                 String username
@@ -87,22 +88,22 @@ class UserVerificationServletFilter implements Filter {
                     User user = userService.findByUsername(username)
                     if (user) {
                         if (user.isVerifyRequired) {
-                            LOG.info("USER VERIFICATION FILTER: User requires verification. Returning error response.")
+                            LOG.info('USER VERIFICATION FILTER: User requires verification. Returning error response.')
                             return true
                         } else if (user) {
-                            LOG.debug("USER VERIFICATION FILTER: User does not require verification")
+                            LOG.debug('USER VERIFICATION FILTER: User does not require verification')
                         }
                     } else {
-                        LOG.debug("USER VERIFICATION FILTER: User was not found in the database. Skipping user verification.")
+                        LOG.debug('USER VERIFICATION FILTER: User was not found in the database. Skipping user verification.')
                     }
                 } else {
-                    LOG.debug("USER VERIFICATION FILTER: Authenticated principal is not a recognized object. Skipping user verification.")
+                    LOG.debug('USER VERIFICATION FILTER: Authenticated principal is not a recognized object. Skipping user verification.')
                 }
             } else {
-                LOG.debug("USER VERIFICATION FILTER: Authenticated user is not a recognized Authorization object. Skipping user verification.")
+                LOG.debug('USER VERIFICATION FILTER: Authenticated user is not a recognized Authorization object. Skipping user verification.')
             }
         } else {
-            LOG.debug("USER VERIFICATION FILTER: User is not authenticated. Skipping user verification.")
+            LOG.debug('USER VERIFICATION FILTER: User is not authenticated. Skipping user verification.')
         }
         return false
     }
@@ -110,12 +111,12 @@ class UserVerificationServletFilter implements Filter {
     private static void writeUserVerificationResponse(ServletResponse response) {
         Map errorResponse = [
             error:'403_verify_user',
-            errorDescription:'User verification is required'
+            errorDescription:'User verification is required',
         ]
         JsonBuilder json = new JsonBuilder([errorResponse])
 
-        response.contentType = "application/json"
-        Writer responseWriter = response.getWriter()
+        response.contentType = 'application/json'
+        Writer responseWriter = response.writer
         json.writeTo(responseWriter)
         responseWriter.close()
         responseWriter.flush()

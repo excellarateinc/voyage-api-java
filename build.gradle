@@ -93,7 +93,7 @@ test {
 }
 
 codenarc {
-    toolVersion = "0.25.1"
+    toolVersion = "0.26.0"
 
     codenarcMain {
         ignoreFailures false

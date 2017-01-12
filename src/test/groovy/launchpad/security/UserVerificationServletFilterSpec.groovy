@@ -34,8 +34,8 @@ class UserVerificationServletFilterSpec extends Specification {
             filter.doFilter(request, response, filterChain)
 
         then:
-            2 * request.getServletPath() >> "/test/something"
-            0 * request.getUserPrincipal()
+            2 * request.servletPath >> '/test/something'
+            0 * request.userPrincipal
             0 * userService.findByUsername(_)
             1 * filterChain.doFilter(request, response)
     }
@@ -45,8 +45,8 @@ class UserVerificationServletFilterSpec extends Specification {
             filter.doFilter(request, response, filterChain)
 
         then:
-            2 * request.getServletPath() >> "/test/something?paramA=1&paramB=2"
-            0 * request.getUserPrincipal()
+            2 * request.servletPath >> '/test/something?paramA=1&paramB=2'
+            0 * request.userPrincipal
             0 * userService.findByUsername(_)
             1 * filterChain.doFilter(request, response)
     }
@@ -56,8 +56,8 @@ class UserVerificationServletFilterSpec extends Specification {
             filter.doFilter(request, response, filterChain)
 
         then:
-            1 * request.getServletPath() >> "/filterable/request"
-            1 * request.getUserPrincipal() >> null
+            1 * request.servletPath >> '/filterable/request'
+            1 * request.userPrincipal >> null
             0 * userService.findByUsername(_)
             1 * filterChain.doFilter(request, response)
     }
@@ -67,8 +67,8 @@ class UserVerificationServletFilterSpec extends Specification {
             filter.doFilter(request, response, filterChain)
 
         then:
-            1 * request.getServletPath() >> "/filterable/request"
-            1 * request.getUserPrincipal() >> Mock(Principal)
+            1 * request.servletPath >> '/filterable/request'
+            1 * request.userPrincipal >> Mock(Principal)
             0 * userService.findByUsername(_)
             1 * filterChain.doFilter(request, response)
     }
@@ -82,11 +82,11 @@ class UserVerificationServletFilterSpec extends Specification {
             filter.doFilter(request, response, filterChain)
 
         then:
-            1 * request.getServletPath() >> "/filterable/request"
-            1 * request.getUserPrincipal() >> userPrincipal
-            2 * userPrincipal.getPrincipal() >> userDetails
-            1 * userDetails.username >> "test"
-            1 * userService.findByUsername("test") >> new User()
+            1 * request.servletPath >> '/filterable/request'
+            1 * request.userPrincipal >> userPrincipal
+            2 * userPrincipal.principal >> userDetails
+            1 * userDetails.username >> 'test'
+            1 * userService.findByUsername('test') >> new User()
             1 * filterChain.doFilter(request, response)
     }
 
@@ -100,12 +100,12 @@ class UserVerificationServletFilterSpec extends Specification {
            filter.doFilter(request, response, filterChain)
 
         then:
-            1 * request.getServletPath() >> "/filterable/request"
-            1 * request.getUserPrincipal() >> userPrincipal
-            2 * userPrincipal.getPrincipal() >> userDetails
-            1 * userDetails.username >> "test"
-            1 * userService.findByUsername("test") >> new User(isVerifyRequired: true)
-            1 * response.getWriter() >> responseWriter
+            1 * request.servletPath >> '/filterable/request'
+            1 * request.userPrincipal >> userPrincipal
+            2 * userPrincipal.principal >> userDetails
+            1 * userDetails.username >> 'test'
+            1 * userService.findByUsername('test') >> new User(isVerifyRequired:true)
+            1 * response.writer >> responseWriter
             1 * responseWriter.append('[{"error":"403_verify_user","errorDescription":"User verification is required"}]')
             1 * responseWriter.close()
             1 * responseWriter.flush()
@@ -121,11 +121,11 @@ class UserVerificationServletFilterSpec extends Specification {
             filter.doFilter(request, response, filterChain)
 
         then:
-            1 * request.getServletPath() >> "/filterable/request"
-            1 * request.getUserPrincipal() >> userPrincipal
-            3 * userPrincipal.getPrincipal() >> "test"
-            1 * userService.findByUsername("test") >> new User(isVerifyRequired: true)
-            1 * response.getWriter() >> responseWriter
+            1 * request.servletPath >> '/filterable/request'
+            1 * request.userPrincipal >> userPrincipal
+            3 * userPrincipal.principal >> 'test'
+            1 * userService.findByUsername('test') >> new User(isVerifyRequired:true)
+            1 * response.writer >> responseWriter
             1 * responseWriter.append('[{"error":"403_verify_user","errorDescription":"User verification is required"}]')
             1 * responseWriter.close()
             1 * responseWriter.flush()
