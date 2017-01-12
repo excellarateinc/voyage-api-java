@@ -22,7 +22,8 @@ class UserVerificationServletFilterSpec extends Specification {
     void setup() {
         userService = Mock(UserService)
         resourcePathExclusions = ['/test/**', '/test2']
-        filter = new UserVerificationServletFilter(userService, resourcePathExclusions)
+        filter = new UserVerificationServletFilter(userService)
+        filter.resourcePathExclusions = resourcePathExclusions
 
         request = Mock(HttpServletRequest)
         response = Mock(HttpServletResponse)
