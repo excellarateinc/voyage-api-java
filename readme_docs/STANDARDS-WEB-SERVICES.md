@@ -287,7 +287,7 @@ __HTTP 500s - Unexpected__
 Example: PUT request to /users/1 resulted in a HTTP 500 response with a stack trace
 ```
 [
-   {error: "error.unexpected", errorDescription: "Exception in thread "main" java.lang.NullPointerException
+   {error: "500_internal_server_error", errorDescription: "Exception in thread "main" java.lang.NullPointerException
         at com.example.myproject.Book.getTitle(Book.java:16)
         at com.example.myproject.Author.getBookTitles(Author.java:25)
         at com.example.myproject.Bootstrap.main(Bootstrap.java:14)"}

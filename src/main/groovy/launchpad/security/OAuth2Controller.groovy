@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest
 @SessionAttributes('authorizationRequest')
 class OAuth2Controller {
 
+    // TODO Document the OAuth2 endpoints, and include exception response codes like 401_unauthorized
+
     @RequestMapping('/oauth/confirm_access')
     ModelAndView getAccessConfirmation(Map<String, Object> model) throws Exception {
         return new ModelAndView('oauth-confirm-access', model)

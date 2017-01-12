@@ -70,7 +70,7 @@ class DefaultExceptionHandler implements ErrorController {
     @ExceptionHandler
     ResponseEntity<Iterable<ErrorResponse>> handle(AppException e) {
         ErrorResponse errorResponse = new ErrorResponse(
-            error:ErrorUtils.getErrorCode(e.httpStatus.value()),
+            error:e.errorCode,
             errorDescription:e.message,
         )
         return new ResponseEntity([errorResponse], e.httpStatus)
@@ -79,17 +79,25 @@ class DefaultExceptionHandler implements ErrorController {
     @ExceptionHandler(value = Exception)
     ResponseEntity<Iterable<ErrorResponse>> handle(Exception e) {
         LOG.error('Unexpected error occurred', e)
-
+        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR
         ErrorResponse errorResponse = new ErrorResponse(
-            error:'500_internal_server_error',
+            error:ErrorUtils.getErrorCode(httpStatus.value()),
             errorDescription:e.toString(),
         )
-        return new ResponseEntity([errorResponse], HttpStatus.INTERNAL_SERVER_ERROR)
+        return new ResponseEntity([errorResponse], httpStatus)
     }
 
     @RequestMapping(value = '/error')
     ResponseEntity<Iterable<ErrorResponse>> handleError(HttpServletRequest request, HttpServletResponse response) {
         Map errorMap = getErrorAttributes(request, false)
+
+        // Handle AppExceptions by the definition embedded in the exception
+        // TODO find a way to throw a better AppException or just handle the JSON output in the Servlet Filter
+        if (errorMap.exception instanceof AppException) {
+            return handle((AppException)errorMap.exception)
+        }
+
+        // Handle unknown exceptions based on the error details given
         String errorCode = ErrorUtils.getErrorCode((int)errorMap.status)
         String errorMessage = "${errorMap.status} ${errorMap.error}. ${errorMap.message}"
         ErrorResponse errorResponse = new ErrorResponse(
