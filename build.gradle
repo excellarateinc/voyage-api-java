@@ -24,7 +24,7 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'codenarc'
 
 war {
-    baseName = 'launchpad'
+    baseName = 'voyage'
     version = '1.0'
 }
 
