@@ -1,6 +1,7 @@
-package launchpad.security
+package launchpad.config
 
 import launchpad.error.WebResponseExceptionTranslator
+import launchpad.security.PermissionBasedClientDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
