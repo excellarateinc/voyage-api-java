@@ -11,6 +11,11 @@ class ErrorUtils {
         return formatErrorCode(errorCode)
     }
 
+    static String getErrorCode(int httpStatusCode, String description) {
+        String errorCode = httpStatusCode + UNDER_SCORE + description
+        return formatErrorCode(errorCode)
+    }
+
     static String formatErrorCode(String description) {
         return description.toLowerCase().replace(' ', UNDER_SCORE)
     }

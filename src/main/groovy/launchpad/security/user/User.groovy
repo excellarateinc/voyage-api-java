@@ -52,6 +52,10 @@ class User {
 
     @NotNull
     @JsonIgnore
+    Boolean isVerifyRequired = Boolean.FALSE
+
+    @NotNull
+    @JsonIgnore
     Boolean isDeleted = Boolean.FALSE
 
     @ManyToMany

@@ -84,7 +84,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/users POST - Super User access granted'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username1', email:'test@test.com', password:'password')
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -98,14 +98,14 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body.id
             responseEntity.body.firstName == 'Test1'
             responseEntity.body.lastName == 'User'
-            responseEntity.body.username == 'username'
+            responseEntity.body.username == 'username1'
             responseEntity.body.email == 'test@test.com'
             responseEntity.body.password == 'password'
     }
 
     def '/api/v1/users POST - Standard User access denied'() {
         given:
-            User user = new User(firstName:'Test2', lastName:'User', username:'username', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test2', lastName:'User', username:'username2', email:'test@test.com', password:'password')
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -124,7 +124,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.users.create')
 
-            User user = new User(firstName:'Test2', lastName:'User', username:'username', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test2', lastName:'User', username:'username2', email:'test@test.com', password:'password')
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -212,7 +212,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/users/{id} PUT - Anonymous access denied'() {
         given:
-            User user = new User(firstName:'Test3', lastName:'User', username:'username', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test3', lastName:'User', username:'username3', email:'test@test.com', password:'password')
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -230,7 +230,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
     def '/api/v1/users/{id} PUT - Super User access granted'() {
         given:
             User user = new User(
-                firstName:'Test3', lastName:'User', username:'username', email:'test@test.com', password:'password',
+                firstName:'Test3', lastName:'User', username:'username4', email:'test@test.com', password:'password',
             )
             user = userService.saveDetached(user)
 
@@ -248,14 +248,14 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body.id == user.id
             responseEntity.body.firstName == 'Test3-UPDATED'
             responseEntity.body.lastName == 'User'
-            responseEntity.body.username == 'username'
+            responseEntity.body.username == 'username4'
             responseEntity.body.email == 'test@test.com'
             responseEntity.body.password == 'password'
     }
 
     def '/api/v1/users/{id} PUT - Standard User access denied'() {
         given:
-            User user = new User(firstName:'Test4', lastName:'User', username:'username', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test4', lastName:'User', username:'username5', email:'test@test.com', password:'password')
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -274,7 +274,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.users.update')
 
-            User user = new User(firstName:'Test4', lastName:'User', username:'username', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test4', lastName:'User', username:'username6', email:'test@test.com', password:'password')
             user = userService.saveDetached(user)
 
             user.firstName = 'Test4-UPDATED'
@@ -291,14 +291,14 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body.id == user.id
             responseEntity.body.firstName == 'Test4-UPDATED'
             responseEntity.body.lastName == 'User'
-            responseEntity.body.username == 'username'
+            responseEntity.body.username == 'username6'
             responseEntity.body.email == 'test@test.com'
             responseEntity.body.password == 'password'
     }
 
     def '/api/v1/users/{id} PUT - Invalid ID returns a 400 Bad Request response'() {
         given:
-            User user = new User(id:9999, firstName:'Test4', lastName:'User', username:'username', email:'test@test.com', password:'password')
+            User user = new User(id:9999, firstName:'Test4', lastName:'User', username:'username7', email:'test@test.com', password:'password')
 
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
@@ -326,7 +326,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/users/{id} DELETE - Super User access granted'() {
         given:
-            User newUser = new User(firstName:'Test5', lastName:'User', username:'username', email:'test@test.com', password:'password')
+            User newUser = new User(firstName:'Test5', lastName:'User', username:'username8', email:'test@test.com', password:'password')
             newUser = userService.saveDetached(newUser)
 
         when:
@@ -352,7 +352,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.users.delete')
 
-            User newUser = new User(firstName:'Test6', lastName:'User', username:'username', email:'test@test.com', password:'password')
+            User newUser = new User(firstName:'Test6', lastName:'User', username:'username9', email:'test@test.com', password:'password')
             newUser = userService.saveDetached(newUser)
 
         when:

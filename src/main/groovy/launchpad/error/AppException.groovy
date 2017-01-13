@@ -32,5 +32,9 @@ class AppException extends RuntimeException {
     HttpStatus getHttpStatus() {
         return httpStatus
     }
+
+    String getErrorCode() {
+        ErrorUtils.getErrorCode(httpStatus.value())
+    }
 }
 

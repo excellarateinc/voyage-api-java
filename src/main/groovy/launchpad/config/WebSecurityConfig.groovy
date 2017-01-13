@@ -1,6 +1,8 @@
-package launchpad.security
+package launchpad.config
 
+import launchpad.security.PermissionBasedUserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -21,6 +23,13 @@ import org.springframework.security.crypto.password.PasswordEncoder
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    private static final String LOGIN_PATH = '/login'
+
+    @Value('${security.ignored}')
+    private String[] ignoredUrls
+
+    @Value('${security.permitAll}')
+    private String[] permitAllUrls
 
     @Autowired
     private PermissionBasedUserDetailsService permissionBasedUserDetailsService
@@ -54,7 +63,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
             // Allow any user to access 'login' and web 'resources' like CSS/JS
             .authorizeRequests()
-                .antMatchers('/resources/**', '/webjars/**', 'login').permitAll()
+                .antMatchers(permitAllUrls).permitAll()
                 .and()
 
             // Enforce every request to be authenticated
@@ -64,7 +73,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
             // Enable Form Login for users.
             .formLogin()
-                .loginPage('/login').permitAll()
+                .loginPage(LOGIN_PATH).permitAll()
                 .and()
 
             // Enable Basic Auth login for users and clients. This is primarily for client login directly to the
@@ -78,8 +87,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     void configure(WebSecurity web) throws Exception {
         web
-            // Ignore authentication requirements on the following URL endpoints
             .ignoring()
-            .antMatchers('/hello')
+            .antMatchers(ignoredUrls)
     }
 }

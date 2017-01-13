@@ -28,6 +28,8 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+                    unique: true
+                    uniqueConstraintName: UQ_user_username_unique
               - column:
                   name: password
                   type: varchar(500)
@@ -55,6 +57,11 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: is_account_locked
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_verify_required
                   type: bit(1)
                   constraints:
                     nullable: false
@@ -98,6 +105,9 @@ databaseChangeLog:
                   name: is_account_locked
                   valueBoolean: false
               - column:
+                  name: is_verify_required
+                  valueBoolean: false
+              - column:
                   name: is_deleted
                   valueBoolean: false
         - insert:
@@ -129,6 +139,9 @@ databaseChangeLog:
                   valueBoolean: false
               - column:
                   name: is_account_locked
+                  valueBoolean: false
+              - column:
+                  name: is_verify_required
                   valueBoolean: false
               - column:
                   name: is_deleted

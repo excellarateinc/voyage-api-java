@@ -1,6 +1,7 @@
-package launchpad.security
+package launchpad.config
 
 import launchpad.error.WebResponseExceptionTranslator
+import launchpad.security.PermissionBasedClientDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -103,7 +104,8 @@ class OAuth2Config {
     @Configuration
     @EnableResourceServer
     class ResourceServerConfig extends ResourceServerConfigurerAdapter {
-        private static final String ANY = '/**'
+        private static final String ANY_PATH = '/**'
+        private static final String API_PATH = '/api/**'
         private static final String READ = "#oauth2.hasScope('Read Data')"
         private static final String WRITE = "#oauth2.hasScope('Write Data')"
 
@@ -114,19 +116,19 @@ class OAuth2Config {
         void configure(HttpSecurity http) throws Exception {
             http
 
-                // Limit this Config to only handling /api requests. This will also disable authentication filters on
+                // Limit this Config to only handle /api requests. This will also disable authentication filters on
                 // /api requests and enable the OAuth2 token filter as the only means of stateless authentication.
                 .requestMatchers()
-                    .antMatchers('/api/**')
+                    .antMatchers(API_PATH)
                     .and()
 
                 // Enforce client 'scope' permissions once authenticated
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.GET, ANY).access(READ)
-                    .antMatchers(HttpMethod.POST, ANY).access(WRITE)
-                    .antMatchers(HttpMethod.PUT, ANY).access(WRITE)
-                    .antMatchers(HttpMethod.PATCH, ANY).access(WRITE)
-                    .antMatchers(HttpMethod.DELETE, ANY).access(WRITE)
+                    .antMatchers(HttpMethod.GET, ANY_PATH).access(READ)
+                    .antMatchers(HttpMethod.POST, ANY_PATH).access(WRITE)
+                    .antMatchers(HttpMethod.PUT, ANY_PATH).access(WRITE)
+                    .antMatchers(HttpMethod.PATCH, ANY_PATH).access(WRITE)
+                    .antMatchers(HttpMethod.DELETE, ANY_PATH).access(WRITE)
                     .and()
         }
 

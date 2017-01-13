@@ -37,6 +37,10 @@ spring:
 # Spring Security
 #######################################################################################################################
 security:
+
+  ignored: /resources/**, /webjars/**
+  permitAll: /login, /hello
+
   oauth2:
     resource:
       id: launchpad
@@ -57,6 +61,9 @@ security:
     key-store-password: changeme
     private-key-name: jwt
     private-key-password: changeme
+
+  user-verification:
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /login, /WEB-INF/jsp/**.jsp
 
   test:
     clients:
