@@ -12,7 +12,10 @@ out/
 
 # Locally generated files
 *.log
-/apidoc/docs/
+
+# apiDocs
+apidoc/node_modules
+src/main/webapp/docs
 
 # Exclude
 !gradle/wrapper/gradle-wrapper.jar

@@ -13,6 +13,7 @@ buildscript {
 
 plugins {
     id 'net.saliman.cobertura' version '2.4.0'
+    id "com.moowork.node" version "1.1.0"
 }
 
 apply plugin: 'war'
@@ -121,15 +122,40 @@ codenarc {
     }
 }
 
+// ****************************************************************************
+// Cobertura Test Coverage Plugin Config
+// ****************************************************************************
 cobertura {
     coverageFormats = ['html', 'xml']
     coverageIgnoreTrivial = true
     coverageIgnores = ['org.slf4j.Logger.*']
     coverageReportDir = new File("$buildDir/reports/cobertura")
 }
-
 test.finalizedBy(project.tasks.cobertura)
 
+// ****************************************************************************
+// Gradle Wrapper Config
+// ****************************************************************************
 task wrapper(type: Wrapper) {
     gradleVersion = '3.3'
 }
+
+// ****************************************************************************
+// apiDoc Tasks
+// ****************************************************************************
+node {
+    version = '6.8.0'
+    download = true
+}
+task apidocInstall(type:NpmTask) {
+    workingDir = file ('./apidoc')
+    npmCommand = ['install']
+}
+
+task apidoc(type:NpmTask, dependsOn:'apidocInstall') {
+    workingDir = file('./apidoc')
+    npmCommand = ['run']
+    args = ['apidoc']
+}
+processResources.dependsOn.add(apidoc)
+

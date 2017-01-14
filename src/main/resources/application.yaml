@@ -65,7 +65,7 @@ server:
 #######################################################################################################################
 security:
 
-  ignored: /resources/**, /webjars/**
+  ignored: /resources/**, /webjars/**, /docs/**
   permitAll: /login, /hello
 
   oauth2:
@@ -92,4 +92,4 @@ security:
     private-key-password: changeme
 
   user-verification:
-    exclude-resources: /oauth/**, /resources/**, /webjars/**, /login, /WEB-INF/jsp/**.jsp
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /WEB-INF/jsp/**.jsp

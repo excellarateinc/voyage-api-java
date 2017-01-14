@@ -6,10 +6,10 @@
 // ------------------------------------------------------------------------------------------
 
 // ------------------------------------------------------------------------------------------
-// UserRequestModel
+// Permission Request Model
 // ------------------------------------------------------------------------------------------
 /**
- * @apiDefine UserRequestModel
+ * @apiDefine PermissionRequestModel
  *
  * @apiParam {Object} user User
  * @apiParam {String} user.userName Username of the user
@@ -35,13 +35,13 @@
  *     ],
  *     "isActive": true
  * }
-  */
+ */
 
 // ------------------------------------------------------------------------------------------
-// UserSuccessModel
+// Permission Success Model
 // ------------------------------------------------------------------------------------------
 /**
- * @apiDefine UserSuccessModel
+ * @apiDefine PermissionSuccessModel
  *
  * @apiSuccess {Object} user User
  * @apiSuccess {String} user.id User ID
