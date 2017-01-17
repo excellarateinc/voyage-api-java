@@ -27,12 +27,12 @@ class UserService {
     private static final Logger LOG = LoggerFactory.getLogger(UserService)
 
     private final UserRepository userRepository
+    private final MailService mailService
 
     @Autowired
-    MailService mailService
-
-    UserService(UserRepository userRepository) {
+    UserService(UserRepository userRepository, MailService mailService) {
         this.userRepository = userRepository
+        this.mailService = mailService
     }
 
     User getLoggedInUser() {
