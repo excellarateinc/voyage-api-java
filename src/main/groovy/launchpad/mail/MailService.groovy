@@ -16,7 +16,6 @@ import javax.mail.internet.MimeMessage
 
 @Service('mailService')
 class MailService {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(this.getClass())
 
     @Value('${app.contact-support.email}')
