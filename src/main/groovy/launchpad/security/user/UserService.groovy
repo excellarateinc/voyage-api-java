@@ -15,7 +15,7 @@ import javax.validation.Valid
 import javax.validation.constraints.NotNull
 
 @Transactional
-@Service('userService')
+@Service
 @Validated
 class UserService {
     private final UserRepository userRepository
@@ -52,7 +52,7 @@ class UserService {
         return userRepository.findAll()
     }
 
-    User save(@Valid User userIn) {
+    User saveDetached(@Valid User userIn) {
         if (userIn.id) {
             User user = get(userIn.id)
             user.with {

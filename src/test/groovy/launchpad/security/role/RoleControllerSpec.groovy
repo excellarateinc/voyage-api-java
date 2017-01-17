@@ -56,7 +56,7 @@ class RoleControllerSpec extends Specification {
             1 * roleService.save(role) >> role
             response != null
             HttpStatus.CREATED == response.statusCode
-            '/v1/roles/1' == response.headers.location[0]
+            '/api/v1/roles/1' == response.headers.location[0]
             'Super User' == response.body.name
             'ROLE_SUPER' == response.body.authority
 

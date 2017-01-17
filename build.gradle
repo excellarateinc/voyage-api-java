@@ -11,6 +11,11 @@ buildscript {
     }
 }
 
+plugins {
+    id 'net.saliman.cobertura' version '2.4.0'
+    id "com.moowork.node" version "1.1.0"
+}
+
 apply plugin: 'war'
 apply plugin: 'groovy'
 apply plugin: 'eclipse'
@@ -20,8 +25,8 @@ apply plugin: 'io.spring.dependency-management'
 apply plugin: 'codenarc'
 
 war {
-    baseName = 'launchpad'
-    version = '1.0.0-SNAPSHOT'
+    baseName = 'voyage'
+    version = '1.0'
 }
 
 sourceCompatibility = 1.8
@@ -34,9 +39,10 @@ repositories {
 dependencies {
 
     // Spring
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web',         version:"${springBootVersion}"
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa',    version:"${springBootVersion}"
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security',    version:"${springBootVersion}"
+    compile group: 'org.springframework.boot',          name: 'spring-boot-starter-web',             version:"${springBootVersion}"
+    compile group: 'org.springframework.boot',          name: 'spring-boot-starter-data-jpa',        version:"${springBootVersion}"
+    compile group: 'org.springframework.boot',          name: 'spring-boot-starter-security',        version:"${springBootVersion}"
+    compile group: 'org.springframework.security',      name: 'spring-security-jwt',             version:'1.0.7.RELEASE'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-mail',    version:"${springBootVersion}"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-freemarker',    version:"${springBootVersion}"
 
@@ -48,9 +54,17 @@ dependencies {
     compile group: 'org.codehaus.groovy', name: 'groovy-all', version:'2.4.7'
 
     // Database
-    compile group: 'org.liquibase', name:'liquibase-core'
-    compile group: 'com.h2database', name: 'h2', version: '1.4.192'
-    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.40'
+    compile group: 'org.liquibase',     name:'liquibase-core'
+    compile group: 'com.h2database',    name: 'h2', version: '1.4.192'
+    compile group: 'mysql',             name: 'mysql-connector-java', version: '5.1.40'
+
+    // Login Web Form
+    compile group: 'org.apache.tomcat.embed',  name: 'tomcat-embed-jasper'
+    compile group: 'javax.servlet',            name: 'jstl'
+
+    // Webjars (for css/js libs)
+    compile group: 'org.webjars',   name: 'webjars-locator',    version: '0.30'
+    compile group: 'org.webjars',   name: 'bootstrap',          version: '3.3.7'
 
     // Other
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
@@ -86,9 +100,15 @@ test {
 }
 
 codenarc {
+    toolVersion = "0.26.0"
+
     codenarcMain {
         ignoreFailures false
         configFile file('codenarc/codenarc-main.rules')
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
 
         maxPriority1Violations 0
         maxPriority2Violations 0
@@ -97,6 +117,10 @@ codenarc {
     codenarcTest {
         ignoreFailures false
         configFile file('codenarc/codenarc-test.rules')
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
 
         maxPriority1Violations 0
         maxPriority2Violations 0
@@ -104,6 +128,40 @@ codenarc {
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.2.1'
+// ****************************************************************************
+// Cobertura Test Coverage Plugin Config
+// ****************************************************************************
+cobertura {
+    coverageFormats = ['html', 'xml']
+    coverageIgnoreTrivial = true
+    coverageIgnores = ['org.slf4j.Logger.*']
+    coverageReportDir = new File("$buildDir/reports/cobertura")
 }
+test.finalizedBy(project.tasks.cobertura)
+
+// ****************************************************************************
+// Gradle Wrapper Config
+// ****************************************************************************
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.3'
+}
+
+// ****************************************************************************
+// apiDoc Tasks
+// ****************************************************************************
+node {
+    version = '6.8.0'
+    download = true
+}
+task apidocInstall(type:NpmTask) {
+    workingDir = file ('./apidoc')
+    npmCommand = ['install']
+}
+
+task apidoc(type:NpmTask, dependsOn:'apidocInstall') {
+    workingDir = file('./apidoc')
+    npmCommand = ['run']
+    args = ['apidoc']
+}
+processResources.dependsOn.add(apidoc)
+

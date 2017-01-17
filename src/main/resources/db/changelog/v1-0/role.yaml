@@ -49,18 +49,6 @@ databaseChangeLog:
             columns:
               - column:
                   name: name
-                  value: Read Only
-              - column:
-                  name: authority
-                  value: role.readonly
-              - column:
-                  name: is_deleted
-                  valueBoolean: false
-        - insert:
-            tableName: role
-            columns:
-              - column:
-                  name: name
                   value: Standard User
               - column:
                   name: authority

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(['/v1/permissions', '/v1.0/permissions'])
+@RequestMapping(['/api/v1/permissions', '/api/v1.0/permissions'])
 class PermissionController {
     private final PermissionService permissionService
 
@@ -84,7 +84,7 @@ class PermissionController {
     ResponseEntity save(@RequestBody Permission permission) {
         Permission newPermission = permissionService.save(permission)
         HttpHeaders headers = new HttpHeaders()
-        headers.set(HttpHeaders.LOCATION, "/v1/permissions/${newPermission.id}")
+        headers.set(HttpHeaders.LOCATION, "/api/v1/permissions/${newPermission.id}")
         return new ResponseEntity(newPermission, headers, HttpStatus.CREATED)
     }
 

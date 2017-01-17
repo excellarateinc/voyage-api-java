@@ -28,6 +28,8 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: false
+                    unique: true
+                    uniqueConstraintName: UQ_user_username_unique
               - column:
                   name: password
                   type: varchar(500)
@@ -55,6 +57,11 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: is_account_locked
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_verify_required
                   type: bit(1)
                   constraints:
                     nullable: false
@@ -98,37 +105,7 @@ databaseChangeLog:
                   name: is_account_locked
                   valueBoolean: false
               - column:
-                  name: is_deleted
-                  valueBoolean: false
-        - insert:
-            tableName: user
-            columns:
-              - column:
-                  name: first_name
-                  value: Readonly
-              - column:
-                  name: last_name
-                  value: User
-              - column:
-                  name: username
-                  value: readonly
-              - column:
-                  name: password
-                  value: $2a$10$.Qa2l9VysOeG5M8HhgUbQ.h8KlTBLdMY/slPwMtL/I5OYibYUFQle
-              - column:
-                  name: email
-                  value: readonly@user.com
-              - column:
-                  name: is_enabled
-                  valueBoolean: true
-              - column:
-                  name: is_account_expired
-                  valueBoolean: false
-              - column:
-                  name: is_credentials_expired
-                  valueBoolean: false
-              - column:
-                  name: is_account_locked
+                  name: is_verify_required
                   valueBoolean: false
               - column:
                   name: is_deleted
@@ -162,6 +139,9 @@ databaseChangeLog:
                   valueBoolean: false
               - column:
                   name: is_account_locked
+                  valueBoolean: false
+              - column:
+                  name: is_verify_required
                   valueBoolean: false
               - column:
                   name: is_deleted

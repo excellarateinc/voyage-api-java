@@ -257,8 +257,8 @@ A web services API should have one pattern for returning errors so that the cons
 __HTTP 400s - Expected__
 ```
 [
-   {code: "unique.code.here", description: "human readable description"},
-   {code: "unique.code.here", description: "human readable description"},
+   {error: "unique.code.here", errorDescription: "human readable description"},
+   {error: "unique.code.here", errorDescription: "human readable description"},
 ]
 ```
 * code (text, required): a human readable code that uniquely identifies the expected error. This code can also be used as a unique key to look up a language translation (i18n) within the consumer app.
@@ -267,18 +267,18 @@ __HTTP 400s - Expected__
 Example: PUT request to /users/1 resulted in a HTTP 402 Request Failed due to invalid data. 
 ```
 [
-   {code: "param.invalid.email", description: "`email` is not formatted correctly. ex: text@text.ext"},
-   {code: "param.invalid.phone", description: "`phone` is not formatted correctly. ex: 123-123-1233"},
-   {code: "param.required.email", description: "`email` is a required field"},
-   {code: "param.required.first-name", description: "`firstName` is a required field"}
+   {error: "param.invalid.email", errorDescription: "`email` is not formatted correctly. ex: text@text.ext"},
+   {error: "param.invalid.phone", errorDescription: "`phone` is not formatted correctly. ex: 123-123-1233"},
+   {error: "param.required.email", errorDescription: "`email` is a required field"},
+   {error: "param.required.first-name", errorDescription: "`firstName` is a required field"}
 ]
 ```
 
 __HTTP 500s - Unexpected__
 ```
 [
-   {code: "error.unexpected", description: "any text or app stacktrace"},
-   {code: "error.unexpected", description: "any text or app stacktrace"}
+   {error: "error.unexpected", errorDescription: "any text or app stacktrace"},
+   {error: "error.unexpected", errorDescription: "any text or app stacktrace"}
 ]
 ```
 * code (text, required): Any code can be used, but it is likely that only "error.unexpected" would be used since the very nature of 500 errors are unexpected and unknown. 
@@ -287,7 +287,7 @@ __HTTP 500s - Unexpected__
 Example: PUT request to /users/1 resulted in a HTTP 500 response with a stack trace
 ```
 [
-   {code: "error.unexpected", description: "Exception in thread "main" java.lang.NullPointerException
+   {error: "500_internal_server_error", errorDescription: "Exception in thread "main" java.lang.NullPointerException
         at com.example.myproject.Book.getTitle(Book.java:16)
         at com.example.myproject.Author.getBookTitles(Author.java:25)
         at com.example.myproject.Bootstrap.main(Bootstrap.java:14)"}

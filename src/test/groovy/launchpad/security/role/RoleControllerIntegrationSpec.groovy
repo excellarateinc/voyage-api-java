@@ -1,99 +1,79 @@
 package launchpad.security.role
 
+import launchpad.test.AbstractIntegrationTest
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import spock.lang.Specification
 
-@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
-class RoleControllerIntegrationSpec extends Specification {
-    private static final Long ROLE_STANDARD_ID = 3
-
-    @Autowired
-    private TestRestTemplate restTemplate
+class RoleControllerIntegrationSpec extends AbstractIntegrationTest {
+    private static final Long ROLE_STANDARD_ID = 2
 
     @Autowired
     private RoleService roleService
 
-    def '/v1/roles GET - Anonymous access denied'() {
+    def '/api/v1/roles GET - Anonymous access denied'() {
         when:
-            ResponseEntity<Iterable> responseEntity =
-                restTemplate
-                    .getForEntity('/v1/roles', Iterable)
+            ResponseEntity<Iterable> responseEntity = GET('/api/v1/roles', Iterable)
 
         then:
             responseEntity.statusCode.value() == 401
             responseEntity.body.size() == 1
-            responseEntity.body[0].code == '401_unauthorized'
-            responseEntity.body[0].description == '401 Unauthorized. Full authentication is required to access this resource'
+            responseEntity.body[0].error == '401_unauthorized'
+            responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
     }
 
-    def '/v1/roles GET - Super User access granted'() {
+    def '/api/v1/roles GET - Super User access granted'() {
         when:
-            ResponseEntity<Iterable> responseEntity =
-                restTemplate
-                    .withBasicAuth('super', 'password')
-                    .getForEntity('/v1/roles', Iterable)
+            ResponseEntity<Iterable> responseEntity = GET('/api/v1/roles', Iterable, superClient)
 
         then:
             responseEntity.statusCode.value() == 200
-            responseEntity.body.size() == 3
+            responseEntity.body.size() == 2
             responseEntity.body[0].id == 1L
             responseEntity.body[0].name == 'Super User'
             responseEntity.body[0].authority == 'role.super'
     }
 
-    def '/v1/roles GET - Standard User access denied'() {
+    def '/api/v1/roles GET - Standard User access denied'() {
         when:
-            ResponseEntity<Iterable> responseEntity =
-                restTemplate
-                    .withBasicAuth('standard', 'password')
-                    .getForEntity('/v1/roles', Iterable)
+            ResponseEntity<Iterable> responseEntity = GET('/api/v1/roles', Iterable, standardClient)
 
         then:
             responseEntity.statusCode.value() == 401
             responseEntity.body.size() == 1
-            responseEntity.body[0].code == '401_unauthorized'
-            responseEntity.body[0].description == '401 Unauthorized. Access Denied'
+            responseEntity.body[0].error == '401_unauthorized'
+            responseEntity.body[0].errorDescription == '401 Unauthorized. Access Denied'
     }
 
-    def '/v1/roles GET - Standard User with permission "api.roles.list" access granted'() {
+    def '/api/v1/roles GET - Standard User with permission "api.roles.list" access granted'() {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.roles.list')
 
         when:
-            ResponseEntity<Iterable> responseEntity =
-                restTemplate
-                    .withBasicAuth('standard', 'password')
-                    .getForEntity('/v1/roles', Iterable)
+            ResponseEntity<Iterable> responseEntity = GET('/api/v1/roles', Iterable, standardClient)
 
         then:
             responseEntity.statusCode.value() == 200
-            responseEntity.body.size() == 3
+            responseEntity.body.size() == 2
             responseEntity.body[0].id == 1L
             responseEntity.body[0].name == 'Super User'
             responseEntity.body[0].authority == 'role.super'
     }
 
-    def '/v1/roles POST - Anonymous access denied'() {
+    def '/api/v1/roles POST - Anonymous access denied'() {
         when:
-            ResponseEntity<Iterable> responseEntity =
-                restTemplate
-                    .postForEntity('/v1/roles', null, Iterable, Collections.EMPTY_MAP)
+            ResponseEntity<Iterable> responseEntity = POST('/api/v1/roles', Iterable)
 
         then:
             responseEntity.statusCode.value() == 401
             responseEntity.body.size() == 1
-            responseEntity.body[0].code == '401_unauthorized'
-            responseEntity.body[0].description == '401 Unauthorized. Full authentication is required to access this resource'
+            responseEntity.body[0].error == '401_unauthorized'
+            responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
     }
 
-    def '/v1/roles POST - Super User access granted'() {
+    def '/api/v1/roles POST - Super User access granted'() {
         given:
             Role role = new Role(name:'Role-Name-1', authority:'test.role.authority.1')
             HttpHeaders headers = new HttpHeaders()
@@ -101,20 +81,17 @@ class RoleControllerIntegrationSpec extends Specification {
             HttpEntity<Role> httpEntity = new HttpEntity<Role>(role, headers)
 
         when:
-            ResponseEntity<Role> responseEntity =
-                restTemplate
-                    .withBasicAuth('super', 'password')
-                    .postForEntity('/v1/roles', httpEntity, Role)
+            ResponseEntity<Role> responseEntity = POST('/api/v1/roles', httpEntity, Role, superClient)
 
         then:
             responseEntity.statusCode.value() == 201
-            responseEntity.headers.getFirst('location') == '/v1/roles/4'
+            responseEntity.headers.getFirst('location') == '/api/v1/roles/3'
             responseEntity.body.id
             responseEntity.body.name == 'Role-Name-1'
             responseEntity.body.authority == 'test.role.authority.1'
     }
 
-    def '/v1/roles POST - Standard User access denied'() {
+    def '/api/v1/roles POST - Standard User access denied'() {
         given:
             Role role = new Role(name:'Role-Name-2', authority:'test.role.authority.2')
             HttpHeaders headers = new HttpHeaders()
@@ -122,19 +99,16 @@ class RoleControllerIntegrationSpec extends Specification {
             HttpEntity<Role> httpEntity = new HttpEntity<Role>(role, headers)
 
         when:
-            ResponseEntity<Iterable> responseEntity =
-                    restTemplate
-                        .withBasicAuth('standard', 'password')
-                        .postForEntity('/v1/roles', httpEntity, Iterable)
+            ResponseEntity<Iterable> responseEntity = POST('/api/v1/roles', httpEntity, Iterable, standardClient)
 
         then:
             responseEntity.statusCode.value() == 401
             responseEntity.body.size() == 1
-            responseEntity.body[0].code == '401_unauthorized'
-            responseEntity.body[0].description == '401 Unauthorized. Access Denied'
+            responseEntity.body[0].error == '401_unauthorized'
+            responseEntity.body[0].errorDescription == '401 Unauthorized. Access Denied'
     }
 
-    def '/v1/roles POST - Standard User with permission "api.roles.create" access granted'() {
+    def '/api/v1/roles POST - Standard User with permission "api.roles.create" access granted'() {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.roles.create')
 
@@ -144,38 +118,30 @@ class RoleControllerIntegrationSpec extends Specification {
             HttpEntity<Role> httpEntity = new HttpEntity<Role>(role, headers)
 
         when:
-            ResponseEntity<Role> responseEntity =
-                restTemplate
-                    .withBasicAuth('standard', 'password')
-                    .postForEntity('/v1/roles', httpEntity, Role)
+            ResponseEntity<Role> responseEntity = POST('/api/v1/roles', httpEntity, Role, standardClient)
 
         then:
             responseEntity.statusCode.value() == 201
-            responseEntity.headers.getFirst('location') == '/v1/roles/5'
+            responseEntity.headers.getFirst('location') == '/api/v1/roles/4'
             responseEntity.body.id
             responseEntity.body.name == 'Role-Name-3'
             responseEntity.body.authority == 'test.role.authority.3'
     }
 
-    def '/v1/roles/{id} GET - Anonymous access denied'() {
+    def '/api/v1/roles/{id} GET - Anonymous access denied'() {
         when:
-            ResponseEntity<Iterable> responseEntity =
-                restTemplate
-                    .getForEntity('/v1/roles/1', Iterable)
+            ResponseEntity<Iterable> responseEntity = GET('/api/v1/roles/1', Iterable)
 
         then:
             responseEntity.statusCode.value() == 401
             responseEntity.body.size() == 1
-            responseEntity.body[0].code == '401_unauthorized'
-            responseEntity.body[0].description == '401 Unauthorized. Full authentication is required to access this resource'
+            responseEntity.body[0].error == '401_unauthorized'
+            responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
     }
 
-    def '/v1/roles/{id} GET - Super User access granted'() {
+    def '/api/v1/roles/{id} GET - Super User access granted'() {
         when:
-            ResponseEntity<Role> responseEntity =
-                restTemplate
-                    .withBasicAuth('super', 'password')
-                    .getForEntity('/v1/roles/1', Role)
+            ResponseEntity<Role> responseEntity = GET('/api/v1/roles/1', Role, superClient)
 
         then:
             responseEntity.statusCode.value() == 200
@@ -184,29 +150,23 @@ class RoleControllerIntegrationSpec extends Specification {
             responseEntity.body.authority == 'role.super'
     }
 
-    def '/v1/roles/{id} GET - Standard User access denied'() {
+    def '/api/v1/roles/{id} GET - Standard User access denied'() {
         when:
-            ResponseEntity<Iterable> responseEntity =
-                restTemplate
-                    .withBasicAuth('standard', 'password')
-                    .getForEntity('/v1/roles/1', Iterable)
+            ResponseEntity<Iterable> responseEntity = GET('/api/v1/roles/1', Iterable, standardClient)
 
         then:
             responseEntity.statusCode.value() == 401
             responseEntity.body.size() == 1
-            responseEntity.body[0].code == '401_unauthorized'
-            responseEntity.body[0].description == '401 Unauthorized. Access Denied'
+            responseEntity.body[0].error == '401_unauthorized'
+            responseEntity.body[0].errorDescription == '401 Unauthorized. Access Denied'
     }
 
-    def '/v1/roles/{id} GET - Standard User with permission "api.roles.get" access granted'() {
+    def '/api/v1/roles/{id} GET - Standard User with permission "api.roles.get" access granted'() {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.roles.get')
 
         when:
-            ResponseEntity<Role> responseEntity =
-                restTemplate
-                    .withBasicAuth('standard', 'password')
-                    .getForEntity('/v1/roles/1', Role)
+            ResponseEntity<Role> responseEntity = GET('/api/v1/roles/1', Role, standardClient)
 
         then:
             responseEntity.statusCode.value() == 200
@@ -215,21 +175,18 @@ class RoleControllerIntegrationSpec extends Specification {
             responseEntity.body.authority == 'role.super'
     }
 
-    def '/v1/roles/{id} GET - Invalid ID returns a 400 Bad Request response'() {
+    def '/api/v1/roles/{id} GET - Invalid ID returns a 400 Bad Request response'() {
         when:
-            ResponseEntity<Iterable> responseEntity =
-                restTemplate
-                        .withBasicAuth('super', 'password')
-                        .getForEntity('/v1/roles/999999', Iterable)
+            ResponseEntity<Iterable> responseEntity = GET('/api/v1/roles/999999', Iterable, superClient)
 
         then:
             responseEntity.statusCode.value() == 400
             responseEntity.body.size() == 1
-            responseEntity.body[0].code == '400_bad_request'
-            responseEntity.body[0].description == 'Unknown record identifier provided'
+            responseEntity.body[0].error == '400_bad_request'
+            responseEntity.body[0].errorDescription == 'Unknown record identifier provided'
     }
 
-    def '/v1/roles/{id} PUT - Anonymous access denied'() {
+    def '/api/v1/roles/{id} PUT - Anonymous access denied'() {
         given:
             Role role = new Role(name:'Role-Name-3', authority:'test.role.authority.3')
             HttpHeaders headers = new HttpHeaders()
@@ -237,18 +194,16 @@ class RoleControllerIntegrationSpec extends Specification {
             HttpEntity<Role> httpEntity = new HttpEntity<Role>(role, headers)
 
         when:
-            ResponseEntity<Iterable> responseEntity =
-                restTemplate
-                    .exchange('/v1/roles/1', HttpMethod.PUT, httpEntity, Iterable, Collections.EMPTY_MAP)
+            ResponseEntity<Iterable> responseEntity = PUT('/api/v1/roles/1', httpEntity, Iterable)
 
         then:
             responseEntity.statusCode.value() == 401
             responseEntity.body.size() == 1
-            responseEntity.body[0].code == '401_unauthorized'
-            responseEntity.body[0].description == '401 Unauthorized. Full authentication is required to access this resource'
+            responseEntity.body[0].error == '401_unauthorized'
+            responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
     }
 
-    def '/v1/roles/{id} PUT - Super User access granted'() {
+    def '/api/v1/roles/{id} PUT - Super User access granted'() {
         given:
             Role role = new Role(name:'Role-Name-3', authority:'test.role.authority.3')
             role = roleService.save(role)
@@ -260,10 +215,7 @@ class RoleControllerIntegrationSpec extends Specification {
             HttpEntity<Role> httpEntity = new HttpEntity<Role>(role, headers)
 
         when:
-            ResponseEntity<Role> responseEntity =
-                restTemplate
-                    .withBasicAuth('super', 'password')
-                    .exchange('/v1/roles/1', HttpMethod.PUT, httpEntity, Role)
+            ResponseEntity<Role> responseEntity = PUT('/api/v1/roles/1', httpEntity, Role, superClient)
 
         then:
             responseEntity.statusCode.value() == 200
@@ -272,7 +224,7 @@ class RoleControllerIntegrationSpec extends Specification {
             responseEntity.body.authority == 'test.role.authority.3'
     }
 
-    def '/v1/roles/{id} PUT - Standard User access denied'() {
+    def '/api/v1/roles/{id} PUT - Standard User access denied'() {
         given:
             Role role = new Role(name:'Role-Name-4', authority:'test.role.authority.4')
             HttpHeaders headers = new HttpHeaders()
@@ -280,19 +232,16 @@ class RoleControllerIntegrationSpec extends Specification {
             HttpEntity<Role> httpEntity = new HttpEntity<Role>(role, headers)
 
         when:
-            ResponseEntity<Iterable> responseEntity =
-                restTemplate
-                    .withBasicAuth('standard', 'password')
-                    .exchange('/v1/roles/1', HttpMethod.PUT, httpEntity, Iterable, Collections.EMPTY_MAP)
+            ResponseEntity<Iterable> responseEntity = PUT('/api/v1/roles/1', httpEntity, Iterable, standardClient)
 
         then:
             responseEntity.statusCode.value() == 401
             responseEntity.body.size() == 1
-            responseEntity.body[0].code == '401_unauthorized'
-            responseEntity.body[0].description == '401 Unauthorized. Access Denied'
+            responseEntity.body[0].error == '401_unauthorized'
+            responseEntity.body[0].errorDescription == '401 Unauthorized. Access Denied'
     }
 
-    def '/v1/roles/{id} PUT - Standard User with permission "api.roles.update" access granted'() {
+    def '/api/v1/roles/{id} PUT - Standard User with permission "api.roles.update" access granted'() {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.roles.update')
 
@@ -306,10 +255,7 @@ class RoleControllerIntegrationSpec extends Specification {
             HttpEntity<Role> httpEntity = new HttpEntity<Role>(role, headers)
 
         when:
-            ResponseEntity<Role> responseEntity =
-                restTemplate
-                    .withBasicAuth('standard', 'password')
-                    .exchange('/v1/roles/1', HttpMethod.PUT, httpEntity, Role)
+            ResponseEntity<Role> responseEntity = PUT('/api/v1/roles/1', httpEntity, Role, standardClient)
 
         then:
             responseEntity.statusCode.value() == 200
@@ -318,7 +264,7 @@ class RoleControllerIntegrationSpec extends Specification {
             responseEntity.body.authority == 'test.role.authority.5'
     }
 
-    def '/v1/roles/{id} PUT - Invalid ID returns a 400 Bad Request response'() {
+    def '/api/v1/roles/{id} PUT - Invalid ID returns a 400 Bad Request response'() {
         given:
             Role role = new Role(id:9999, name:'Role-Name-5', authority:'test.role.authority.5')
 
@@ -327,61 +273,50 @@ class RoleControllerIntegrationSpec extends Specification {
             HttpEntity<Role> httpEntity = new HttpEntity<Role>(role, headers)
 
         when:
-           ResponseEntity<Iterable> responseEntity =
-                restTemplate
-                    .withBasicAuth('super', 'password')
-                    .exchange('/v1/roles/9999', HttpMethod.PUT, httpEntity, Iterable)
+           ResponseEntity<Iterable> responseEntity = PUT('/api/v1/roles/999999', httpEntity, Iterable, superClient)
 
         then:
             responseEntity.statusCode.value() == 400
-            responseEntity.body[0].code == '400_bad_request'
-            responseEntity.body[0].description == 'Unknown record identifier provided'
+            responseEntity.body[0].error == '400_bad_request'
+            responseEntity.body[0].errorDescription == 'Unknown record identifier provided'
     }
 
-    def '/v1/roles/{id} DELETE - Anonymous access denied'() {
+    def '/api/v1/roles/{id} DELETE - Anonymous access denied'() {
         when:
-            ResponseEntity<Iterable> responseEntity =
-                restTemplate
-                    .exchange('/v1/roles/1', HttpMethod.DELETE, null, Iterable, Collections.EMPTY_MAP)
+            ResponseEntity<Iterable> responseEntity = DELETE('/api/v1/roles/1', Iterable)
 
         then:
             responseEntity.statusCode.value() == 401
             responseEntity.body.size() == 1
-            responseEntity.body[0].code == '401_unauthorized'
-            responseEntity.body[0].description == '401 Unauthorized. Full authentication is required to access this resource'
+            responseEntity.body[0].error == '401_unauthorized'
+            responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
     }
 
-    def '/v1/roles/{id} DELETE - Super User access granted'() {
+    def '/api/v1/roles/{id} DELETE - Super User access granted'() {
         given:
             Role role = new Role(name:'Role-Name-5', authority:'test.role.authority.5')
             role = roleService.save(role)
 
         when:
-            ResponseEntity<String> responseEntity =
-                restTemplate
-                    .withBasicAuth('super', 'password')
-                    .exchange("/v1/roles/${role.id}", HttpMethod.DELETE, null, String, Collections.EMPTY_MAP)
+            ResponseEntity<String> responseEntity = DELETE("/api/v1/roles/${role.id}", String, superClient)
 
         then:
             responseEntity.statusCode.value() == 204
             responseEntity.body == null
     }
 
-    def '/v1/roles/{id} DELETE - Standard User access denied'() {
+    def '/api/v1/roles/{id} DELETE - Standard User access denied'() {
         when:
-            ResponseEntity<Iterable> responseEntity =
-                restTemplate
-                    .withBasicAuth('standard', 'password')
-                    .exchange('/v1/roles/1', HttpMethod.DELETE, null, Iterable, Collections.EMPTY_MAP)
+            ResponseEntity<Iterable> responseEntity = DELETE('/api/v1/roles/1', Iterable, standardClient)
 
         then:
             responseEntity.statusCode.value() == 401
             responseEntity.body.size() == 1
-            responseEntity.body[0].code == '401_unauthorized'
-            responseEntity.body[0].description == '401 Unauthorized. Access Denied'
+            responseEntity.body[0].error == '401_unauthorized'
+            responseEntity.body[0].errorDescription == '401 Unauthorized. Access Denied'
     }
 
-    def '/v1/roles/{id} DELETE - Standard User with permission "api.roless.delete" access granted'() {
+    def '/api/v1/roles/{id} DELETE - Standard User with permission "api.roless.delete" access granted'() {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.roles.delete')
 
@@ -389,27 +324,21 @@ class RoleControllerIntegrationSpec extends Specification {
             role = roleService.save(role)
 
         when:
-            ResponseEntity<String> responseEntity =
-                restTemplate
-                    .withBasicAuth('standard', 'password')
-                    .exchange("/v1/roles/${role.id}", HttpMethod.DELETE, null, String, Collections.EMPTY_MAP)
+            ResponseEntity<String> responseEntity = DELETE("/api/v1/roles/${role.id}", String, standardClient)
 
         then:
             responseEntity.statusCode.value() == 204
             responseEntity.body == null
     }
 
-    def '/v1/roles/{id} DELETE - Invalid ID returns a 400 Bad Request response'() {
+    def '/api/v1/roles/{id} DELETE - Invalid ID returns a 400 Bad Request response'() {
         when:
-           ResponseEntity<Iterable> responseEntity =
-                restTemplate
-                        .withBasicAuth('super', 'password')
-                        .exchange('/v1/roles/9999', HttpMethod.DELETE, null, Iterable, Collections.EMPTY_MAP)
+           ResponseEntity<Iterable> responseEntity = DELETE('/api/v1/roles/999999', Iterable, superClient)
 
         then:
             responseEntity.statusCode.value() == 400
             responseEntity.body.size() == 1
-            responseEntity.body[0].code == '400_bad_request'
-            responseEntity.body[0].description == 'Unknown record identifier provided'
+            responseEntity.body[0].error == '400_bad_request'
+            responseEntity.body[0].errorDescription == 'Unknown record identifier provided'
     }
 }

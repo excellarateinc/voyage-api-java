@@ -55,17 +55,17 @@ class UserControllerSpec extends Specification {
         when:
             ResponseEntity<User> response = userController.save(user)
         then:
-            1 * userService.save(user) >> modifiedUser
+            1 * userService.saveDetached(user) >> modifiedUser
             response != null
             HttpStatus.CREATED == response.statusCode
-            '/v1/users/1' == response.headers.location[0]
+            '/api/v1/users/1' == response.headers.location[0]
             'LSS' == response.body.firstName
             'Inc' == response.body.lastName
 
         when:
             userController.save(user)
         then:
-            1 * userService.save(user) >> { throw new Exception() }
+            1 * userService.saveDetached(user) >> { throw new Exception() }
             thrown(Exception)
     }
 
@@ -73,14 +73,14 @@ class UserControllerSpec extends Specification {
         when:
             ResponseEntity<User> updatedUser = userController.update(modifiedUser)
         then:
-            1 * userService.save(modifiedUser) >> modifiedUser
+            1 * userService.saveDetached(modifiedUser) >> modifiedUser
             updatedUser != null
             HttpStatus.OK == updatedUser.statusCode
 
         when:
             userController.update(modifiedUser)
         then:
-            1 * userService.save(modifiedUser) >> { throw new Exception() }
+            1 * userService.saveDetached(modifiedUser) >> { throw new Exception() }
             thrown(Exception)
     }
 
