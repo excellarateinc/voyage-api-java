@@ -54,7 +54,6 @@ class MailService {
             mimeMessageHelper.setText(mailMessage.text, true)
         }
         javaMailSender.send(mimeMessageHelper.mimeMessage)
-
     }
 
     String geContentFromTemplate(Map<String, Object> model, String template) {
