@@ -108,8 +108,7 @@ class UserService {
     }
 
     User findByResetPasswordCode(@NotNull String tokenValue) {
-        User user = userRepository.findByResetPasswordCode(tokenValue)
-        return user
+        return userRepository.findByResetPasswordCode(tokenValue)
     }
 
     User activate(@NotNull String tokenValue) {
