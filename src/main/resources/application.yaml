@@ -63,6 +63,7 @@ spring:
           auth: true
           starttls.enable: true
           ssl.trust: smtp.gmail.com
+      overrideAddress: testmsg@LighthouseSoftware.com
 
   freemarker:
     template-loader-path: classpath:/email/

@@ -11,6 +11,9 @@ interface UserRepository extends CrudRepository<User, Long> {
     @Query('FROM User u WHERE u.id = ?1 AND u.isDeleted = false')
     User findOne(Long id)
 
+    @Query('FROM User u WHERE u.resetPasswordCode = ?1 AND u.isDeleted = false')
+    User findByResetPasswordCode(String code)
+
     @Query('FROM User u WHERE u.isDeleted = false')
     Iterable<User> findAll()
 }

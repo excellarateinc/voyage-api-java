@@ -78,8 +78,6 @@ dependencies {
     testCompile group: 'cglib', name: 'cglib-nodep', version:'3.2.4'
     testCompile group: 'org.apache.httpcomponents', name: 'httpclient'
     testCompile group: 'com.icegreen', name: 'greenmail', version: '1.5.2'
-
-
 }
 
 eclipse {

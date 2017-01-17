@@ -62,4 +62,24 @@ class User {
     @JoinTable(name='user_role', joinColumns=@JoinColumn(name='user_id'), inverseJoinColumns=@JoinColumn(name='role_id'))
     @JsonIgnore
     Set<Role> roles
+
+    @JsonIgnore
+    String resetPasswordCode
+
+    @JsonIgnore
+    Date resetPasswordExpiresOn
+
+    @JsonIgnore
+    String verifyEmailCode
+
+    @JsonIgnore
+    Date verifyEmailExpiresOn
+
+    boolean isVerifyEmailCodeExpired() {
+        return verifyEmailExpiresOn != null && verifyEmailExpiresOn < new Date()
+    }
+
+    boolean isResetPasswordCodeExpired() {
+        return resetPasswordExpiresOn != null && resetPasswordExpiresOn < new Date()
+    }
 }

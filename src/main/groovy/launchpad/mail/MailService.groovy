@@ -5,6 +5,7 @@ import freemarker.template.TemplateException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.mail.javamail.JavaMailSender
@@ -18,18 +19,32 @@ class MailService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(this.getClass())
 
-    @Autowired
-    private JavaMailSender javaMailSender
+    @Value('${app.contact-support.email}')
+    private String from
+
+    @Value('${spring.mail.overrideAddress}')
+    private String overrideAddress
+
+    private final JavaMailSender javaMailSender
+    private final Configuration freeMarkerConfig
 
     @Autowired
-    Configuration freeMarkerConfig
+    MailService(JavaMailSender javaMailSender, Configuration freeMarkerConfig) {
+        this.javaMailSender = javaMailSender
+        this.freeMarkerConfig = freeMarkerConfig
+    }
 
     @Async
     boolean send(MailMessage mailMessage) {
-        //TODO: support attachments and override to address, default from address
         MimeMessage mimeMessage = javaMailSender.createMimeMessage()
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true)
+        if (!mailMessage.from) {
+            mailMessage.from = from
+        }
         mimeMessageHelper.setFrom(mailMessage.from)
+        if (overrideAddress) {
+            mailMessage.to = overrideAddress
+        }
         mimeMessageHelper.setTo(mailMessage.to)
         mimeMessageHelper.setSubject(mailMessage.subject)
         if (mailMessage.template) {

@@ -1,12 +1,18 @@
 package launchpad.security.user
 
+import launchpad.error.InvalidVerificationCodeException
+import launchpad.error.ResetPasswordCodeExpiredException
 import launchpad.error.UnknownIdentifierException
+import launchpad.error.VerifyEmailCodeExpiredException
 import launchpad.mail.MailMessage
 import launchpad.mail.MailService
-import launchpad.security.token.Token
-import launchpad.security.token.TokenService
-import launchpad.security.token.TokenType
+import launchpad.util.CryptoUtil
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
@@ -18,16 +24,30 @@ import javax.validation.constraints.NotNull
 @Service
 @Validated
 class UserService {
+    private static final Logger LOG = LoggerFactory.getLogger(UserService)
+
     private final UserRepository userRepository
 
     @Autowired
     MailService mailService
 
-    @Autowired
-    TokenService tokenService
-
     UserService(UserRepository userRepository) {
         this.userRepository = userRepository
+    }
+
+    User getLoggedInUser() {
+        String username
+        Authentication authenticationToken = SecurityContextHolder.getContext().getAuthentication();
+        if (authenticationToken.principal instanceof UserDetails) {
+            username = ((UserDetails)authenticationToken.principal).username
+
+        } else if (authenticationToken.principal instanceof String) {
+            username = authenticationToken.principal
+        }
+        if (username) {
+            User user = findByUsername(username)
+            return user
+        }
     }
 
     void delete(@NotNull Long id) {
@@ -71,46 +91,89 @@ class UserService {
         return userRepository.save(userIn)
     }
 
-    User findUserByToken(@NotNull String tokenValue) {
-        Token token = tokenService.findByValue(tokenValue)
-        User user = get(token.entityId)
+    User register(Map userMap) {
+        User user = new User()
+        user.firstName = userMap.firstName
+        user.lastName = userMap.lastName
+        user.username = userMap.username
+        user.email = userMap.email
+        user.password = userMap.password
+        user.isEnabled = true
+        user.isVerifyRequired = true
+        user.verifyEmailCode = CryptoUtil.generateUniqueToken()
+        user.verifyEmailExpiresOn = new Date() + 2 //TODO: get this value from the properties file
+        user = userRepository.save(user)
+        sendVerificationEmail(user)
         return user
     }
 
-    boolean validateUserByToken(@NotNull String tokenValue) {
-        User user = findUserByToken(tokenValue)
-        return (user != null)
+    User findByResetPasswordCode(@NotNull String tokenValue) {
+        User user = userRepository.findByResetPasswordCode(tokenValue)
+        return user
     }
 
     User activate(@NotNull String tokenValue) {
-        Token token = tokenService.findByValue(tokenValue)
-        User user = get(token.entityId)
-        user.isEnabled = true
+        User user = getLoggedInUser()
+        if (!user.isVerifyRequired) {
+            LOG.info('User is already activated. Skipping user activation.')
+            return user
+        }
+        if (user.isVerifyEmailCodeExpired()) {
+            throw new VerifyEmailCodeExpiredException()
+        }
+        if (user.verifyEmailCode != tokenValue) {
+            throw new InvalidVerificationCodeException()
+        }
         userRepository.save(user)
-        token.expiresOn = new Date()
-        tokenService.save(token)
+        user.verifyEmailCode = null
+        user.verifyEmailExpiresOn = null
+        user.isVerifyRequired = false
+        userRepository.save(user)
+        return user
+    }
+
+    User resetPassword(@NotNull String resetPasswordCode, @NotNull String password) {
+        User user = findByResetPasswordCode(resetPasswordCode)
+        if (!user) {
+            throw new UnknownIdentifierException()
+        }
+        if (user.isResetPasswordCodeExpired()) {
+            throw new ResetPasswordCodeExpiredException()
+        }
+        if (user.resetPasswordCode != resetPasswordCode) {
+            throw new InvalidVerificationCodeException()
+        }
+        user.password = password
+        user.resetPasswordCode = null
+        user.resetPasswordExpiresOn = null
+        userRepository.save(user)
         return user
     }
 
     void sendVerificationEmail(User user) {
-        Token token = tokenService.generate(user, TokenType.EMAIL_VERIFICATION)
+        if (!user) {
+            throw new UnknownIdentifierException()
+        }
         MailMessage mailMessage = new MailMessage()
         mailMessage.to = user.email
-        mailMessage.model = ['token':token, 'user':user]
+        mailMessage.model = ['user':user]
         mailMessage.subject = 'Account information'
         mailMessage.template = 'email-verification.ftl'
-        mailMessage.from = 'support@launchpad.com' //TODO: ignore this when default email configured in properties
         mailService.send(mailMessage)
     }
 
     void sendPasswordResetEmail(User user) {
-        Token token = tokenService.generate(user, TokenType.RESET_PASSWORD)
+        if (!user) {
+            throw new UnknownIdentifierException()
+        }
+        user.resetPasswordCode = CryptoUtil.generateUniqueToken()
+        user.resetPasswordExpiresOn = new Date() + 2  //TODO: get this value from the properties file
+        userRepository.save(user)
         MailMessage mailMessage = new MailMessage()
         mailMessage.to = user.email
-        mailMessage.model = ['token':token, 'user':user]
+        mailMessage.model = ['user':user]
         mailMessage.subject = 'Password reset information'
         mailMessage.template = 'reset-password-email'
-        mailMessage.from = 'noreply@launchpad.com' //TODO: ignore this when default email configured in properties
         mailService.send(mailMessage)
     }
 }

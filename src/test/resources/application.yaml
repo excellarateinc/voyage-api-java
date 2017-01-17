@@ -3,9 +3,10 @@
 #######################################################################################################################
 app:
   name: Launchpad
-  support-email: support@LighthouseSoftware.com
-  support-phone: 651-888-6021
-  support-website: http://LighthouseSoftware.com/support
+  contact-support:
+    email: support@LighthouseSoftware.com
+    phone: 651-888-6021
+    website: http://LighthouseSoftware.com/support
 
 #######################################################################################################################
 # Spring Configuration
@@ -37,6 +38,7 @@ spring:
       host: localhost
       port: 3025
       protocol: smtp
+      overrideAddress: testmsg@LighthouseSoftware.com
 
   freemarker:
       template-loader-path: classpath:/email/

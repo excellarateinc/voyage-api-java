@@ -70,6 +70,26 @@ databaseChangeLog:
                   type: bit(1)
                   constraints:
                     nullable: false
+              - column:
+                  name: reset_password_expires_on
+                  type: datetime
+                  constraints:
+                    nullable: true
+              - column:
+                  name: reset_password_code
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: verify_email_expires_on
+                  type: datetime
+                  constraints:
+                    nullable: true
+              - column:
+                  name: verify_email_code
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
   - changeSet:
       id: v1.0-user-seed-users
       author: Rob Louie

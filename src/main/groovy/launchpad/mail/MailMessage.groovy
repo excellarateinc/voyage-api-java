@@ -1,7 +1,6 @@
 package launchpad.mail
 
 class MailMessage {
-
     String to
     String from
     String cc
@@ -10,5 +9,4 @@ class MailMessage {
     String template
     Map<String, Object> model
     String text
-
 }
