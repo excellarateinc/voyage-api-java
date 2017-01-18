@@ -37,9 +37,7 @@ class MailService {
     boolean send(MailMessage mailMessage) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage()
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true)
-        if (!mailMessage.from) {
-            mailMessage.from = from
-        }
+        mailMessage.from = mailMessage.from ?: from
         mimeMessageHelper.setFrom(mailMessage.from)
         if (overrideAddress) {
             mailMessage.to = overrideAddress

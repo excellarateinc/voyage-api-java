@@ -3,11 +3,9 @@ package launchpad.security.account
 import com.icegreen.greenmail.util.GreenMail
 import com.icegreen.greenmail.util.ServerSetup
 import launchpad.security.user.User
-import launchpad.security.user.UserService
 import launchpad.test.AbstractIntegrationTest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpEntity
 import org.springframework.http.MediaType
@@ -17,11 +15,6 @@ import javax.mail.Message
 //TODO: Update tests to cover all the actions in the controller
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
-    @Autowired
-    private TestRestTemplate restTemplate
-
-    @Autowired
-    private UserService userService
 
     private GreenMail greenMailSMTP
 

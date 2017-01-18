@@ -70,7 +70,7 @@ class AccountController {
      *
      * @apiUse BadRequestError
      **/
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize('isAuthenticated()')
     @GetMapping('/verify/{verifyEmailCode}')
     ResponseEntity verify(@PathVariable('verifyEmailCode') String verifyEmailCode) {
         userService.verify(verifyEmailCode)
@@ -93,10 +93,10 @@ class AccountController {
      *
      * @apiUse BadRequestError
      **/
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize('isAuthenticated()')
     @GetMapping('/resendActivationEmail')
     ResponseEntity resendActivationEmail() {
-        User user = userService.getLoggedInUser()
+        User user = userService.loggedInUser
         userService.sendVerificationEmail(user)
         return new ResponseEntity(HttpStatus.NO_CONTENT)
     }

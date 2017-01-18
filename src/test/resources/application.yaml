@@ -85,3 +85,6 @@ security:
         standard-client:
           client-id: client-standard
           client-secret: secret
+
+verifyEmailCodeExpireDays: 2
+resetPasswordCodeExpireDays: 2

@@ -10,6 +10,7 @@ import launchpad.util.CryptoUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
@@ -25,6 +26,10 @@ import javax.validation.constraints.NotNull
 @Validated
 class UserService {
     private static final Logger LOG = LoggerFactory.getLogger(UserService)
+    @Value('${verifyEmailCodeExpireDays}')
+    private int verifyEmailCodeExpireDays
+    @Value('${resetPasswordCodeExpireDays}')
+    private int resetPasswordCodeExpireDays
 
     private final UserRepository userRepository
     private final MailService mailService
@@ -37,7 +42,7 @@ class UserService {
 
     User getLoggedInUser() {
         String username
-        Authentication authenticationToken = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authenticationToken = SecurityContextHolder.context.authentication
         if (authenticationToken.principal instanceof UserDetails) {
             username = ((UserDetails)authenticationToken.principal).username
 
@@ -93,15 +98,17 @@ class UserService {
 
     User register(Map userMap) {
         User user = new User()
-        user.firstName = userMap.firstName
-        user.lastName = userMap.lastName
-        user.username = userMap.username
-        user.email = userMap.email
-        user.password = userMap.password
-        user.isEnabled = true
-        user.isVerifyRequired = true
-        user.verifyEmailCode = CryptoUtil.generateUniqueToken()
-        user.verifyEmailExpiresOn = new Date() + 2 //TODO: get this value from the properties file
+        user.with {
+            firstName = userMap.firstName
+            lastName = userMap.lastName
+            username = userMap.username
+            email = userMap.email
+            password = userMap.password
+            isEnabled = true
+            isVerifyRequired = true
+            verifyEmailCode = CryptoUtil.generateUniqueToken()
+            verifyEmailExpiresOn = new Date() + verifyEmailCodeExpireDays
+        }
         user = userRepository.save(user)
         sendVerificationEmail(user)
         return user
@@ -112,7 +119,7 @@ class UserService {
     }
 
     User verify(@NotNull String tokenValue) {
-        User user = getLoggedInUser()
+        User user = loggedInUser
         if (!user.isVerifyRequired) {
             LOG.info('User is already activated. Skipping user activation.')
             return user
@@ -123,10 +130,11 @@ class UserService {
         if (user.verifyEmailCode != tokenValue) {
             throw new InvalidVerificationCodeException()
         }
-        userRepository.save(user)
-        user.verifyEmailCode = null
-        user.verifyEmailExpiresOn = null
-        user.isVerifyRequired = false
+        user.with {
+            verifyEmailCode = null
+            verifyEmailExpiresOn = null
+            isVerifyRequired = false
+        }
         userRepository.save(user)
         return user
     }
@@ -166,7 +174,7 @@ class UserService {
             throw new UnknownIdentifierException()
         }
         user.resetPasswordCode = CryptoUtil.generateUniqueToken()
-        user.resetPasswordExpiresOn = new Date() + 2  //TODO: get this value from the properties file
+        user.resetPasswordExpiresOn = new Date() + resetPasswordCodeExpireDays
         userRepository.save(user)
         MailMessage mailMessage = new MailMessage()
         mailMessage.to = user.email
