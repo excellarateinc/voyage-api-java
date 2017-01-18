@@ -4,7 +4,6 @@ import com.icegreen.greenmail.util.GreenMail
 import com.icegreen.greenmail.util.ServerSetup
 import launchpad.security.user.User
 import launchpad.test.AbstractIntegrationTest
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpEntity
