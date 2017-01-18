@@ -111,7 +111,7 @@ class UserService {
         return userRepository.findByResetPasswordCode(tokenValue)
     }
 
-    User activate(@NotNull String tokenValue) {
+    User verify(@NotNull String tokenValue) {
         User user = getLoggedInUser()
         if (!user.isVerifyRequired) {
             LOG.info('User is already activated. Skipping user activation.')

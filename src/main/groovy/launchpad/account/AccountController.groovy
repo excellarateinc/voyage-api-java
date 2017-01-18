@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(['/v1/account', '/v1.0/account'])
+@RequestMapping(['/api/v1/account', '/api/v1.0/account'])
 class AccountController {
     private final UserService userService
 
@@ -54,30 +54,26 @@ class AccountController {
     }
 
     /**
-     * @api {post} /v1/account registration
+     * @api {get} /v1/account/verify/:verifyEmailCode Verifies Email
      * @apiVersion 1.0.0
-     * @apiName AccountCreate
+     * @apiName Verify email
      * @apiGroup Account
      *
-     * @apiPermission @apiPermission lss.permission->api.user.create
+     * @apiPermission @apiPermission lss.permission-> authenticated user
      *
      * @apiUse AuthHeader
      *
-     * @apiHeader (Response Headers) {String} location Location of the newly created resource
+     * @apiParam {String} verifyEmailCode verifyEmailCode
      *
-     * @apiHeaderExample {json} Location-Example
-     * {
-     *     "Location": "http://localhost:52431/api/v1/account/activate/verifyEmailCode"
-     * }
+     * @apiSuccessExample Success-Response:
+     *   HTTP/1.1 204 NO CONTENT
      *
-     * @apiUse UserRequestModel
-     * @apiUse UserSuccessModel
-     * @apiUse UnauthorizedError
+     * @apiUse BadRequestError
      **/
-    @PreAuthorize("hasAuthority('api.users.create')")
-    @GetMapping('/activate/{verifyEmailCode}')
-    ResponseEntity activate(@PathVariable('verifyEmailCode') String verifyEmailCode) {
-        userService.activate(verifyEmailCode)
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping('/verify/{verifyEmailCode}')
+    ResponseEntity verify(@PathVariable('verifyEmailCode') String verifyEmailCode) {
+        userService.verify(verifyEmailCode)
         return new ResponseEntity(HttpStatus.NO_CONTENT)
     }
 
@@ -87,7 +83,7 @@ class AccountController {
      * @apiName Activation Email
      * @apiGroup Account
      *
-     * @apiPermission @apiPermission lss.permission->api.user.create
+     * @apiPermission @apiPermission lss.permission-> authenticated user
      *
      * @apiUse AuthHeader
      *
@@ -97,7 +93,7 @@ class AccountController {
      *
      * @apiUse BadRequestError
      **/
-    @PreAuthorize("hasAuthority('api.users.create')")
+    @PreAuthorize("isAuthenticated()")
     @GetMapping('/resendActivationEmail')
     ResponseEntity resendActivationEmail() {
         User user = userService.getLoggedInUser()
