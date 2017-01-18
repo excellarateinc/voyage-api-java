@@ -42,7 +42,7 @@ class AbstractIntegrationTest extends Specification {
         return restTemplate.postForEntity(uri, null, responseType, Collections.EMPTY_MAP)
     }
 
-    protected <T> ResponseEntity<T> POST(String uri, HttpEntity<T> httpEntity, Class<T> responseType, TestClient testClient) {
+    protected <T> ResponseEntity<T> POST(String uri, HttpEntity<T> httpEntity, Class<T> responseType, TestClient testClient = null) {
         if (testClient) {
             httpEntity = authorize(testClient, httpEntity)
         }

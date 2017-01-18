@@ -3,6 +3,8 @@ package launchpad.security.account
 import com.icegreen.greenmail.util.GreenMail
 import com.icegreen.greenmail.util.ServerSetup
 import launchpad.security.user.User
+import launchpad.security.user.UserService
+import launchpad.test.AbstractIntegrationTest
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -10,15 +12,16 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpEntity
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import spock.lang.Specification
 import javax.mail.Message
 
 //TODO: Update tests to cover all the actions in the controller
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
-class AccountControllerIntegrationSpec extends Specification {
-
+class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
     @Autowired
     private TestRestTemplate restTemplate
+
+    @Autowired
+    private UserService userService
 
     private GreenMail greenMailSMTP
 
@@ -32,7 +35,7 @@ class AccountControllerIntegrationSpec extends Specification {
         greenMailSMTP.stop()
     }
 
-    def '/v1/users POST - Account create '() {
+    def '/api/v1/account/register POST - Account create '() {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password')
             HttpHeaders headers = new HttpHeaders()
@@ -40,10 +43,7 @@ class AccountControllerIntegrationSpec extends Specification {
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
 
         when:
-            ResponseEntity<User> responseEntity =
-                    restTemplate
-                            .withBasicAuth('super', 'password')
-                            .postForEntity('/v1/account/register', httpEntity, User)
+            ResponseEntity<User> responseEntity = POST('/api/v1/account/register', httpEntity, User, standardClient)
 
         then:
             responseEntity.statusCode.value() == 201
@@ -57,5 +57,27 @@ class AccountControllerIntegrationSpec extends Specification {
             Message[] messages = greenMailSMTP.receivedMessages
             assert 1 == messages.length
             assert 'Account information' == messages[0].subject
+    }
+
+    def '/api/v1/account/resendActivationEmail GET - Anonymous access denied'() {
+        when:
+        ResponseEntity<Iterable> responseEntity = GET('/api/v1/account/resendActivationEmail', Iterable)
+
+        then:
+        responseEntity.statusCode.value() == 401
+        responseEntity.body.size() == 1
+        responseEntity.body[0].error == '401_unauthorized'
+        responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
+    }
+
+    def '/api/v1/account/verify/{verifyEmailCode} GET - Anonymous access denied'() {
+        when:
+        ResponseEntity<Iterable> responseEntity = GET('/api/v1/account/verify', Iterable)
+
+        then:
+        responseEntity.statusCode.value() == 401
+        responseEntity.body.size() == 1
+        responseEntity.body[0].error == '401_unauthorized'
+        responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
     }
 }
