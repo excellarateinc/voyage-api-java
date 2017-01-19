@@ -14,7 +14,7 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils
 
 import javax.mail.internet.MimeMessage
 
-@Service('mailService')
+@Service
 class MailService {
     private static final Logger LOGGER = LoggerFactory.getLogger(this.getClass())
 
@@ -35,6 +35,7 @@ class MailService {
 
     @Async
     boolean send(MailMessage mailMessage) {
+        //TODO: Handle the exception when sending mail is failed - Jagadeesh Manne - 01/19/2017
         MimeMessage mimeMessage = javaMailSender.createMimeMessage()
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true)
         mailMessage.from = mailMessage.from ?: from
@@ -53,16 +54,16 @@ class MailService {
         javaMailSender.send(mimeMessageHelper.mimeMessage)
     }
 
-    String geContentFromTemplate(Map<String, Object> model, String template) {
+    private String geContentFromTemplate(Map<String, Object> model, String template) {
         StringBuffer content = new StringBuffer()
         try {
             content.append(FreeMarkerTemplateUtils.processTemplateIntoString(freeMarkerConfig.getTemplate(template), model))
         } catch (IOException e) {
             LOGGER.error('Template {} was not found or could not be read, exception : {}', template, e.message)
-            throw new IOException()
+            throw e
         } catch (TemplateException e) {
             LOGGER.error('Template {} rendering failed, exception : {}', template, e.message)
-            throw new TemplateException()
+            throw e
         }
         return content.toString()
     }
