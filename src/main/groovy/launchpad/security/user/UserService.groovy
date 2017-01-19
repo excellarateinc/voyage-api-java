@@ -106,7 +106,7 @@ class UserService {
             password = userMap.password
             isEnabled = true
             isVerifyRequired = true
-            verifyEmailCode = CryptoUtil.generateUniqueToken()
+            verifyEmailCode = CryptoUtil.generateUniqueToken(6)
             verifyEmailExpiresOn = new Date() + verifyEmailCodeExpireDays
         }
         user = userRepository.save(user)
@@ -173,7 +173,7 @@ class UserService {
         if (!user) {
             throw new UnknownIdentifierException()
         }
-        user.resetPasswordCode = CryptoUtil.generateUniqueToken()
+        user.resetPasswordCode = CryptoUtil.generateUniqueToken(6)
         user.resetPasswordExpiresOn = new Date() + resetPasswordCodeExpireDays
         userRepository.save(user)
         MailMessage mailMessage = new MailMessage()
