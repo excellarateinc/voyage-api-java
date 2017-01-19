@@ -59,6 +59,25 @@ class SecurityIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.headers.getFirst('Location').indexOf('/login') > 0
     }
 
+    def 'Anonymous access to "/api/hello" is permitted'() {
+        when:
+            ResponseEntity<String> responseEntity = GET('/api/hello', String)
+
+        then:
+            responseEntity.statusCode.value() == 200
+    }
+
+    def 'Anonymous access to "/api/v1/users" is denied'() {
+        when:
+            ResponseEntity<Iterable> responseEntity = GET('/api/v1/users', Iterable)
+
+        then:
+            responseEntity.statusCode.value() == 401
+            responseEntity.body.size() == 1
+            responseEntity.body[0].error == '401_unauthorized'
+            responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
+    }
+
     def 'Super User has every permission in the database'() {
         when:
             Iterable<Permission> permissions = permissionService.listAll()

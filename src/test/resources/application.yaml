@@ -39,7 +39,7 @@ spring:
 security:
 
   ignored: /resources/**, /webjars/**
-  permitAll: /login, /hello
+  permitAll: /login, /api/hello
 
   oauth2:
     resource:

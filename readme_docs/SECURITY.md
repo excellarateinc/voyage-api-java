@@ -1,3 +1,7 @@
+## Password Reset
+* Why did we go the approach we did. 
+* References to OWASP and other security sources
+
 ## Tokens
 * Since we are using JWT, we don't have an easy way to revoke tokens other than the expiration date since we do not store these tokens in the database. 
 * If someone somehow steals the token, they can impersonate that user completely. 

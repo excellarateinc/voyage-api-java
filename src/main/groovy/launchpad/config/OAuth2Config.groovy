@@ -109,6 +109,9 @@ class OAuth2Config {
         private static final String READ = "#oauth2.hasScope('Read Data')"
         private static final String WRITE = "#oauth2.hasScope('Write Data')"
 
+        @Value('${security.permitAll}')
+        private String[] permitAllUrls
+
         @Autowired
         private WebResponseExceptionTranslator apiWebResponseExceptionTranslator
 
@@ -122,7 +125,12 @@ class OAuth2Config {
                     .antMatchers(API_PATH)
                     .and()
 
-                // Enforce client 'scope' permissions once authenticated
+                // Bypass URLs that are public endpoints, like /api/v1/forgotPassword
+                .authorizeRequests()
+                    .antMatchers(permitAllUrls).permitAll()
+                    .and()
+
+                // Enforce client 'scope' permissions on all authenticated requests
                 .authorizeRequests()
                     .antMatchers(HttpMethod.GET, ANY_PATH).access(READ)
                     .antMatchers(HttpMethod.POST, ANY_PATH).access(WRITE)
