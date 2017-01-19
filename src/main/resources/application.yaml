@@ -83,7 +83,7 @@ server:
 security:
 
   ignored: /resources/**, /webjars/**, /docs/**
-  permitAll: /login, /hello
+  permitAll: /login, /api/hello
 
   oauth2:
     resource:
