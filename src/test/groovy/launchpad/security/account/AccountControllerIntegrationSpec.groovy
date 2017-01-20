@@ -9,7 +9,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpEntity
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import javax.mail.Message
 
 //TODO: Update tests to cover all the actions in the controller
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
