@@ -76,16 +76,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: reset_password_expires_on
-                  type: datetime
-                  constraints:
-                    nullable: true
-              - column:
-                  name: reset_password_code
-                  type: varchar(255)
-                  constraints:
-                    nullable: true
-              - column:
                   name: verify_email_expires_on
                   type: datetime
                   constraints:

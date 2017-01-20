@@ -2,7 +2,6 @@ package launchpad.security.user
 
 import groovy.time.TimeCategory
 import launchpad.error.InvalidVerificationCodeException
-import launchpad.error.ResetPasswordCodeExpiredException
 import launchpad.error.UnknownIdentifierException
 import launchpad.error.VerifyCodeExpiredException
 import launchpad.mail.MailMessage
