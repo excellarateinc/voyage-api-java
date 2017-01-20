@@ -111,7 +111,7 @@ security:
   user-verification:
     exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /WEB-INF/jsp/**.jsp
 
-verifyEmailCodeExpireDays: 2
-resetPasswordCodeExpireDays: 2
   cors:
     allowed-origin: '*'
+
+verify-code-expire-minutes: 30

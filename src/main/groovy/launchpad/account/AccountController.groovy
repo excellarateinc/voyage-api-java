@@ -2,6 +2,8 @@ package launchpad.account
 
 import launchpad.security.user.User
 import launchpad.security.user.UserService
+import launchpad.security.user.VerifyCodeType
+import launchpad.security.user.VerifyMethod
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -24,27 +27,6 @@ class AccountController {
         this.userService = userService
     }
 
-    /**
-     * @api {post} /v1/account registration
-     * @apiVersion 1.0.0
-     * @apiName AccountCreate
-     * @apiGroup Account
-     *
-     * @apiPermission none
-     *
-     * @apiUse AuthHeader
-     *
-     * @apiHeader (Response Headers) {String} location Location of the newly created resource
-     *
-     * @apiHeaderExample {json} Location-Example
-     * {
-     *     "Location": "http://localhost:52431/api/v1/account/1"
-     * }
-     *
-     * @apiUse UserRequestModel
-     * @apiUse UserSuccessModel
-     * @apiUse UnauthorizedError
-     **/
     @PostMapping('/register')
     ResponseEntity register(@RequestBody Map<String, Object> userMap) {
         User newUser = userService.register(userMap)
@@ -53,99 +35,53 @@ class AccountController {
         return new ResponseEntity(newUser, headers, HttpStatus.CREATED)
     }
 
-    /**
-     * @api {get} /v1/account/verify/:verifyEmailCode Verifies Email
-     * @apiVersion 1.0.0
-     * @apiName Verify email
-     * @apiGroup Account
-     *
-     * @apiPermission @apiPermission lss.permission-> authenticated user
-     *
-     * @apiUse AuthHeader
-     *
-     * @apiParam {String} verifyEmailCode verifyEmailCode
-     *
-     * @apiSuccessExample Success-Response:
-     *   HTTP/1.1 204 NO CONTENT
-     *
-     * @apiUse BadRequestError
-     **/
     @PreAuthorize('isAuthenticated()')
-    @GetMapping('/verify/{verifyEmailCode}')
-    ResponseEntity verify(@PathVariable('verifyEmailCode') String verifyEmailCode) {
-        userService.verify(verifyEmailCode)
-        return new ResponseEntity(HttpStatus.NO_CONTENT)
-    }
-
-    /**
-     * @api {get} /v1/account/resendActivationEmail Resend activation email
-     * @apiVersion 1.0.0
-     * @apiName Activation Email
-     * @apiGroup Account
-     *
-     * @apiPermission @apiPermission lss.permission-> authenticated user
-     *
-     * @apiUse AuthHeader
-     *
-     *
-     * @apiSuccessExample Success-Response:
-     *   HTTP/1.1 204 NO CONTENT
-     *
-     * @apiUse BadRequestError
-     **/
-    @PreAuthorize('isAuthenticated()')
-    @GetMapping('/resendActivationEmail')
-    ResponseEntity resendActivationEmail() {
+    @GetMapping('/verify/initiate')
+    ResponseEntity initiateVerification() {
         User user = userService.loggedInUser
-        userService.sendVerificationEmail(user)
+        Iterable<VerifyMethod> verifyMethods = userService.getVerifyMethods(user)
+        return new ResponseEntity(verifyMethods, HttpStatus.OK)
+    }
+
+    @PreAuthorize('isAuthenticated()')
+    @GetMapping('/verify/code')
+    ResponseEntity getVerificationCode(@RequestParam('verify_method') String verifyMethod) {
+        User user = userService.loggedInUser
+        Iterable<User> users = userService.sendVerifyCode(user, verifyMethod, VerifyCodeType.ACCOUNT_VERIFICATION)
+        return new ResponseEntity(users, HttpStatus.OK)
+    }
+
+    @PreAuthorize('isAuthenticated()')
+    @PostMapping('/verify')
+    ResponseEntity verify(@RequestBody String code) {
+        User user = userService.loggedInUser
+        userService.verify(code, user)
         return new ResponseEntity(HttpStatus.NO_CONTENT)
     }
 
-    /**
-     * @api {get} /v1/account/forgotPassword/:username Send password reset email
-     * @apiVersion 1.0.0
-     * @apiName Forgot password email
-     * @apiGroup Account
-     *
-     * @apiPermission none
-     *
-     * @apiUse AuthHeader
-     *
-     * @apiParam {String} username Username
-     *
-     * @apiSuccessExample Success-Response:
-     *   HTTP/1.1 204 NO CONTENT
-     *
-     * @apiUse BadRequestError
-     **/
-    @GetMapping('/forgotPassword/{username}')
-    ResponseEntity forgotPassword(@PathVariable('username') String username) {
+    @PostMapping('/recover/password')
+    ResponseEntity initiatePasswordRecover(@RequestBody String username) {
         User user = userService.findByUsername(username)
-        userService.sendPasswordResetEmail(user)
+        Iterable<VerifyMethod> verifyMethods = userService.getVerifyMethods(user)
+        return new ResponseEntity(verifyMethods, HttpStatus.OK)
+    }
+
+    @GetMapping('/recover/password/code')
+    ResponseEntity getPasswordRecoverCode(@RequestParam('verify_method') String verifyMethod) {
+        User user = userService.loggedInUser
+        Iterable<User> users = userService.sendVerifyCode(user, verifyMethod, VerifyCodeType.PASSWORD_RESET)
+        return new ResponseEntity(users, HttpStatus.OK)
+    }
+
+    @PostMapping('/recover/password/verify')
+    ResponseEntity verifyPasswordRecoverCode(@RequestBody String code) {
+        userService.verifyPasswordRecoverCode(code)
         return new ResponseEntity(HttpStatus.NO_CONTENT)
     }
 
-    /**
-     * @api {get} /v1/account/resetPassword/:resetPasswordCode Reset Password
-     * @apiVersion 1.0.0
-     * @apiName Account Password Reset
-     * @apiGroup Account
-     *
-     * @apiPermission none
-     *
-     * @apiUse AuthHeader
-     *
-     * @apiParam {String} resetPasswordCode Reset Password Code
-     *
-     * @apiSuccessExample Success-Response:
-     *   HTTP/1.1 200
-     *
-     * @apiUse BadRequestError
-     **/
-    @PostMapping('/resetPassword/{resetPasswordCode}')
-    ResponseEntity resetPassword(@PathVariable('resetPasswordCode') String resetPasswordCode, @RequestBody Map userMap) {
-        //TODO: Use command object to validate password and confirm password
-        userService.resetPassword(resetPasswordCode, userMap.password)
+    @PostMapping('/recover')
+    ResponseEntity changePassword(@RequestBody Map<String, String> params) {
+        userService.resetPassword(params.code, params.password)
         return new ResponseEntity(HttpStatus.NO_CONTENT)
     }
 }

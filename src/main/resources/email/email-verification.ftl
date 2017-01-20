@@ -2,7 +2,7 @@
 <body>
 <p>Dear ${user.lastName}, ${user.firstName}</p>
 
-<p> Thank you for signing up for Launchpad. To complete the registration process, please enter below verification code in the activation form</p>
+<p> Thank you for signing up for Launchpad. To complete the registration process, please enter below verification code in the verification form</p>
 
 <p style="border:1px solid red">
 ${user.verifyEmailCode}

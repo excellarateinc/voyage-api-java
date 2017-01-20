@@ -3,6 +3,7 @@ package launchpad.security.user
 import com.fasterxml.jackson.annotation.JsonIgnore
 import groovy.transform.EqualsAndHashCode
 import launchpad.security.role.Role
+import org.aspectj.weaver.ast.Not
 import org.hibernate.validator.constraints.Email
 
 import javax.persistence.Entity
@@ -38,6 +39,8 @@ class User {
     @NotNull
     String password
 
+    String phoneNumber
+
     @NotNull
     Boolean isEnabled = Boolean.TRUE
 
@@ -64,22 +67,12 @@ class User {
     Set<Role> roles
 
     @JsonIgnore
-    String resetPasswordCode
+    String verifyCode
 
     @JsonIgnore
-    Date resetPasswordExpiresOn
+    Date verifyCodeExpiresOn
 
-    @JsonIgnore
-    String verifyEmailCode
-
-    @JsonIgnore
-    Date verifyEmailExpiresOn
-
-    boolean isVerifyEmailCodeExpired() {
-        return verifyEmailExpiresOn != null && verifyEmailExpiresOn < new Date()
-    }
-
-    boolean isResetPasswordCodeExpired() {
-        return resetPasswordExpiresOn != null && resetPasswordExpiresOn < new Date()
+    boolean isVerifyCodeExpired() {
+        return verifyCodeExpiresOn != null && verifyCodeExpiresOn < new Date()
     }
 }

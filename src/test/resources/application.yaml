@@ -89,5 +89,4 @@ security:
   cors:
     allowed-origin: '*'
 
-verifyEmailCodeExpireDays: 2
-resetPasswordCodeExpireDays: 2
+verify-code-expire-minutes: 30

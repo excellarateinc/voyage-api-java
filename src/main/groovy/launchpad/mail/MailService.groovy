@@ -33,7 +33,6 @@ class MailService {
         this.freeMarkerConfig = freeMarkerConfig
     }
 
-    @Async
     boolean send(MailMessage mailMessage) {
         //TODO: Handle the exception when sending mail is failed - Jagadeesh Manne - 01/19/2017
         MimeMessage mimeMessage = javaMailSender.createMimeMessage()
@@ -52,6 +51,8 @@ class MailService {
             mimeMessageHelper.setText(mailMessage.text, true)
         }
         javaMailSender.send(mimeMessageHelper.mimeMessage)
+        mailMessage.isEmailSent(true)
+
     }
 
     private String geContentFromTemplate(Map<String, Object> model, String template) {

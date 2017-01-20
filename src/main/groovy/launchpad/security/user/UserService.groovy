@@ -1,12 +1,13 @@
 package launchpad.security.user
 
+import groovy.time.TimeCategory
 import launchpad.error.InvalidVerificationCodeException
 import launchpad.error.ResetPasswordCodeExpiredException
 import launchpad.error.UnknownIdentifierException
-import launchpad.error.VerifyEmailCodeExpiredException
+import launchpad.error.VerifyCodeExpiredException
 import launchpad.mail.MailMessage
 import launchpad.mail.MailService
-import launchpad.util.CryptoUtil
+import launchpad.util.StringUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -26,10 +27,9 @@ import javax.validation.constraints.NotNull
 @Validated
 class UserService {
     private static final Logger LOG = LoggerFactory.getLogger(UserService)
-    @Value('${verifyEmailCodeExpireDays}')
-    private int verifyEmailCodeExpireDays
-    @Value('${resetPasswordCodeExpireDays}')
-    private int resetPasswordCodeExpireDays
+
+    @Value('${verify-code-expire-minutes}')
+    private int verifyCodeExpires
 
     private final UserRepository userRepository
     private final MailService mailService
@@ -106,81 +106,124 @@ class UserService {
             password = userMap.password
             isEnabled = true
             isVerifyRequired = true
-            verifyEmailCode = CryptoUtil.generateUniqueToken(6)
-            verifyEmailExpiresOn = new Date() + verifyEmailCodeExpireDays
         }
         user = userRepository.save(user)
-        sendVerificationEmail(user)
         return user
     }
 
-    User findByResetPasswordCode(@NotNull String tokenValue) {
-        return userRepository.findByResetPasswordCode(tokenValue)
-    }
-
-    User verify(@NotNull String tokenValue) {
-        User user = loggedInUser
+    User verify(@NotNull String verifyCode, @NotNull User user) {
         if (!user.isVerifyRequired) {
             LOG.info('User is already activated. Skipping user activation.')
             return user
         }
-        if (user.isVerifyEmailCodeExpired()) {
-            throw new VerifyEmailCodeExpiredException()
+        if (user.verifyCodeExpired) {
+            throw new VerifyCodeExpiredException()
         }
-        if (user.verifyEmailCode != tokenValue) {
+        if (user.verifyCode != verifyCode) {
             throw new InvalidVerificationCodeException()
         }
         user.with {
-            verifyEmailCode = null
-            verifyEmailExpiresOn = null
+            verifyCode = null
+            verifyCodeExpiresOn = null
             isVerifyRequired = false
         }
         userRepository.save(user)
         return user
     }
 
-    User resetPassword(@NotNull String resetPasswordCode, @NotNull String password) {
-        User user = findByResetPasswordCode(resetPasswordCode)
-        if (!user) {
-            throw new UnknownIdentifierException()
+    User verifyPasswordRecoverCode(@NotNull String verifyCode) {
+        User user = userRepository.findByVerifyCode(verifyCode)
+        if (user.verifyCodeExpired) {
+            throw new VerifyCodeExpiredException()
         }
-        if (user.isResetPasswordCodeExpired()) {
-            throw new ResetPasswordCodeExpiredException()
-        }
-        if (user.resetPasswordCode != resetPasswordCode) {
+        if (user.verifyCode != verifyCode) {
             throw new InvalidVerificationCodeException()
         }
-        user.password = password
-        user.resetPasswordCode = null
-        user.resetPasswordExpiresOn = null
+        user.with {
+            verifyCode = null
+            verifyCodeExpiresOn = null
+        }
         userRepository.save(user)
         return user
     }
 
-    void sendVerificationEmail(User user) {
+    User resetPassword(@NotNull String verifyCode, @NotNull String password) {
+        User user = userRepository.findByVerifyCode(verifyCode)
         if (!user) {
             throw new UnknownIdentifierException()
         }
-        MailMessage mailMessage = new MailMessage()
-        mailMessage.to = user.email
-        mailMessage.model = ['user':user]
-        mailMessage.subject = 'Account information'
-        mailMessage.template = 'email-verification.ftl'
-        mailService.send(mailMessage)
+        if (user.verifyCodeExpired) {
+            throw new VerifyCodeExpiredException()
+        }
+        if (user.verifyCode != verifyCode) {
+            throw new InvalidVerificationCodeException()
+        }
+        user.with {
+            user.password = password
+            user.verifyCode = null
+            user.verifyCodeExpiresOn = null
+        }
+        userRepository.save(user)
+        return user
     }
 
-    void sendPasswordResetEmail(User user) {
-        if (!user) {
-            throw new UnknownIdentifierException()
+    List<VerifyMethod> getVerifyMethods(User user) {
+        List<VerifyMethod> verifyMethods = []
+        verifyMethods.add(VerifyMethod.EMAIL)
+        if (user.phoneNumber) {
+            verifyMethods.add(VerifyMethod.TEXT)
         }
-        user.resetPasswordCode = CryptoUtil.generateUniqueToken(6)
-        user.resetPasswordExpiresOn = new Date() + resetPasswordCodeExpireDays
-        userRepository.save(user)
+        return verifyMethods
+    }
+
+    void sendVerifyCode(@NotNull User user, String verifyMethod, VerifyCodeType verifyCodeType) {
+        if (verifyMethod == VerifyMethod.TEXT.toString()) {
+            sendVerifyCodeToPhoneNumber(user, verifyCodeType)
+        } else {
+            sendVerifyCodeToEmail(user, verifyCodeType)
+        }
+    }
+
+    void sendVerifyCodeToEmail(@NotNull User user, VerifyCodeType verifyCodeType) {
+        user.verifyCode = getSecurityCode(user)
+        use(TimeCategory) {
+            user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
+        }
+        MailMessage mailMessage = null
+        if (verifyCodeType == VerifyCodeType.ACCOUNT_VERIFICATION) {
+            mailMessage = getAccountVerificationEmailMessage(user)
+        } else if (verifyCodeType == VerifyCodeType.PASSWORD_RESET) {
+            mailMessage = getPasswordResetEmailMessage(user)
+        }
+        mailService.send(mailMessage)
+        if (mailMessage.isEmailSent) {
+            userRepository.save(user)
+        }
+    }
+
+    void sendVerifyCodeToPhoneNumber(@NotNull User user, VerifyCodeType verifyCodeType) {
+        //TODO: Implement sending sms feature using aws sdk sns
+    }
+
+    private static MailMessage getPasswordResetEmailMessage(@NotNull User user) {
         MailMessage mailMessage = new MailMessage()
         mailMessage.to = user.email
         mailMessage.model = ['user':user]
-        mailMessage.subject = 'Password reset information'
-        mailMessage.template = 'reset-password-email'
-        mailService.send(mailMessage)
+        mailMessage.subject = '${user.verifyCode} is your account verification code'
+        mailMessage.template = 'email-verification.ftl'
+        return mailMessage
+    }
+
+    private static MailMessage getAccountVerificationEmailMessage(@NotNull User user) {
+        MailMessage mailMessage = new MailMessage()
+        mailMessage.to = user.email
+        mailMessage.model = ['user':user]
+        mailMessage.subject = '${user.verifyCode} is your account password recovery code'
+        mailMessage.template = 'reset-password-email.ftl'
+        return mailMessage
+    }
+
+    private static String getSecurityCode(User user) {
+        return user.username.take(4) + StringUtil.generateUniqueCode(6)
     }
 }

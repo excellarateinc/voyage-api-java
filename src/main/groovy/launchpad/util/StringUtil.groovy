@@ -2,9 +2,9 @@ package launchpad.util
 
 import org.apache.commons.lang3.RandomStringUtils
 
-class CryptoUtil {
+class StringUtil {
 
-    static String generateUniqueToken(int length = 32) {
+    static String generateUniqueCode(int length = 32) {
         RandomStringUtils.randomAlphanumeric(length).toUpperCase()
     }
 }
