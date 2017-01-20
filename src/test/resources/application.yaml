@@ -86,5 +86,8 @@ security:
           client-id: client-standard
           client-secret: secret
 
+  cors:
+    allowed-origin: '*'
+
 verifyEmailCodeExpireDays: 2
 resetPasswordCodeExpireDays: 2

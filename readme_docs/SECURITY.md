@@ -2,6 +2,17 @@
 * Why did we go the approach we did. 
 * References to OWASP and other security sources
 
+## 2-Factor Authentication
+* User Verification Servlet Filter
+* How to exlclude resources from this filter
+
+## CORS
+* What is it and how to override it by environment
+  * 
+* Ionic apps are not affected since the local browser that runs the app loads resources using file://, which doesn't enforce CORS.
+  * When running Ionic in emulate mode, the app resources will be loaded with http://, which will enforce CORS
+  * http://blog.ionic.io/handling-cors-issues-in-ionic/
+
 ## Tokens
 * Since we are using JWT, we don't have an easy way to revoke tokens other than the expiration date since we do not store these tokens in the database. 
 * If someone somehow steals the token, they can impersonate that user completely. 
