@@ -12,7 +12,7 @@ import org.springframework.web.filter.CorsFilter
 
 @Configuration
 class CorsConfig {
-    private static Logger LOG = LoggerFactory.getLogger(CorsConfig)
+    private static final Logger LOG = LoggerFactory.getLogger(CorsConfig)
     private static final String ANY = '*'
     private static final String ALL_PATHS = '/**'
 
@@ -21,7 +21,9 @@ class CorsConfig {
 
     @Bean
     FilterRegistrationBean corsFilter() {
-        if (LOG.debugEnabled) LOG.debug('CorsConfig: Initializing CORS Servlet Filter')
+        if (LOG.debugEnabled) {
+            LOG.debug('CorsConfig: Initializing CORS Servlet Filter')
+        }
 
         CorsConfiguration config = new CorsConfiguration()
         config.setAllowCredentials(true)
