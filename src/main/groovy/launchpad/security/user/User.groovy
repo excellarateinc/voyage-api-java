@@ -3,7 +3,6 @@ package launchpad.security.user
 import com.fasterxml.jackson.annotation.JsonIgnore
 import groovy.transform.EqualsAndHashCode
 import launchpad.security.role.Role
-import org.aspectj.weaver.ast.Not
 import org.hibernate.validator.constraints.Email
 
 import javax.persistence.Entity

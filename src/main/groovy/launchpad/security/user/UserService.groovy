@@ -6,6 +6,8 @@ import launchpad.error.UnknownIdentifierException
 import launchpad.error.VerifyCodeExpiredException
 import launchpad.mail.MailMessage
 import launchpad.mail.MailService
+import launchpad.sms.SmsMessage
+import launchpad.sms.SmsService
 import launchpad.util.StringUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -32,6 +34,8 @@ class UserService {
 
     private final UserRepository userRepository
     private final MailService mailService
+    @Autowired
+    SmsService smsService
 
     @Autowired
     UserService(UserRepository userRepository, MailService mailService) {
@@ -201,14 +205,29 @@ class UserService {
     }
 
     void sendVerifyCodeToPhoneNumber(@NotNull User user, VerifyCodeType verifyCodeType) {
-        //TODO: Implement sending sms feature using aws sdk sns
+        user.verifyCode = getSecurityCode(user)
+        use(TimeCategory) {
+            user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
+        }
+        SmsMessage smsMessage = new SmsMessage()
+        smsMessage.to = user.phoneNumber
+
+        if (verifyCodeType == VerifyCodeType.ACCOUNT_VERIFICATION) {
+            smsMessage.text = "${user.verifyCode} is your account verification code"
+        } else if (verifyCodeType == VerifyCodeType.PASSWORD_RESET) {
+            smsMessage.text = "${user.verifyCode} is your account password recovery code"
+        }
+        smsService.send(smsMessage)
+        if (smsMessage.isSmsSent) {
+            userRepository.save(user)
+        }
     }
 
     private static MailMessage getPasswordResetEmailMessage(@NotNull User user) {
         MailMessage mailMessage = new MailMessage()
         mailMessage.to = user.email
         mailMessage.model = ['user':user]
-        mailMessage.subject = '${user.verifyCode} is your account verification code'
+        mailMessage.subject = "${user.verifyCode} is your account verification code"
         mailMessage.template = 'email-verification.ftl'
         return mailMessage
     }
@@ -217,7 +236,7 @@ class UserService {
         MailMessage mailMessage = new MailMessage()
         mailMessage.to = user.email
         mailMessage.model = ['user':user]
-        mailMessage.subject = '${user.verifyCode} is your account password recovery code'
+        mailMessage.subject = "${user.verifyCode} is your account password recovery code"
         mailMessage.template = 'reset-password-email.ftl'
         return mailMessage
     }
