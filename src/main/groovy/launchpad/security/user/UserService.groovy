@@ -48,7 +48,6 @@ class UserService {
         Authentication authenticationToken = SecurityContextHolder.context.authentication
         if (authenticationToken.principal instanceof UserDetails) {
             username = ((UserDetails)authenticationToken.principal).username
-
         } else if (authenticationToken.principal instanceof String) {
             username = authenticationToken.principal
         }
