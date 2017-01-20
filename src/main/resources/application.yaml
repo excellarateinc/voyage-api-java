@@ -93,3 +93,6 @@ security:
 
   user-verification:
     exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /WEB-INF/jsp/**.jsp
+
+  cors:
+    allowed-origin: '*'

@@ -6,6 +6,8 @@ Instructional recipies for how to do something within the codebase.
 ## Table of Contents
 * Return an expected error from a REST controller
 * Version a REST controller
+* Expose a web service endpoint to the public
+* Bypass User Verification process
 * 
 * [APIDoc - Document A Web Service](#apidoc---document-a-web-service)
 * [API Versioning](#api-versioning)
