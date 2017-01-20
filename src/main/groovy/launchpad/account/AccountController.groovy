@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
+/**
+ * todo : unit tests, api docs after finalizing the flow of verify account
+ * forgot password and render proper response.
+ */
+
 @RestController
 @RequestMapping(['/api/v1/account', '/api/v1.0/account'])
 class AccountController {
