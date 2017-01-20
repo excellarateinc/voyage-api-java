@@ -24,7 +24,7 @@ class CorsConfig {
         if (LOG.debugEnabled) LOG.debug('CorsConfig: Initializing CORS Servlet Filter')
 
         CorsConfiguration config = new CorsConfiguration()
-        config.setAllowCredentials(false)
+        config.setAllowCredentials(true)
         config.addAllowedOrigin(allowedOrigin)
         config.addAllowedHeader(ANY)
         config.addAllowedMethod(ANY)
