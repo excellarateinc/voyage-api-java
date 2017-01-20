@@ -45,15 +45,11 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body.username == 'username'
             responseEntity.body.email == 'test@test.com'
             responseEntity.body.password == 'password'
-
-            Message[] messages = greenMailSMTP.receivedMessages
-            assert 1 == messages.length
-            assert 'Account information' == messages[0].subject
     }
 
-    def '/api/v1/account/resendActivationEmail GET - Anonymous access denied'() {
+    def '/api/v1/account/verify/initiate GET - Anonymous access denied'() {
         when:
-        ResponseEntity<Iterable> responseEntity = GET('/api/v1/account/resendActivationEmail', Iterable)
+        ResponseEntity<Iterable> responseEntity = GET('/api/v1/account/verify/initiate', Iterable)
 
         then:
         responseEntity.statusCode.value() == 401
@@ -62,9 +58,20 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
         responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
     }
 
-    def '/api/v1/account/verify/{verifyEmailCode} GET - Anonymous access denied'() {
+    def '/api/v1/account/verify/code GET - Anonymous access denied'() {
         when:
-        ResponseEntity<Iterable> responseEntity = GET('/api/v1/account/verify', Iterable)
+        ResponseEntity<Iterable> responseEntity = GET('/api/v1/account/verify/code', Iterable)
+
+        then:
+        responseEntity.statusCode.value() == 401
+        responseEntity.body.size() == 1
+        responseEntity.body[0].error == '401_unauthorized'
+        responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
+    }
+
+    def '/api/v1/account/verify POST - Anonymous access denied'() {
+        when:
+        ResponseEntity<Iterable> responseEntity = POST('/api/v1/account/verify', Iterable)
 
         then:
         responseEntity.statusCode.value() == 401

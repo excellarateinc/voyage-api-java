@@ -76,12 +76,12 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: verify_email_expires_on
+                  name: verify_code_expires_on
                   type: datetime
                   constraints:
                     nullable: true
               - column:
-                  name: verify_email_code
+                  name: verify_code
                   type: varchar(255)
                   constraints:
                     nullable: true
