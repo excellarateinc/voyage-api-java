@@ -26,13 +26,11 @@ import org.springframework.web.bind.annotation.RestController
 class AccountController {
     private final AccountService accountService
     private final UserVerifyService userVerifyService
-    private final UserService userService
 
     @Autowired
-    AccountController(AccountService accountService, UserVerifyService userVerifyService, UserService userService) {
+    AccountController(AccountService accountService, UserVerifyService userVerifyService) {
         this.accountService = accountService
         this.userVerifyService = userVerifyService
-        this.userService = userService
     }
 
     @PostMapping('/register')

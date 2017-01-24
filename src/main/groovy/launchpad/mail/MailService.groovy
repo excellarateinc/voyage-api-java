@@ -51,7 +51,6 @@ class MailService {
         }
         javaMailSender.send(mimeMessageHelper.mimeMessage)
         mailMessage.isEmailSent(true)
-
     }
 
     private String geContentFromTemplate(Map<String, Object> model, String template) {

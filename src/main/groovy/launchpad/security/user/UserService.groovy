@@ -21,20 +21,15 @@ import javax.validation.constraints.NotNull
 @Service
 @Validated
 class UserService {
-    private static final Logger LOG = LoggerFactory.getLogger(UserService)
 
     @Value('${verify-code-expire-minutes}')
     private int verifyCodeExpires
 
     private final UserRepository userRepository
-    private final MailService mailService
-    @Autowired
-    SmsService smsService
 
     @Autowired
-    UserService(UserRepository userRepository, MailService mailService) {
+    UserService(UserRepository userRepository) {
         this.userRepository = userRepository
-        this.mailService = mailService
     }
 
     User getLoggedInUser() {
