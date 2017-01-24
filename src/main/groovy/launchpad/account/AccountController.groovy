@@ -1,6 +1,5 @@
 package launchpad.account
 
-import launchpad.security.user.UserService
 import launchpad.security.user.UserVerifyService
 import launchpad.security.user.User
 import launchpad.security.user.VerifyMethod
