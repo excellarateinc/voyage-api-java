@@ -2,16 +2,19 @@ package launchpad.security.user
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import groovy.transform.EqualsAndHashCode
+import launchpad.security.client.ClientRedirectUri
 import launchpad.security.role.Role
 import org.hibernate.validator.constraints.Email
 
 import javax.persistence.Entity
+import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.JoinTable
 import javax.persistence.ManyToMany
+import javax.persistence.OneToMany
 import javax.validation.constraints.NotNull
 
 @Entity
@@ -37,8 +40,6 @@ class User {
 
     @NotNull
     String password
-
-    String phoneNumber
 
     @NotNull
     Boolean isEnabled = Boolean.TRUE
@@ -70,6 +71,10 @@ class User {
 
     @JsonIgnore
     Date verifyCodeExpiresOn
+
+
+    @OneToMany(fetch=FetchType.EAGER, mappedBy='user')
+    Set<UserPhone> userPhones
 
     boolean isVerifyCodeExpired() {
         return verifyCodeExpiresOn != null && verifyCodeExpiresOn < new Date()

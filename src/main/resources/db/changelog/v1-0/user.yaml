@@ -41,11 +41,6 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: phone_number
-                  type: varchar(255)
-                  constraints:
-                    nullable: true
-              - column:
                   name: is_enabled
                   type: bit(1)
                   constraints:
