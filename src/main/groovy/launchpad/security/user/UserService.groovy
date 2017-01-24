@@ -1,14 +1,8 @@
 package launchpad.security.user
 
-import groovy.time.TimeCategory
-import launchpad.error.InvalidVerificationCodeException
 import launchpad.error.UnknownIdentifierException
-import launchpad.error.VerifyCodeExpiredException
-import launchpad.mail.MailMessage
 import launchpad.mail.MailService
-import launchpad.sms.SmsMessage
 import launchpad.sms.SmsService
-import launchpad.util.StringUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -101,50 +95,4 @@ class UserService {
         }
         return userRepository.save(userIn)
     }
-
-    User verifyPasswordRecoverCode(@NotNull String verifyCode) {
-        User user = userRepository.findByVerifyCode(verifyCode)
-        if (user.verifyCodeExpired) {
-            throw new VerifyCodeExpiredException()
-        }
-        if (user.verifyCode != verifyCode) {
-            throw new InvalidVerificationCodeException()
-        }
-        user.with {
-            verifyCode = null
-            verifyCodeExpiresOn = null
-        }
-        userRepository.save(user)
-        return user
-    }
-
-    User resetPassword(@NotNull String verifyCode, @NotNull String password) {
-        User user = userRepository.findByVerifyCode(verifyCode)
-        if (!user) {
-            throw new UnknownIdentifierException()
-        }
-        if (user.verifyCodeExpired) {
-            throw new VerifyCodeExpiredException()
-        }
-        if (user.verifyCode != verifyCode) {
-            throw new InvalidVerificationCodeException()
-        }
-        user.with {
-            user.password = password
-            user.verifyCode = null
-            user.verifyCodeExpiresOn = null
-        }
-        userRepository.save(user)
-        return user
-    }
-
-    void sendVerifyCode(@NotNull User user, String verifyMethod, VerifyCodeType verifyCodeType) {
-        if (verifyMethod == VerifyMethod.TEXT.toString()) {
-            sendVerifyCodeToPhoneNumber(user, verifyCodeType)
-        } else {
-            sendVerifyCodeToEmail(user, verifyCodeType)
-        }
-    }
-
-
 }

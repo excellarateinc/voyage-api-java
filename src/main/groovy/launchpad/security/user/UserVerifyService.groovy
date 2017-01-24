@@ -5,14 +5,9 @@ import launchpad.error.InvalidVerificationCodeException
 import launchpad.error.VerifyCodeExpiredException
 import launchpad.mail.MailMessage
 import launchpad.mail.MailService
-import launchpad.security.user.User
-import launchpad.security.user.UserService
-import launchpad.security.user.VerifyCodeType
-import launchpad.security.user.VerifyMethod
 import launchpad.sms.SmsMessage
 import launchpad.sms.SmsService
 import launchpad.util.StringUtil
-import org.aspectj.weaver.ast.Not
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -88,14 +83,14 @@ class UserVerifyService {
         use(TimeCategory) {
             user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
         }
-        MailMessage mailMessage = getAccountVerificationEmailMessage(user)
+        MailMessage mailMessage = getVerifyCodeEmailMessage(user)
         mailService.send(mailMessage)
         if (mailMessage.isEmailSent) {
             userService.save(user)
         }
     }
 
-    void sendVerifyCodeToPhoneNumber(@NotNull User user, VerifyCodeType verifyCodeType) {
+    void sendVerifyCodeToPhoneNumber(@NotNull User user) {
         user.verifyCode = getSecurityCode(user)
         use(TimeCategory) {
             user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
@@ -109,7 +104,7 @@ class UserVerifyService {
         }
     }
 
-    private static MailMessage getPasswordResetEmailMessage(@NotNull User user) {
+    private static MailMessage getVerifyCodeEmailMessage(@NotNull User user) {
         MailMessage mailMessage = new MailMessage()
         mailMessage.to = user.email
         mailMessage.model = ['user':user]
