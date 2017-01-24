@@ -209,7 +209,7 @@ class UserService {
             user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
         }
         SmsMessage smsMessage = new SmsMessage()
-        smsMessage.to = user.phoneNumber
+        smsMessage.to = user.userPhones.find {it.phoneType == PhoneType.MOBILE}
 
         if (verifyCodeType == VerifyCodeType.ACCOUNT_VERIFICATION) {
             smsMessage.text = "${user.verifyCode} is your account verification code"
