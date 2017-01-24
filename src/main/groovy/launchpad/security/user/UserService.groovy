@@ -1,7 +1,6 @@
 package launchpad.security.user
 
 import launchpad.error.UnknownIdentifierException
-import launchpad.mail.MailService
 import launchpad.sms.SmsService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

@@ -1,14 +1,12 @@
 package launchpad.security.user
 
-import launchpad.mail.MailService
 import spock.lang.Specification
 
 class UserServiceSpec extends Specification {
     User user
     User modifiedUser
     UserRepository userRepository = Mock()
-    MailService mailService = Mock()
-    UserService userService = new UserService(userRepository, mailService)
+    UserService userService = new UserService(userRepository)
 
     def setup() {
         user = new User(firstName:'LSS', lastName:'India')

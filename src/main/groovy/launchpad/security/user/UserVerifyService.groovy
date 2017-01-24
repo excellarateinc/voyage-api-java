@@ -42,7 +42,7 @@ class UserVerifyService {
         User user = userService.loggedInUser
         List<VerifyMethod> verifyMethods = []
         verifyMethods.add(VerifyMethod.EMAIL)
-        if (user.phoneNumber) {
+        if (user.userPhones) {
             verifyMethods.add(VerifyMethod.TEXT)
         }
         return verifyMethods
@@ -69,10 +69,10 @@ class UserVerifyService {
         return user
     }
 
-    void sendVerifyCodeToCurrentUser(String verifyMethod) {
+    void sendVerifyCodeToCurrentUser(long userPhoneId = null) {
         User user = userService.loggedInUser
-        if (verifyMethod == VerifyMethod.TEXT.toString()) {
-            sendVerifyCodeToPhoneNumber(user)
+        if (userPhoneId) {
+            sendVerifyCodeToPhoneNumber(user, userPhoneId)
         } else {
             sendVerifyCodeToEmail(user)
         }
@@ -90,13 +90,13 @@ class UserVerifyService {
         }
     }
 
-    void sendVerifyCodeToPhoneNumber(@NotNull User user) {
+    void sendVerifyCodeToPhoneNumber(@NotNull User user, long userPhoneId) {
         user.verifyCode = getSecurityCode(user)
         use(TimeCategory) {
             user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
         }
         SmsMessage smsMessage = new SmsMessage()
-        smsMessage.to = user.phoneNumber
+        smsMessage.to = user.userPhones.find{ it.id == userPhoneId }
         smsMessage.text = "Your Voyage verification code is: ${user.verifyCode}"
         smsService.send(smsMessage)
         if (smsMessage.isSmsSent) {

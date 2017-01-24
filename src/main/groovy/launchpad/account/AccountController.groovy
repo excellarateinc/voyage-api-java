@@ -48,9 +48,9 @@ class AccountController {
     }
 
     @PreAuthorize('isAuthenticated()')
-    @GetMapping('/verify')
-    ResponseEntity getVerificationCode(@RequestParam('verifyMethod') String verifyMethod) {
-        userVerifyService.sendVerifyCodeToCurrentUser(verifyMethod)
+    @PostMapping('/getVerifyCode')
+    ResponseEntity getVerificationCode(@RequestBody long userPhoneId) {
+        userVerifyService.sendVerifyCodeToCurrentUser(userPhoneId)
         return new ResponseEntity(HttpStatus.NO_CONTENT)
     }
 
