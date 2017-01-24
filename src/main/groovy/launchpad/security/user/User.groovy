@@ -72,8 +72,7 @@ class User {
     @JsonIgnore
     Date verifyCodeExpiresOn
 
-
-    @OneToMany(fetch=FetchType.LAZY, mappedBy='user')
+    @OneToMany(fetch=FetchType.EAGER, mappedBy='user')
     @JsonIgnore
     Set<UserPhone> userPhones
 
