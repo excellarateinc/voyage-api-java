@@ -73,7 +73,8 @@ class User {
     Date verifyCodeExpiresOn
 
 
-    @OneToMany(fetch=FetchType.EAGER, mappedBy='user')
+    @OneToMany(fetch=FetchType.LAZY, mappedBy='user')
+    @JsonIgnore
     Set<UserPhone> userPhones
 
     boolean isVerifyCodeExpired() {
