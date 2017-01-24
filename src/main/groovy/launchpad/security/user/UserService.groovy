@@ -57,6 +57,10 @@ class UserService {
         }
     }
 
+    User save(@NotNull User user) {
+        return userRepository.save(user)
+    }
+
     void delete(@NotNull Long id) {
         User user = get(id)
         user.isDeleted = true
@@ -98,41 +102,6 @@ class UserService {
         return userRepository.save(userIn)
     }
 
-    User register(Map userMap) {
-        User user = new User()
-        user.with {
-            firstName = userMap.firstName
-            lastName = userMap.lastName
-            username = userMap.username
-            email = userMap.email
-            password = userMap.password
-            isEnabled = true
-            isVerifyRequired = true
-        }
-        user = userRepository.save(user)
-        return user
-    }
-
-    User verify(@NotNull String verifyCode, @NotNull User user) {
-        if (!user.isVerifyRequired) {
-            LOG.info('User is already activated. Skipping user activation.')
-            return user
-        }
-        if (user.verifyCodeExpired) {
-            throw new VerifyCodeExpiredException()
-        }
-        if (user.verifyCode != verifyCode) {
-            throw new InvalidVerificationCodeException()
-        }
-        user.with {
-            verifyCode = null
-            verifyCodeExpiresOn = null
-            isVerifyRequired = false
-        }
-        userRepository.save(user)
-        return user
-    }
-
     User verifyPasswordRecoverCode(@NotNull String verifyCode) {
         User user = userRepository.findByVerifyCode(verifyCode)
         if (user.verifyCodeExpired) {
@@ -169,15 +138,6 @@ class UserService {
         return user
     }
 
-    List<VerifyMethod> getVerifyMethods(User user) {
-        List<VerifyMethod> verifyMethods = []
-        verifyMethods.add(VerifyMethod.EMAIL)
-        if (user.phoneNumber) {
-            verifyMethods.add(VerifyMethod.TEXT)
-        }
-        return verifyMethods
-    }
-
     void sendVerifyCode(@NotNull User user, String verifyMethod, VerifyCodeType verifyCodeType) {
         if (verifyMethod == VerifyMethod.TEXT.toString()) {
             sendVerifyCodeToPhoneNumber(user, verifyCodeType)
@@ -186,61 +146,5 @@ class UserService {
         }
     }
 
-    void sendVerifyCodeToEmail(@NotNull User user, VerifyCodeType verifyCodeType) {
-        user.verifyCode = getSecurityCode(user)
-        use(TimeCategory) {
-            user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
-        }
-        MailMessage mailMessage = null
-        if (verifyCodeType == VerifyCodeType.ACCOUNT_VERIFICATION) {
-            mailMessage = getAccountVerificationEmailMessage(user)
-        } else if (verifyCodeType == VerifyCodeType.PASSWORD_RESET) {
-            mailMessage = getPasswordResetEmailMessage(user)
-        }
-        mailService.send(mailMessage)
-        if (mailMessage.isEmailSent) {
-            userRepository.save(user)
-        }
-    }
 
-    void sendVerifyCodeToPhoneNumber(@NotNull User user, VerifyCodeType verifyCodeType) {
-        user.verifyCode = getSecurityCode(user)
-        use(TimeCategory) {
-            user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
-        }
-        SmsMessage smsMessage = new SmsMessage()
-        smsMessage.to = user.phoneNumber
-
-        if (verifyCodeType == VerifyCodeType.ACCOUNT_VERIFICATION) {
-            smsMessage.text = "${user.verifyCode} is your account verification code"
-        } else if (verifyCodeType == VerifyCodeType.PASSWORD_RESET) {
-            smsMessage.text = "${user.verifyCode} is your account password recovery code"
-        }
-        smsService.send(smsMessage)
-        if (smsMessage.isSmsSent) {
-            userRepository.save(user)
-        }
-    }
-
-    private static MailMessage getPasswordResetEmailMessage(@NotNull User user) {
-        MailMessage mailMessage = new MailMessage()
-        mailMessage.to = user.email
-        mailMessage.model = ['user':user]
-        mailMessage.subject = "${user.verifyCode} is your account verification code"
-        mailMessage.template = 'email-verification.ftl'
-        return mailMessage
-    }
-
-    private static MailMessage getAccountVerificationEmailMessage(@NotNull User user) {
-        MailMessage mailMessage = new MailMessage()
-        mailMessage.to = user.email
-        mailMessage.model = ['user':user]
-        mailMessage.subject = "${user.verifyCode} is your account password recovery code"
-        mailMessage.template = 'reset-password-email.ftl'
-        return mailMessage
-    }
-
-    private static String getSecurityCode(User user) {
-        return user.username.take(4) + StringUtil.generateUniqueCode(6)
-    }
 }
