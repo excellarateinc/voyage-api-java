@@ -5,4 +5,6 @@
 |___/ \____/ \__, / \__,_/ \__, / \___/
             /____/        /____/
 
- http://LighthouseSoftware.com
+ Secure and Extensible App Platform
+
+ by http://LighthouseSoftware.com
