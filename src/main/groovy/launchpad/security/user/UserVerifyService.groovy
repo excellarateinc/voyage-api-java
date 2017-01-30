@@ -85,7 +85,7 @@ class UserVerifyService {
     }
 
     void sendVerifyCodeToEmail(@NotNull User user) {
-        user.verifyCode = getSecurityCode(user)
+        user.verifyCode = SecurityCode.getUserVerifyCode()
         use(TimeCategory) {
             user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
         }
@@ -94,7 +94,7 @@ class UserVerifyService {
         userService.save(user)
     }
 
-    void sendVerifyCodeToPhoneNumber(@NotNull User user, long userPhoneId) {
+    void sendVerifyCodeToPhoneNumber(@NotNull User user, @NotNull long userPhoneId) {
         user.verifyCode = SecurityCode.getUserVerifyCode()
         use(TimeCategory) {
             user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
