@@ -12,20 +12,20 @@ import org.springframework.stereotype.Service
 @Service
 class SmsService {
     @Value('${app.name}')
-    private int appName
+    private String appName
 
     @Autowired
     AmazonSNS amazonSNS
 
     void send(SmsMessage smsMessage) {
-        Map<String, MessageAttributeValue> smsAttributes =
-                new HashMap<String, MessageAttributeValue>();
-        smsAttributes.put("AWS.SNS.SMS.SenderID", new MessageAttributeValue()
+        String dataType = 'String'
+        Map<String, MessageAttributeValue> smsAttributes = [:]
+        smsAttributes.put('AWS.SNS.SMS.SenderID', new MessageAttributeValue()
                 .withStringValue(appName) //The sender ID shown on the device.
-                .withDataType("String"));
-        smsAttributes.put("AWS.SNS.SMS.SMSType", new MessageAttributeValue()
-                .withStringValue("Transactional")
-                .withDataType("String"));
+                .withDataType(dataType))
+        smsAttributes.put('AWS.SNS.SMS.SMSType', new MessageAttributeValue()
+                .withStringValue('Transactional')
+                .withDataType(dataType))
         PublishResult result = amazonSNS.publish(new PublishRequest()
                 .withMessage(smsMessage.text)
                 .withPhoneNumber(smsMessage.to)

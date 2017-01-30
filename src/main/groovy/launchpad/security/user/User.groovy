@@ -2,7 +2,6 @@ package launchpad.security.user
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import groovy.transform.EqualsAndHashCode
-import launchpad.security.client.ClientRedirectUri
 import launchpad.security.role.Role
 import org.hibernate.validator.constraints.Email
 

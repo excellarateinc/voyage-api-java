@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 /**
@@ -43,7 +42,7 @@ class AccountController {
     @PreAuthorize('isAuthenticated()')
     @GetMapping('/verify/methods')
     ResponseEntity verifyMethods() {
-        Iterable<VerifyMethod> verifyMethods = userVerifyService.getVerifyMethodsForCurrentUser()
+        Iterable<VerifyMethod> verifyMethods = userVerifyService.verifyMethodsForCurrentUser
         return new ResponseEntity(verifyMethods, HttpStatus.OK)
     }
 

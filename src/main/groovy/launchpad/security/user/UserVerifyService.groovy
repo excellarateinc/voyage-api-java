@@ -8,7 +8,6 @@ import launchpad.mail.MailService
 import launchpad.security.SecurityCode
 import launchpad.sms.SmsMessage
 import launchpad.sms.SmsService
-import launchpad.util.StringUtil
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,7 +22,7 @@ import javax.validation.constraints.NotNull
 @Service
 @Validated
 class UserVerifyService {
-    private static final Logger LOG = LoggerFactory.getLogger(UserService)
+    private static final Logger LOG = LoggerFactory.getLogger(UserVerifyService)
 
     @Value('${verify-code-expire-minutes}')
     private int verifyCodeExpires
@@ -48,13 +47,13 @@ class UserVerifyService {
         if (user.email) {
             verifyMethods.add(VerifyMethod.EMAIL)
         }
-        if (user.userPhones) {
+        if (user.phones) {
             verifyMethods.add(VerifyMethod.TEXT)
         }
         return verifyMethods
     }
 
-    boolean verifyCurrentUser(@NotNull String verifyCode) {
+    boolean verifyCurrentUser(@NotNull String code) {
         User user = userService.loggedInUser
         if (!user.isVerifyRequired) {
             LOG.info('User is already verified. Skipping user verification.')
@@ -63,7 +62,7 @@ class UserVerifyService {
         if (user.verifyCodeExpired) {
             throw new VerifyCodeExpiredException()
         }
-        if (user.verifyCode != verifyCode?.trim()) {
+        if (user.verifyCode != code?.trim()) {
             throw new InvalidVerificationCodeException()
         }
         user.with {
@@ -75,7 +74,7 @@ class UserVerifyService {
         return true
     }
 
-    void sendVerifyCodeToCurrentUser(long userPhoneId = null) {
+    void sendVerifyCodeToCurrentUser(Long userPhoneId = null) {
         User user = userService.loggedInUser
         if (userPhoneId) {
             sendVerifyCodeToPhoneNumber(user, userPhoneId)
@@ -85,7 +84,7 @@ class UserVerifyService {
     }
 
     void sendVerifyCodeToEmail(@NotNull User user) {
-        user.verifyCode = SecurityCode.getUserVerifyCode()
+        user.verifyCode = SecurityCode.userVerifyCode
         use(TimeCategory) {
             user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
         }
@@ -95,12 +94,12 @@ class UserVerifyService {
     }
 
     void sendVerifyCodeToPhoneNumber(@NotNull User user, @NotNull long userPhoneId) {
-        user.verifyCode = SecurityCode.getUserVerifyCode()
+        user.verifyCode = SecurityCode.userVerifyCode
         use(TimeCategory) {
             user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
         }
         SmsMessage smsMessage = new SmsMessage()
-        smsMessage.to = user.phones.find{ it.id == userPhoneId }
+        smsMessage.to = user.phones.find { it.id == userPhoneId }
         smsMessage.text = "Your ${appName} verification code is: ${user.verifyCode}"
         smsService.send(smsMessage)
         userService.save(user)
