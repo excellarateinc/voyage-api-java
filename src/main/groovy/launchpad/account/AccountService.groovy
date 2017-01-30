@@ -1,15 +1,11 @@
 package launchpad.account
 
-import launchpad.mail.MailService
 import launchpad.security.user.User
-import launchpad.security.user.UserRepository
 import launchpad.security.user.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
 
-@Transactional
 @Service
 @Validated
 class AccountService {
