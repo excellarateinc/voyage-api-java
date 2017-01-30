@@ -9,5 +9,4 @@ class MailMessage {
     String template
     Map<String, Object> model
     String text
-    boolean isEmailSent = false
 }

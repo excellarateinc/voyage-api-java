@@ -27,6 +27,9 @@ class UserVerifyService {
     @Value('${verify-code-expire-minutes}')
     private int verifyCodeExpires
 
+    @Value('${app.name}')
+    private int appName
+
     private final UserService userService
     private final MailService mailService
     private final SmsService smsService
@@ -41,23 +44,25 @@ class UserVerifyService {
     List<VerifyMethod> getVerifyMethodsForCurrentUser() {
         User user = userService.loggedInUser
         List<VerifyMethod> verifyMethods = []
-        verifyMethods.add(VerifyMethod.EMAIL)
+        if (user.email) {
+            verifyMethods.add(VerifyMethod.EMAIL)
+        }
         if (user.userPhones) {
             verifyMethods.add(VerifyMethod.TEXT)
         }
         return verifyMethods
     }
 
-    User verifyCurrentUser(@NotNull String verifyCode) {
+    boolean verifyCurrentUser(@NotNull String verifyCode) {
         User user = userService.loggedInUser
         if (!user.isVerifyRequired) {
             LOG.info('User is already verified. Skipping user verification.')
-            return user
+            return true
         }
         if (user.verifyCodeExpired) {
             throw new VerifyCodeExpiredException()
         }
-        if (user.verifyCode != verifyCode) {
+        if (user.verifyCode != verifyCode?.trim()) {
             throw new InvalidVerificationCodeException()
         }
         user.with {
@@ -66,7 +71,7 @@ class UserVerifyService {
             isVerifyRequired = false
         }
         userService.save(user)
-        return user
+        return true
     }
 
     void sendVerifyCodeToCurrentUser(long userPhoneId = null) {
@@ -85,9 +90,7 @@ class UserVerifyService {
         }
         MailMessage mailMessage = getVerifyCodeEmailMessage(user)
         mailService.send(mailMessage)
-        if (mailMessage.isEmailSent) {
-            userService.save(user)
-        }
+        userService.save(user)
     }
 
     void sendVerifyCodeToPhoneNumber(@NotNull User user, long userPhoneId) {
@@ -97,18 +100,16 @@ class UserVerifyService {
         }
         SmsMessage smsMessage = new SmsMessage()
         smsMessage.to = user.userPhones.find{ it.id == userPhoneId }
-        smsMessage.text = "Your Voyage verification code is: ${user.verifyCode}"
+        smsMessage.text = "Your ${appName} verification code is: ${user.verifyCode}"
         smsService.send(smsMessage)
-        if (smsMessage.isSmsSent) {
-            userService.save(user)
-        }
+        userService.save(user)
     }
 
     private static MailMessage getVerifyCodeEmailMessage(@NotNull User user) {
         MailMessage mailMessage = new MailMessage()
         mailMessage.to = user.email
         mailMessage.model = ['user':user]
-        mailMessage.subject = 'Voyage Verification Code'
+        mailMessage.subject = "${appName} Verification Code"
         mailMessage.template = 'account-verification.ftl'
         return mailMessage
     }

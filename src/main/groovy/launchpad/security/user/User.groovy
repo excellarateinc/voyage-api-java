@@ -55,10 +55,6 @@ class User {
 
     @NotNull
     @JsonIgnore
-    Boolean isVerifyRequired = Boolean.FALSE
-
-    @NotNull
-    @JsonIgnore
     Boolean isDeleted = Boolean.FALSE
 
     @ManyToMany
@@ -66,15 +62,18 @@ class User {
     @JsonIgnore
     Set<Role> roles
 
+    @OneToMany(fetch=FetchType.EAGER, mappedBy='user')
+    Set<UserPhone> userPhones
+
+    @NotNull
+    @JsonIgnore
+    Boolean isVerifyRequired = Boolean.FALSE
+
     @JsonIgnore
     String verifyCode
 
     @JsonIgnore
     Date verifyCodeExpiresOn
-
-    @OneToMany(fetch=FetchType.EAGER, mappedBy='user')
-    @JsonIgnore
-    Set<UserPhone> userPhones
 
     boolean isVerifyCodeExpired() {
         return verifyCodeExpiresOn != null && verifyCodeExpiresOn < new Date()

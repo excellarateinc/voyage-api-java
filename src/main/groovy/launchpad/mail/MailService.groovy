@@ -1,7 +1,7 @@
 package launchpad.mail
 
 import freemarker.template.Configuration
-import freemarker.template.TemplateException
+import launchpad.error.MailSendException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,7 +15,7 @@ import javax.mail.internet.MimeMessage
 
 @Service
 class MailService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(this.getClass())
+    private static final Logger LOG = LoggerFactory.getLogger(this.getClass())
 
     @Value('${app.contact-support.email}')
     private String from
@@ -32,8 +32,7 @@ class MailService {
         this.freeMarkerConfig = freeMarkerConfig
     }
 
-    boolean send(MailMessage mailMessage) {
-        //TODO: Handle the exception when sending mail is failed - Jagadeesh Manne - 01/19/2017
+    void send(MailMessage mailMessage) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage()
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true)
         mailMessage.from = mailMessage.from ?: from
@@ -44,26 +43,16 @@ class MailService {
         mimeMessageHelper.setTo(mailMessage.to)
         mimeMessageHelper.setSubject(mailMessage.subject)
         if (mailMessage.template) {
-            String text = geContentFromTemplate(mailMessage.model, mailMessage.template)
+            String text = FreeMarkerTemplateUtils.processTemplateIntoString(freeMarkerConfig.getTemplate(mailMessage.template), mailMessage.model)
             mimeMessageHelper.setText(text, true)
         } else if (mailMessage.text) {
             mimeMessageHelper.setText(mailMessage.text, true)
         }
-        javaMailSender.send(mimeMessageHelper.mimeMessage)
-        mailMessage.isEmailSent(true)
-    }
-
-    private String geContentFromTemplate(Map<String, Object> model, String template) {
-        StringBuffer content = new StringBuffer()
         try {
-            content.append(FreeMarkerTemplateUtils.processTemplateIntoString(freeMarkerConfig.getTemplate(template), model))
-        } catch (IOException e) {
-            LOGGER.error('Template {} was not found or could not be read, exception : {}', template, e.message)
-            throw e
-        } catch (TemplateException e) {
-            LOGGER.error('Template {} rendering failed, exception : {}', template, e.message)
-            throw e
+            LOG.info('sending mail to ' + mailMessage.to)
+            javaMailSender.send(mimeMessageHelper.mimeMessage)
+        } catch (Exception e) {
+            throw new MailSendException()
         }
-        return content.toString()
     }
 }
