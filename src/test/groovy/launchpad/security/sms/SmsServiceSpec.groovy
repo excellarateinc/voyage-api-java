@@ -12,14 +12,14 @@ class SmsServiceSpec extends Specification {
     @Autowired
     SmsService smsService
 
-    def 'test sendMail method' () {
+    def 'test send method' () {
         setup:
-        SmsMessage smsMessage = new SmsMessage()
-        smsMessage.to = '918977099970'
-        smsMessage.text = 'test message'
+            SmsMessage smsMessage = new SmsMessage()
+            smsMessage.to = '918977099970'
+            smsMessage.text = 'test message'
         when:
-        boolean isSmsSent = smsService.send(smsMessage)
+            smsService.send(smsMessage)
         then:
-        assert isSmsSent
+            noExceptionThrown()
     }
 }
