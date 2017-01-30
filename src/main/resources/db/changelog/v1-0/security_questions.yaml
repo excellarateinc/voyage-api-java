@@ -1,0 +1,56 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-security-questions-table-create
+      author: Mythili Satyanarayana
+      changes:
+        - createTable:
+            tableName: security_questions
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: question
+                  type: varchar(256)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-security-questions-seed
+      author: Mythili Satyanarayana
+      changes:
+        - insert:
+            tableName: security_questions
+            columns:
+              - column:
+                  name: question
+                  value: What is the name of your first pet?
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: security_questions
+            columns:
+              - column:
+                  name: question
+                  value: What is the color of your first car?
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: security_questions
+            columns:
+              - column:
+                  name: question
+                  value: What is your favorite sport?
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

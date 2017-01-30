@@ -23,3 +23,7 @@ databaseChangeLog:
         file: db/changelog/v1-0/client_scope_type.yaml
   - include:
       file: db/changelog/v1-0/client_scope.yaml
+  - include:
+      file: db/changelog/v1-0/security_questions.yaml
+  - include:
+      file: db/changelog/v1-0/user_security_answers.yaml
