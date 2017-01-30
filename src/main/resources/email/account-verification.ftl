@@ -14,7 +14,7 @@
                             <p style="margin: 0; box-sizing: border-box; font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; color: #8F9BB3; font-size: 14px; line-height: 22px; font-weight: normal; margin-bottom: 0; padding: 0 20px;">
                                 Hi <strong>${user.lastName} ${user.firstName},</strong>
                                 <div style="margin: 20px 20px 20px 50px;font-weight: bold;box-sizing: border-box; font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 22px; color: #596C80;">
-                                    Your Voyage verification code is: ${user.verifyEmailCode}
+                                    Your verification code is: ${user.verifyEmailCode}
                                 </div>
                             </p>
                             <p style="margin: 0; box-sizing: border-box; font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; color: #8F9BB3; font-size: 14px; line-height: 22px; font-weight: normal; margin-bottom: 0; padding: 0 20px;">
