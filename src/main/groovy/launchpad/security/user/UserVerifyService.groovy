@@ -5,6 +5,7 @@ import launchpad.error.InvalidVerificationCodeException
 import launchpad.error.VerifyCodeExpiredException
 import launchpad.mail.MailMessage
 import launchpad.mail.MailService
+import launchpad.security.SecurityCode
 import launchpad.sms.SmsMessage
 import launchpad.sms.SmsService
 import launchpad.util.StringUtil
@@ -94,7 +95,7 @@ class UserVerifyService {
     }
 
     void sendVerifyCodeToPhoneNumber(@NotNull User user, long userPhoneId) {
-        user.verifyCode = getSecurityCode(user)
+        user.verifyCode = SecurityCode.getUserVerifyCode()
         use(TimeCategory) {
             user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
         }
@@ -112,9 +113,5 @@ class UserVerifyService {
         mailMessage.subject = "${appName} Verification Code"
         mailMessage.template = 'account-verification.ftl'
         return mailMessage
-    }
-
-    private static String getSecurityCode(User user) {
-        return user.username.take(4) + StringUtil.generateUniqueCode(6)
     }
 }
