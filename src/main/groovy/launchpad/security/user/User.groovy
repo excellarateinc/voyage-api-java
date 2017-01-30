@@ -63,7 +63,7 @@ class User {
     Set<Role> roles
 
     @OneToMany(fetch=FetchType.EAGER, mappedBy='user')
-    Set<UserPhone> userPhones
+    Set<UserPhone> phones
 
     @NotNull
     @JsonIgnore

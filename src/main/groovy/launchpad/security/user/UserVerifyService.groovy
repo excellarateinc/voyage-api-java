@@ -100,7 +100,7 @@ class UserVerifyService {
             user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
         }
         SmsMessage smsMessage = new SmsMessage()
-        smsMessage.to = user.userPhones.find{ it.id == userPhoneId }
+        smsMessage.to = user.phones.find{ it.id == userPhoneId }
         smsMessage.text = "Your ${appName} verification code is: ${user.verifyCode}"
         smsService.send(smsMessage)
         userService.save(user)
