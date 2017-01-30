@@ -13,4 +13,9 @@ class InvalidVerificationCodeException extends AppException {
     InvalidVerificationCodeException(String message) {
         super(HTTP_STATUS, message)
     }
+
+    @Override
+    String getErrorCode() {
+        ErrorUtils.getErrorCode(httpStatus.value(), 'verify_code_invalid')
+    }
 }
