@@ -23,10 +23,10 @@ class UserVerifyService {
     private static final Logger LOG = LoggerFactory.getLogger(UserVerifyService)
 
     @Value('${verify-code-expire-minutes}')
-    private int verifyCodeExpires
+    private static int verifyCodeExpires
 
     @Value('${app.name}')
-    private int appName
+    private static String appName
 
     private final UserService userService
     private final MailService mailService
