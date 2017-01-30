@@ -53,6 +53,23 @@ spring:
     #minEvictableIdleTimeMillis: 30000
     #timeBetweenEvictionRunsMillis: 30000
 
+  mail:
+      host: smtp.gmail.com
+      port: 587
+      username: changeme
+      password: changeme
+      protocol: smtp
+      properties.mail.smtp:
+          auth: true
+          starttls.enable: true
+          ssl.trust: smtp.gmail.com
+      overrideAddress: testmsg@LighthouseSoftware.com
+
+  freemarker:
+    template-loader-path: classpath:/email/
+    charset: UTF-8
+    suffix: .ftl
+
 #######################################################################################################################
 # Spring Boot Web / Embedded Tomcat
 #######################################################################################################################
@@ -96,3 +113,10 @@ security:
 
   cors:
     allowed-origin: '*'
+
+verify-code-expire-minutes: 30
+
+cloud.aws credentials.accessKey: 0T2QFBSAJH0TTA9Q0MR2
+cloud.aws.credentials.secretKey: 5VtpEPJlFKxHx9JBGgoLzzZ7OvXdAdzoaYQyJgO7
+cloud.aws.region.auto: true
+cloud.aws.region.static: us-east-1
