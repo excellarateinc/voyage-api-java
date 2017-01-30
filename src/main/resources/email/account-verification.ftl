@@ -18,7 +18,7 @@
                                 </div>
                             </p>
                             <p style="margin: 0; box-sizing: border-box; font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif; color: #8F9BB3; font-size: 14px; line-height: 22px; font-weight: normal; margin-bottom: 0; padding: 0 20px;">
-                                Please enter this code into the Voyage app to confirm your identity.<br/>
+                                Please enter this code into the app to confirm your identity.<br/>
                                 If you need further assistance, please contact the Support Team at support@lssinc.com or 454-444-4444.</strong>
                             </p>
                         </td>
