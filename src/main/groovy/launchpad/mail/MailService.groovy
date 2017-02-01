@@ -1,6 +1,7 @@
 package launchpad.mail
 
 import freemarker.template.Configuration
+import freemarker.template.TemplateException
 import launchpad.error.MailSendException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -44,7 +45,7 @@ class MailService {
         mimeMessageHelper.setTo(mailMessage.to)
         mimeMessageHelper.setSubject(mailMessage.subject)
         if (mailMessage.template) {
-            String text = FreeMarkerTemplateUtils.processTemplateIntoString(freeMarkerConfig.getTemplate(mailMessage.template), mailMessage.model)
+            String text = geContentFromTemplate(mailMessage.model, mailMessage.template)
             mimeMessageHelper.setText(text, true)
         } else if (mailMessage.text) {
             mimeMessageHelper.setText(mailMessage.text, true)
@@ -54,6 +55,18 @@ class MailService {
             javaMailSender.send(mimeMessageHelper.mimeMessage)
         } catch (MailException e) {
             throw new MailSendException()
+        }
+    }
+
+    private String geContentFromTemplate(Map<String, Object> model, String template) {
+        try {
+            return FreeMarkerTemplateUtils.processTemplateIntoString(freeMarkerConfig.getTemplate(template), model)
+        } catch (IOException e) {
+            LOG.error('Template {} was not found or could not be read, exception : {}', template, e.message)
+            throw e
+        } catch (TemplateException e) {
+            LOG.error('Template {} rendering failed, exception : {}', template, e.message)
+            throw e
         }
     }
 }
