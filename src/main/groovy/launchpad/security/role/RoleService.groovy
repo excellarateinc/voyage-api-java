@@ -40,11 +40,16 @@ class RoleService {
         return roleRepository.findAll()
     }
 
-    Role save(@Valid Role role) {
-        if (role.id) {
-            get(role.id)
+    Role save(@Valid Role roleIn) {
+        if (roleIn.id) {
+            Role role = get(roleIn.id)
+            role.with {
+                name = roleIn.name
+                authority = roleIn.authority
+            }
+            return roleRepository.save(role)
         }
-        return roleRepository.save(role)
+        return roleRepository.save(roleIn)
     }
 
     /**
