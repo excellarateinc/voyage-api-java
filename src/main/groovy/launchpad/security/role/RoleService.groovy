@@ -40,7 +40,7 @@ class RoleService {
         return roleRepository.findAll()
     }
 
-    Role save(@Valid Role roleIn) {
+    Role saveDetached(@Valid Role roleIn) {
         if (roleIn.id) {
             Role role = get(roleIn.id)
             role.with {
@@ -60,6 +60,6 @@ class RoleService {
         Permission permission = permissionService.findByName(permissionName)
         Role role = get(roleId)
         role.permissions.add(permission)
-        save(role)
+        roleRepository.save(role)
     }
 }
