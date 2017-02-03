@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse
  *
  * NOTE: Defaulting to permissive origin in this class because an assumption is made that the security framework will
  *       catch unauthorized requests and prevent access. For a more restrictive implementation, consider extending this
- *       class or replacing it with a different implementation. 
+ *       class or replacing it with a different implementation.
  */
 @Component
 class CorsServletFilter extends OncePerRequestFilter {
@@ -50,12 +50,13 @@ class CorsServletFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
         if (isRequestFilterable(request, response)) {
             applyOriginResponseHeaders(request, response)
 
         } else {
-            LOG.debug("CORS FILTER: Skipping CORS filtering for this request")
+            LOG.debug('CORS FILTER: Skipping CORS filtering for this request')
         }
 
         // Pass control to the next servlet filter.
@@ -63,7 +64,7 @@ class CorsServletFilter extends OncePerRequestFilter {
     }
 
     private void applyOriginResponseHeaders(HttpServletRequest request, HttpServletResponse response) {
-        Client client = clientService.getLoggedInClient()
+        Client client = clientService.loggedInClient
         if (client && client.clientOrigins) {
             String requestOrigin = request.getHeader(HEADER_ORIGIN)
             ClientOrigin clientOriginMatch = client.clientOrigins.find { clientOrigin ->
@@ -97,10 +98,11 @@ class CorsServletFilter extends OncePerRequestFilter {
         return false
     }
 
-    private static String cleanUri(String uri) {
-        uri = uri.trim()
+    private static String cleanUri(String uriIn) {
+        String uri = uriIn.trim()
         if (uri.endsWith('/')) {
-            uri = uri.substring(0, uri.size()-1)
+            int oneLessThanMax = uri.size() - 1
+            uri = uri[0..oneLessThanMax]
         }
         return uri
     }
