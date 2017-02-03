@@ -14,16 +14,19 @@ class WebResponseExceptionTranslator implements org.springframework.security.oau
             OAuth2Exception oAuth2Exception = (OAuth2Exception) e
             return ResponseEntity
                     .status(oAuth2Exception.httpErrorCode)
+                    .header('Access-Control-Allow-Origin', '*')
                     .body(new AppOAuth2Exception(HttpStatus.valueOf(oAuth2Exception.httpErrorCode), oAuth2Exception.message))
 
         } else if (e instanceof AuthenticationException) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
+                    .header('Access-Control-Allow-Origin', '*')
                     .body(new AppOAuth2Exception(HttpStatus.UNAUTHORIZED, e.message))
         }
 
         return ResponseEntity
                 .badRequest()
+                .header('Access-Control-Allow-Origin', '*')
                 .body(new AppOAuth2Exception(HttpStatus.BAD_REQUEST, e.message))
     }
 }

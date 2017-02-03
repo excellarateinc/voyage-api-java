@@ -73,6 +73,3 @@ security:
         standard-client:
           client-id: client-standard
           client-secret: secret
-
-  cors:
-    allowed-origin: '*'

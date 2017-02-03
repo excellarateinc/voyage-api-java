@@ -6,5 +6,4 @@
             /____/        /____/
 
  Secure and Extensible App Platform
-
  by http://LighthouseSoftware.com
