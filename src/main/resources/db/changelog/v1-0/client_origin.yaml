@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-client-origin-table-create
+      author: Tim Michalski
+      changes:
+        - createTable:
+            tableName: client_origin
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: client_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    referencedTableName: client
+                    referencedColumnName: id
+              - column:
+                  name: origin_uri
+                  type: varchar(1000)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-client-origin-seed
+      author: Tim Michalski
+      changes:
+        - insert:
+            tableName: client_origin
+            columns:
+              - column:
+                  name: client_id
+                  valueNumeric: 1
+              - column:
+                  name: origin_uri
+                  value: http://localhost
+        - insert:
+            tableName: client_origin
+            columns:
+              - column:
+                  name: client_id
+                  valueNumeric: 2
+              - column:
+                  name: origin_uri
+                  value: http://localhost
