@@ -101,8 +101,8 @@ class CorsServletFilter extends OncePerRequestFilter {
     private static String cleanUri(String uriIn) {
         String uri = uriIn.trim()
         if (uri.endsWith('/')) {
-            int oneLessThanMax = uri.size() - 1
-            uri = uri[0..oneLessThanMax]
+            int beforeTheSlash = uri.size() - 2  // remove the slash and account for a zero-based array
+            uri = uri[0..beforeTheSlash]
         }
         return uri
     }
