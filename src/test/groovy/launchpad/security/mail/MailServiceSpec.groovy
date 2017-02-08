@@ -32,8 +32,8 @@ class MailServiceSpec extends Specification {
     def 'test sendMail method' () {
         setup:
             MailMessage mailMessage = new MailMessage()
-            mailMessage.to = 'receiver@launchpad.com'
-            mailMessage.from = 'sender@launchpad.com'
+            mailMessage.to = 'testmsg@lssinc.com'
+            mailMessage.from = 'testmsg@lssinc.com'
             mailMessage.subject = 'test subject'
             mailMessage.text = 'test message'
         when:
