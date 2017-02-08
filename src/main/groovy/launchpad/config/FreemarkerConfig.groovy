@@ -12,7 +12,7 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer
 class FreemarkerConfig extends FreeMarkerAutoConfiguration.FreeMarkerWebConfiguration  {
 
     @Value('${app.name}')
-    private String applicationName;
+    private String applicationName
 
     @Value('${app.contact-support.email}')
     private String supportEmail
@@ -26,7 +26,7 @@ class FreemarkerConfig extends FreeMarkerAutoConfiguration.FreeMarkerWebConfigur
     @Override
     FreeMarkerConfigurer freeMarkerConfigurer() {
         FreeMarkerConfigurer configurer = super.freeMarkerConfigurer()
-        Map<String, Object> sharedVariables = new HashMap<>()
+        Map sharedVariables = [:]
         sharedVariables.put('applicationName', applicationName)
         sharedVariables.put('supportEmail', supportEmail)
         sharedVariables.put('supportPhone', supportPhone)
