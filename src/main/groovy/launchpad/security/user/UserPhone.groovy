@@ -34,4 +34,7 @@ class UserPhone {
     @JsonIgnore
     User user
 
+    String getMaskedPhoneNumber() {
+        return phoneNumber?.replaceAll('.(?=.{2})', '*')
+    }
 }

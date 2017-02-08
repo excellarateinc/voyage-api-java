@@ -1,7 +1,10 @@
 package launchpad.security.user
 
 import groovy.time.TimeCategory
+import launchpad.account.VerifyMethod
+import launchpad.account.VerifyType
 import launchpad.error.InvalidVerificationCodeException
+import launchpad.error.UnknownIdentifierException
 import launchpad.error.VerifyCodeExpiredException
 import launchpad.mail.MailMessage
 import launchpad.mail.MailService
@@ -43,10 +46,17 @@ class UserVerifyService {
         User user = userService.loggedInUser
         List<VerifyMethod> verifyMethods = []
         if (user.email) {
-            verifyMethods.add(VerifyMethod.EMAIL)
+            VerifyMethod verifyMethod = new VerifyMethod()
+            verifyMethod.label = user.maskedEmail
+            verifyMethod.verifyType = VerifyType.EMAIL
+            verifyMethods.add(verifyMethod)
         }
-        if (user.phones) {
-            verifyMethods.add(VerifyMethod.TEXT)
+        user.phones?.each { userPhone ->
+            VerifyMethod verifyMethod = new VerifyMethod()
+            verifyMethod.label = userPhone.maskedPhoneNumber
+            verifyMethod.value = userPhone.id
+            verifyMethod.verifyType = VerifyType.TEXT
+            verifyMethods.add(verifyMethod)
         }
         return verifyMethods
     }
@@ -72,12 +82,13 @@ class UserVerifyService {
         return true
     }
 
-    void sendVerifyCodeToCurrentUser(Long userPhoneId = null) {
+    void sendVerifyCodeToCurrentUser(Map verifyMethod) {
         User user = userService.loggedInUser
-        if (userPhoneId) {
-            sendVerifyCodeToPhoneNumber(user, userPhoneId)
-        } else {
+        if (verifyMethod.type == VerifyType.EMAIL) {
             sendVerifyCodeToEmail(user)
+        }
+        if (verifyMethod.type == VerifyType.TEXT) {
+            sendVerifyCodeToPhoneNumber(user, verifyMethod.value as long)
         }
     }
 
@@ -92,6 +103,10 @@ class UserVerifyService {
     }
 
     void sendVerifyCodeToPhoneNumber(@NotNull User user, @NotNull long userPhoneId) {
+        UserPhone userPhone = user.phones?.find { it.id == userPhoneId }
+        if (!userPhone) {
+            throw new UnknownIdentifierException("Provided phone number doesn't exist")
+        }
         user.verifyCode = SecurityCode.userVerifyCode
         use(TimeCategory) {
             user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes

@@ -77,4 +77,8 @@ class User {
     boolean isVerifyCodeExpired() {
         return verifyCodeExpiresOn != null && verifyCodeExpiresOn < new Date()
     }
+
+    String getMaskedEmail() {
+        return email?.replaceAll('(?<=.{2}).(?=.*@)', '*')
+    }
 }
