@@ -59,8 +59,8 @@ class PermissionBasedClientDetails implements ClientDetails {
     @Override
     Set<String> getRegisteredRedirectUri() {
         Set<String> uris = []
-        client.clientRedirectUris?.each { clientRedirectUri ->
-            uris << clientRedirectUri.uri
+        client.clientRedirects?.each { clientRedirect ->
+            uris << clientRedirect.redirectUri
         }
         return uris
     }

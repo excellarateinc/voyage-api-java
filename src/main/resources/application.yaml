@@ -111,9 +111,6 @@ security:
   user-verification:
     exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /WEB-INF/jsp/**.jsp
 
-  cors:
-    allowed-origin: '*'
-
 verify-code-expire-minutes: 30
 
 cloud.aws credentials.accessKey: 0T2QFBSAJH0TTA9Q0MR2

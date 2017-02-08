@@ -85,9 +85,6 @@ security:
           client-id: client-standard
           client-secret: secret
 
-  cors:
-    allowed-origin: '*'
-
 verify-code-expire-minutes: 30
 
 cloud.aws.credentials.accessKey: 0T2QFBSAJH0TTA9Q0MR2
