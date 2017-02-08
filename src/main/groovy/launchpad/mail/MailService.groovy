@@ -63,10 +63,10 @@ class MailService {
             return FreeMarkerTemplateUtils.processTemplateIntoString(freeMarkerConfig.getTemplate(template), model)
         } catch (IOException e) {
             LOG.error('Template {} was not found or could not be read, exception : {}', template, e.message)
-            throw e
+            throw new MailSendException()
         } catch (TemplateException e) {
             LOG.error('Template {} rendering failed, exception : {}', template, e.message)
-            throw e
+            throw new MailSendException()
         }
     }
 }
