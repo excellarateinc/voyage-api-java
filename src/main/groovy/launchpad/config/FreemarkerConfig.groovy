@@ -36,4 +36,3 @@ class FreemarkerConfig extends FreeMarkerAutoConfiguration.FreeMarkerWebConfigur
         return configurer
     }
 }
-
