@@ -41,8 +41,8 @@ spring:
       overrideAddress: testmsg@LighthouseSoftware.com
 
   autoconfigure:
-        exclude:
-          - org.springframework.cloud.aws.autoconfigure.mail.MailSenderAutoConfiguration
+      exclude:
+        - org.springframework.cloud.aws.autoconfigure.mail.MailSenderAutoConfiguration
 
 #######################################################################################################################
 # Spring Security
