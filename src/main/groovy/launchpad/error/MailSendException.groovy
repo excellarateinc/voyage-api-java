@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus
 
 class MailSendException extends AppException {
     private static final HttpStatus HTTP_STATUS = HttpStatus.INTERNAL_SERVER_ERROR
-    private static final String DEFAULT_MESSAGE = 'Email sending is failed. Please try again after some time.'
+    private static final String DEFAULT_MESSAGE = 'Failure sending email. Please try again later.'
 
     MailSendException() {
         super(HTTP_STATUS, DEFAULT_MESSAGE)

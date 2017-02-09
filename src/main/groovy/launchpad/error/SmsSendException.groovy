@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus
 
 class SmsSendException extends AppException {
     private static final HttpStatus HTTP_STATUS = HttpStatus.INTERNAL_SERVER_ERROR
-    private static final String DEFAULT_MESSAGE = 'Sending text message is failed. Please try again after some time.'
+    private static final String DEFAULT_MESSAGE = 'Failure sending text message. Please try again later'
 
     SmsSendException() {
         super(HTTP_STATUS, DEFAULT_MESSAGE)
