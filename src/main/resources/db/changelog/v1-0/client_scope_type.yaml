@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: v1.0-client-scope-type-table-create
-      author: Jagadeesh Manne
+      author: Voyage
       changes:
         - createTable:
             tableName: client_scope_type
@@ -15,17 +15,100 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: name
-                  type: varchar(500)
+                  type: nvarchar(500)
                   constraints:
                     nullable: false
               - column:
                   name: description
-                  type: varchar(1000)
+                  type: nvarchar(1000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-client-scope-type-audit-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: client_scope_type_AUD
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REV
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REVTYPE
+                  type: tinyint
+              - column:
+                  name: name
+                  type: nvarchar(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: nvarchar(1000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
                   constraints:
                     nullable: false
   - changeSet:
       id: v1.0-client-scope-type-seed
-      author: Jagadeesh Manne
+      author: Voyage
       changes:
         - insert:
             tableName: client_scope_type
@@ -36,6 +119,21 @@ databaseChangeLog:
               - column:
                   name: description
                   value: Read data on behalf of the user
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
         - insert:
             tableName: client_scope_type
             columns:
@@ -45,3 +143,18 @@ databaseChangeLog:
               - column:
                   name: description
                   value: Write data on behalf of the user
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

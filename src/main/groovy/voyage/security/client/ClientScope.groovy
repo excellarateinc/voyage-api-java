@@ -1,0 +1,18 @@
+package voyage.security.client
+
+import voyage.common.AuditableEntity
+
+import javax.persistence.Entity
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
+
+@Entity
+class ClientScope extends AuditableEntity {
+    @ManyToOne
+    @JoinColumn(name='client_id')
+    Client client
+
+    @ManyToOne
+    @JoinColumn(name='client_scope_type_id')
+    ClientScopeType clientScopeType
+}

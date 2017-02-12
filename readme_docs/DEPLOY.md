@@ -82,7 +82,7 @@ The application pool should be configued as follows:
 * Managed pipeline mode => Integrated
 
 #### Connection Strings
-The application assumes that the connectionString will be called LaunchpadDataContext and this setting will be inherited. This can be placed in the machine or a parent site configuration. 
+The application assumes that the connectionString will be called VoyageDataContext and this setting will be inherited. This can be placed in the machine or a parent site configuration. 
 
 Please note that the default IIS editor does not appear to add the required providerName attribute to the connectionString. As a result, it may be necessary to edit the web.config directly in order to add the attribute. Failure to do so will result in a 500 error.
 
@@ -106,14 +106,14 @@ The following are the prequisties for building the application from the CI serve
 #### 1. Nuget Restore
 The API project uses nuget to manage external dependencies. The first step of the build process is to run: 
 ```
-nuget.exe restore Launchpad.API.sln
+nuget.exe restore Voyage.API.sln
 ```
 
 #### 2. MSBUILD Command
 The following msbuild command can be used to build the project. 
 
 ```
-msbuild /t:Rebuild /p:OutDir=..\publish\;Configuration=Release;UseWPP_CopyWebApplication=True;PipelineDependsOnBuild=False Launchpad.API.sln
+msbuild /t:Rebuild /p:OutDir=..\publish\;Configuration=Release;UseWPP_CopyWebApplication=True;PipelineDependsOnBuild=False Voyage.API.sln
 ```
 
 Notes:
@@ -135,13 +135,13 @@ API doc should be run after unit tests. This process ouputs a set of static file
 The following command will run the apidoc process
 
 ```
-apidoc -o publish\_PublishedWebsites\Launchpad.Web\docs -i .\\Launchpad.Web -f ".cs$" -f "_apidoc.js"
+apidoc -o publish\_PublishedWebsites\Voyage.Web\docs -i .\\Voyage.Web -f ".cs$" -f "_apidoc.js"
 ```
 
 Notes:
 * apidoc is assumed to have been installed as a global node module
 * -o is the output directory. 
-  1. In the above example, the deployable artifacts are assumed to be placed in publish\_PublishedWebistes\Launchpad.Web\docs
+  1. In the above example, the deployable artifacts are assumed to be placed in publish\_PublishedWebistes\Voyage.Web\docs
 * -i is the input directory
   1. In the above example, it assumes the command is executed from the root repo directory. 
 * -f are filters. These are files that will be evaluated for documentation comments.
@@ -149,7 +149,7 @@ Notes:
   special javascript file that contains reusable comment blocks.
   
 #### 5. Artifacts for deployment
-The artifacts that should be deployed will be contained in the publish\_PublishedWebsites\Launchpad.Web folder. The artifacts will include both the apidoc files as well as the API bin files.
+The artifacts that should be deployed will be contained in the publish\_PublishedWebsites\Voyage.Web folder. The artifacts will include both the apidoc files as well as the API bin files.
 
 :arrow_up: [Back to Top](#table-of-contents)
 

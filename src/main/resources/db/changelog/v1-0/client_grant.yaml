@@ -22,7 +22,92 @@ databaseChangeLog:
                     referencedColumnName: id
               - column:
                   name: grant_type
-                  type: varchar(255)
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-client-grant-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: client_grant_AUD
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REV
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REVTYPE
+                  type: tinyint
+              - column:
+                  name: client_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    referencedTableName: client
+                    referencedColumnName: id
+              - column:
+                  name: grant_type
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
                   constraints:
                     nullable: false
   - changeSet:
@@ -38,6 +123,21 @@ databaseChangeLog:
               - column:
                   name: grant_type
                   value: IMPLICIT
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
         - insert:
             tableName: client_grant
             columns:
@@ -47,6 +147,21 @@ databaseChangeLog:
               - column:
                   name: grant_type
                   value: REFRESH_TOKEN
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
         - insert:
             tableName: client_grant
             columns:
@@ -56,6 +171,21 @@ databaseChangeLog:
               - column:
                   name: grant_type
                   value: CLIENT_CREDENTIALS
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
         - insert:
             tableName: client_grant
             columns:
@@ -65,6 +195,21 @@ databaseChangeLog:
               - column:
                   name: grant_type
                   value: CLIENT_CREDENTIALS
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
         - insert:
             tableName: client_grant
             columns:
@@ -74,3 +219,18 @@ databaseChangeLog:
               - column:
                   name: grant_type
                   value: AUTHORIZATION_CODE
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

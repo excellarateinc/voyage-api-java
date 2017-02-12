@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: v1.0-user-table-create
-      author: Rob Louie
+      author: Voyage
       changes:
         - createTable:
             tableName: user
@@ -15,29 +15,29 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: first_name
-                  type: varchar(255)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: last_name
-                  type: varchar(255)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: username
-                  type: varchar(255)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
                     unique: true
                     uniqueConstraintName: UQ_user_username_unique
               - column:
                   name: password
-                  type: varchar(500)
+                  type: nvarchar(500)
                   constraints:
                     nullable: false
               - column:
                   name: email
-                  type: varchar(255)
+                  type: nvarchar(255)
                   constraints:
                     nullable: true
               - column:
@@ -66,13 +66,131 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: created_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-user-audit-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: user_AUD
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REV
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REVTYPE
+                  type: tinyint
+              - column:
+                  name: first_name
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: username
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: nvarchar(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: is_enabled
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_account_expired
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_credentials_expired
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_account_locked
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_verify_required
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
                   name: is_deleted
                   type: bit(1)
                   constraints:
                     nullable: false
   - changeSet:
       id: v1.0-user-seed-users
-      author: Rob Louie
+      author: Voyage
       changes:
         - insert:
             tableName: user
@@ -107,6 +225,18 @@ databaseChangeLog:
               - column:
                   name: is_verify_required
                   valueBoolean: false
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
               - column:
                   name: is_deleted
                   valueBoolean: false
@@ -143,6 +273,18 @@ databaseChangeLog:
               - column:
                   name: is_verify_required
                   valueBoolean: false
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
               - column:
                   name: is_deleted
                   valueBoolean: false

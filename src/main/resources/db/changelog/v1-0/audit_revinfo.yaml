@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-audit-revinfo-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: REVINFO
+            columns:
+              - column:
+                  name: REV
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REVTSTMP
+                  type: bigint

@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: v1.0-client-role-table-create
-      author: Jagadeesh Manne
+      author: Voyage
       changes:
         - createTable:
             tableName: client_role
@@ -10,35 +10,53 @@ databaseChangeLog:
                   name: client_id
                   type: int
                   constraints:
+                    primaryKey: true
                     nullable: false
+                    referencedTableName: client
+                    referencedColumnName: id
               - column:
                   name: role_id
                   type: int
                   constraints:
+                    primaryKey: true
                     nullable: false
+                    referencedTableName: role
+                    referencedColumnName: id
   - changeSet:
-      id: v1.0-client-role-table-add-composite-key
-      author: Jagadeesh Manne
+      id: v1.0-client-role-audit-table-create
+      author: Voyage
       changes:
-        - addPrimaryKey:
-            columnNames: client_id, role_id
-            tableName: client_role
-        - addForeignKeyConstraint:
-            baseColumnNames: client_id
-            baseTableName: client_role
-            constraintName: fk_client_role_table_client_id
-            referencedColumnNames: id
-            referencedTableName: client
-        - addForeignKeyConstraint:
-            baseColumnNames: role_id
-            baseTableName: client_role
-            constraintName: fk_client_role_table_role_id
-            referencedColumnNames: id
-            referencedTableName: role
-
+        - createTable:
+            tableName: client_role_AUD
+            columns:
+              - column:
+                  name: client_id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    referencedTableName: client
+                    referencedColumnName: id
+              - column:
+                  name: role_id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    referencedTableName: role
+                    referencedColumnName: id
+              - column:
+                  name: REV
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REVTYPE
+                  type: tinyint
   - changeSet:
       id: v1.0-client_role-seed-1
-      author: Rob Louie
+      author: Voyage
       changes:
         - insert:
             tableName: client_role
