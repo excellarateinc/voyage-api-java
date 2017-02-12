@@ -2,8 +2,11 @@ package launchpad.security.account
 
 import com.icegreen.greenmail.util.GreenMail
 import com.icegreen.greenmail.util.ServerSetup
+import launchpad.account.VerifyType
 import launchpad.security.user.User
+import launchpad.security.user.UserService
 import launchpad.test.AbstractIntegrationTest
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpEntity
@@ -15,6 +18,9 @@ import org.springframework.http.ResponseEntity
 class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
 
     private GreenMail greenMailSMTP
+
+    @Autowired
+    private UserService userService
 
     def setup() {
         ServerSetup setup = new ServerSetup(3025, 'localhost', ServerSetup.PROTOCOL_SMTP)
@@ -46,10 +52,15 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body.password == 'password'
     }
 
-    def '/api/v1/account/verify/initiate GET - Anonymous access denied'() {
-        when:
-        ResponseEntity<Iterable> responseEntity = GET('/api/v1/account/verify/initiate', Iterable)
+    def '/api/v1/account/verify/methods GET - Anonymous access denied'() {
+        given:
+        User user = new User(firstName:'Test3', lastName:'User', username:'username3', email:'test@test.com', password:'password')
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(MediaType.APPLICATION_JSON)
+        HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
 
+        when:
+        ResponseEntity<Iterable> responseEntity = GET('/api/v1/account/verify/methods', httpEntity, Iterable)
         then:
         responseEntity.statusCode.value() == 401
         responseEntity.body.size() == 1
@@ -57,25 +68,18 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
         responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
     }
 
-    def '/api/v1/account/verify/code GET - Anonymous access denied'() {
+    def '/api/v1/account/verify/methods GET - Standard User with permission "isAuthenticated()" access granted'() {
+        given:
+        User user = new User(firstName:'Test3', lastName:'User', username:'client-standard', email:'test@test.com', password:'password')
+        userService.saveDetached(user)
+
         when:
-        ResponseEntity<Iterable> responseEntity = GET('/api/v1/account/verify/code', Iterable)
-
+        ResponseEntity<Iterable> responseEntity = GET('/api/v1/account/verify/methods', Iterable, standardClient)
         then:
-        responseEntity.statusCode.value() == 401
+        responseEntity.statusCode.value() == 200
         responseEntity.body.size() == 1
-        responseEntity.body[0].error == '401_unauthorized'
-        responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
-    }
-
-    def '/api/v1/account/verify POST - Anonymous access denied'() {
-        when:
-        ResponseEntity<Iterable> responseEntity = POST('/api/v1/account/verify', Iterable)
-
-        then:
-        responseEntity.statusCode.value() == 401
-        responseEntity.body.size() == 1
-        responseEntity.body[0].error == '401_unauthorized'
-        responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
+        VerifyType."${responseEntity.body[0].verifyType}" == VerifyType.EMAIL
+        responseEntity.body[0].label
+        !responseEntity.body[0].value
     }
 }

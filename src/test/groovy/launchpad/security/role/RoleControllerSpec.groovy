@@ -53,7 +53,7 @@ class RoleControllerSpec extends Specification {
         when:
             ResponseEntity<Role> response = roleController.save(role)
         then:
-            1 * roleService.save(role) >> role
+            1 * roleService.saveDetached(role) >> role
             response != null
             HttpStatus.CREATED == response.statusCode
             '/api/v1/roles/1' == response.headers.location[0]
@@ -63,7 +63,7 @@ class RoleControllerSpec extends Specification {
         when:
             roleController.save(role)
         then:
-            1 * roleService.save(role) >> { throw new Exception() }
+            1 * roleService.saveDetached(role) >> { throw new Exception() }
             thrown(Exception)
     }
 
@@ -74,14 +74,14 @@ class RoleControllerSpec extends Specification {
         when:
             ResponseEntity<Role> updatedRole = roleController.update(modifiedRole)
         then:
-            1 * roleService.save(modifiedRole) >> modifiedRole
+            1 * roleService.saveDetached(modifiedRole) >> modifiedRole
             updatedRole != null
             HttpStatus.OK == updatedRole.statusCode
 
         when:
             roleController.update(modifiedRole)
         then:
-            1 * roleService.save(modifiedRole) >> { throw new Exception() }
+            1 * roleService.saveDetached(modifiedRole) >> { throw new Exception() }
             thrown(Exception)
     }
 

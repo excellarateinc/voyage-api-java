@@ -2,7 +2,6 @@ package launchpad.account
 
 import launchpad.security.user.UserVerifyService
 import launchpad.security.user.User
-import launchpad.security.user.VerifyMethod
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 /**
@@ -43,14 +41,14 @@ class AccountController {
     @PreAuthorize('isAuthenticated()')
     @GetMapping('/verify/methods')
     ResponseEntity verifyMethods() {
-        Iterable<VerifyMethod> verifyMethods = userVerifyService.getVerifyMethodsForCurrentUser()
+        Iterable<VerifyMethod> verifyMethods = userVerifyService.verifyMethodsForCurrentUser
         return new ResponseEntity(verifyMethods, HttpStatus.OK)
     }
 
     @PreAuthorize('isAuthenticated()')
-    @PostMapping('/getVerifyCode')
-    ResponseEntity getVerificationCode(@RequestBody long userPhoneId) {
-        userVerifyService.sendVerifyCodeToCurrentUser(userPhoneId)
+    @PostMapping('/verify/send')
+    ResponseEntity sendVerificationCode(@RequestBody Map<String, Object> verifyMethodMap) {
+        userVerifyService.sendVerifyCodeToCurrentUser(verifyMethodMap)
         return new ResponseEntity(HttpStatus.NO_CONTENT)
     }
 

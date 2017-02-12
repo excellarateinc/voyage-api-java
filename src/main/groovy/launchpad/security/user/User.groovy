@@ -2,7 +2,6 @@ package launchpad.security.user
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import groovy.transform.EqualsAndHashCode
-import launchpad.security.client.ClientRedirectUri
 import launchpad.security.role.Role
 import org.hibernate.validator.constraints.Email
 
@@ -55,10 +54,6 @@ class User {
 
     @NotNull
     @JsonIgnore
-    Boolean isVerifyRequired = Boolean.FALSE
-
-    @NotNull
-    @JsonIgnore
     Boolean isDeleted = Boolean.FALSE
 
     @ManyToMany
@@ -66,17 +61,24 @@ class User {
     @JsonIgnore
     Set<Role> roles
 
+    @OneToMany(fetch=FetchType.EAGER, mappedBy='user')
+    Set<UserPhone> phones
+
+    @NotNull
+    @JsonIgnore
+    Boolean isVerifyRequired = Boolean.FALSE
+
     @JsonIgnore
     String verifyCode
 
     @JsonIgnore
     Date verifyCodeExpiresOn
 
-    @OneToMany(fetch=FetchType.EAGER, mappedBy='user')
-    @JsonIgnore
-    Set<UserPhone> userPhones
-
     boolean isVerifyCodeExpired() {
         return verifyCodeExpiresOn != null && verifyCodeExpiresOn < new Date()
+    }
+
+    String getMaskedEmail() {
+        return email?.replaceAll('(?<=.{2}).(?=.*@)', '*')
     }
 }

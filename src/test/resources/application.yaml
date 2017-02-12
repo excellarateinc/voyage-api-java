@@ -40,10 +40,9 @@ spring:
       protocol: smtp
       overrideAddress: testmsg@LighthouseSoftware.com
 
-  freemarker:
-      template-loader-path: classpath:/email/
-      charset: UTF-8
-      suffix: .ftl
+  autoconfigure:
+      exclude:
+        - org.springframework.cloud.aws.autoconfigure.mail.MailSenderAutoConfiguration
 
 #######################################################################################################################
 # Spring Security
@@ -85,9 +84,6 @@ security:
         standard-client:
           client-id: client-standard
           client-secret: secret
-
-  cors:
-    allowed-origin: '*'
 
 verify-code-expire-minutes: 30
 

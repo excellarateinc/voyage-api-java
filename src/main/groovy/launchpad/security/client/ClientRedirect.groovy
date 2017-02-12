@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne
 import javax.validation.constraints.NotNull
 
 @Entity
-class ClientRedirectUri {
+class ClientRedirect {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     Long id
@@ -19,5 +19,5 @@ class ClientRedirectUri {
     Client client
 
     @NotNull
-    String uri
+    String redirectUri
 }

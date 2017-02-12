@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: v1.0-client-redirect-uri-table-create
+      id: v1.0-client-redirect-table-create
       author: Jagadeesh Manne
       changes:
         - createTable:
-            tableName: client_redirect_uri
+            tableName: client_redirect
             columns:
               - column:
                   name: id
@@ -21,29 +21,29 @@ databaseChangeLog:
                     referencedTableName: client
                     referencedColumnName: id
               - column:
-                  name: uri
+                  name: redirect_uri
                   type: varchar(1000)
                   constraints:
                     nullable: false
   - changeSet:
-      id: v1.0-client-redirect-uri-seed
+      id: v1.0-client-redirect-seed
       author: Jagadeesh Manne
       changes:
         - insert:
-            tableName: client_redirect_uri
+            tableName: client_redirect
             columns:
               - column:
                   name: client_id
                   valueNumeric: 1
               - column:
-                  name: uri
+                  name: redirect_uri
                   value: http://localhost:8080/oauth
         - insert:
-            tableName: client_redirect_uri
+            tableName: client_redirect
             columns:
               - column:
                   name: client_id
                   valueNumeric: 2
               - column:
-                  name: uri
+                  name: redirect_uri
                   value: http://localhost:8080/oauth

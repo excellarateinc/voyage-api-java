@@ -1,12 +1,12 @@
-package launchpad.security.user
+package launchpad.account
 
-enum VerifyMethod {
+enum VerifyType {
     TEXT('text'),
     EMAIL('email')
 
     final String code
 
-    VerifyMethod(String code) {
+    VerifyType(String code) {
         this.code = code
     }
 
