@@ -47,7 +47,7 @@ class UserSecurityServiceSpec extends Specification {
         //answer is 1-way encrypted before saving to database
     }
 
-    def 'get - calls the userSecurityRepository.findOne'() {
+    def 'get - calls the userSecurityQuestionRepository.findOne'() {
         setup:
         userSecurityQuestionRepository.findOne(1) >> userSecurityQuestion
         when:
@@ -57,7 +57,7 @@ class UserSecurityServiceSpec extends Specification {
         !fetchedUserSecurityQuestion.isDeleted
     }
 
-    def 'delete - verifies the object and calls userSecurityRepository.delete'() {
+    def 'delete - verifies the object and calls userSecurityQuestionRepository.delete'() {
         setup:
         userSecurityQuestionRepository.findOne(_) >> userSecurityQuestion
         when:
