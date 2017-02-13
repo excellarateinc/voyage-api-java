@@ -7,17 +7,17 @@ class TestAuthentication implements Authentication {
     Collection<? extends GrantedAuthority> authorities = []
     Object credentials
     Object details
-    String principal = "test"
-    private boolean isAuthenticated = true
-    String name = "test"
+    String principal = 'test'
+    private boolean authenticated = true
+    String name = 'test'
 
     @Override
     boolean isAuthenticated() {
-        return isAuthenticated
+        return authenticated
     }
 
     @Override
     void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-        this.isAuthenticated = isAuthenticated
+        this.authenticated = isAuthenticated
     }
 }

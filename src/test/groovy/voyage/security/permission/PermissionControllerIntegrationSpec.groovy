@@ -224,7 +224,7 @@ class PermissionControllerIntegrationSpec extends AbstractIntegrationTest {
             permissionUpdate.id = permission.id
             permissionUpdate.name = 'Permission-Name-4-Updated'
             permissionUpdate.description = permission.description
-            
+
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<Permission> httpEntity = new HttpEntity<Permission>(permissionUpdate, headers)

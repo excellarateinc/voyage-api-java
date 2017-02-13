@@ -34,7 +34,7 @@ class UserService {
     }
 
     User getCurrentUser() {
-        String username = getCurrentUsername()
+        String username = currentUsername
         if (username) {
             return findByUsername(username)
         }
@@ -101,7 +101,7 @@ class UserService {
         User matchingUser = userRepository.findByUsername(username)
         if (matchingUser == user) {
             return true
-        } 
+        }
         return matchingUser ? false : true
     }
 }

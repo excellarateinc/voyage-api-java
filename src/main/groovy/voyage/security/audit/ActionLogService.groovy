@@ -25,7 +25,7 @@ class ActionLogService {
         }
         return actionLog
     }
-    
+
     ActionLog saveDetached(@Valid ActionLog actionLog) {
         if (actionLog.id) {
             ActionLog existingActionLog = get(actionLog.id)

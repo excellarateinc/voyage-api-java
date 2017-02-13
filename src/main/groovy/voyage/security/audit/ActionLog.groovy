@@ -50,7 +50,7 @@ class ActionLog {
     String requestHeaders
 
     String requestBody
-    
+
     String responseBody
 
     @NotNull

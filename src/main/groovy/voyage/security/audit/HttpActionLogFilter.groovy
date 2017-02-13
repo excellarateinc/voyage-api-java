@@ -15,10 +15,11 @@ import javax.servlet.http.HttpServletResponse
 
 @Component
 class HttpActionLogFilter extends OncePerRequestFilter {
-    private int maxPayloadLength = 10000
-    private ActionLogService actionLogService
-    private UserService userService
-    private ClientService clientService
+    private static final String UNKNOWN = 'unknown'
+    private static final int MAX_PAYLOAD_LENGTH = 10000
+    private final ActionLogService actionLogService
+    private final UserService userService
+    private final ClientService clientService
 
     @Autowired
     HttpActionLogFilter(ActionLogService actionLogService, UserService userService, ClientService clientService) {
@@ -50,21 +51,23 @@ class HttpActionLogFilter extends OncePerRequestFilter {
 
     private ActionLog saveRequest(ContentCachingRequestWrapper request) {
         ActionLog actionLog = new ActionLog()
-        actionLog.clientIpAddress = getClientIpAddress(request)
-        actionLog.clientProtocol = getClientProtocol(request)
-        actionLog.httpMethod = request.method
-        actionLog.authType = request.authType
-        actionLog.principal = request.userPrincipal?.name
-        actionLog.user = userService.currentUser
-        actionLog.client = clientService.currentClient
-        actionLog.url = request.requestURL
-        if (request.queryString) {
-            actionLog.url + '?' + request.queryString
+        actionLog.with {
+            clientIpAddress = getClientIpAddress(request)
+            clientProtocol = getClientProtocol(request)
+            httpMethod = request.method
+            authType = request.authType
+            principal = request.userPrincipal?.name
+            user = userService.currentUser
+            client = clientService.currentClient
+            url = request.requestURL
+            if (request.queryString) {
+                url + '?' + request.queryString
+            }
+            requestHeaders = getHeaders(request)
         }
-        actionLog.requestHeaders = getHeaders(request)
         return actionLogService.saveDetached(actionLog)
     }
-    
+
     private ActionLog saveResponse(ContentCachingRequestWrapper request, ContentCachingResponseWrapper response,
                                    ActionLog actionLog, Long startTime) {
         actionLog.durationMs = System.currentTimeMillis() - startTime
@@ -74,27 +77,29 @@ class HttpActionLogFilter extends OncePerRequestFilter {
         actionLogService.saveDetached(actionLog)
     }
 
-    private String getContentAsString(byte[] buf, String charsetName) {
-        if (buf == null || buf.length == 0) return ""
-        int length = Math.min(buf.length, this.maxPayloadLength)
+    private static String getContentAsString(byte[] buf, String charsetName) {
+        if (buf == null || buf.length == 0) {
+            return ''
+        }
+        int length = Math.min(buf.length, MAX_PAYLOAD_LENGTH)
         try {
             return new String(buf, 0, length, charsetName)
         } catch (UnsupportedEncodingException ignore) {
-            return "Unsupported Encoding"
+            return 'Unsupported Encoding'
         }
     }
 
     private static String getClientIpAddress(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-For")
-        if (!ip || 'unknown'.equalsIgnoreCase(ip)) {
+        String ip = request.getHeader('X-Forwarded-For')
+        if (!ip || UNKNOWN.equalsIgnoreCase(ip)) {
             ip = request.remoteAddr
         }
         return ip
     }
 
     private static String getClientProtocol(HttpServletRequest request) {
-        String ip = request.getHeader("X-Forwarded-Proto")
-        if (!ip || 'unknown'.equalsIgnoreCase(ip)) {
+        String ip = request.getHeader('X-Forwarded-Proto')
+        if (!ip || UNKNOWN.equalsIgnoreCase(ip)) {
             ip = request.protocol
         }
         return ip
@@ -106,7 +111,8 @@ class HttpActionLogFilter extends OncePerRequestFilter {
             headers.append(name).append(':').append(request.getHeader(name)).append(', ')
         }
         if (headers) {
-            return headers.substring(0, headers.length()-3)
+            int maxLength = headers.length() - 3
+            return headers[0..maxLength]
         }
         return headers.toString()
     }

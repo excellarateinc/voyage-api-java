@@ -60,7 +60,8 @@ class UserVerificationServletFilter implements Filter {
             }
 
         } else {
-            LOG.debug("USER VERIFICATION FILTER: Request path ${getRequestPath(httpRequest)} is excluded from this filter. Skipping user verification.")
+            LOG.debug("USER VERIFICATION FILTER: Request path ${getRequestPath(httpRequest)} is excluded from this filter. " +
+                    'Skipping user verification.')
         }
 
         // Passed or skipped verification check. Pass control to the next servlet filter.

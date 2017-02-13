@@ -12,13 +12,13 @@ import org.springframework.security.core.context.SecurityContextHolder
 class AuditConfig {
 
     @Bean
-    AuditorAware<String> createAuditorProvider() {
+    AuditorAware<String> getAuditorProvider() {
         return new SpringSecurityAuditorAware()
     }
 
     class SpringSecurityAuditorAware implements AuditorAware<String> {
         String getCurrentAuditor() {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication()
+            Authentication authentication = SecurityContextHolder.context.authentication
             if (authentication == null || !authentication.isAuthenticated()) {
                 return null
             }
