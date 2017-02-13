@@ -2,29 +2,29 @@ package launchpad.account
 
 import launchpad.security.user.User
 
+import javax.persistence.CascadeType
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
-import javax.persistence.JoinTable
-import javax.persistence.ManyToOne
+import javax.persistence.OneToOne
 import javax.validation.constraints.NotNull
 
 @Entity
-public class UserSecurityAnswer {
+class UserSecurityQuestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id
 
-    @ManyToOne
-    @JoinTable(name='user', joinColumns=@JoinColumn(name='id'))
-    User user_id
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = 'user_id')
+    User user
 
-    @ManyToOne
-    @JoinTable(name='security_questions', joinColumns=@JoinColumn(name='id'))
-    SecurityQuestion question_id
+    @OneToOne(cascade = CascadeType.MERGE)
+    @JoinColumn(name = 'question_id')
+    SecurityQuestion question
 
     @NotNull
     String answer

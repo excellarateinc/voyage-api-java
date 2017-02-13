@@ -4,14 +4,10 @@ import launchpad.error.UnknownIdentifierException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
-
-import javax.transaction.Transactional
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
-import java.util.List
 
 @Service
-@Transactional
 @Validated
 class SecurityQuestionService {
 
@@ -22,15 +18,8 @@ class SecurityQuestionService {
         this.securityQuestionRepository = securityQuestionRepository
     }
 
-    SecurityQuestion save(@Valid SecurityQuestion securityQuestion) {
-        if (securityQuestion.id) {
-            get(securityQuestion.id)
-        }
-        return securityQuestionRepository.save(securityQuestion)
-    }
-
-    List<SecurityQuestion> listAll(){
-        return securityQuestionRepository.findAll();
+    List<SecurityQuestion> listAll() {
+        return securityQuestionRepository.findAll()
     }
 
     void delete(@NotNull Long id) {
@@ -42,8 +31,19 @@ class SecurityQuestionService {
     SecurityQuestion get(@NotNull Long id) {
         SecurityQuestion securityQuestion = securityQuestionRepository.findOne(id)
         if (!securityQuestion) {
-            throw new UnknownIdentifierException()
+            throw new UnknownIdentifierException('Could not find SecurityQuestion with id : ' + id)
         }
         return securityQuestion
+    }
+
+    SecurityQuestion saveOrUpdate(@Valid SecurityQuestion securityQuestionIn) {
+        if (securityQuestionIn.id) {
+            SecurityQuestion securityQuestion = get(securityQuestionIn.id)
+            securityQuestion.with {
+                question = securityQuestionIn.question
+            }
+            return securityQuestionRepository.save(securityQuestion)
+        }
+        return securityQuestionRepository.save(securityQuestionIn)
     }
 }
