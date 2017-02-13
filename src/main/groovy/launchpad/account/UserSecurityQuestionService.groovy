@@ -79,7 +79,7 @@ class UserSecurityQuestionService {
     }
 
     /**
-     * One-way password encryption using
+     * One-way password encryption
      * @param passwordIn
      * @return String encrypted answer
      */
@@ -165,6 +165,7 @@ class UserSecurityQuestionService {
         performPostValidationUpdates(user, isValid)
         return isValid
     }
+
     /**
      * If the recovery validation is successful, set isPasswordResetRequired as true.
      * if recovery attempt fails, increment number of recovery attempts
