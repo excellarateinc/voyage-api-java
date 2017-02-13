@@ -20,7 +20,7 @@ class ClientService {
         this.clientRepository = clientRepository
     }
 
-    Client getLoggedInClient() {
+    Client getCurrentClient() {
         String clientId
         Authentication authentication = SecurityContextHolder.context.authentication
         if (authentication && authentication instanceof OAuth2Authentication) {

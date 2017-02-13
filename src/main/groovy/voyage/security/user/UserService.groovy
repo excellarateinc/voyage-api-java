@@ -1,5 +1,8 @@
 package voyage.security.user
 
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import voyage.error.UnknownIdentifierException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -16,6 +19,20 @@ class UserService {
 
     UserService(UserRepository userRepository) {
         this.userRepository = userRepository
+    }
+
+    User getCurrentUser() {
+        String username
+        Authentication authenticationToken = SecurityContextHolder.context.authentication
+        if (authenticationToken?.principal instanceof UserDetails) {
+            username = ((UserDetails)authenticationToken.principal).username
+        } else if (authenticationToken?.principal instanceof String) {
+            username = authenticationToken.principal
+        }
+        if (username) {
+            return findByUsername(username)
+        }
+        return null
     }
 
     void delete(@NotNull Long id) {

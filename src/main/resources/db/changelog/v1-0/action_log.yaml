@@ -1,0 +1,94 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-action-log-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: action_log
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: url
+                  type: nvarchar(2500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: client_ip_address
+                  type: nvarchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: client_protocol
+                  type: nvarchar(25)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: http_method
+                  type: nvarchar(25)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: http_status
+                  type: nvarchar(25)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: auth_type
+                  type: nvarchar(50)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: principal
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: client_id
+                  type: int
+                  constraints:
+                    nullable: true
+                    referencedTableName: client
+                    referencedColumnName: id
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: true
+                    referencedTableName: user
+                    referencedColumnName: id
+              - column:
+                  name: duration_ms
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: request_headers
+                  type: text
+                  constraints:
+                    nullable: true
+              - column:
+                  name: request_body
+                  type: text
+                  constraints:
+                    nullable: true
+              - column:
+                  name: response_body
+                  type: text
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false

@@ -69,7 +69,7 @@ class CorsServletFilter extends OncePerRequestFilter {
     }
 
     private void applyOriginResponseHeaders(HttpServletRequest request, HttpServletResponse response) {
-        Client client = clientService.loggedInClient
+        Client client = clientService.currentClient
         if (client && client.clientOrigins) {
             String requestOrigin = request.getHeader(HEADER_ORIGIN)
             ClientOrigin clientOriginMatch = client.clientOrigins.find { clientOrigin ->

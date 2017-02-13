@@ -11,8 +11,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-// TODO Create a unit test for this class
-
 @Service
 @Transactional(readOnly = true)
 class PermissionBasedUserDetailsService implements UserDetailsService {
