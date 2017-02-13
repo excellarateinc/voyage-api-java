@@ -42,7 +42,7 @@ class HttpActionLogFilter extends OncePerRequestFilter {
         filterChain.doFilter(wrappedRequest, wrappedResponse)
 
         // Save the response
-        saveResponse(wrappedResponse, actionLog, startTime)
+        saveResponse(wrappedRequest, wrappedResponse, actionLog, startTime)
 
         // Copy content of response back into original response
         wrappedResponse.copyBodyToResponse()
@@ -62,13 +62,14 @@ class HttpActionLogFilter extends OncePerRequestFilter {
             actionLog.url + '?' + request.queryString
         }
         actionLog.requestHeaders = getHeaders(request)
-        actionLog.requestBody = getContentAsString(request.contentAsByteArray, request.characterEncoding)
         return actionLogService.saveDetached(actionLog)
     }
-
-    private ActionLog saveResponse(ContentCachingResponseWrapper response, ActionLog actionLog, Long startTime) {
+    
+    private ActionLog saveResponse(ContentCachingRequestWrapper request, ContentCachingResponseWrapper response,
+                                   ActionLog actionLog, Long startTime) {
         actionLog.durationMs = System.currentTimeMillis() - startTime
         actionLog.httpStatus = response.status
+        actionLog.requestBody = getContentAsString(request.contentAsByteArray, request.characterEncoding)
         actionLog.responseBody = getContentAsString(response.contentAsByteArray, response.characterEncoding)
         actionLogService.saveDetached(actionLog)
     }

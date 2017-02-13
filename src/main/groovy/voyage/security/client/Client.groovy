@@ -1,6 +1,7 @@
 package voyage.security.client
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.hibernate.envers.Audited
 import voyage.common.AuditableEntity
 import voyage.security.role.Role
 
@@ -13,6 +14,7 @@ import javax.persistence.OneToMany
 import javax.validation.constraints.NotNull
 
 @Entity
+@Audited
 class Client extends AuditableEntity {
     /**
      * The client name

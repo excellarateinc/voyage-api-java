@@ -11,14 +11,19 @@ import org.springframework.http.HttpStatus
  * to the web service consumer.
  */
 class UnknownIdentifierException extends AppException {
-    private static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST
+    private static final HttpStatus HTTP_STATUS = HttpStatus.NOT_FOUND
     private static final String DEFAULT_MESSAGE = 'Unknown record identifier provided'
 
     UnknownIdentifierException() {
-        super(HTTP_STATUS, DEFAULT_MESSAGE)
+        this(DEFAULT_MESSAGE)
     }
 
     UnknownIdentifierException(String message) {
         super(HTTP_STATUS, message)
+    }
+
+    @Override
+    String getErrorCode() {
+        return HTTP_STATUS.value() + '_unknown_identifier'
     }
 }

@@ -17,7 +17,6 @@ import javax.persistence.MappedSuperclass
 import javax.validation.constraints.NotNull
 
 @MappedSuperclass
-@Audited
 @EntityListeners(AuditingEntityListener)
 @EqualsAndHashCode
 class AuditableEntity {
@@ -26,22 +25,27 @@ class AuditableEntity {
     Long id
 
     @CreatedBy
+    @Audited
     @JsonIgnore
     String createdBy
 
     @CreatedDate
+    @Audited
     @JsonIgnore
     Date createdDate
 
     @LastModifiedBy
+    @Audited
     @JsonIgnore
     String lastModifiedBy
 
     @LastModifiedDate
+    @Audited
     @JsonIgnore
     Date lastModifiedDate
 
     @NotNull
+    @Audited
     @JsonIgnore
     Boolean isDeleted = Boolean.FALSE
 }

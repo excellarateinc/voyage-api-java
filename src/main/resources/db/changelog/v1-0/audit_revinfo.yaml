@@ -4,15 +4,21 @@ databaseChangeLog:
       author: Voyage
       changes:
         - createTable:
-            tableName: REVINFO
+            tableName: AUD_REVISION
             columns:
               - column:
-                  name: REV
+                  name: id
                   type: int
                   autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: REVTSTMP
+                  name: timestamp
                   type: bigint
+              - column:
+                  name: username
+                  type: nvarchar(255)
+              - column:
+                  name: created_date
+                  type: datetime

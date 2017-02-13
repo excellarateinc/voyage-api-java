@@ -14,16 +14,6 @@ class AppException extends RuntimeException {
         httpStatus = HttpStatus.BAD_REQUEST
     }
 
-    AppException(HttpStatus httpStatus) {
-        super()
-        this.httpStatus = httpStatus
-    }
-
-    AppException(String message) {
-        super(message)
-        httpStatus = HttpStatus.BAD_REQUEST
-    }
-
     AppException(HttpStatus httpStatus, String message) {
         super(message)
         this.httpStatus = httpStatus

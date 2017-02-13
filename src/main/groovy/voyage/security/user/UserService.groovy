@@ -7,6 +7,7 @@ import voyage.error.UnknownIdentifierException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
+import voyage.error.UsernameAlreadyInUseException
 
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
@@ -21,14 +22,19 @@ class UserService {
         this.userRepository = userRepository
     }
 
-    User getCurrentUser() {
-        String username
+    static String getCurrentUsername() {
+        String username = null
         Authentication authenticationToken = SecurityContextHolder.context.authentication
         if (authenticationToken?.principal instanceof UserDetails) {
             username = ((UserDetails)authenticationToken.principal).username
         } else if (authenticationToken?.principal instanceof String) {
             username = authenticationToken.principal
         }
+        return username
+    }
+
+    User getCurrentUser() {
+        String username = getCurrentUsername()
         if (username) {
             return findByUsername(username)
         }
@@ -60,6 +66,14 @@ class UserService {
     User saveDetached(@Valid User userIn) {
         if (userIn.id) {
             User user = get(userIn.id)
+
+            // Verify the Username
+            if (user.username != userIn.username) {
+                if (!isUsernameUnique(userIn.username)) {
+                    throw new UsernameAlreadyInUseException()
+                }
+            }
+
             user.with {
                 firstName = userIn.firstName
                 lastName = userIn.lastName
@@ -71,8 +85,23 @@ class UserService {
                 isAccountLocked = userIn.isAccountLocked
                 isCredentialsExpired = userIn.isCredentialsExpired
             }
+
             return userRepository.save(user)
         }
+
+        // Verify the Username
+        if (!isUsernameUnique(userIn.username)) {
+            throw new UsernameAlreadyInUseException()
+        }
+
         return userRepository.save(userIn)
+    }
+
+    boolean isUsernameUnique(String username, User user = null) {
+        User matchingUser = userRepository.findByUsername(username)
+        if (matchingUser == user) {
+            return true
+        } 
+        return matchingUser ? false : true
     }
 }

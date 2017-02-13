@@ -92,7 +92,7 @@ class DefaultExceptionHandler implements ErrorController {
         Map errorMap = getErrorAttributes(request, false)
 
         // Handle AppExceptions by the definition embedded in the exception
-        Exception exception = request.getAttribute('javax.servlet.error.exception')
+        Exception exception = (Exception)request.getAttribute('javax.servlet.error.exception')
         if (exception instanceof AppException) {
             return handle((AppException)exception)
         }

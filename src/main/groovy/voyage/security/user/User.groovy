@@ -1,6 +1,7 @@
 package voyage.security.user
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.hibernate.envers.Audited
 import org.hibernate.validator.constraints.Email
 import voyage.common.AuditableEntity
 import voyage.security.role.Role
@@ -12,6 +13,7 @@ import javax.persistence.ManyToMany
 import javax.validation.constraints.NotNull
 
 @Entity
+@Audited
 class User extends AuditableEntity {
     @NotNull
     String firstName

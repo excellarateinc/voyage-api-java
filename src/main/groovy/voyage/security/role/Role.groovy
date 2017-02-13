@@ -1,6 +1,7 @@
 package voyage.security.role
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.hibernate.envers.Audited
 import voyage.common.AuditableEntity
 import voyage.security.permission.Permission
 
@@ -11,6 +12,7 @@ import javax.persistence.ManyToMany
 import javax.validation.constraints.NotNull
 
 @Entity
+@Audited
 class Role extends AuditableEntity {
     @NotNull
     String name

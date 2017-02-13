@@ -88,6 +88,7 @@ class UserController {
      * @apiUse UserRequestModel
      * @apiUse UserSuccessModel
      * @apiUse UnauthorizedError
+     * @apiUse UsernameAlreadyInUseError
      **/
     @PostMapping
     @PreAuthorize("hasAuthority('api.users.create')")
@@ -158,6 +159,7 @@ class UserController {
      * @apiUse UserRequestModel
      * @apiUse UserSuccessModel
      * @apiUse UnauthorizedError
+     * @apiUse UsernameAlreadyInUseError
      **/
     @PutMapping('/{id}')
     @PreAuthorize("hasAuthority('api.users.update')")
