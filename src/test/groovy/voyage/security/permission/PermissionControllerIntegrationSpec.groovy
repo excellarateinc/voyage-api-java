@@ -184,14 +184,14 @@ class PermissionControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body.description == '/users GET web service endpoint to return a full list of users'
     }
 
-    def '/api/v1/permissions/{id} GET - Invalid ID returns a 400 Bad Request response'() {
+    def '/api/v1/permissions/{id} GET - Invalid ID returns a 404 Not Found response'() {
         when:
             ResponseEntity<Iterable> responseEntity = GET('/api/v1/permissions/999999', Iterable, superClient)
 
         then:
-            responseEntity.statusCode.value() == 400
+            responseEntity.statusCode.value() == 404
             responseEntity.body.size() == 1
-            responseEntity.body[0].error == '400_bad_request'
+            responseEntity.body[0].error == '404_unknown_identifier'
             responseEntity.body[0].errorDescription == 'Unknown record identifier provided'
     }
 
@@ -288,7 +288,7 @@ class PermissionControllerIntegrationSpec extends AbstractIntegrationTest {
             deletePermission('Permission-Name-5-Updated')
     }
 
-    def '/api/v1/permissions/{id} PUT - Invalid ID returns a 400 Bad Request response'() {
+    def '/api/v1/permissions/{id} PUT - Invalid ID returns a 404 Not Found response'() {
         given:
             Permission permission = new Permission(id:9999, name:'Permission-Name-4', description:'test permission 4')
 
@@ -300,8 +300,8 @@ class PermissionControllerIntegrationSpec extends AbstractIntegrationTest {
             ResponseEntity<Iterable> responseEntity = PUT('/api/v1/permissions/9999', httpEntity, Iterable, superClient)
 
         then:
-            responseEntity.statusCode.value() == 400
-            responseEntity.body[0].error == '400_bad_request'
+            responseEntity.statusCode.value() == 404
+            responseEntity.body[0].error == '404_unknown_identifier'
             responseEntity.body[0].errorDescription == 'Unknown record identifier provided'
     }
 
@@ -378,14 +378,14 @@ class PermissionControllerIntegrationSpec extends AbstractIntegrationTest {
             deletePermission('Permission-Name-7')
     }
 
-    def '/api/v1/permissions/{id} DELETE - Invalid ID returns a 400 Bad Request response'() {
+    def '/api/v1/permissions/{id} DELETE - Invalid ID returns a 404 Not Found response'() {
         when:
            ResponseEntity<Iterable> responseEntity = DELETE('/api/v1/permissions/9999', Iterable, superClient)
 
         then:
-            responseEntity.statusCode.value() == 400
+            responseEntity.statusCode.value() == 404
             responseEntity.body.size() == 1
-            responseEntity.body[0].error == '400_bad_request'
+            responseEntity.body[0].error == '404_unknown_identifier'
             responseEntity.body[0].errorDescription == 'Unknown record identifier provided'
     }
 

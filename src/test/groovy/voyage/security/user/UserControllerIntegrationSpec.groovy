@@ -199,14 +199,14 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             !responseEntity.body.isAccountLocked
     }
 
-    def '/api/v1/users/{id} GET - Invalid ID returns a 400 Bad Request response'() {
+    def '/api/v1/users/{id} GET - Invalid ID returns a 404 Not Found response'() {
         when:
            ResponseEntity<Iterable> responseEntity = GET('/api/v1/users/999999', Iterable, superClient)
 
         then:
-            responseEntity.statusCode.value() == 400
+            responseEntity.statusCode.value() == 404
             responseEntity.body.size() == 1
-            responseEntity.body[0].error == '400_bad_request'
+            responseEntity.body[0].error == '404_unknown_identifier'
             responseEntity.body[0].errorDescription == 'Unknown record identifier provided'
     }
 
@@ -296,7 +296,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body.password == 'password'
     }
 
-    def '/api/v1/users/{id} PUT - Invalid ID returns a 400 Bad Request response'() {
+    def '/api/v1/users/{id} PUT - Invalid ID returns a 404 Not Found response'() {
         given:
             User user = new User(id:9999, firstName:'Test4', lastName:'User', username:'username7', email:'test@test.com', password:'password')
 
@@ -308,8 +308,8 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             ResponseEntity<Iterable> responseEntity = PUT('/api/v1/users/999999', httpEntity, Iterable, superClient)
 
         then:
-            responseEntity.statusCode.value() == 400
-            responseEntity.body[0].error == '400_bad_request'
+            responseEntity.statusCode.value() == 404
+            responseEntity.body[0].error == '404_unknown_identifier'
             responseEntity.body[0].errorDescription == 'Unknown record identifier provided'
     }
 
@@ -363,14 +363,14 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body == null
     }
 
-    def '/api/v1/users/{id} DELETE - Invalid ID returns a 400 Bad Request response'() {
+    def '/api/v1/users/{id} DELETE - Invalid ID returns a 404 Not Found response'() {
         when:
            ResponseEntity<Iterable> responseEntity = DELETE('/api/v1/users/999999', Iterable, superClient)
 
         then:
-            responseEntity.statusCode.value() == 400
+            responseEntity.statusCode.value() == 404
             responseEntity.body.size() == 1
-            responseEntity.body[0].error == '400_bad_request'
+            responseEntity.body[0].error == '404_unknown_identifier'
             responseEntity.body[0].errorDescription == 'Unknown record identifier provided'
     }
 }

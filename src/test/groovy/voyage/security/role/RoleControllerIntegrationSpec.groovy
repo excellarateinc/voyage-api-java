@@ -175,14 +175,14 @@ class RoleControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body.authority == 'role.super'
     }
 
-    def '/api/v1/roles/{id} GET - Invalid ID returns a 400 Bad Request response'() {
+    def '/api/v1/roles/{id} GET - Invalid ID returns a 404 Not Found response'() {
         when:
             ResponseEntity<Iterable> responseEntity = GET('/api/v1/roles/999999', Iterable, superClient)
 
         then:
-            responseEntity.statusCode.value() == 400
+            responseEntity.statusCode.value() == 404
             responseEntity.body.size() == 1
-            responseEntity.body[0].error == '400_bad_request'
+            responseEntity.body[0].error == '404_unknown_identifier'
             responseEntity.body[0].errorDescription == 'Unknown record identifier provided'
     }
 
@@ -264,7 +264,7 @@ class RoleControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body.authority == 'test.role.authority.5'
     }
 
-    def '/api/v1/roles/{id} PUT - Invalid ID returns a 400 Bad Request response'() {
+    def '/api/v1/roles/{id} PUT - Invalid ID returns a 404 Not Foundresponse'() {
         given:
             Role role = new Role(id:9999, name:'Role-Name-5', authority:'test.role.authority.5')
 
@@ -276,8 +276,8 @@ class RoleControllerIntegrationSpec extends AbstractIntegrationTest {
            ResponseEntity<Iterable> responseEntity = PUT('/api/v1/roles/999999', httpEntity, Iterable, superClient)
 
         then:
-            responseEntity.statusCode.value() == 400
-            responseEntity.body[0].error == '400_bad_request'
+            responseEntity.statusCode.value() == 404
+            responseEntity.body[0].error == '404_unknown_identifier'
             responseEntity.body[0].errorDescription == 'Unknown record identifier provided'
     }
 
@@ -331,14 +331,14 @@ class RoleControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body == null
     }
 
-    def '/api/v1/roles/{id} DELETE - Invalid ID returns a 400 Bad Request response'() {
+    def '/api/v1/roles/{id} DELETE - Invalid ID returns a 404 Not Found response'() {
         when:
            ResponseEntity<Iterable> responseEntity = DELETE('/api/v1/roles/999999', Iterable, superClient)
 
         then:
-            responseEntity.statusCode.value() == 400
+            responseEntity.statusCode.value() == 404
             responseEntity.body.size() == 1
-            responseEntity.body[0].error == '400_bad_request'
+            responseEntity.body[0].error == '404_unknown_identifier'
             responseEntity.body[0].errorDescription == 'Unknown record identifier provided'
     }
 }
