@@ -31,8 +31,8 @@ class AccountController {
     }
 
     @PostMapping('/register')
-    ResponseEntity register(@RequestBody Map<String, Object> userMap) {
-        User newUser = accountService.register(userMap)
+    ResponseEntity register(@RequestBody User userIn) {
+        User newUser = accountService.register(userIn)
         HttpHeaders headers = new HttpHeaders()
         headers.set(HttpHeaders.LOCATION, "/v1/account/${newUser.id}")
         return new ResponseEntity(newUser, headers, HttpStatus.CREATED)
@@ -47,8 +47,8 @@ class AccountController {
 
     @PreAuthorize('isAuthenticated()')
     @PostMapping('/verify/send')
-    ResponseEntity sendVerificationCode(@RequestBody Map<String, Object> verifyMethodMap) {
-        userVerifyService.sendVerifyCodeToCurrentUser(verifyMethodMap)
+    ResponseEntity sendVerificationCode(@RequestBody VerifyMethod verifyMethod) {
+        userVerifyService.sendVerifyCodeToCurrentUser(verifyMethod)
         return new ResponseEntity(HttpStatus.NO_CONTENT)
     }
 

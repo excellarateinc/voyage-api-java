@@ -82,12 +82,12 @@ class UserVerifyService {
         return true
     }
 
-    void sendVerifyCodeToCurrentUser(Map verifyMethod) {
+    void sendVerifyCodeToCurrentUser(VerifyMethod verifyMethod) {
         User user = userService.loggedInUser
-        if (verifyMethod.type == VerifyType.EMAIL) {
+        if (verifyMethod.verifyType == VerifyType.EMAIL) {
             sendVerifyCodeToEmail(user)
         }
-        if (verifyMethod.type == VerifyType.TEXT) {
+        if (verifyMethod.verifyType == VerifyType.TEXT) {
             sendVerifyCodeToPhoneNumber(user, verifyMethod.value as long)
         }
     }

@@ -16,18 +16,18 @@ class AccountService {
         this.userService = userService
     }
 
-    User register(Map userMap) {
-        User user = new User()
-        user.with {
-            firstName = userMap.firstName
-            lastName = userMap.lastName
-            username = userMap.username
-            email = userMap.email
-            password = userMap.password
+    User register(User userIn) {
+        User newUser = new User()
+        newUser.with {
+            firstName = userIn.firstName
+            lastName = userIn.lastName
+            username = userIn.username
+            email = userIn.email
+            password = userIn.password
             isEnabled = true
             isVerifyRequired = true
         }
-        user = userService.save(user)
-        return user
+        newUser = userService.save(newUser)
+        return newUser
     }
 }
