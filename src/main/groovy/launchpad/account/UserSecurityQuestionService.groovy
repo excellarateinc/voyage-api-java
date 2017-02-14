@@ -5,6 +5,7 @@ import launchpad.error.PasswordRecoveryFailedException
 import launchpad.error.UnknownIdentifierException
 import launchpad.security.user.User
 import launchpad.security.user.UserRepository
+import launchpad.security.user.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -18,32 +19,34 @@ import javax.validation.constraints.NotNull
 class UserSecurityQuestionService {
     private final UserSecurityQuestionRepository userSecurityQuestionRepository
     private final UserRepository userRepository
+    private final UserService userService
 
-    @Value('${acct-temp-suspended-message}')
+    @Value('${account-temporary-suspend-message}')
     private String accTempSuspMsg
 
-    @Value('${acct-locked-message}')
+    @Value('${account-locked-message}')
     private String accLockedMsg
 
-    @Value('${acct-temp-susp-min-attempts}')
+    @Value('${account-temporary-suspend-min-attempts}')
     private int acctTempSuspMinAttmpts
 
-    @Value('${acct-temp-susp-max-attempts}')
+    @Value('${account-temporary-suspend-max-attempts}')
     private int acctTempSuspMaxAttmpts
 
-    @Value('${acct-temp-susp-duration}')
+    @Value('${account-temporary-suspend-duration}')
     private int acctTempSuspDuration
 
-    @Value('${acct-extended-susp-max-attempts}')
+    @Value('${account-extended-suspend-max-attempts}')
     private int acctExtSuspMaxAttmpts
 
-    @Value('${acct-extended-susp-duration}')
+    @Value('${account-extended-suspend-duration}')
     private int acctExtSuspDuration
 
     @Autowired
-    UserSecurityQuestionService(UserSecurityQuestionRepository userSecurityQuestionRepository, UserRepository userRepository) {
+    UserSecurityQuestionService(UserSecurityQuestionRepository userSecurityQuestionRepository, /*UserRepository userRepository,*/ UserService userService) {
         this.userSecurityQuestionRepository = userSecurityQuestionRepository
-        this.userRepository = userRepository
+        //this.userRepository = userRepository
+        this.userService = userService
     }
 
     void delete(@NotNull Long id) {
@@ -60,18 +63,36 @@ class UserSecurityQuestionService {
         return userSecurityQuestion
     }
 
-    UserSecurityQuestion saveOrUpdate(@Valid UserSecurityQuestion userSecurityQuestionIn) {
-        userSecurityQuestionIn.answer = encryptAnswer(userSecurityQuestionIn.answer)
-        if (userSecurityQuestionIn.id) {
-            UserSecurityQuestion userSecurityQuestion = get(userSecurityQuestionIn.id)
-            userSecurityQuestion.with {
-                userId = userSecurityQuestionIn.userId
-                questionId = userSecurityQuestionIn.questionId
-                answer = userSecurityQuestionIn.answer
+    boolean saveOrUpdate(@Valid UserSecurityAnswers userSecurityAnswers) {
+        //User user = userService.loggedInUser
+        User user = userService.findByUsername(userSecurityAnswers.user.username)
+        if (user) {
+            List<UserSecurityQuestion> userSecurityQuestionListInDB = userSecurityQuestionRepository.findByUserId(user.id)
+            if(userSecurityQuestionListInDB == null || userSecurityQuestionListInDB.empty) {
+                //User is setting up security questions for the first time
+                userSecurityAnswers.securityAnswers.each { securityAnswer ->
+                    UserSecurityQuestion newUserSecurityQuestion = new UserSecurityQuestion()
+                    SecurityQuestion securityQuestion = securityAnswer.question
+                    newUserSecurityQuestion.user = user
+                    newUserSecurityQuestion.question = securityQuestion
+                    newUserSecurityQuestion.answer = encryptAnswer(securityAnswer.answer)
+                    userSecurityQuestionRepository.save(newUserSecurityQuestion)
+                }
             }
-            return userSecurityQuestionRepository.save(userSecurityQuestion)
+            else{
+                //Todo logic to update userSecurityQuestions and/or their answers
+                println("UPDATE USER SECURITY QUESTIONS - NOT IMPLEMENTED YET")
+            }
         }
-        return userSecurityQuestionRepository.save(userSecurityQuestionIn)
+        else{
+            throw new UnknownIdentifierException("User account does not exist")
+        }
+    }
+
+    List<SecurityQuestion> getSecurityQuestionsForUser(String username) {
+        User user = userService.findByUsername(username)
+        //TODO - yet to complete this functionality
+        //userSecurityQuestionRepository.findSecurityQuestionsForUser(user)
     }
 
     List<UserSecurityQuestion> findSecurityQuestionsByUserId(@NotNull Long userId) {
@@ -129,25 +150,30 @@ class UserSecurityQuestionService {
      * @param userSecurityAnswersList
      * @return boolean true for valid and false for invalid user input
      */
-    boolean validateUserSecurityAnswers(Long userId, List<SecurityAnswer> userSecurityAnswersList) throws PasswordRecoveryFailedException {
+    boolean validateUserSecurityAnswers(UserSecurityAnswers userSecurityAnswers) throws PasswordRecoveryFailedException {
         boolean isValid = true
         boolean exitLoop = true
-        if (!userSecurityAnswersList) {
-            throw new PasswordRecoveryFailedException('User security answers are required for password recovery')
+
+        if (!userSecurityAnswers) {
+            throw new PasswordRecoveryFailedException('Invalid request')
         }
-        User user = userRepository.findOne(userId)
+        if(!userSecurityAnswers.user) {
+            throw new PasswordRecoveryFailedException('Invalid request')
+        }
+        User user = userService.findByUsername(userSecurityAnswers.user.username)
         if (!user) {
             throw new UnknownIdentifierException('Requested user account not found')
         }
-        assertFailedAttemptRules(user)
-        Iterable<UserSecurityQuestion> userSecurityAnswersInDbList = userSecurityQuestionRepository.findByUserId(userId)
+        Iterable<UserSecurityQuestion> userSecurityAnswersInDbList = userSecurityQuestionRepository.findByUserId(user.id)
         if (!userSecurityAnswersInDbList) {
             throw new PasswordRecoveryFailedException('User security questions have not been set-up for the user. Please contact administrator')
         }
+
+        assertFailedAttemptRules(user)
         userSecurityAnswersInDbList.any { userSecurityAnswerInDb ->
             //For each user security question from db, retrieve corresponding user entered answer from the input
-            SecurityAnswer userEnteredSecurityAnswer = userSecurityAnswersList.find {
-                it.questionId == userSecurityAnswerInDb.question.id
+            SecurityAnswer userEnteredSecurityAnswer = userSecurityAnswers.securityAnswers.find {
+                it.question.id == userSecurityAnswerInDb.question.id
             }
             //if there is no corresponding user entered answer for this question then the validation should fail
             if (!userEnteredSecurityAnswer) {
@@ -163,7 +189,11 @@ class UserSecurityQuestionService {
             }
         }
         performPostValidationUpdates(user, isValid)
-        return isValid
+        if(!isValid){
+            throw new PasswordRecoveryFailedException('One or more answers are incorrect')
+        }else{
+            return isValid
+        }
     }
 
     /**
@@ -189,6 +219,6 @@ class UserSecurityQuestionService {
                 user.isAccountLocked = true
             }
         }
-        userRepository.save(user)
+        userService.save(user)
     }
 }

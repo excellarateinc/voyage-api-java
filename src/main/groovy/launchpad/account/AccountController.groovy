@@ -78,38 +78,23 @@ class AccountController {
 
     //TODO Apidocs
     @PostMapping('/securityquestions')
-    ResponseEntity saveUserSecurityAnswers(@RequestBody UserSecurityAnswers userSecurityAnswersIn) {
-        userSecurityAnswersIn.securityAnswers.each { userSecurityAnswerIn ->
-            UserSecurityQuestion userSecurityQuestion = new UserSecurityQuestion()
-            User user = new User()
-            user.id = userSecurityAnswersIn.userId
-            SecurityQuestion securityQuestion = new SecurityQuestion()
-            securityQuestion.id = userSecurityAnswerIn.questionId
-            userSecurityQuestion.user = user
-            userSecurityQuestion.question = securityQuestion
-            userSecurityQuestion.answer = userSecurityAnswerIn.answer
-            userSecurityQuestionService.saveOrUpdate(userSecurityQuestion)
-        }
+    ResponseEntity saveUserSecurityAnswers(@RequestBody UserSecurityAnswers userSecurityAnswers) {
+        userSecurityQuestionService.saveOrUpdate(userSecurityAnswers)
         return new ResponseEntity(HttpStatus.OK)
     }
 
     //TODO Apidocs
+    @GetMapping('/recovery')
+    ResponseEntity listSecurityQuestionsForUser(@PathVariable('username') String username) {
+        Iterable<SecurityQuestion> securityQuestions = userSecurityQuestionService.getSecurityQuestionsForUser(username)
+        return new ResponseEntity(securityQuestions, HttpStatus.OK)
+    }
+
+    //TODO Apidocs
     @PostMapping('/recovery')
-    ResponseEntity passwordRecovery(@RequestBody UserSecurityAnswers userSecurityAnswersIn) {
-        try {
-            if (userSecurityQuestionService.validateUserSecurityAnswers(userSecurityAnswersIn.userId, userSecurityAnswersIn.securityAnswers)) {
-                //TODO Call OAUTH2 authentication server for temporary token
-                return new ResponseEntity(HttpStatus.OK)
-            }
-            ErrorResponse errorResponse = new ErrorResponse(
-                    error:ErrorUtils.getErrorCode(HttpStatus.BAD_REQUEST.value()),
-                    errorDescription:'One or more answers are incorrect',)
-            return new ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
-        } catch (PasswordRecoveryFailedException ex) {
-            ErrorResponse errorResponse = new ErrorResponse(
-                    error:ErrorUtils.getErrorCode(HttpStatus.BAD_REQUEST.value()),
-                    errorDescription:ex.message,)
-            return new ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
-        }
+    ResponseEntity passwordRecovery(@RequestBody UserSecurityAnswers userSecurityAnswers) {
+        userSecurityQuestionService.validateUserSecurityAnswers(userSecurityAnswers)
+        //TODO Call OAUTH2 authentication server for temporary token
+        return new ResponseEntity(HttpStatus.OK)
     }
 }

@@ -5,7 +5,7 @@ package launchpad.account
  */
 class SecurityAnswer {
 
-    Long questionId
+    SecurityQuestion question
 
     String answer
 }
