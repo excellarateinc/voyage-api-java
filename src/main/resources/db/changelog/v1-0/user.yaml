@@ -80,6 +80,21 @@ databaseChangeLog:
                   type: varchar(255)
                   constraints:
                     nullable: true
+              - column:
+                  name: failed_recovery_attempt_time
+                  type: datetime
+                  constraints:
+                    nullable: true
+              - column:
+                  name: no_of_failed_recovery_attempts
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: is_password_reset_required
+                  type: bit(1)
+                  constraints:
+                    nullable: true
   - changeSet:
       id: v1.0-user-seed-users
       author: Rob Louie

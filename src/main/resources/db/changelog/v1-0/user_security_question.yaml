@@ -1,0 +1,47 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-user-security-question-create
+      author: Mythili Satyanarayana
+      changes:
+        - createTable:
+            tableName: user_security_question
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: question_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: answer
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: user_security_question
+            constraintName: fk_user_security_question_table_user_id
+            referencedColumnNames: id
+            referencedTableName: user
+        - addForeignKeyConstraint:
+            baseColumnNames: question_id
+            baseTableName: user_security_question
+            constraintName: fk_user_security_question_table_question_id
+            referencedColumnNames: id
+            referencedTableName: security_question

@@ -74,6 +74,15 @@ class User {
     @JsonIgnore
     Date verifyCodeExpiresOn
 
+    @JsonIgnore
+    Integer noOfFailedRecoveryAttempts
+
+    @JsonIgnore
+    Date failedRecoveryAttemptTime
+
+    @JsonIgnore
+    Boolean isPasswordResetRequired = Boolean.FALSE
+
     boolean isVerifyCodeExpired() {
         return verifyCodeExpiresOn != null && verifyCodeExpiresOn < new Date()
     }

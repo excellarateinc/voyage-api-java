@@ -113,6 +113,15 @@ security:
 
 verify-code-expire-minutes: 30
 
+#password recovery constants
+account-temporary-suspend-message: 'Account is temporarily suspended. Please try again later'
+account-locked-message: 'Account is locked. Please contact administrator'
+account-temporary-suspend-min-attempts: 3
+account-temporary-suspend-max-attempts: 7
+account-temporary-suspend-duration: 5
+account-extended-suspend-max-attempts: 10
+account-extended-suspend-duration: 60
+
 cloud.aws credentials.accessKey: 0T2QFBSAJH0TTA9Q0MR2
 cloud.aws.credentials.secretKey: 5VtpEPJlFKxHx9JBGgoLzzZ7OvXdAdzoaYQyJgO7
 cloud.aws.region.auto: true

@@ -76,6 +76,9 @@ class UserService {
                 isAccountExpired = userIn.isAccountExpired
                 isAccountLocked = userIn.isAccountLocked
                 isCredentialsExpired = userIn.isCredentialsExpired
+                isPasswordResetRequired = userIn.isPasswordResetRequired
+                noOfFailedRecoveryAttempts = userIn.noOfFailedRecoveryAttempts
+                failedRecoveryAttemptTime = userIn.failedRecoveryAttemptTime
             }
             return userRepository.save(user)
         }
