@@ -5,9 +5,7 @@ import com.icegreen.greenmail.util.ServerSetup
 import launchpad.account.VerifyMethod
 import launchpad.account.VerifyType
 import launchpad.security.user.User
-import launchpad.security.user.UserService
 import launchpad.test.AbstractIntegrationTest
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpEntity
@@ -19,9 +17,6 @@ import org.springframework.http.ResponseEntity
 class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
 
     private GreenMail greenMailSMTP
-
-    @Autowired
-    private UserService userService
 
     def setup() {
         ServerSetup setup = new ServerSetup(3025, 'localhost', ServerSetup.PROTOCOL_SMTP)
@@ -81,7 +76,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/account/verify/send POST - Anonymous access denied'() {
         given:
-            VerifyMethod verifyMethod = new VerifyMethod(verifyType: VerifyType.EMAIL, value: '', label: 'email')
+            VerifyMethod verifyMethod = new VerifyMethod(verifyType:VerifyType.EMAIL, value:'', label:'email')
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<VerifyMethod> httpEntity = new HttpEntity<VerifyMethod>(verifyMethod, headers)
@@ -93,7 +88,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/account/verify/send POST - Standard User with permission "isAuthenticated()" access granted'() {
         given:
-            VerifyMethod verifyMethod = new VerifyMethod(verifyType: VerifyType.EMAIL, value: '', label: 'email')
+            VerifyMethod verifyMethod = new VerifyMethod(verifyType:VerifyType.EMAIL, value:'', label:'email')
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<VerifyMethod> httpEntity = new HttpEntity<VerifyMethod>(verifyMethod, headers)

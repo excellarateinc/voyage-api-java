@@ -5,7 +5,6 @@ import launchpad.account.AccountService
 import launchpad.account.VerifyMethod
 import launchpad.account.VerifyType
 import launchpad.security.user.User
-import launchpad.security.user.UserService
 import launchpad.security.user.UserVerifyService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -79,15 +78,15 @@ class AccountControllerSpec extends Specification {
 
     def 'Test to validate verify method'() {
         when:
-            ResponseEntity response = accountController.verify("code")
+            ResponseEntity response = accountController.verify('code')
         then:
-            1 * userVerifyService.verifyCurrentUser("code")
+            1 * userVerifyService.verifyCurrentUser('code')
             HttpStatus.NO_CONTENT == response.statusCode
 
         when:
-            accountController.verify("code")
+            accountController.verify('code')
         then:
-            1 * userVerifyService.verifyCurrentUser("code") >> { throw new Exception() }
+            1 * userVerifyService.verifyCurrentUser('code') >> { throw new Exception() }
             thrown(Exception)
     }
 }
