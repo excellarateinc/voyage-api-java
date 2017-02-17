@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 /**
- * todo : unit tests, api docs after finalizing the flow of verify account
- * forgot password and render proper response.
+ * todo : api docs after finalizing the flow of verify account
  */
 
 @RestController
