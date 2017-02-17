@@ -18,9 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
-
 import javax.validation.constraints.NotNull
 
+//TODO: Add tests for this class - Jagadeesh Manne
 @Service
 @Validated
 class UserVerifyService {
