@@ -113,7 +113,7 @@ class OAuth2ImplicitIntegrationSpec extends AbstractIntegrationTest {
 
         then:
             apiResponse.statusCode.value() == 200
-            apiResponse.body.size() == 3
+            apiResponse.body.size() == 5
             apiResponse.body[0].id == 1L
             apiResponse.body[0].firstName == 'Super'
             apiResponse.body[0].lastName == 'User'
@@ -200,7 +200,7 @@ class OAuth2ImplicitIntegrationSpec extends AbstractIntegrationTest {
 
         then:
             apiResponse.statusCode.value() == 200
-            apiResponse.body.size() == 3
+            apiResponse.body.size() == 5
             apiResponse.body[0].id == 1L
             apiResponse.body[0].firstName == 'Super'
             apiResponse.body[0].lastName == 'User'

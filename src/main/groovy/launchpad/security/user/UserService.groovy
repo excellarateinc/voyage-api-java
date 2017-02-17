@@ -1,6 +1,10 @@
 package launchpad.security.user
 
 import launchpad.error.UnknownIdentifierException
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
@@ -14,8 +18,27 @@ import javax.validation.constraints.NotNull
 class UserService {
     private final UserRepository userRepository
 
+    @Autowired
     UserService(UserRepository userRepository) {
         this.userRepository = userRepository
+    }
+
+    User getLoggedInUser() {
+        String username
+        Authentication authenticationToken = SecurityContextHolder.context.authentication
+        if (authenticationToken.principal instanceof UserDetails) {
+            username = ((UserDetails)authenticationToken.principal).username
+        } else if (authenticationToken.principal instanceof String) {
+            username = authenticationToken.principal
+        }
+        if (username) {
+            User user = findByUsername(username)
+            return user
+        }
+    }
+
+    User save(@NotNull User user) {
+        return userRepository.save(user)
     }
 
     void delete(@NotNull Long id) {

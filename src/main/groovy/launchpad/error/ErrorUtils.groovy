@@ -12,7 +12,8 @@ class ErrorUtils {
     }
 
     static String getErrorCode(int httpStatusCode, String description) {
-        String errorCode = httpStatusCode + UNDER_SCORE + description
+        HttpStatus httpStatus = HttpStatus.valueOf(httpStatusCode)
+        String errorCode = httpStatus.value() + UNDER_SCORE + description
         return formatErrorCode(errorCode)
     }
 
