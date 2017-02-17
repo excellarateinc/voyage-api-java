@@ -206,7 +206,7 @@ class RoleControllerIntegrationSpec extends AbstractIntegrationTest {
     def '/api/v1/roles/{id} PUT - Super User access granted'() {
         given:
             Role role = new Role(name:'Role-Name-3', authority:'test.role.authority.3')
-            role = roleService.save(role)
+            role = roleService.saveDetached(role)
 
             role.name = 'Role-Name-3-Updated'
 
@@ -246,7 +246,7 @@ class RoleControllerIntegrationSpec extends AbstractIntegrationTest {
             roleService.addPermission(ROLE_STANDARD_ID, 'api.roles.update')
 
             Role role = new Role(name:'Role-Name-5', authority:'test.role.authority.5')
-            role = roleService.save(role)
+            role = roleService.saveDetached(role)
 
             role.name = 'Role-Name-5-Updated'
 
@@ -295,7 +295,7 @@ class RoleControllerIntegrationSpec extends AbstractIntegrationTest {
     def '/api/v1/roles/{id} DELETE - Super User access granted'() {
         given:
             Role role = new Role(name:'Role-Name-5', authority:'test.role.authority.5')
-            role = roleService.save(role)
+            role = roleService.saveDetached(role)
 
         when:
             ResponseEntity<String> responseEntity = DELETE("/api/v1/roles/${role.id}", String, superClient)
@@ -321,7 +321,7 @@ class RoleControllerIntegrationSpec extends AbstractIntegrationTest {
             roleService.addPermission(ROLE_STANDARD_ID, 'api.roles.delete')
 
             Role role = new Role(name:'Role-Name-6', authority:'test.role.authority.6')
-            role = roleService.save(role)
+            role = roleService.saveDetached(role)
 
         when:
             ResponseEntity<String> responseEntity = DELETE("/api/v1/roles/${role.id}", String, standardClient)

@@ -82,7 +82,7 @@ class RoleController {
     @PostMapping
     @PreAuthorize("hasAuthority('api.roles.create')")
     ResponseEntity save(@RequestBody Role role) {
-        Role newRole = roleService.save(role)
+        Role newRole = roleService.saveDetached(role)
         HttpHeaders headers = new HttpHeaders()
         headers.set(HttpHeaders.LOCATION, "/api/v1/roles/${newRole.id}")
         return new ResponseEntity(newRole, headers, HttpStatus.CREATED)
@@ -152,7 +152,7 @@ class RoleController {
     @PutMapping('/{id}')
     @PreAuthorize("hasAuthority('api.roles.update')")
     ResponseEntity update(@RequestBody Role role) {
-        Role modifiedRole = roleService.save(role)
+        Role modifiedRole = roleService.saveDetached(role)
         return new ResponseEntity(modifiedRole, HttpStatus.OK)
     }
 }

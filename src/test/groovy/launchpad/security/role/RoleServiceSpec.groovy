@@ -28,7 +28,7 @@ class RoleServiceSpec extends Specification {
         setup:
             roleRepository.save(_) >> role
         when:
-            Role savedRole = roleService.save(role)
+            Role savedRole = roleService.saveDetached(role)
         then:
             'Super User' == savedRole.name
             'ROLE_SUPER' == savedRole.authority
@@ -59,7 +59,7 @@ class RoleServiceSpec extends Specification {
         setup:
             roleRepository.save(_) >> role
         when:
-            Role savedRole = roleService.save(role)
+            Role savedRole = roleService.saveDetached(role)
         then:
             'Super User' == savedRole.name
             'ROLE_SUPER' == savedRole.authority
