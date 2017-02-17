@@ -4,6 +4,7 @@ import groovy.time.TimeCategory
 import launchpad.account.VerifyMethod
 import launchpad.account.VerifyType
 import launchpad.error.InvalidVerificationCodeException
+import launchpad.error.InvalidVerificationMethodException
 import launchpad.error.UnknownIdentifierException
 import launchpad.error.VerifyCodeExpiredException
 import launchpad.mail.MailMessage
@@ -86,9 +87,10 @@ class UserVerifyService {
         User user = userService.loggedInUser
         if (verifyMethod.verifyType == VerifyType.EMAIL) {
             sendVerifyCodeToEmail(user)
-        }
-        if (verifyMethod.verifyType == VerifyType.TEXT) {
+        } else if (verifyMethod.verifyType == VerifyType.TEXT) {
             sendVerifyCodeToPhoneNumber(user, verifyMethod.value as long)
+        } else {
+            throw new InvalidVerificationMethodException()
         }
     }
 

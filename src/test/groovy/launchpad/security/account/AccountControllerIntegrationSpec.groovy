@@ -69,9 +69,6 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
     }
 
     def '/api/v1/account/verify/methods GET - Standard User with permission "isAuthenticated()" access granted'() {
-        given:
-            User user = new User(firstName:'Test3', lastName:'User', username:'client-standard', email:'test@test.com', password:'password')
-            userService.saveDetached(user)
         when:
             ResponseEntity<Iterable> responseEntity = GET('/api/v1/account/verify/methods', Iterable, standardClient)
         then:
@@ -84,27 +81,24 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/account/verify/send POST - Anonymous access denied'() {
         given:
-            User user = new User(firstName:'Test3', lastName:'User', username:'username3', email:'test@test.com', password:'password')
-            HttpHeaders headers = new HttpHeaders()
-            headers.setContentType(MediaType.APPLICATION_JSON)
-            HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
-        when:
-            ResponseEntity<Iterable> responseEntity = POST('/api/v1/account/verify/send', httpEntity, Iterable, standardClient)
-        then:
-            responseEntity.statusCode.value() == 204
-            responseEntity.body == null
-    }
-
-    def '/api/v1/account/verify/send POST - Standard User with permission "isAuthenticated()" access granted'() {
-        given:
-            User user = new User(firstName:'Test4', lastName:'User', username:'client-standard', email:'test@test.com', password:'password')
-            userService.saveDetached(user)
-            VerifyMethod verifyMethod = new VerifyMethod(verifyType: VerifyType.TEXT, value: '9999999999', label: 'phone')
+            VerifyMethod verifyMethod = new VerifyMethod(verifyType: VerifyType.EMAIL, value: '', label: 'email')
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<VerifyMethod> httpEntity = new HttpEntity<VerifyMethod>(verifyMethod, headers)
         when:
-            ResponseEntity responseEntity = POST('/api/v1/account/verify/send', httpEntity, standardClient)
+            ResponseEntity<String> responseEntity = POST('/api/v1/account/verify/send', httpEntity, String)
+        then:
+            responseEntity.statusCode.value() == 401
+    }
+
+    def '/api/v1/account/verify/send POST - Standard User with permission "isAuthenticated()" access granted'() {
+        given:
+            VerifyMethod verifyMethod = new VerifyMethod(verifyType: VerifyType.EMAIL, value: '', label: 'email')
+            HttpHeaders headers = new HttpHeaders()
+            headers.setContentType(MediaType.APPLICATION_JSON)
+            HttpEntity<VerifyMethod> httpEntity = new HttpEntity<VerifyMethod>(verifyMethod, headers)
+        when:
+            ResponseEntity responseEntity = POST('/api/v1/account/verify/send', httpEntity, String, superClient)
         then:
             responseEntity.statusCode.value() == 204
             responseEntity.body == null
