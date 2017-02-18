@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus
  */
 class UsernameAlreadyInUseException extends AppException {
     private static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST
-    private static final String DEFAULT_MESSAGE = 'Username already in use by another user. Please choose a different username'
+    private static final String DEFAULT_MESSAGE = 'Username already in use by another user. Please choose a different username.'
 
     UsernameAlreadyInUseException() {
         this(DEFAULT_MESSAGE)

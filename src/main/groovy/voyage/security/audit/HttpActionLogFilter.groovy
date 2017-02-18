@@ -107,7 +107,7 @@ class HttpActionLogFilter extends OncePerRequestFilter {
 
     private static String getHeaders(HttpServletRequest request) {
         StringBuilder headers = new StringBuilder()
-        request.headerNames.each { name ->
+        request.headerNames?.each { name ->
             headers.append(name).append(':').append(request.getHeader(name)).append(', ')
         }
         if (headers) {

@@ -89,8 +89,6 @@ class DefaultExceptionHandler implements ErrorController {
 
     @RequestMapping(value = '/error')
     ResponseEntity<Iterable<ErrorResponse>> handleError(HttpServletRequest request, HttpServletResponse response) {
-        Map errorMap = getErrorAttributes(request, false)
-
         // Handle AppExceptions by the definition embedded in the exception
         Exception exception = (Exception)request.getAttribute('javax.servlet.error.exception')
         if (exception instanceof AppException) {
@@ -98,6 +96,7 @@ class DefaultExceptionHandler implements ErrorController {
         }
 
         // Handle unknown exceptions based on the error details given
+        Map errorMap = getErrorAttributes(request, false)
         String errorCode = ErrorUtils.getErrorCode((int)errorMap.status)
         String errorMessage = "${errorMap.status} ${errorMap.error}. ${errorMap.message}"
         ErrorResponse errorResponse = new ErrorResponse(
