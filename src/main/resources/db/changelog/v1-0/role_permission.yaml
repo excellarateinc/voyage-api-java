@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: v1.0-role-permission-table-create
-      author: Jagadeesh Manne
+      author: Voyage
       changes:
         - createTable:
             tableName: role_permission
@@ -10,34 +10,53 @@ databaseChangeLog:
                   name: role_id
                   type: int
                   constraints:
+                    primaryKey: true
                     nullable: false
+                    referencedTableName: role
+                    referencedColumnName: id
               - column:
                   name: permission_id
                   type: int
                   constraints:
+                    primaryKey: true
                     nullable: false
+                    referencedTableName: permission
+                    referencedColumnName: id
   - changeSet:
-      id: v1.0-role-permission-table-add-composite-key
-      author: Jagadeesh Manne
+      id: v1.0-role-permission-audit-table-create
+      author: Voyage
       changes:
-        - addPrimaryKey:
-            columnNames: role_id, permission_id
-            tableName: role_permission
-        - addForeignKeyConstraint:
-            baseColumnNames: role_id
-            baseTableName: role_permission
-            constraintName: fk_role_permission_table_role_id
-            referencedColumnNames: id
-            referencedTableName: role
-        - addForeignKeyConstraint:
-            baseColumnNames: permission_id
-            baseTableName: role_permission
-            constraintName: fk_role_permission_table_permission_id
-            referencedColumnNames: id
-            referencedTableName: permission
+        - createTable:
+            tableName: role_permission_AUD
+            columns:
+              - column:
+                  name: role_id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    referencedTableName: role
+                    referencedColumnName: id
+              - column:
+                  name: permission_id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    referencedTableName: permission
+                    referencedColumnName: id
+              - column:
+                  name: REV
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REVTYPE
+                  type: tinyint
   - changeSet:
       id: v1.0-role-permission-seed-super-user
-      author: Rob Louie
+      author: Voyage
       changes:
         - sql:
             sql: insert into role_permission select 1, id from permission

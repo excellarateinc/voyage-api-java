@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "name": "launchpad-api",
+  "name": "voyage-api",
   "private": true,
   "dependencies": {
     "apidoc": ">0.15.0"

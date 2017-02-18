@@ -2,7 +2,7 @@
 # Application
 #######################################################################################################################
 app:
-  name: Launchpad
+  name: Voyage
   support-email: support@LighthouseSoftware.com
   support-phone: 651-888-6021
   support-website: http://LighthouseSoftware.com/support
@@ -43,7 +43,7 @@ security:
 
   oauth2:
     resource:
-      id: launchpad
+      id: voyage
       jwt:
         key-value: |
           -----BEGIN PUBLIC KEY-----
@@ -73,3 +73,6 @@ security:
         standard-client:
           client-id: client-standard
           client-secret: secret
+
+  cors:
+    access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent

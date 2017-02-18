@@ -83,7 +83,7 @@ and private key information, like:
 security:
   oauth2:
     resource:
-      id: launchpad
+      id: voyage
       jwt:
         key-value: |
           -----BEGIN PUBLIC KEY-----
@@ -112,7 +112,7 @@ security:
 ### Cross-Site Request Forgery (CSRF)
 Provide an example or link to the OWASP cheat sheet for CSRF (https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet)
 
-Launchpad uses JWT that is transmitted through HTTP Request Headers, no Cookies used. HTTP Basic Auth is disabled. 
+Voyage API uses JWT that is transmitted through HTTP Request Headers, no Cookies used. HTTP Basic Auth is disabled. 
 
 
 Discuss how the CSRF token is generated and what happens if/when it expires, or if/when it is invalid (401 Access Denied. CSRF token was not valid)

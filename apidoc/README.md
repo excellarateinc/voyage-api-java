@@ -38,9 +38,9 @@ c:\ > npm install apidoc -g
 
 ### 3. Generate the Docs
 * Open a terminal / command prompt 
-* Change directory to c:\your-workspace\launchpad-dotnet-api\apidoc
+* Change directory to c:\your-workspace\voyage-dotnet-api\apidoc
 ```
-c:\ > cd c:\your-workspace-here\launchpad-dotnet-api\apidoc
+c:\ > cd c:\your-workspace-here\voyage-dotnet-api\apidoc
 ```
 * Execute the apidoc npm command
 
@@ -60,6 +60,6 @@ This assumes that you are wanting to view the apidoc generated HTML locally on y
 * File > Open...
 * Navigate to the apidocs "docs" folder
 ```
-c:\your-workspace\launchpad-dotnet-api\apidoc\docs
+c:\your-workspace\voyage-dotnet-api\apidoc\docs
 ```
 * Select the "index.html" and click "Open" or "Ok"

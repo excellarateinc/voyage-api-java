@@ -2,7 +2,7 @@
 # Application
 #######################################################################################################################
 app:
-  name: Launchpad
+  name: Voyage
   contact-support:
     email: support@LighthouseSoftware.com
     phone: 651-888-6021
@@ -12,7 +12,7 @@ app:
 # Logging
 #######################################################################################################################
 logging:
-  file: launchpad-api.log
+  file: voyage-api.log
 
 #######################################################################################################################
 # Spring Configuration
@@ -20,7 +20,7 @@ logging:
 spring:
 
   application:
-    name: Launchpad API
+    name: Voyage API
 
   mvc:
     view:
@@ -35,9 +35,9 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 
   datasource:
-    url: jdbc:mysql://localhost:3306/launchpad?useSSL=false&autoReconnect=true
-    username: launchpad
-    password: launchpad
+    url: jdbc:mysql://localhost:3306/voyage?useSSL=false&autoReconnect=true
+    username: voyage
+    password: voyage
     driver-class-name: com.mysql.jdbc.Driver
     #initialSize: 10
     #maxActive: 50
@@ -70,7 +70,7 @@ security:
 
   oauth2:
     resource:
-      id: launchpad
+      id: voyage
       jwt:
         key-value: |
           -----BEGIN PUBLIC KEY-----
@@ -93,3 +93,6 @@ security:
 
   user-verification:
     exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /WEB-INF/jsp/**.jsp
+
+  cors:
+    access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
