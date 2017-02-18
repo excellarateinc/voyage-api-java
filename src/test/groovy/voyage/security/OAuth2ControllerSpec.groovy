@@ -12,7 +12,7 @@ class OAuth2ControllerSpec extends Specification {
         given:
             OAuth2Exception exception = new OAuth2Exception('test message')
             def httpServletRequest = Mock(HttpServletRequest)
-        
+
             OAuth2Controller controller = new OAuth2Controller()
 
         when:
