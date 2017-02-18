@@ -23,5 +23,4 @@ class AppOAuth2ExceptionSerializerSpec extends Specification {
             1 * jsonGenerator.writeEndArray()
             1 * jsonGenerator.writeEndObject()
     }
-
 }
