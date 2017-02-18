@@ -83,7 +83,7 @@ class DefaultExceptionHandlerSpec extends Specification {
             usernameRequiredError.defaultMessage >> 'Username is required'
             firstNameRequiredError.code >> 'field.firstName'
             firstNameRequiredError.defaultMessage >> 'First Name is required'
-
+      
             responseEntity.statusCodeValue == 400
             responseEntity.body.size() == 2
             responseEntity.body[0].error == 'field.username'
@@ -125,6 +125,7 @@ class DefaultExceptionHandlerSpec extends Specification {
     def 'handleError() processes a HttpServlet exception'() {
         given:
             ErrorAttributes errorAttributes = Mock(ErrorAttributes)
+
             Map errorMap = [status:400, error:'test error', message:'test message']
             DefaultExceptionHandler handler = new DefaultExceptionHandler(errorAttributes)
 
