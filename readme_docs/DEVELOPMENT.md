@@ -29,6 +29,7 @@ These are the core standards that our development team agrees to follow. All of 
   * Peer reviewed code has been found to significantly reduce bugs and missed requirements
   * Be thorough and respectful!
 5. __Build for today's needs, not what might be needed tomorrow__
+  * Read [YAGNI](https://martinfowler.com/bliki/Yagni.html) by Martin Fowler for examples of "You're Not Going To Need It"
   * Make the best choices based on the customer's concrete needs today!
   * Building for the future is subjective guesswork that rarely meets unknowable customer needs
 
@@ -44,7 +45,7 @@ The following coding standards are agreed upon by the development team and are e
 3. Facilitate changing and maintaining the code in a consistent manner.
 
 __Languages__
-* [C#](STANDARDS-CSHARP.md)     
+* [Groovy](STANDARDS-GROOVY.md)     
      
 __Best Practices__
 * [Authorization](STANDARDS-AUTHORIZATION.md)
