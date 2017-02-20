@@ -11,7 +11,6 @@ import spock.lang.Specification
 
 class UserVerifyServiceSpec extends Specification {
     User user
-    UserPhone userPhone
     UserService userService = Mock()
     MailService mailService = Mock()
     SmsService smsService  = Mock()
@@ -19,6 +18,10 @@ class UserVerifyServiceSpec extends Specification {
 
     def setup() {
         user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password')
+        UserPhone userPhone = new UserPhone(id:1, phoneType:PhoneType.HOME, phoneNumber:'9999999999', user:user)
+        Set<UserPhone> userPhones = []
+        userPhones.add(userPhone)
+        user.phones = userPhones
     }
 
     def 'getVerifyMethodsForCurrentUser - validate verify method for current user' () {
@@ -27,7 +30,7 @@ class UserVerifyServiceSpec extends Specification {
         when:
             List<VerifyMethod> verifyMethods = userVerifyService.verifyMethodsForCurrentUser
         then:
-            1 == verifyMethods.size()
+            2 == verifyMethods.size()
             'te**@test.com' == verifyMethods.get(0).label
             verifyMethods.get(0).verifyType == VerifyType.EMAIL
             verifyMethods.get(0).verifyType != VerifyType.TEXT
@@ -81,13 +84,10 @@ class UserVerifyServiceSpec extends Specification {
 
     def 'sendVerifyCodeToCurrentUser - validate sendVerifyCodeToPhone' () {
         setup:
-            userPhone = new UserPhone(id:1, phoneType:PhoneType.HOME, phoneNumber:'9999999999', user:user)
-            Set<UserPhone> userPhones = []
-            userPhones.add(userPhone)
-            user.phones = userPhones
+
             VerifyMethod verifyMethod = new VerifyMethod()
-            verifyMethod.label = userPhone.maskedPhoneNumber
-            verifyMethod.value = userPhone.id
+            verifyMethod.label = user.phones[0].maskedPhoneNumber
+            verifyMethod.value = user.phones[0].id
             verifyMethod.verifyType = VerifyType.TEXT
             userService.loggedInUser >> user
         when:
@@ -99,12 +99,8 @@ class UserVerifyServiceSpec extends Specification {
 
     def 'sendVerifyCodeToCurrentUser - validate sendVerifyCodeToPhone with UnknownIdentifierException' () {
         setup:
-            userPhone = new UserPhone(phoneType:PhoneType.HOME, phoneNumber:'9999999999', user:user)
-            Set<UserPhone> userPhones = []
-            userPhones.add(userPhone)
-            user.phones = userPhones
             VerifyMethod verifyMethod = new VerifyMethod()
-            verifyMethod.label = userPhone.maskedPhoneNumber
+            verifyMethod.label = user.phones[0].maskedPhoneNumber
             verifyMethod.value = '2'
             verifyMethod.verifyType = VerifyType.TEXT
             userService.loggedInUser >> user
