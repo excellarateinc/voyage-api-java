@@ -98,7 +98,7 @@ class AccountController {
      * @apiName VerifySend
      * @apiGroup Account
      *
-     * @apiPermission lss.permission->authenticated
+     * @apiPermission authenticated
      *
      * @apiUse AuthHeader
      *
@@ -121,7 +121,7 @@ class AccountController {
      * @apiName VerifyAccount
      * @apiGroup Account
      *
-     * @apiPermission lss.permission->authenticated
+     * @apiPermission authenticated
      *
      * @apiUse AuthHeader
      *
