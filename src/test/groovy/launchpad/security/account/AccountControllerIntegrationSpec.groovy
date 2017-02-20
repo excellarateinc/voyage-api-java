@@ -97,4 +97,29 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.statusCode.value() == 204
             responseEntity.body == null
     }
+
+    def '/api/v1/account/verify POST - Anonymous access denied'() {
+        given:
+            String code = 'code'
+            HttpHeaders headers = new HttpHeaders()
+            headers.setContentType(MediaType.APPLICATION_JSON)
+            HttpEntity<String> httpEntity = new HttpEntity<String>(code, headers)
+        when:
+            ResponseEntity<String> responseEntity = POST('/api/v1/account/verify', httpEntity, String)
+        then:
+            responseEntity.statusCode.value() == 401
+    }
+
+    def '/api/v1/account/verify POST - Standard User with permission "isAuthenticated()" access granted'() {
+        given:
+            String code = 'code'
+            HttpHeaders headers = new HttpHeaders()
+            headers.setContentType(MediaType.APPLICATION_JSON)
+            HttpEntity<String> httpEntity = new HttpEntity<String>(code, headers)
+        when:
+         ResponseEntity responseEntity = POST('/api/v1/account/verify', httpEntity, String, superClient)
+        then:
+            responseEntity.statusCode.value() == 204
+            responseEntity.body == null
+    }
 }
