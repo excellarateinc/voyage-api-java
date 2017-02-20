@@ -94,7 +94,7 @@ class UserVerifyService {
         }
     }
 
-    void sendVerifyCodeToEmail(@NotNull User user) {
+    private sendVerifyCodeToEmail(@NotNull User user) {
         user.verifyCode = SecurityCode.userVerifyCode
         use(TimeCategory) {
             user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
@@ -104,7 +104,7 @@ class UserVerifyService {
         userService.save(user)
     }
 
-    void sendVerifyCodeToPhoneNumber(@NotNull User user, @NotNull long userPhoneId) {
+    private sendVerifyCodeToPhoneNumber(@NotNull User user, @NotNull long userPhoneId) {
         UserPhone userPhone = user.phones?.find { it.id == userPhoneId }
         if (!userPhone) {
             throw new UnknownIdentifierException("Provided phone number doesn't exist")
