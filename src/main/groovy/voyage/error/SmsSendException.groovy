@@ -1,4 +1,4 @@
-package launchpad.error
+package voyage.error
 
 import org.springframework.http.HttpStatus
 

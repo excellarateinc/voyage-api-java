@@ -1,4 +1,4 @@
-package launchpad.config
+package voyage.config
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration

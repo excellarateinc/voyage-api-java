@@ -1,4 +1,4 @@
-package launchpad.sms
+package voyage.sms
 
 import com.amazonaws.services.sns.AmazonSNS
 import com.amazonaws.services.sns.model.MessageAttributeValue

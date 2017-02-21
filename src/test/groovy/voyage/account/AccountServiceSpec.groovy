@@ -1,9 +1,8 @@
-package launchpad.security.account
+package voyage.account
 
-import voyage.account.AccountService
-import launchpad.security.user.User
-import launchpad.security.user.UserService
 import spock.lang.Specification
+import voyage.security.user.User
+import voyage.security.user.UserService
 
 class AccountServiceSpec extends Specification {
     User user
@@ -16,7 +15,7 @@ class AccountServiceSpec extends Specification {
 
     def 'register - applies the values and calls the userService' () {
         setup:
-            userService.save(_) >> user
+            userService.saveDetached(_) >> user
         when:
             User savedUser = accountService.register(user)
         then:

@@ -1,4 +1,4 @@
-package launchpad.account
+package voyage.account
 
 class VerifyMethod {
     String label

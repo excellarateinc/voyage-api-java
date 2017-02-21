@@ -1,4 +1,4 @@
-package launchpad.security
+package voyage.security
 
 import org.apache.commons.lang3.RandomStringUtils
 

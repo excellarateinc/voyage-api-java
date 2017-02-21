@@ -1,10 +1,10 @@
-package launchpad.account
+package voyage.account
 
-import launchpad.security.user.User
-import launchpad.security.user.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
+import voyage.security.user.User
+import voyage.security.user.UserService
 
 @Service
 @Validated
@@ -27,7 +27,7 @@ class AccountService {
             isEnabled = true
             isVerifyRequired = true
         }
-        newUser = userService.save(newUser)
+        newUser = userService.saveDetached(newUser)
         return newUser
     }
 }

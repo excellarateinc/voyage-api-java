@@ -1,4 +1,4 @@
-package launchpad.mail
+package voyage.mail
 
 class MailMessage {
     String to

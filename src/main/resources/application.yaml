@@ -114,14 +114,14 @@ security:
   cors:
     access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
 
-  verify-code-expire-minutes: 30
+verify-code-expire-minutes: 30
 
-  #######################################################################################################################
-  # AWS Configuration to send Emails and SMS TODO: need to move this configuration to server in other environments
-  #######################################################################################################################
-  cloud.aws credentials.accessKey: 0T2QFBSAJH0TTA9Q0MR2
-  cloud.aws.credentials.secretKey: 5VtpEPJlFKxHx9JBGgoLzzZ7OvXdAdzoaYQyJgO7
-  cloud.aws.region.auto: true
-  cloud.aws.region.static: us-east-1
+#######################################################################################################################
+# AWS Configuration to send Emails and SMS TODO: need to move this configuration to server in other environments
+#######################################################################################################################
+cloud.aws credentials.accessKey: 0T2QFBSAJH0TTA9Q0MR2
+cloud.aws.credentials.secretKey: 5VtpEPJlFKxHx9JBGgoLzzZ7OvXdAdzoaYQyJgO7
+cloud.aws.region.auto: true
+cloud.aws.region.static: us-east-1
 
-  liquibase.contexts: '!test'
+liquibase.contexts: '!test'

@@ -1,4 +1,4 @@
-package launchpad.sms
+package voyage.sms
 
 class SmsMessage {
     String to

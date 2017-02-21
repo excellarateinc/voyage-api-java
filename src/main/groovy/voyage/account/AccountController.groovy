@@ -1,7 +1,7 @@
-package launchpad.account
+package voyage.account
 
-import launchpad.security.user.UserVerifyService
-import launchpad.security.user.User
+import voyage.security.user.User
+import voyage.security.user.UserVerifyService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus

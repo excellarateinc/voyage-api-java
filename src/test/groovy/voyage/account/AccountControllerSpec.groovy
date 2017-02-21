@@ -1,10 +1,6 @@
-package launchpad.security.account
+package voyage.account
 
-import voyage.account.AccountController
-import voyage.account.AccountService
-import voyage.account.VerifyMethod
-import voyage.account.VerifyType
-import launchpad.security.user.User
+import voyage.security.user.User
 import voyage.security.user.UserVerifyService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

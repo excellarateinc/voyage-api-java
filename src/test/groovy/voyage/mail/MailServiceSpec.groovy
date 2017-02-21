@@ -1,10 +1,8 @@
-package launchpad.security.mail
+package voyage.mail
 
 import com.icegreen.greenmail.util.GreenMail
 import com.icegreen.greenmail.util.GreenMailUtil
 import com.icegreen.greenmail.util.ServerSetup
-import voyage.mail.MailMessage
-import voyage.mail.MailService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import spock.lang.Specification

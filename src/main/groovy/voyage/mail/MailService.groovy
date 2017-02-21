@@ -1,4 +1,4 @@
-package launchpad.mail
+package voyage.mail
 
 import freemarker.template.Configuration
 import freemarker.template.TemplateException

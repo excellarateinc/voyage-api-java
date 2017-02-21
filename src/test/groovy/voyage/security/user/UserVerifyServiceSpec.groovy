@@ -1,9 +1,9 @@
-package voyage.user
+package voyage.security.user
 
 import voyage.account.VerifyMethod
 import voyage.account.VerifyType
 import voyage.error.InvalidVerificationCodeException
-import launchpad.error.UnknownIdentifierException
+import voyage.error.UnknownIdentifierException
 import voyage.error.VerifyCodeExpiredException
 import voyage.mail.MailService
 import voyage.sms.SmsService
@@ -29,7 +29,7 @@ class UserVerifyServiceSpec extends Specification {
 
     def 'getVerifyMethodsForCurrentUser - validate verify method for current user' () {
         setup:
-            userService.loggedInUser >> user
+            userService.currentUser >> user
         when:
             List<VerifyMethod> verifyMethods = userVerifyService.verifyMethodsForCurrentUser
         then:
@@ -43,7 +43,7 @@ class UserVerifyServiceSpec extends Specification {
         setup:
             user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password',
                     isVerifyRequired:false,)
-            userService.loggedInUser >> user
+            userService.currentUser >> user
         when:
             boolean isVerifyCurrentUser = userVerifyService.verifyCurrentUser('code')
         then:
@@ -54,7 +54,7 @@ class UserVerifyServiceSpec extends Specification {
         setup:
             user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password',
                     isVerifyRequired:true, verifyCodeExpiresOn:new Date() - 1,)
-            userService.loggedInUser >> user
+            userService.currentUser >> user
         when:
              userVerifyService.verifyCurrentUser('code')
         then:
@@ -65,7 +65,7 @@ class UserVerifyServiceSpec extends Specification {
         setup:
             user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password',
                     isVerifyRequired:true,)
-            userService.loggedInUser >> user
+            userService.currentUser >> user
         when:
             userVerifyService.verifyCurrentUser('code')
         then:
@@ -77,7 +77,7 @@ class UserVerifyServiceSpec extends Specification {
             VerifyMethod verifyMethod = new VerifyMethod()
             verifyMethod.label = user.maskedEmail
             verifyMethod.verifyType = VerifyType.EMAIL
-            userService.loggedInUser >> user
+            userService.currentUser >> user
         when:
             userVerifyService.sendVerifyCodeToCurrentUser(verifyMethod)
         then:
@@ -92,7 +92,7 @@ class UserVerifyServiceSpec extends Specification {
             verifyMethod.label = user.phones[0].maskedPhoneNumber
             verifyMethod.value = user.phones[0].id
             verifyMethod.verifyType = VerifyType.TEXT
-            userService.loggedInUser >> user
+            userService.currentUser >> user
         when:
             userVerifyService.sendVerifyCodeToCurrentUser(verifyMethod)
         then:
@@ -106,7 +106,7 @@ class UserVerifyServiceSpec extends Specification {
             verifyMethod.label = user.phones[0].maskedPhoneNumber
             verifyMethod.value = '2'
             verifyMethod.verifyType = VerifyType.TEXT
-            userService.loggedInUser >> user
+            userService.currentUser >> user
         when:
             userVerifyService.sendVerifyCodeToCurrentUser(verifyMethod)
         then:

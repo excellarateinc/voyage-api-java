@@ -1,4 +1,4 @@
-package launchpad.security.user
+package voyage.security.user
 
 enum PhoneType {
     MOBILE('mobile'),

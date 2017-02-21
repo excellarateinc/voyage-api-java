@@ -1,6 +1,7 @@
-package launchpad.security.user
+package voyage.security.user
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.hibernate.envers.Audited
 
 import javax.persistence.Entity
 import javax.persistence.EnumType
@@ -13,6 +14,7 @@ import javax.persistence.ManyToOne
 import javax.validation.constraints.NotNull
 
 @Entity
+@Audited
 class UserPhone {
 
     @Id

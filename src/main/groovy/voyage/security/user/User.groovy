@@ -60,10 +60,6 @@ class User extends AuditableEntity {
     @OneToMany(fetch=FetchType.EAGER, mappedBy='user')
     Set<UserPhone> phones
 
-    @NotNull
-    @JsonIgnore
-    Boolean isVerifyRequired = Boolean.FALSE
-
     @JsonIgnore
     String verifyCode
 

@@ -1,17 +1,17 @@
-package launchpad.security.user
+package voyage.security.user
 
 import groovy.time.TimeCategory
+import voyage.sms.SmsMessage
+import voyage.sms.SmsService
 import voyage.account.VerifyMethod
 import voyage.account.VerifyType
 import voyage.error.InvalidVerificationCodeException
 import voyage.error.InvalidVerificationMethodException
-import launchpad.error.UnknownIdentifierException
+import voyage.error.UnknownIdentifierException
 import voyage.error.VerifyCodeExpiredException
-import launchpad.mail.MailMessage
-import launchpad.mail.MailService
-import launchpad.security.SecurityCode
-import launchpad.sms.SmsMessage
-import launchpad.sms.SmsService
+import voyage.mail.MailMessage
+import voyage.mail.MailService
+import voyage.security.SecurityCode
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -43,7 +43,7 @@ class UserVerifyService {
     }
 
     List<VerifyMethod> getVerifyMethodsForCurrentUser() {
-        User user = userService.loggedInUser
+        User user = userService.currentUser
         List<VerifyMethod> verifyMethods = []
         if (user.email) {
             VerifyMethod verifyMethod = new VerifyMethod()
@@ -62,7 +62,7 @@ class UserVerifyService {
     }
 
     boolean verifyCurrentUser(@NotNull String code) {
-        User user = userService.loggedInUser
+        User user = userService.currentUser
         if (!user.isVerifyRequired) {
             LOG.info('User is already verified. Skipping user verification.')
             return true
@@ -83,7 +83,7 @@ class UserVerifyService {
     }
 
     void sendVerifyCodeToCurrentUser(VerifyMethod verifyMethod) {
-        User user = userService.loggedInUser
+        User user = userService.currentUser
         if (verifyMethod.verifyType == VerifyType.EMAIL) {
             sendVerifyCodeToEmail(user)
         } else if (verifyMethod.verifyType == VerifyType.TEXT) {
@@ -100,7 +100,7 @@ class UserVerifyService {
         }
         MailMessage mailMessage = getVerifyCodeEmailMessage(user)
         mailService.send(mailMessage)
-        userService.save(user)
+        userService.saveDetached(user)
     }
 
     private sendVerifyCodeToPhoneNumber(@NotNull User user, @NotNull long userPhoneId) {
@@ -116,7 +116,7 @@ class UserVerifyService {
         smsMessage.to = user.phones.find { it.id == userPhoneId }
         smsMessage.text = "Your ${appName} verification code is: ${user.verifyCode}"
         smsService.send(smsMessage)
-        userService.save(user)
+        userService.saveDetached(user)
     }
 
     private static MailMessage getVerifyCodeEmailMessage(@NotNull User user) {

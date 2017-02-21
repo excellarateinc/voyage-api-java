@@ -24,7 +24,6 @@ databaseChangeLog:
 
 # Versions
   - include:
-      file: db/changelog/v1-0/db.changelog.yaml
+      file: db/changelog/v1-0/_db.changelog.yaml
   - include:
       file: db/changelog/test/db.changelog.yaml
-
