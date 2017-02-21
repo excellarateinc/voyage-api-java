@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: v1.0-client-table-create
-      author: Rob Louie
+      author: Voyage
       changes:
         - createTable:
             tableName: client
@@ -15,17 +15,17 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: name
-                  type: varchar(500)
+                  type: nvarchar(500)
                   constraints:
                     nullable: false
               - column:
                   name: client_identifier
-                  type: varchar(500)
+                  type: nvarchar(500)
                   constraints:
                     nullable: false
               - column:
                   name: client_secret
-                  type: varchar(1000)
+                  type: nvarchar(1000)
                   constraints:
                     nullable: false
               - column:
@@ -59,13 +59,125 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: created_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false              
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-client-audit-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: client_AUD
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REV
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REVTYPE
+                  type: tinyint
+              - column:
+                  name: name
+                  type: nvarchar(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: client_identifier
+                  type: nvarchar(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: client_secret
+                  type: nvarchar(1000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_secret_required
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_scoped
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_auto_approve
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: access_token_validity_seconds
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: refresh_token_validity_seconds
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_enabled
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
                   name: is_deleted
                   type: bit(1)
                   constraints:
                     nullable: false
   - changeSet:
       id: v1.0-client-seed
-      author: Rob Louie
+      author: Voyage
       changes:
         - insert:
             tableName: client
@@ -97,6 +209,18 @@ databaseChangeLog:
               - column:
                   name: is_enabled
                   valueBoolean: true
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
               - column:
                   name: is_deleted
                   valueBoolean: false
@@ -130,6 +254,18 @@ databaseChangeLog:
               - column:
                   name: is_enabled
                   valueBoolean: true
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
               - column:
                   name: is_deleted
                   valueBoolean: false

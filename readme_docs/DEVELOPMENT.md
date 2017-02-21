@@ -29,6 +29,7 @@ These are the core standards that our development team agrees to follow. All of 
   * Peer reviewed code has been found to significantly reduce bugs and missed requirements
   * Be thorough and respectful!
 5. __Build for today's needs, not what might be needed tomorrow__
+  * Read [YAGNI](https://martinfowler.com/bliki/Yagni.html) by Martin Fowler for examples of "You're Not Going To Need It"
   * Make the best choices based on the customer's concrete needs today!
   * Building for the future is subjective guesswork that rarely meets unknowable customer needs
 
@@ -44,7 +45,7 @@ The following coding standards are agreed upon by the development team and are e
 3. Facilitate changing and maintaining the code in a consistent manner.
 
 __Languages__
-* [C#](STANDARDS-CSHARP.md)     
+* [Groovy](STANDARDS-GROOVY.md)     
      
 __Best Practices__
 * [Authorization](STANDARDS-AUTHORIZATION.md)
@@ -72,11 +73,11 @@ Download and install the following required software for development:
    - Click the "Manage Connections" button (Green electrical outlet icon). 
    - Under the GitHub section, click "Clone".
    - Enter your GitHub credentials.
-   - Choose "launchpad-dotnet-api" from the list of repositories.
-     * The official repository is located here https://github.com/lssinc/launchpad-dotnet-api
+   - Choose "voyage-api-dotnet" from the list of repositories.
+     * The official repository is located here https://github.com/lssinc/voyage-api-dotnet
    - Choose a path. (Example C:\Source)
    - Click "Clone".
-   - Once cloning is complete, open the "Launchpad.API" solution.
+   - Once cloning is complete, open the "Voyage.API" solution.
 2. Build it
    - With the solution open, press Control + Shift + B or right click the solution and select "Build Solution".
    - Visual Studio should automatically restore the dependencies on the first build.
@@ -86,11 +87,11 @@ Download and install the following required software for development:
 3. Create the database
    - NOTE: This app uses a SQL Database and Code First Migrations. This migration strategy will be replaced with a TBD tool.
    - In Visual Studio, open the package manager console by going to the "Tools" tab, select "NuGet Package Manager" then "Package Manager Console". 
-   - Set the Default project to Launchpad.Data in the "Default project" dropdown.
+   - Set the Default project to Voyage.Data in the "Default project" dropdown.
    - Type "Update-Database" (no quotes) in the console and hit enter to create the database. This will run the Entity Framework migration scripts. If this fails with a message telling you the command is unrecognized, restart Visual Studio and try again.
-     * The connection string in Launchpad.Web web.config determines where the database will be created
-     * The default is localhost/sqlexpress with initial catalog Launchpad
-     * If you have a different instance name, change the "Data Source" portion of this to your instance. Also change this value in the app.config in Launchpad.Data.IntegrationTests.
+     * The connection string in Voyage.Web web.config determines where the database will be created
+     * The default is localhost/sqlexpress with initial catalog Voyage
+     * If you have a different instance name, change the "Data Source" portion of this to your instance. Also change this value in the app.config in Voyage.Data.IntegrationTests.
 4. Install IIS
    - Open up the Control Panel.
    - Click "Programs".
@@ -102,14 +103,14 @@ Download and install the following required software for development:
    - Expand the "Application Development Features" node.
    - Check the "ASP.NET 4.6" checkbox.
    - Click "OK".
-5. Add the launchpad application to IIS
+5. Add the voyage application to IIS
    - Click the start button, and search for "inetmgr". Open the IIS Manager application.
    - Expand the root node, right click on "Sites" and select "Add Website".
-   - Enter "Launchpad" as the Site name and point the physical path to the full path of the Launchpad.Web folder. (Example: C:\Source\launchpad-dotnet-api\Launchpad.Web)
+   - Enter "Voyage" as the Site name and point the physical path to the full path of the Voyage.Web folder. (Example: C:\Source\voyage-dotnet-api\Voyage.Web)
    - Change port 80 to 52431.
    - Click OK
    - Click "Application Pools" from the left nav. 
-   - Right click the "Launchpad" application pool and select "Advanced Settings...".
+   - Right click the "Voyage" application pool and select "Advanced Settings...".
    - Ensure the .NET CLR Version is v4.0.
    - Under the "Process Model" section, click the bolded word "ApplicationPoolIdentity", then click the "..." button.
    - Click "Custom account" and click "Set"
@@ -122,13 +123,13 @@ Download and install the following required software for development:
    - Expand the "Logins" folder
    - Right click on your windows username and select "Properties".
    - Click "User Mapping" from the left navigation.
-   - Click the checkbox next to "Launchpad"
+   - Click the checkbox next to "Voyage"
    - Click the checkbox next to "db_owner" in the bottom panel.
    - Click OK   
 7. Install the API Documentation
    - Open up a command prompt
    - Run "npm install apidoc -g"
-   - Change directory "cd" to the Launchpad.Web folder.
+   - Change directory "cd" to the Voyage.Web folder.
    - Run this command: "npm run doc"
    - You will see a "Done" message when it is complete.   
    - **Note:** If the script fails to execute, try closing the command prompt and opening a new one and run the command again. If there are multiple prompts open at the same time, the command prompt will not always pick up the new global module when both commands are not run from the same instance.
@@ -148,7 +149,7 @@ Password: Hello123!
 
 1. Run the application
    - Open Visual Studio with administrator privileges.
-   - Open the "Launchpad.API" solution.
+   - Open the "Voyage.API" solution.
    - Press Control + F5.
    - You are now up and running. Your browser will open and display the API documentation for the application.
 2. Run the tests   

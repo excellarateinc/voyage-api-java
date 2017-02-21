@@ -2,11 +2,10 @@
 # Application
 #######################################################################################################################
 app:
-  name: Launchpad
-  contact-support:
-    email: support@LighthouseSoftware.com
-    phone: 651-888-6021
-    website: http://LighthouseSoftware.com/support
+  name: Voyage
+  support-email: support@LighthouseSoftware.com
+  support-phone: 651-888-6021
+  support-website: http://LighthouseSoftware.com/support
 
 #######################################################################################################################
 # Spring Configuration
@@ -59,7 +58,7 @@ security:
 
   oauth2:
     resource:
-      id: launchpad
+      id: voyage
       jwt:
         key-value: |
           -----BEGIN PUBLIC KEY-----
@@ -89,6 +88,9 @@ security:
         standard-client:
           client-id: client-standard
           client-secret: secret
+
+  cors:
+    access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
 
 verify-code-expire-minutes: 30
 

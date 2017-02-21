@@ -71,3 +71,20 @@
  *     "isActive": true
  * }
  */
+
+// ------------------------------------------------------------------------------------------
+// Username Already In Use Error
+// ------------------------------------------------------------------------------------------
+/**
+ *  @apiDefine UsernameAlreadyInUseError
+ *
+ *  @apiError BadRequest The username is already in use by another user
+ *
+ *  @apiErrorExample Error-Response
+ *  HTTP/1.1 400: Bad Request
+ *  {
+ *      "error": "400_username_already_in_use",
+ *      "errorDescription": "Username already in use by another user. Please choose a different username"
+ *  }
+ */
+

@@ -12,7 +12,7 @@ app:
 # Logging
 #######################################################################################################################
 logging:
-  file: launchpad-api.log
+  file: voyage-api.log
 
 #######################################################################################################################
 # Spring Configuration
@@ -35,9 +35,9 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
 
   datasource:
-    url: jdbc:mysql://localhost:3306/launchpad?useSSL=false&autoReconnect=true
-    username: launchpad
-    password: launchpad
+    url: jdbc:mysql://localhost:3306/voyage?useSSL=false&autoReconnect=true
+    username: voyage
+    password: voyage
     driver-class-name: com.mysql.jdbc.Driver
     #initialSize: 10
     #maxActive: 50
@@ -87,7 +87,7 @@ security:
 
   oauth2:
     resource:
-      id: launchpad
+      id: voyage
       jwt:
         key-value: |
           -----BEGIN PUBLIC KEY-----
@@ -111,14 +111,17 @@ security:
   user-verification:
     exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /WEB-INF/jsp/**.jsp
 
-verify-code-expire-minutes: 30
+  cors:
+    access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
 
-#######################################################################################################################
-# AWS Configuration to send Emails and SMS TODO: need to move this configuration to server in other environments
-#######################################################################################################################
-cloud.aws credentials.accessKey: 0T2QFBSAJH0TTA9Q0MR2
-cloud.aws.credentials.secretKey: 5VtpEPJlFKxHx9JBGgoLzzZ7OvXdAdzoaYQyJgO7
-cloud.aws.region.auto: true
-cloud.aws.region.static: us-east-1
+  verify-code-expire-minutes: 30
 
-liquibase.contexts: '!test'
+  #######################################################################################################################
+  # AWS Configuration to send Emails and SMS TODO: need to move this configuration to server in other environments
+  #######################################################################################################################
+  cloud.aws credentials.accessKey: 0T2QFBSAJH0TTA9Q0MR2
+  cloud.aws.credentials.secretKey: 5VtpEPJlFKxHx9JBGgoLzzZ7OvXdAdzoaYQyJgO7
+  cloud.aws.region.auto: true
+  cloud.aws.region.static: us-east-1
+
+  liquibase.contexts: '!test'

@@ -58,8 +58,9 @@ dependencies {
 
     // Database
     compile group: 'org.liquibase',     name:'liquibase-core'
-    compile group: 'com.h2database',    name: 'h2', version: '1.4.192'
-    compile group: 'mysql',             name: 'mysql-connector-java', version: '5.1.40'
+    compile group: 'com.h2database',    name: 'h2',                     version: '1.4.192'
+    compile group: 'mysql',             name: 'mysql-connector-java',   version: '5.1.40'
+    compile group: 'org.hibernate',     name: 'hibernate-envers',       version: '5.0.11.Final'
 
     // Login Web Form
     compile group: 'org.apache.tomcat.embed',  name: 'tomcat-embed-jasper'
@@ -70,7 +71,7 @@ dependencies {
     compile group: 'org.webjars',   name: 'bootstrap',          version: '3.3.7'
 
     // Other
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
+    compile group: 'org.apache.commons',    name: 'commons-lang3',  version: '3.5'
     
     // Testing
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:"${springBootVersion}") {

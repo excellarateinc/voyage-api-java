@@ -38,8 +38,8 @@
  * @apiErrorExample Error-Response
  * HTTP/1.1 404: Not Found
  * {
- *     "code": "error.404_not_found",
- *     "description": "Could not locate entity with ID 11bef1e7-3ba3-4669-861e-54e91fd8db79"
+ *     "error": "404_unknown_identifier",
+ *     "errorDescription": "Unknown record identifier provided"
  * }
  */
 
@@ -54,7 +54,7 @@
  *  @apiErrorExample Error-Response
  *  HTTP/1.1 400: Unauthorized
  *  {
- *      "code": "error.400_unauthorized",
- *      "description": "Authorization has been denied for this request."
+ *      "error": "400_unauthorized",
+ *      "errorDescription": "Authorization has been denied for this request."
  *  }
  */

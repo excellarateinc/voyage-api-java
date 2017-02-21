@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-audit-revinfo-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: AUD_REVISION
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: timestamp
+                  type: bigint
+              - column:
+                  name: username
+                  type: nvarchar(255)
+              - column:
+                  name: created_date
+                  type: datetime

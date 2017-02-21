@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: v1.0-client-redirect-table-create
-      author: Jagadeesh Manne
+      author: Voyage
       changes:
         - createTable:
             tableName: client_redirect
@@ -22,12 +22,97 @@ databaseChangeLog:
                     referencedColumnName: id
               - column:
                   name: redirect_uri
-                  type: varchar(1000)
+                  type: nvarchar(1000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-client-redirect-audit-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: client_redirect_AUD
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REV
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REVTYPE
+                  type: tinyint
+              - column:
+                  name: client_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    referencedTableName: client
+                    referencedColumnName: id
+              - column:
+                  name: redirect_uri
+                  type: nvarchar(1000)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
                   constraints:
                     nullable: false
   - changeSet:
       id: v1.0-client-redirect-seed
-      author: Jagadeesh Manne
+      author: Voyage
       changes:
         - insert:
             tableName: client_redirect
@@ -38,6 +123,21 @@ databaseChangeLog:
               - column:
                   name: redirect_uri
                   value: http://localhost:8080/oauth
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
         - insert:
             tableName: client_redirect
             columns:
@@ -47,3 +147,18 @@ databaseChangeLog:
               - column:
                   name: redirect_uri
                   value: http://localhost:8080/oauth
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

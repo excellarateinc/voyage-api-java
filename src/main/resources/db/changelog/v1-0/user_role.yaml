@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: v1.0-user-role-table-create
-      author: Jagadeesh Manne
+      author: Voyage
       changes:
         - createTable:
             tableName: user_role
@@ -10,35 +10,53 @@ databaseChangeLog:
                   name: user_id
                   type: int
                   constraints:
+                    primaryKey: true
                     nullable: false
+                    referencedTableName: user
+                    referencedColumnName: id
               - column:
                   name: role_id
                   type: int
                   constraints:
+                    primaryKey: true
                     nullable: false
+                    referencedTableName: role
+                    referencedColumnName: id
   - changeSet:
-      id: v1.0-user-role-table-add-composite-key
-      author: Jagadeesh Manne
+      id: v1.0-user-role-audit-table-create
+      author: Voyage
       changes:
-        - addPrimaryKey:
-            columnNames: user_id, role_id
-            tableName: user_role
-        - addForeignKeyConstraint:
-            baseColumnNames: user_id
-            baseTableName: user_role
-            constraintName: fk_user_role_table_user_id
-            referencedColumnNames: id
-            referencedTableName: user
-        - addForeignKeyConstraint:
-            baseColumnNames: role_id
-            baseTableName: user_role
-            constraintName: fk_user_role_table_role_id
-            referencedColumnNames: id
-            referencedTableName: role
-
+        - createTable:
+            tableName: user_role_AUD
+            columns:
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    referencedTableName: user
+                    referencedColumnName: id
+              - column:
+                  name: role_id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    referencedTableName: role
+                    referencedColumnName: id
+              - column:
+                  name: REV
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REVTYPE
+                  type: tinyint
   - changeSet:
       id: v1.0-user_role-seed-1
-      author: Rob Louie
+      author: Voyage
       changes:
         - insert:
             tableName: user_role

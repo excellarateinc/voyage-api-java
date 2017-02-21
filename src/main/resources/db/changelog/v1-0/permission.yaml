@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
       id: v1.0-permission-table-create
-      author: Jagadeesh Manne
+      author: Voyage
       changes:
         - createTable:
             tableName: permission
@@ -15,17 +15,100 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: name
-                  type: varchar(255)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: description
-                  type: varchar(255)
+                  type: nvarchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: is_immutable
                   type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-permission-audit-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: permission_AUD
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REV
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REVTYPE
+                  type: tinyint
+              - column:
+                  name: name
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_immutable
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
                   constraints:
                     nullable: false
               - column:
@@ -35,7 +118,7 @@ databaseChangeLog:
                     nullable: false
   - changeSet:
       id: v1.0-permission-seed-users-api
-      author: Jagadeesh Manne
+      author: Voyage
       changes:
         - insert:
             tableName: permission
@@ -49,6 +132,18 @@ databaseChangeLog:
               - column:
                   name: is_immutable
                   valueBoolean: true
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
               - column:
                   name: is_deleted
                   valueBoolean: false
@@ -65,6 +160,18 @@ databaseChangeLog:
                   name: is_immutable
                   valueBoolean: true
               - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
                   name: is_deleted
                   valueBoolean: false
         - insert:
@@ -79,6 +186,18 @@ databaseChangeLog:
               - column:
                   name: is_immutable
                   valueBoolean: true
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
               - column:
                   name: is_deleted
                   valueBoolean: false
@@ -95,6 +214,18 @@ databaseChangeLog:
                   name: is_immutable
                   valueBoolean: true
               - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
                   name: is_deleted
                   valueBoolean: false
         - insert:
@@ -110,11 +241,23 @@ databaseChangeLog:
                   name: is_immutable
                   valueBoolean: true
               - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
                   name: is_deleted
                   valueBoolean: false
   - changeSet:
       id: v1.0-permission-seed-roles-api
-      author: Jagadeesh Manne
+      author: Voyage
       changes:
         - insert:
             tableName: permission
@@ -128,6 +271,18 @@ databaseChangeLog:
               - column:
                   name: is_immutable
                   valueBoolean: true
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
               - column:
                   name: is_deleted
                   valueBoolean: false
@@ -144,6 +299,18 @@ databaseChangeLog:
                   name: is_immutable
                   valueBoolean: true
               - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
                   name: is_deleted
                   valueBoolean: false
         - insert:
@@ -158,6 +325,18 @@ databaseChangeLog:
               - column:
                   name: is_immutable
                   valueBoolean: true
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
               - column:
                   name: is_deleted
                   valueBoolean: false
@@ -174,6 +353,18 @@ databaseChangeLog:
                   name: is_immutable
                   valueBoolean: true
               - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
                   name: is_deleted
                   valueBoolean: false
         - insert:
@@ -189,11 +380,23 @@ databaseChangeLog:
                   name: is_immutable
                   valueBoolean: true
               - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
                   name: is_deleted
                   valueBoolean: false
   - changeSet:
       id: v1.0-permission-seed-permissions-api
-      author: Jagadeesh Manne
+      author: Voyage
       changes:
         - insert:
             tableName: permission
@@ -207,6 +410,18 @@ databaseChangeLog:
               - column:
                   name: is_immutable
                   valueBoolean: true
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
               - column:
                   name: is_deleted
                   valueBoolean: false
@@ -223,6 +438,18 @@ databaseChangeLog:
                   name: is_immutable
                   valueBoolean: true
               - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
                   name: is_deleted
                   valueBoolean: false
         - insert:
@@ -237,6 +464,18 @@ databaseChangeLog:
               - column:
                   name: is_immutable
                   valueBoolean: true
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
               - column:
                   name: is_deleted
                   valueBoolean: false
@@ -253,6 +492,18 @@ databaseChangeLog:
                   name: is_immutable
                   valueBoolean: true
               - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
                   name: is_deleted
                   valueBoolean: false
         - insert:
@@ -267,6 +518,18 @@ databaseChangeLog:
               - column:
                   name: is_immutable
                   valueBoolean: true
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
               - column:
                   name: is_deleted
                   valueBoolean: false
