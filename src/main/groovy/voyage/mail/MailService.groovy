@@ -45,7 +45,7 @@ class MailService {
         mimeMessageHelper.setTo(mailMessage.to)
         mimeMessageHelper.setSubject(mailMessage.subject)
         if (mailMessage.template) {
-            String text = geContentFromTemplate(mailMessage.model, mailMessage.template)
+            String text = getContentFromTemplate(mailMessage.model, mailMessage.template)
             mimeMessageHelper.setText(text, true)
         } else if (mailMessage.text) {
             mimeMessageHelper.setText(mailMessage.text, true)
@@ -58,7 +58,7 @@ class MailService {
         }
     }
 
-    private String geContentFromTemplate(Map<String, Object> model, String template) {
+    private String getContentFromTemplate(Map<String, Object> model, String template) {
         try {
             return FreeMarkerTemplateUtils.processTemplateIntoString(freeMarkerConfig.getTemplate(template), model)
         } catch (IOException e) {

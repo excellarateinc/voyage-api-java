@@ -8,9 +8,6 @@ import voyage.error.VerifyCodeExpiredException
 import voyage.mail.MailService
 import voyage.sms.SmsService
 import spock.lang.Specification
-import voyage.security.user.PhoneType
-import voyage.security.user.UserPhone
-import voyage.security.user.UserVerifyService
 
 class UserVerifyServiceSpec extends Specification {
     User user
