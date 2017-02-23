@@ -31,6 +31,91 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: created_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v1.0-user-audit-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: user_phone_AUD
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REV
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: REVTYPE
+                  type: tinyint
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    referencedTableName: user
+                    referencedColumnName: id
+              - column:
+                  name: phone_type
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone_number
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
                   name: is_deleted
                   type: bit(1)
                   constraints:
@@ -52,6 +137,18 @@ databaseChangeLog:
                   name: phone_number
                   value: 1234567891
               - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
                   name: is_deleted
                   valueBoolean: false
         - insert:
@@ -66,6 +163,18 @@ databaseChangeLog:
               - column:
                   name: phone_number
                   value: 1234567891
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
               - column:
                   name: is_deleted
                   valueBoolean: false
@@ -82,6 +191,18 @@ databaseChangeLog:
                   name: phone_number
                   value: 1234567891
               - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
                   name: is_deleted
                   valueBoolean: false
         - insert:
@@ -96,6 +217,18 @@ databaseChangeLog:
               - column:
                   name: phone_number
                   value: 1234567891
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
               - column:
                   name: is_deleted
                   valueBoolean: false
@@ -112,6 +245,18 @@ databaseChangeLog:
                   name: phone_number
                   value: 1234567891
               - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
                   name: is_deleted
                   valueBoolean: false
         - insert:
@@ -126,6 +271,18 @@ databaseChangeLog:
               - column:
                   name: phone_number
                   value: 1234567891
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
               - column:
                   name: is_deleted
                   valueBoolean: false
@@ -142,6 +299,18 @@ databaseChangeLog:
                   name: phone_number
                   value: 1234567891
               - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
                   name: is_deleted
                   valueBoolean: false
         - insert:
@@ -156,6 +325,18 @@ databaseChangeLog:
               - column:
                   name: phone_number
                   value: 1234567891
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
               - column:
                   name: is_deleted
                   valueBoolean: false
