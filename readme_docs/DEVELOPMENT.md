@@ -61,23 +61,23 @@ __Best Practices__
 
 ### Required Software
 Download and install the following required software for development:
+* Java 1.8
 * IntelliJ
   * Plugin: Spock Framework Enhancements
 
 ### Instructions
 > __EXPLAIN the process start-to-finish with no assumptions__
 
-1. Download source via Visual Studio GitHub extension
-   - Open Visual Studio with administrator privileges. 
-   - Go to the "Team Explorer" tab.
-   - Click the "Manage Connections" button (Green electrical outlet icon). 
-   - Under the GitHub section, click "Clone".
-   - Enter your GitHub credentials.
-   - Choose "voyage-api-dotnet" from the list of repositories.
-     * The official repository is located here https://github.com/lssinc/voyage-api-dotnet
-   - Choose a path. (Example C:\Source)
+1. Download source via IntelliJ VCS
+   - Open IntelliJ.
+   - Using the top menu, navigate to "VCS -> Checkout from Version Control -> Github".
+   - If you have not used Github from IntelliJ before, you will be asked for your Github credentials.
+   - Once authenticated, you will see a dropdown containing a list of repositories you have access to.
+   - Choose "https://github.com/lssinc/voyage-api-java.git" from the list of repositories.
+     * The official repository is located here https://github.com/lssinc/voyage-api-java
+   - Use the default path provided or change it to your desired path.
    - Click "Clone".
-   - Once cloning is complete, open the "Voyage.API" solution.
+   ![Image of Yaktocat](./images/DEVELOPMENT_cloneRepository.JPG)
 2. Build it
    - With the solution open, press Control + Shift + B or right click the solution and select "Build Solution".
    - Visual Studio should automatically restore the dependencies on the first build.
