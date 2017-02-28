@@ -57,7 +57,6 @@ __Best Practices__
 :arrow_up: [Back to Top](#table-of-contents)
 
 ## Workstation Setup
-> __FINISH THIS SECTION__
 
 ### Required Software
 Download and install the following required software for development:
@@ -68,8 +67,6 @@ Download and install the following required software for development:
   * Plugin: Spock Framework Enhancements
 
 ### Instructions
-> __EXPLAIN the process start-to-finish with no assumptions__
-
 1. Download source via IntelliJ VCS
    - Open IntelliJ.
    - Using the top menu, navigate to "VCS -> Checkout from Version Control -> Github".
@@ -92,24 +89,18 @@ Download and install the following required software for development:
    - Go to the "Users and Privileges" section.
    - Click "Add Account" and create a user with username and password "voyage".
    - Click the "Administrative Rolls" tab and check the checkbox next to "DBA".
+   - No other manual steps are required for the database, all tables will be created on app startup via Liquibase migration scripts.
 
    ![MySQL create schema](./images/DEVELOPMENT_createDbUser.jpg)
 
 
 3. Build it
-   - With the solution open, press Control + Shift + B or right click the solution and select "Build Solution".
-   - Visual Studio should automatically restore the dependencies on the first build.
-   - If packages aren't restored on build, you have two options. 
-     * You can right click the solution in Visual Studio and select "Restore NuGet Packages".
-     * Go to the "Tools" tab, select "NuGet Package Manager" then "Package Manager Console". From the console that shows up, click the "Restore" button in the upper right corner.
+   - If you don't already have the Gradle Tool window visible, show it by navigating to "View -> Tool Windows -> Gradle"
 
-4. Install the API Documentation
-   - Open up a command prompt
-   - Run "npm install apidoc -g"
-   - Change directory "cd" to the Voyage.Web folder.
-   - Run this command: "npm run doc"
-   - You will see a "Done" message when it is complete.   
-   - **Note:** If the script fails to execute, try closing the command prompt and opening a new one and run the command again. If there are multiple prompts open at the same time, the command prompt will not always pick up the new global module when both commands are not run from the same instance.
+   ![Gradle Tool Window](./images/DEVELOPMENT_gradleRun.jpg)
+   - This tool window will show you a list of Gradle tasks.
+   - Run the "build" task under the "build" section to build the project.
+
 
 > __SEED DATA__
 >
@@ -125,14 +116,14 @@ Password: Hello123!
 > __FINISH THIS SECTION__
 
 1. Run the application
-   - Open Visual Studio with administrator privileges.
-   - Open the "Voyage.API" solution.
-   - Press Control + F5.
-   - You are now up and running. Your browser will open and display the API documentation for the application.
-2. Run the tests   
-   - In Visual Studio, click the "Test" tab, select "Windows" then "Test Explorer".
-   - Click "Run All" from this tab. 
-   - The unit and integration tests will execute.
+   - To build and start the server, run the task "bootRun" under the "application" section in the Gradle tool window.
+   - This will run any un-run migration scripts, build the project, and start a server on port 8080. Opening `http://localhost:8080` should redirect you to the login screen.
+
+        ![Gradle Tool Window](./images/DEVELOPMENT_loginScreen.jpg)
+
+2. Run the tests
+   - In the Gradle tool window, run the "test" task under the "verification" section.
+   - IntelliJ will run all tests.
   
 :arrow_up: [Back to Top](#table-of-contents)
 
