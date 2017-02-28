@@ -77,7 +77,9 @@ Download and install the following required software for development:
      * The official repository is located here https://github.com/lssinc/voyage-api-java
    - Use the default path provided or change it to your desired path.
    - Click "Clone".
-   ![Image of Yaktocat](./images/DEVELOPMENT_cloneRepository.JPG)
+
+![Image of Yaktocat](./images/DEVELOPMENT_cloneRepository.JPG)
+
 2. Build it
    - With the solution open, press Control + Shift + B or right click the solution and select "Build Solution".
    - Visual Studio should automatically restore the dependencies on the first build.
