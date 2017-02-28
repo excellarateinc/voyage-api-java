@@ -87,7 +87,13 @@ Download and install the following required software for development:
    - Click the "Create a new schema in the selected server" button and enter the schema name "voyage".
 
    ![MySQL create schema](./images/DEVELOPMENT_createSchema.jpg)
-   -
+   - Click the "Apply" button
+   - Click "Finish" on the popup that appears to create the schema.
+   - Go to the "Users and Privileges" section.
+   - Click "Add Account" and create a user with username and password "voyage".
+   - Click the "Administrative Rolls" tab and check the checkbox next to "DBA".
+
+   ![MySQL create schema](./images/DEVELOPMENT_createDbUser.jpg)
 
 
 3. Build it
