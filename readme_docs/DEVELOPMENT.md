@@ -97,7 +97,7 @@ Download and install the following required software for development:
 3. Build it
    - If you don't already have the Gradle Tool window visible, show it by navigating to "View -> Tool Windows -> Gradle"
 
-   ![Gradle Tool Window](./images/DEVELOPMENT_gradleRun.jpg)
+   ![Gradle Tool Window](./images/DEVELOPMENT_gradleRun.JPG)
    - This tool window will show you a list of Gradle tasks.
    - Run the "build" task under the "build" section to build the project.
 
@@ -119,7 +119,7 @@ Password: Hello123!
    - To build and start the server, run the task "bootRun" under the "application" section in the Gradle tool window.
    - This will run any un-run migration scripts, build the project, and start a server on port 8080. Opening `http://localhost:8080` should redirect you to the login screen.
 
-        ![Gradle Tool Window](./images/DEVELOPMENT_loginScreen.jpg)
+        ![Voyage login screen](./images/DEVELOPMENT_loginScreen.JPG)
 
 2. Run the tests
    - In the Gradle tool window, run the "test" task under the "verification" section.
