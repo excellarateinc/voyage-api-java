@@ -114,17 +114,19 @@ gradlew codenarcTest
 ```
 gradlew war
 ```
-Notes:
+##Notes:
 * **clean**: wipes out old artifacts that may break new builds
 * **test**: runs the unit and intergration tests 
 * **codenarc**: framework of rules, analyzes groovey code against supplied rule set
-* **codenarcMain**: Define rules
-* **codenarcTest**: Run static code analysis 
+* **codenarcMain**: supplies the rule set
+* **codenarcTest**: Run static code analysis with rule set 
 * **war**: package API for deployment into a .war file
 
   
+
 #### 2. Artifacts for deployment
 The artifacts that should be deployed will be contained in the .war file. This .war file can be dropped in Apache Tomcat's webapp folder to begin the deployment process.
+
 
 
 
@@ -132,7 +134,7 @@ The artifacts that should be deployed will be contained in the .war file. This .
 Tomcat unpacks and hosts the .war file. It requires a resource for the database to be defined. That is done in the server.xml and context.xml configuration files. You will also need to provide a JDBC driver for your MySQL or MSSQL connection. 
 
 
-Server.xml
+##Server.xml
 ```
 	<Resource
 			name="jdbc/voyageapi"
@@ -154,7 +156,7 @@ Server.xml
 			/>
 ```
 
-Context.xml
+##Context.xml
 ```
 	<ResourceLink
 		name="jdbc/voyageapi"
