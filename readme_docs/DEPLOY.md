@@ -73,13 +73,13 @@ If at all possible, automate as much of the deployment process as possible to pr
 
 ### Windows Server 2012
 
-### IIS
+### Webserver
+The Java API can be hosted with any of the following:
 
-#### Application Pool
-The application pool should be configued as follows:
+* IIS
+* Apache Web Server
+* Apache Tomcat
 
-* Framework => .Net Framework v4.0.30319
-* Managed pipeline mode => Integrated
 
 #### Connection Strings
 The application assumes that the connectionString will be called VoyageDataContext and this setting will be inherited. This can be placed in the machine or a parent site configuration. 
@@ -124,7 +124,7 @@ Notes:
 
   
 #### 5. Artifacts for deployment
-The artifacts that should be deployed will be contained in the publish\_PublishedWebsites\Voyage.Web folder. The artifacts will include both the apidoc files as well as the API bin files.
+The artifacts that should be deployed will be contained in the .war file. This .war file can be dropped in Apache Tomcat's webapp folder to begin the deployment process.
 
 :arrow_up: [Back to Top](#table-of-contents)
 
