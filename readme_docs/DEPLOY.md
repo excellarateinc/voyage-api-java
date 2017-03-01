@@ -78,14 +78,9 @@ The Java API can be hosted with any of the following:
 
 * IIS
 * Apache Web Server
-* Apache Tomcat
+* (Stand-alone) Apache Tomcat
 * MySQL or MSSQL Database
 
-
-#### Connection Strings
-The application assumes that the connectionString will be called VoyageDataContext and this setting will be inherited. This can be placed in the machine or a parent site configuration. 
-
-Please note that the default IIS editor does not appear to add the required providerName attribute to the connectionString. As a result, it may be necessary to edit the web.config directly in order to add the attribute. Failure to do so will result in a 500 error.
 
 :arrow_up: [Back to Top](#table-of-contents)
 
@@ -127,11 +122,48 @@ Notes:
 * **codenarcTest**: Run static code analysis 
 * **war**: package API for deployment into a .war file
 
-
-
   
-#### 3. Artifacts for deployment
+#### 2. Artifacts for deployment
 The artifacts that should be deployed will be contained in the .war file. This .war file can be dropped in Apache Tomcat's webapp folder to begin the deployment process.
+
+
+
+#### 3. Apache Tomcat 8.0
+Tomcat unpacks and hosts the .war file. It requires a resource for the database to be defined. That is done in the server.xml and context.xml configuration files. You will also need to provide a JDBC driver for your MySQL or MSSQL connection. 
+
+
+Server.xml
+```
+	<Resource
+			name="jdbc/voyageapi"
+			auth="Container"
+			type="javax.sql.DataSource"
+			username="user"
+			password="pass"
+			driverClassName="com.mysql.jdbc.Driver"
+			url="jdbc:mysql://database.url:3306/voyageapi"
+			initialSize = "10"
+			maxActive = "50"
+			maxIdle = "30"
+			maxWait = "1000"
+			removeAbandoned = "true"
+			removeAbandonedTimeout = "60"
+			logAbandoned = "true"
+			validationQuery = "SELECT 1"
+			factory="org.apache.tomcat.dbcp.dbcp2.BasicDataSourceFactory"
+			/>
+```
+
+Context.xml
+```
+	<ResourceLink
+		name="jdbc/voyageapi"
+		global="jdbc/voyageapi"
+		type="javax.sql.DataSource" />
+```
+
+
+
 
 :arrow_up: [Back to Top](#table-of-contents)
 
