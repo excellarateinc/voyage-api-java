@@ -79,6 +79,7 @@ The Java API can be hosted with any of the following:
 * IIS
 * Apache Web Server
 * Apache Tomcat
+* MySQL or MSSQL Database
 
 
 #### Connection Strings
@@ -95,35 +96,41 @@ Please note that the default IIS editor does not appear to add the required prov
 The following are the prequisties for building the application from the CI server.
 
 * Java JKD 1-8.0 
-* Gradle 3.3
+* Gradle 3.3 -- Included in Gradle Wrapper
 * Apache Tomcat 8.0
 
 ### Instructions
 
-#### 1. Build with Gradle
-The Java API project uses Gradle to run unit and intergration tests, and then to build and package the API. 
+#### 1. Build with Gradle Wrapper
+The Java API project uses Gradle to run unit and intergration tests, and then to build and package the API.
+Graddle Wrapper requires a Graddle installation and will install one if none can be found. 
 ```
-gradle clean
-```
-```
-gradle test
+gradlew clean
 ```
 ```
-gradle codenarc
+gradlew test
 ```
 ```
-gradle war
+gradlew codenarcMain
+```
+```
+gradlew codenarcTest
+```
+```
+gradlew war
 ```
 Notes:
-* clean: wipes out old artifacts that may break new builds
-* test: runs the unit and intergration tests. 
-* codenarc: framework of rules, analyzes groovey code
-* war: package API for deployment into a .war file
+* **clean**: wipes out old artifacts that may break new builds
+* **test**: runs the unit and intergration tests 
+* **codenarc**: framework of rules, analyzes groovey code against supplied rule set
+* **codenarcMain**: Define rules
+* **codenarcTest**: Run static code analysis 
+* **war**: package API for deployment into a .war file
 
 
 
   
-#### 5. Artifacts for deployment
+#### 3. Artifacts for deployment
 The artifacts that should be deployed will be contained in the .war file. This .war file can be dropped in Apache Tomcat's webapp folder to begin the deployment process.
 
 :arrow_up: [Back to Top](#table-of-contents)
