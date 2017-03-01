@@ -34,6 +34,8 @@ This is a modification of the [default Groovy style guide](http://groovy-lang.or
 Omit semicolons in Groovy
 > Why? Semicolons are not required in Groovy, and it's more idiomatic to omit them.
 
+## Function, Class, and Variable declarations
+
 #### If your function returns a value, use the return keyword
 
 > Why? While Groovy does not require the use of the `return`, instead implicitly returning the final line in a function, it can easily lead to confusion as to whether a function modifies an object or returns a new value.
@@ -284,6 +286,7 @@ server.with {
 #### Use GString for string interpolation
 
 > Why? String interpolation is easier to read, especially when incorporating multiple variables into a string
+
 ```
 // Avoid
 throw new Exception("Unable to convert resource: " + resource)
@@ -293,7 +296,9 @@ throw new Exception("Unable to convert resource: $resource")
 ```
 
 #### Omit curly braces if you're just accessing a variable
+
 > Why? They aren't needed for simple variable accessing, and not having them is easier to read
+
 ```
 // Avoid
 throw new Exception("Unable to convert resource: ${resource}")
@@ -309,7 +314,9 @@ def s1 = "i's value is: ${i + 10}"
 ```
 
 #### Use triple quotes for multi-line strings
+
 > Why? Using triple strings and placing actual new lines is easier to ready than \n
+
 ```
 throw new PluginException("""Failed to execute command list-applications:
     The group with name ${parameterMap.groupname[0]}
