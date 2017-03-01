@@ -131,7 +131,7 @@ The artifacts that should be deployed will be contained in the .war file. This .
 
 
 #### 3. Apache Tomcat 8.0
-Tomcat unpacks and hosts the .war file. It requires a resource for the database to be defined. That is done in the server.xml and context.xml configuration files. You will also need to provide a JDBC driver for your MySQL or MSSQL connection. 
+Tomcat unpacks and hosts the .war file. It requires a resource for your database connection. That is done in the server.xml and context.xml configuration files. You will also need to provide a JDBC driver for your MySQL or MSSQL connection. 
 
 
 ##Server.xml
