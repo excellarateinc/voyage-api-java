@@ -95,7 +95,7 @@ String foo(int n) {
 
 #### Explicitly type variables
 
-> Why? Using `def` everywhere is not self documents, it leads to confusion about what the variable is, and breaks IDE auto-completion.
+> Why? Using `def` everywhere is not self documenting, it leads to confusion about what the variable is, and breaks IDE auto-completion.
 
 ```
 // Avoid
@@ -107,7 +107,7 @@ String name = "Guillaume"
 
 #### Avoid redundant `def` when declaring variables
 
-> Why? The def keyword is for implicit typing, nothing else. It is not used to declare a variable of a known type
+> Why? The def keyword is for generic typing, nothing else. It is not used to declare a variable of a known type
 
 ```
 // Avoid
@@ -131,8 +131,7 @@ class MyClass {
 
 #### Only use visibility modifiers for non-public methods
 
-> Why? By default, Groovy considers classes and methods `public`. So you don't have to use the `public` modifier.
-
+> Why? Groovy considers classes and methods `public` by default.
 
 ```
 // Avoid
