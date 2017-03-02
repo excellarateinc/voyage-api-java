@@ -96,7 +96,7 @@ The following are the prequisties for building the application from the CI serve
 
 ### Instructions
 
-####1. Build with Gradle Wrapper
+#### 1. Build with Gradle Wrapper
 The Java API project uses Gradle to run unit and intergration tests, and then to build and package the API.
 Graddle Wrapper requires a Graddle installation and will install one if none can be found. 
 ```
@@ -114,7 +114,7 @@ gradlew codenarcTest
 ```
 gradlew war
 ```
-##Notes:
+## Notes:
 * **clean**: wipes out old artifacts that may break new builds
 * **test**: runs the unit and intergration tests 
 * **codenarc**: framework of rules, analyzes groovey code against supplied rule set
@@ -124,17 +124,17 @@ gradlew war
 
   
 
-####2. Artifacts for deployment
+#### 2. Artifacts for deployment
 The artifacts that should be deployed will be contained in the .war file. This .war file can be dropped in Apache Tomcat's webapp folder to begin the deployment process.
 
 
 
 
-####3. Apache Tomcat 8.0
+#### 3. Apache Tomcat 8.0
 Tomcat unpacks and hosts the .war file. It requires a resource for your database connection. That is done in the server.xml and context.xml configuration files. You will also need to provide a JDBC driver for your MySQL or MSSQL connection. 
 
 
-##Server.xml
+## Server.xml
 ```
 	<Resource
 			name="jdbc/voyageapi"
@@ -156,7 +156,7 @@ Tomcat unpacks and hosts the .war file. It requires a resource for your database
 			/>
 ```
 
-##Context.xml
+## Context.xml
 ```
 	<ResourceLink
 		name="jdbc/voyageapi"
