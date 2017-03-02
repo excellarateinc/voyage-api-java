@@ -51,88 +51,55 @@ __Best Practices__
 * [Authorization](STANDARDS-AUTHORIZATION.md)
 * [Database](STANDARDS-DATABASE.md)
 * [Web Services](STANDARDS-WEB-SERVICES.md)
-* ?? [Logging](DEVELOPMENT-BEST-PRACTICES.md#logging)
-* ?? [Dependency Injection](DEVELOPMENT-BEST-PRACTICES.md#dependency-injection)
+* [Spring](STANDARDS-SPRING.md)
 
 :arrow_up: [Back to Top](#table-of-contents)
 
 ## Workstation Setup
-> __FINISH THIS SECTION__
 
 ### Required Software
 Download and install the following required software for development:
+* Java 1.8
+* MySQL
+* MySQL Workbench (Recommended)
 * IntelliJ
   * Plugin: Spock Framework Enhancements
 
 ### Instructions
-> __EXPLAIN the process start-to-finish with no assumptions__
-
-1. Download source via Visual Studio GitHub extension
-   - Open Visual Studio with administrator privileges. 
-   - Go to the "Team Explorer" tab.
-   - Click the "Manage Connections" button (Green electrical outlet icon). 
-   - Under the GitHub section, click "Clone".
-   - Enter your GitHub credentials.
-   - Choose "voyage-api-dotnet" from the list of repositories.
-     * The official repository is located here https://github.com/lssinc/voyage-api-dotnet
-   - Choose a path. (Example C:\Source)
+1. Download source via IntelliJ VCS
+   - Open IntelliJ.
+   - Using the top menu, navigate to "VCS -> Checkout from Version Control -> Github".
+   - If you have not used Github from IntelliJ before, you will be asked for your Github credentials.
+   - Once authenticated, you will see a dropdown containing a list of repositories you have access to.
+   - Choose "https://github.com/lssinc/voyage-api-java.git" from the list of repositories.
+     * The official repository is located here https://github.com/lssinc/voyage-api-java
+   - Use the default path provided or change it to your desired path.
    - Click "Clone".
-   - Once cloning is complete, open the "Voyage.API" solution.
-2. Build it
-   - With the solution open, press Control + Shift + B or right click the solution and select "Build Solution".
-   - Visual Studio should automatically restore the dependencies on the first build.
-   - If packages aren't restored on build, you have two options. 
-     * You can right click the solution in Visual Studio and select "Restore NuGet Packages".
-     * Go to the "Tools" tab, select "NuGet Package Manager" then "Package Manager Console". From the console that shows up, click the "Restore" button in the upper right corner.
-3. Create the database
-   - NOTE: This app uses a SQL Database and Code First Migrations. This migration strategy will be replaced with a TBD tool.
-   - In Visual Studio, open the package manager console by going to the "Tools" tab, select "NuGet Package Manager" then "Package Manager Console". 
-   - Set the Default project to Voyage.Data in the "Default project" dropdown.
-   - Type "Update-Database" (no quotes) in the console and hit enter to create the database. This will run the Entity Framework migration scripts. If this fails with a message telling you the command is unrecognized, restart Visual Studio and try again.
-     * The connection string in Voyage.Web web.config determines where the database will be created
-     * The default is localhost/sqlexpress with initial catalog Voyage
-     * If you have a different instance name, change the "Data Source" portion of this to your instance. Also change this value in the app.config in Voyage.Data.IntegrationTests.
-4. Install IIS
-   - Open up the Control Panel.
-   - Click "Programs".
-   - Click "Turn Windows features on or off".
-   - Expand the "Internet Information Services" node.
-   - Check the "Web Management Tools" checkbox.
-   - Check the "World Wide Web Services" checkbox.
-   - Expand the "World Wide Web Services node.
-   - Expand the "Application Development Features" node.
-   - Check the "ASP.NET 4.6" checkbox.
-   - Click "OK".
-5. Add the voyage application to IIS
-   - Click the start button, and search for "inetmgr". Open the IIS Manager application.
-   - Expand the root node, right click on "Sites" and select "Add Website".
-   - Enter "Voyage" as the Site name and point the physical path to the full path of the Voyage.Web folder. (Example: C:\Source\voyage-dotnet-api\Voyage.Web)
-   - Change port 80 to 52431.
-   - Click OK
-   - Click "Application Pools" from the left nav. 
-   - Right click the "Voyage" application pool and select "Advanced Settings...".
-   - Ensure the .NET CLR Version is v4.0.
-   - Under the "Process Model" section, click the bolded word "ApplicationPoolIdentity", then click the "..." button.
-   - Click "Custom account" and click "Set"
-   - Type in your windows credentials and click OK.   
-6. Add your windows credentials to SQL Server
-   - Open up SQL Server Management Studio.
-   - Enter "localhost" as the server name.
-   - Click "Connect"
-   - Expand the "Security" folder
-   - Expand the "Logins" folder
-   - Right click on your windows username and select "Properties".
-   - Click "User Mapping" from the left navigation.
-   - Click the checkbox next to "Voyage"
-   - Click the checkbox next to "db_owner" in the bottom panel.
-   - Click OK   
-7. Install the API Documentation
-   - Open up a command prompt
-   - Run "npm install apidoc -g"
-   - Change directory "cd" to the Voyage.Web folder.
-   - Run this command: "npm run doc"
-   - You will see a "Done" message when it is complete.   
-   - **Note:** If the script fails to execute, try closing the command prompt and opening a new one and run the command again. If there are multiple prompts open at the same time, the command prompt will not always pick up the new global module when both commands are not run from the same instance.
+
+![IntelliJ clone repo](./images/DEVELOPMENT_cloneRepository.JPG)
+
+2. Create the database
+   - Use MySQL Workbench to connect to your locally running instance of MySQL.
+   - Click the "Create a new schema in the selected server" button and enter the schema name "voyage".
+
+   ![MySQL create schema](./images/DEVELOPMENT_createSchema.jpg)
+   - Click the "Apply" button
+   - Click "Finish" on the popup that appears to create the schema.
+   - Go to the "Users and Privileges" section.
+   - Click "Add Account" and create a user with username and password "voyage".
+   - Click the "Administrative Rolls" tab and check the checkbox next to "DBA".
+   - No other manual steps are required for the database, all tables will be created on app startup via Liquibase migration scripts.
+
+   ![MySQL create schema](./images/DEVELOPMENT_createDbUser.jpg)
+
+
+3. Build it
+   - If you don't already have the Gradle Tool window visible, show it by navigating to "View -> Tool Windows -> Gradle"
+
+   ![Gradle Tool Window](./images/DEVELOPMENT_gradleRun.JPG)
+   - This tool window will show you a list of Gradle tasks.
+   - Run the "build" task under the "build" section to build the project.
+
 
 > __SEED DATA__
 >
@@ -148,14 +115,14 @@ Password: Hello123!
 > __FINISH THIS SECTION__
 
 1. Run the application
-   - Open Visual Studio with administrator privileges.
-   - Open the "Voyage.API" solution.
-   - Press Control + F5.
-   - You are now up and running. Your browser will open and display the API documentation for the application.
-2. Run the tests   
-   - In Visual Studio, click the "Test" tab, select "Windows" then "Test Explorer".
-   - Click "Run All" from this tab. 
-   - The unit and integration tests will execute.
+   - To build and start the server, run the task "bootRun" under the "application" section in the Gradle tool window.
+   - This will run any un-run migration scripts, build the project, and start a server on port 8080. Opening `http://localhost:8080` should redirect you to the login screen.
+
+        ![Voyage login screen](./images/DEVELOPMENT_loginScreen.JPG)
+
+2. Run the tests
+   - In the Gradle tool window, run the "test" task under the "verification" section.
+   - IntelliJ will run all tests.
   
 :arrow_up: [Back to Top](#table-of-contents)
 
