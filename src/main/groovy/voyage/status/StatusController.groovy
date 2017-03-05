@@ -1,4 +1,4 @@
-package voyage.hello
+package voyage.status
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -7,18 +7,16 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(['/api/hello'])
-class HelloController {
+@RequestMapping(['/api/status'])
+class StatusController {
 
     /**
-     * @api {get} /hello Simple "hello" I'm alive endpoint
+     * @api {get} /status Status
      * @apiVersion 1.0.0
-     * @apiName HelloGet
-     * @apiGroup Hello
+     * @apiName Status
+     * @apiGroup Status
      *
      * @apiPermission none
-     *
-     * @apiUse AuthHeader
      *
      * @apiSuccess {String} status
      * @apiSuccess {String} datetime

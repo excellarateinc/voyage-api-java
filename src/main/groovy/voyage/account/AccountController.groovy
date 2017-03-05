@@ -54,7 +54,7 @@ class AccountController {
     }
 
     /**
-     * @api {get} /v1/verify/methods Get all verify methods for logged in user
+     * @api {get} /v1/verify/methods Get Verify Methods
      * @apiVersion 1.0.0
      * @apiName VerifyMethodsList
      * @apiGroup Account
@@ -63,10 +63,10 @@ class AccountController {
      *
      * @apiUse AuthHeader
      *
-     * @apiSuccess {Object[]} verifyMethods List of Verify Methods
-     * @apiSuccess {String} verifyMethods.type VerifyType of the VerifyMethod
-     * @apiSuccess {String} verifyMethods.value value of the VerifyMethod
-     * @apiSuccess {String} verifyMethods.label Label of the VerifyMethod
+     * @apiSuccess {Object[]} verifyMethods List of verification methods available for the user
+     * @apiSuccess {String} verifyMethods.type The verification method type: email, text
+     * @apiSuccess {String} verifyMethods.value The value associated with the method type (ie text 612-123-2221)
+     * @apiSuccess {String} verifyMethods.label The verification method label (ie text)
      *
      * @apiSuccessExample Success-Response:
      *   HTTP/1.1 200 OK
@@ -93,7 +93,7 @@ class AccountController {
     }
 
     /**
-     * @api {post} /v1/verify/send Send Verify Code to User
+     * @api {post} /v1/verify/send Send Verify Code
      * @apiVersion 1.0.0
      * @apiName VerifySend
      * @apiGroup Account
@@ -116,7 +116,7 @@ class AccountController {
     }
 
     /**
-     * @api {post} /v1/verify Verifies the user
+     * @api {post} /v1/verify Verify user
      * @apiVersion 1.0.0
      * @apiName VerifyAccount
      * @apiGroup Account

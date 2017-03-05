@@ -25,7 +25,7 @@ import javax.validation.constraints.NotNull
 class UserVerifyService {
     private static final Logger LOG = LoggerFactory.getLogger(UserVerifyService)
 
-    @Value('${verify-code-expire-minutes}')
+    @Value('${security.verify-code-expire-minutes}')
     private static int verifyCodeExpires
 
     @Value('${app.name}')

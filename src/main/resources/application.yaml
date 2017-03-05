@@ -82,8 +82,8 @@ server:
 #######################################################################################################################
 security:
 
-  ignored: /resources/**, /webjars/**, /docs/**
-  permitAll: /login, /api/hello
+  ignored: /resources/**, /webjars/**, /docs, /docs/**
+  permitAll: /login, /api/status
 
   oauth2:
     resource:
@@ -114,7 +114,7 @@ security:
   cors:
     access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
 
-verify-code-expire-minutes: 30
+  verify-code-expire-minutes: 30
 
 #######################################################################################################################
 # AWS Configuration to send Emails and SMS TODO: need to move this configuration to server in other environments
