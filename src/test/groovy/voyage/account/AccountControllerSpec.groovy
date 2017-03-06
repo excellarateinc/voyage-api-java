@@ -1,10 +1,12 @@
 package voyage.account
 
 import voyage.security.user.User
-import voyage.security.user.UserVerifyService
+import voyage.security.verify.VerifyService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
+import voyage.security.verify.VerifyMethod
+import voyage.security.verify.VerifyType
 
 // TODO Needs to be rewritten to focus on inputs and outputs. Right now these tests are not validating the entire JSON response or JSON request
 // TODO Remove the existing Exception tests because they do NOTHING! What's the point of these at all?
@@ -14,7 +16,7 @@ class AccountControllerSpec extends Specification {
     User user
     User modifiedUser
     AccountService accountService = Mock(AccountService)
-    UserVerifyService userVerifyService = Mock(UserVerifyService)
+    VerifyService userVerifyService = Mock(VerifyService)
     AccountController accountController = new AccountController(accountService, userVerifyService)
     VerifyMethod verifyMethod
 
@@ -39,50 +41,6 @@ class AccountControllerSpec extends Specification {
             accountController.register(user)
         then:
             1 * accountService.register(user) >> { throw new Exception() }
-            thrown(Exception)
-    }
-
-    def 'Test to validate verifyMethods method'() {
-        when:
-            ResponseEntity<VerifyMethod> verifyMethods = accountController.verifyMethods()
-        then:
-            1 * userVerifyService.verifyMethodsForCurrentUser >> [verifyMethod]
-            verifyMethods != null
-            HttpStatus.OK == verifyMethods.statusCode
-            VerifyType.EMAIL == verifyMethods.body[0].verifyType
-
-        when:
-            accountController.verifyMethods()
-        then:
-            1 * userVerifyService.verifyMethodsForCurrentUser >> { throw new Exception() }
-            thrown(Exception)
-    }
-
-    def 'Test to validate sendVerificationCode method'() {
-        when:
-            ResponseEntity response = accountController.sendVerificationCode(verifyMethod)
-        then:
-            1 * userVerifyService.sendVerifyCodeToCurrentUser(verifyMethod)
-            HttpStatus.NO_CONTENT == response.statusCode
-
-        when:
-            accountController.sendVerificationCode(verifyMethod)
-        then:
-            1 * userVerifyService.sendVerifyCodeToCurrentUser(verifyMethod) >> { throw new Exception() }
-            thrown(Exception)
-    }
-
-    def 'Test to validate verify method'() {
-        when:
-            ResponseEntity response = accountController.verify('code')
-        then:
-            1 * userVerifyService.verifyCurrentUser('code')
-            HttpStatus.NO_CONTENT == response.statusCode
-
-        when:
-            accountController.verify('code')
-        then:
-            1 * userVerifyService.verifyCurrentUser('code') >> { throw new Exception() }
             thrown(Exception)
     }
 }

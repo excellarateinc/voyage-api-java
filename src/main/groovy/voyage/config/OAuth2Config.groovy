@@ -1,6 +1,6 @@
 package voyage.config
 
-import voyage.error.WebResponseExceptionTranslator
+import voyage.common.error.WebResponseExceptionTranslator
 import voyage.security.PermissionBasedClientDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value

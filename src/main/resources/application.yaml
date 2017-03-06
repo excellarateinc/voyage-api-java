@@ -15,6 +15,11 @@ logging:
   file: voyage-api.log
 
 #######################################################################################################################
+# Liquibase Database Migration
+#######################################################################################################################
+liquibase.contexts: '!test'
+
+#######################################################################################################################
 # Spring Configuration
 #######################################################################################################################
 spring:
@@ -117,11 +122,9 @@ security:
   verify-code-expire-minutes: 30
 
 #######################################################################################################################
-# AWS Configuration to send Emails and SMS TODO: need to move this configuration to server in other environments
+# AWS Configuration to send Emails and SMS
 #######################################################################################################################
-cloud.aws credentials.accessKey: 0T2QFBSAJH0TTA9Q0MR2
-cloud.aws.credentials.secretKey: 5VtpEPJlFKxHx9JBGgoLzzZ7OvXdAdzoaYQyJgO7
+cloud.aws credentials.accessKey:
+cloud.aws.credentials.secretKey:
 cloud.aws.region.auto: true
 cloud.aws.region.static: us-east-1
-
-liquibase.contexts: '!test'

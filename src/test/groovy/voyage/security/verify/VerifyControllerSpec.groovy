@@ -1,0 +1,66 @@
+package voyage.security.verify
+
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import spock.lang.Specification
+import voyage.security.user.User
+
+class VerifyControllerSpec extends Specification {
+    User user
+    User modifiedUser
+    VerifyService verifyService = Mock(VerifyService)
+    VerifyController verifyController = new VerifyController(verifyService)
+    VerifyMethod verifyMethod
+
+    def setup() {
+        user = new User(id:1, firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password')
+        modifiedUser = new User(id:1, firstName:'firstName', lastName:'LastName', username:'username', email:'test@test.com', password:'password')
+        verifyMethod = new VerifyMethod()
+        verifyMethod.label = user.maskedEmail
+        verifyMethod.verifyType = VerifyType.EMAIL
+    }
+
+    def 'Test to validate verifyMethods method'() {
+        when:
+            ResponseEntity<VerifyMethod> verifyMethods = verifyController.verifyMethods()
+        then:
+            1 * verifyService.verifyMethodsForCurrentUser >> [verifyMethod]
+            verifyMethods != null
+            HttpStatus.OK == verifyMethods.statusCode
+            VerifyType.EMAIL == verifyMethods.body[0].verifyType
+
+        when:
+            verifyController.verifyMethods()
+        then:
+            1 * verifyService.verifyMethodsForCurrentUser >> { throw new Exception() }
+            thrown(Exception)
+    }
+
+    def 'Test to validate sendVerificationCode method'() {
+        when:
+            ResponseEntity response = verifyController.sendVerificationCode(verifyMethod)
+        then:
+            1 * verifyService.sendVerifyCodeToCurrentUser(verifyMethod)
+            HttpStatus.NO_CONTENT == response.statusCode
+
+        when:
+            verifyController.sendVerificationCode(verifyMethod)
+        then:
+            1 * verifyService.sendVerifyCodeToCurrentUser(verifyMethod) >> { throw new Exception() }
+            thrown(Exception)
+    }
+
+    def 'Test to validate verify method'() {
+        when:
+            ResponseEntity response = verifyController.verify('code')
+        then:
+            1 * verifyService.verifyCurrentUser('code')
+            HttpStatus.NO_CONTENT == response.statusCode
+
+        when:
+            verifyController.verify('code')
+        then:
+            1 * verifyService.verifyCurrentUser('code') >> { throw new Exception() }
+            thrown(Exception)
+    }
+}
