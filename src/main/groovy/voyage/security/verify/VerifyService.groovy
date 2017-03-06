@@ -24,10 +24,10 @@ class VerifyService {
     private static final Logger LOG = LoggerFactory.getLogger(VerifyService)
 
     @Value('${security.verify-code-expire-minutes}')
-    private static int verifyCodeExpires
+    private int verifyCodeExpires
 
     @Value('${app.name}')
-    private static String appName
+    private String appName
 
     private final UserService userService
     private final MailService mailService
@@ -118,7 +118,7 @@ class VerifyService {
         userService.saveDetached(user)
     }
 
-    private static MailMessage getVerifyCodeEmailMessage(@NotNull User user) {
+    private MailMessage getVerifyCodeEmailMessage(@NotNull User user) {
         MailMessage mailMessage = new MailMessage()
         mailMessage.to = user.email
         mailMessage.model = ['user':user]
