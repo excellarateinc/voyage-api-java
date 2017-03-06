@@ -15,6 +15,11 @@ logging:
   file: voyage-api.log
 
 #######################################################################################################################
+# Liquibase Database Migration
+#######################################################################################################################
+liquibase.contexts: '!test'
+
+#######################################################################################################################
 # Spring Configuration
 #######################################################################################################################
 spring:
@@ -53,6 +58,23 @@ spring:
     #minEvictableIdleTimeMillis: 30000
     #timeBetweenEvictionRunsMillis: 30000
 
+  mail:
+      host: smtp.gmail.com
+      port: 587
+      username: changeme
+      password: changeme
+      protocol: smtp
+      properties.mail.smtp:
+          auth: true
+          starttls.enable: true
+          ssl.trust: smtp.gmail.com
+      overrideAddress: testmsg@LighthouseSoftware.com
+
+  freemarker:
+    template-loader-path: classpath:/email/
+    charset: UTF-8
+    suffix: .ftl
+
 #######################################################################################################################
 # Spring Boot Web / Embedded Tomcat
 #######################################################################################################################
@@ -65,8 +87,8 @@ server:
 #######################################################################################################################
 security:
 
-  ignored: /resources/**, /webjars/**, /docs/**
-  permitAll: /login, /api/hello
+  ignored: /resources/**, /webjars/**, /docs, /docs/**
+  permitAll: /login, /api/status
 
   oauth2:
     resource:
@@ -96,3 +118,13 @@ security:
 
   cors:
     access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
+
+  verify-code-expire-minutes: 30
+
+#######################################################################################################################
+# AWS Configuration to send Emails and SMS
+#######################################################################################################################
+cloud.aws credentials.accessKey:
+cloud.aws.credentials.secretKey:
+cloud.aws.region.auto: true
+cloud.aws.region.static: us-east-1

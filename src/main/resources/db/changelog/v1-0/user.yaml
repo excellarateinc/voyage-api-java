@@ -39,7 +39,7 @@ databaseChangeLog:
                   name: email
                   type: nvarchar(255)
                   constraints:
-                    nullable: true
+                    nullable: false
               - column:
                   name: is_enabled
                   type: bit(1)
@@ -90,6 +90,16 @@ databaseChangeLog:
                   type: bit(1)
                   constraints:
                     nullable: false
+              - column:
+                  name: verify_code_expires_on
+                  type: datetime
+                  constraints:
+                    nullable: true
+              - column:
+                  name: verify_code
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
   - changeSet:
       id: v1.0-user-audit-table-create
       author: Voyage
@@ -188,6 +198,16 @@ databaseChangeLog:
                   type: bit(1)
                   constraints:
                     nullable: false
+              - column:
+                  name: verify_code_expires_on
+                  type: datetime
+                  constraints:
+                    nullable: true
+              - column:
+                  name: verify_code
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
   - changeSet:
       id: v1.0-user-seed-users
       author: Voyage

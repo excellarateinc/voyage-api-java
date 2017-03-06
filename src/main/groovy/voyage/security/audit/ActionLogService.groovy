@@ -3,7 +3,7 @@ package voyage.security.audit
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
-import voyage.error.UnknownIdentifierException
+import voyage.common.error.UnknownIdentifierException
 
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
