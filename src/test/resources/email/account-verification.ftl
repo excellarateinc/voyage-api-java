@@ -1,1 +1,0 @@
-<!--TODO: Avoid individual templates for test and other environment-->

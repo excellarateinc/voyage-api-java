@@ -9,14 +9,14 @@ import org.springframework.http.ResponseEntity
 
 class CorsIntegrationSpec extends AbstractIntegrationTest {
 
-    def 'Anonymous GET request with Origin header to public /api/status returns public CORS response headers'() {
+    def 'Anonymous GET request with Origin header to public /api/hello returns public CORS response headers'() {
         given:
             HttpHeaders headers = new HttpHeaders()
             headers.setOrigin('http://attacker.com/')
             HttpEntity<String> httpEntity = new HttpEntity<String>(headers)
 
         when:
-            ResponseEntity<String> responseEntity = GET('/api/status', httpEntity, String)
+            ResponseEntity<String> responseEntity = GET('/api/hello', httpEntity, String)
 
         then:
             responseEntity.statusCode.value() == 200
@@ -25,14 +25,14 @@ class CorsIntegrationSpec extends AbstractIntegrationTest {
             !responseEntity.headers.getFirst('Access-Control-Allow-Credentials')
     }
 
-    def 'Super User GET request with Origin header to public /api/status returns valid CORS response headers'() {
+    def 'Super User GET request with Origin header to public /api/hello returns valid CORS response headers'() {
         given:
             HttpHeaders headers = new HttpHeaders()
             headers.setOrigin('http://attacker.com/')
             HttpEntity<String> httpEntity = new HttpEntity<String>(headers)
 
         when:
-            ResponseEntity<String> responseEntity = GET('/api/status', httpEntity, String, superClient)
+            ResponseEntity<String> responseEntity = GET('/api/hello', httpEntity, String, superClient)
 
         then:
             responseEntity.statusCode.value() == 200
@@ -41,14 +41,14 @@ class CorsIntegrationSpec extends AbstractIntegrationTest {
             !responseEntity.headers.getFirst('Access-Control-Allow-Credentials')
     }
 
-    def 'Anonymous OPTIONS request with Origin header to public /api/status returns valid CORS response headers'() {
+    def 'Anonymous OPTIONS request with Origin header to public /api/hello returns valid CORS response headers'() {
         given:
             HttpHeaders headers = new HttpHeaders()
             headers.setOrigin('http://test.com/')
             HttpEntity<String> httpEntity = new HttpEntity<String>(headers)
 
         when:
-            ResponseEntity<String> responseEntity = OPTIONS('/api/status', httpEntity, String)
+            ResponseEntity<String> responseEntity = OPTIONS('/api/hello', httpEntity, String)
 
         then:
             responseEntity.statusCode.value() == 200
@@ -57,14 +57,14 @@ class CorsIntegrationSpec extends AbstractIntegrationTest {
             !responseEntity.headers.getFirst('Access-Control-Allow-Credentials')
     }
 
-    def 'Super User OPTIONS request with Origin header to public /api/status returns valid CORS response headers'() {
+    def 'Super User OPTIONS request with Origin header to public /api/hello returns valid CORS response headers'() {
         given:
             HttpHeaders headers = new HttpHeaders()
             headers.setOrigin('http://test.com/')
             HttpEntity<String> httpEntity = new HttpEntity<String>(headers)
 
         when:
-            ResponseEntity<String> responseEntity = OPTIONS('/api/status', httpEntity, String, superClient)
+            ResponseEntity<String> responseEntity = OPTIONS('/api/hello', httpEntity, String, superClient)
 
         then:
             responseEntity.statusCode.value() == 200

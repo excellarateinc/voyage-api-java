@@ -1,11 +1,11 @@
 {
   "name": "Voyage API",
-  "description": "Web services API for the Voyage platform",
+  "description": "Web services API for the Voyage framework",
   "version": "1.0.0",
   "title": "Voyage API",
   "template": {
     "withCompare": true,
     "withGenerator": true
   },
-  "url": "/api"
+  "url": "/"
 }
