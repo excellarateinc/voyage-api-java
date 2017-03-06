@@ -2,7 +2,6 @@ package voyage.account
 
 import com.icegreen.greenmail.util.GreenMail
 import com.icegreen.greenmail.util.ServerSetup
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity
 import voyage.security.user.User
 import voyage.test.AbstractIntegrationTest
 
-@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
 
     private GreenMail greenMailSMTP

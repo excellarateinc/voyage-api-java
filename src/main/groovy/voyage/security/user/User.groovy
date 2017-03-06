@@ -63,6 +63,7 @@ class User extends AuditableEntity {
     @JsonIgnore
     Date verifyCodeExpiresOn
 
+    @JsonIgnore
     boolean isVerifyCodeExpired() {
         return verifyCodeExpiresOn != null && verifyCodeExpiresOn < new Date()
     }

@@ -135,7 +135,7 @@ databaseChangeLog:
                   value: MOBILE
               - column:
                   name: phone_number
-                  value: 1234567891
+                  value: 1234567718
               - column:
                   name: created_by
                   value: super
@@ -162,7 +162,7 @@ databaseChangeLog:
                   value: OFFICE
               - column:
                   name: phone_number
-                  value: 1234567891
+                  value: 1234567151
               - column:
                   name: created_by
                   value: super
@@ -189,7 +189,7 @@ databaseChangeLog:
                   value: HOME
               - column:
                   name: phone_number
-                  value: 1234567891
+                  value: 1234567314
               - column:
                   name: created_by
                   value: super
@@ -216,7 +216,7 @@ databaseChangeLog:
                   value: OTHER
               - column:
                   name: phone_number
-                  value: 1234567891
+                  value: 1234567121
               - column:
                   name: created_by
                   value: super
@@ -243,7 +243,7 @@ databaseChangeLog:
                   value: MOBILE
               - column:
                   name: phone_number
-                  value: 1234567891
+                  value: 1234567101
               - column:
                   name: created_by
                   value: super
@@ -270,7 +270,7 @@ databaseChangeLog:
                   value: OFFICE
               - column:
                   name: phone_number
-                  value: 1234567891
+                  value: 1234567789
               - column:
                   name: created_by
                   value: super
@@ -297,7 +297,7 @@ databaseChangeLog:
                   value: HOME
               - column:
                   name: phone_number
-                  value: 1234567891
+                  value: 1234567456
               - column:
                   name: created_by
                   value: super
@@ -324,7 +324,7 @@ databaseChangeLog:
                   value: OTHER
               - column:
                   name: phone_number
-                  value: 1234567891
+                  value: 1234567123
               - column:
                   name: created_by
                   value: super

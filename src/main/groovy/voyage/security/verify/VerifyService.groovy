@@ -47,6 +47,7 @@ class VerifyService {
             VerifyMethod verifyMethod = new VerifyMethod()
             verifyMethod.label = user.maskedEmail
             verifyMethod.verifyType = VerifyType.EMAIL
+            verifyMethod.value = 1
             verifyMethods.add(verifyMethod)
         }
         user.phones?.each { userPhone ->

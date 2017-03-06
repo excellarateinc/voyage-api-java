@@ -27,6 +27,10 @@ spring:
   application:
     name: Voyage API
 
+  autoconfigure:
+    exclude:
+      - org.springframework.cloud.aws.autoconfigure.mail.MailSenderAutoConfiguration
+
   mvc:
     view:
       prefix: /WEB-INF/jsp/
@@ -59,15 +63,8 @@ spring:
     #timeBetweenEvictionRunsMillis: 30000
 
   mail:
-      host: smtp.gmail.com
-      port: 587
-      username: changeme
-      password: changeme
-      protocol: smtp
-      properties.mail.smtp:
-          auth: true
-          starttls.enable: true
-          ssl.trust: smtp.gmail.com
+      host: localhost
+      port: 3025
       overrideAddress: testmsg@LighthouseSoftware.com
 
   freemarker:
@@ -114,7 +111,7 @@ security:
     private-key-password: changeme
 
   user-verification:
-    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /WEB-INF/jsp/**.jsp
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify/*, /WEB-INF/jsp/**.jsp
 
   cors:
     access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
@@ -124,7 +121,7 @@ security:
 #######################################################################################################################
 # AWS Configuration to send Emails and SMS
 #######################################################################################################################
-cloud.aws credentials.accessKey:
-cloud.aws.credentials.secretKey:
+cloud.aws credentials.accessKey: ENTER YOUR CODE
+cloud.aws.credentials.secretKey: ENTER YOUR CODE
 cloud.aws.region.auto: true
 cloud.aws.region.static: us-east-1
