@@ -18,7 +18,7 @@
  * @apiParam {String} user.lastName Last name
  * @apiParam {Object[]} user.phones User phone numbers
  * @apiParam {String} user.phones.phoneNumber Phone number
- * @apiParam {String} user.phones.phoneType Phone type (mobile, office, home, other)
+ * @apiParam {String} user.phones.phoneType Phone type
  *
  * @apiExample {json} Example body:
  * {
@@ -65,7 +65,7 @@
  *             "id": 3,
  *             "userId": "f9d69894-7908-4606-918e-410dca8c3238",
  *             "phoneNumber": "5555551212",
- *             "phoneType": "mobile"
+ *             "phoneType": "Mobile"
  *         }
  *     ],
  *     "isActive": true

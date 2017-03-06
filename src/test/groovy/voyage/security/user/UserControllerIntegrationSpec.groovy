@@ -34,6 +34,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
 
         then:
             responseEntity.statusCode.value() == 200
+            responseEntity.body.size() == 3
             responseEntity.body[0].id == 1L
             responseEntity.body[0].firstName == 'Super'
             responseEntity.body[0].lastName == 'User'
@@ -66,6 +67,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
 
         then:
             responseEntity.statusCode.value() == 200
+            responseEntity.body.size() == 3
             responseEntity.body[0].firstName == 'Super'
     }
 
@@ -92,6 +94,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
 
         then:
             responseEntity.statusCode.value() == 201
+            responseEntity.headers.getFirst('location') == '/api/v1/users/4'
             responseEntity.body.id
             responseEntity.body.firstName == 'Test1'
             responseEntity.body.lastName == 'User'
@@ -131,6 +134,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
 
         then:
             responseEntity.statusCode.value() == 201
+            responseEntity.headers.getFirst('location') == '/api/v1/users/5'
             responseEntity.body.firstName == 'Test2'
     }
 
