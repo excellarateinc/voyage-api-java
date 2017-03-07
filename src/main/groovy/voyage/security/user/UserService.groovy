@@ -66,7 +66,7 @@ class UserService {
     }
 
     User saveDetached(@Valid User userIn) {
-        isValidPhoneNumbers(userIn.phones) // Verify the phone numbers are valid or not
+        isValidPhoneNumbers(userIn.phones) // the user phones should be validated to be E.164 international phone format, like +16123366715
         if (userIn.id) {
             User user = get(userIn.id)
 
