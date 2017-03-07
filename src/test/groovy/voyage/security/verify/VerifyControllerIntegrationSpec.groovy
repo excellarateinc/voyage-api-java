@@ -48,7 +48,6 @@ class VerifyControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body.size() == 1
             VerifyType."${responseEntity.body[0].verifyType}" == VerifyType.EMAIL
             responseEntity.body[0].label
-            !responseEntity.body[0].value
     }
 
     def '/api/v1/verify/send POST - Anonymous access denied'() {
