@@ -7,9 +7,11 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
+import voyage.common.error.InValidPhoneNumberException
 import voyage.common.error.UnknownIdentifierException
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
+import java.util.regex.Pattern
 
 @Transactional
 @Service
@@ -64,6 +66,7 @@ class UserService {
     }
 
     User saveDetached(@Valid User userIn) {
+        isValidPhoneNumbers(userIn.phones) // Verify the phone numbers are valid or not
         if (userIn.id) {
             User user = get(userIn.id)
 
@@ -103,5 +106,15 @@ class UserService {
             return true
         }
         return matchingUser ? false : true
+    }
+
+    void isValidPhoneNumbers(Set<UserPhone> userPhones ) {
+        String regEx = '\\+[1-9]\\d{1,14}$'
+        userPhones.each { phone ->
+            if (!Pattern.matches(regEx, phone.phoneNumber)) {
+                throw new InValidPhoneNumberException()
+            }
+        }
+
     }
 }

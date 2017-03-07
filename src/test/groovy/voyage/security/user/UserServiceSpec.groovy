@@ -1,6 +1,7 @@
 package voyage.security.user
 
 import spock.lang.Specification
+import voyage.common.error.InValidPhoneNumberException
 
 class UserServiceSpec extends Specification {
     User user
@@ -31,6 +32,34 @@ class UserServiceSpec extends Specification {
             'LSS' == savedUser.firstName
             'India' == savedUser.lastName
             !savedUser.isDeleted
+    }
+
+    def 'save - applies the values and calls the userRepository with valid phones' () {
+        setup:
+            UserPhone userPhone = new UserPhone(id:1, phoneType:PhoneType.HOME, phoneNumber:'+16123366715', user:user)
+            Set<UserPhone> userPhones = []
+            userPhones.add(userPhone)
+            user.phones = userPhones
+            userRepository.save(_) >> user
+        when:
+            User savedUser = userService.saveDetached(user)
+        then:
+            'LSS' == savedUser.firstName
+            'India' == savedUser.lastName
+            !savedUser.isDeleted
+    }
+
+    def 'save - applies the values and calls the userRepository with Invalid phones' () {
+        setup:
+            UserPhone userPhone = new UserPhone(id:1, phoneType:PhoneType.HOME, phoneNumber:'16123366715', user:user)
+            Set<UserPhone> userPhones = []
+            userPhones.add(userPhone)
+            user.phones = userPhones
+            userRepository.save(_) >> user
+        when:
+            User savedUser = userService.saveDetached(user)
+        then:
+            thrown(InValidPhoneNumberException)
     }
 
     def 'get - calls the userRepository.findOne' () {
