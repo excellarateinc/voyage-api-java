@@ -134,50 +134,6 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body.firstName == 'Test2'
     }
 
-    def '/api/v1/users POST - Standard User with permission "api.users.create" access granted with valid phone number'() {
-        given:
-            roleService.addPermission(ROLE_STANDARD_ID, 'api.users.create')
-
-            User user = new User(firstName:'Test2', lastName:'User', username:'username3', email:'test@test.com', password:'password')
-            UserPhone userPhone = new UserPhone()
-            userPhone.phoneType = PhoneType.HOME
-            userPhone.phoneNumber = '+16123366715'
-            userPhone.user = user
-            user.phones = [userPhone]
-            HttpHeaders headers = new HttpHeaders()
-            headers.setContentType(MediaType.APPLICATION_JSON)
-            HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
-
-        when:
-            ResponseEntity<User> responseEntity = POST('/api/v1/users', httpEntity, User, standardClient)
-
-        then:
-            responseEntity.statusCode.value() == 201
-            responseEntity.body.firstName == 'Test2'
-    }
-
-    def '/api/v1/users POST - Standard User with permission "api.users.create" access granted with invalid phone number'() {
-        given:
-            roleService.addPermission(ROLE_STANDARD_ID, 'api.users.create')
-
-            User user = new User(firstName:'Test2', lastName:'User', username:'username3', email:'test@test.com', password:'password')
-            UserPhone userPhone = new UserPhone()
-            userPhone.phoneType = PhoneType.HOME
-            userPhone.phoneNumber = '16123366715'
-            userPhone.user = user
-            user.phones = [userPhone]
-            HttpHeaders headers = new HttpHeaders()
-            headers.setContentType(MediaType.APPLICATION_JSON)
-            HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
-
-        when:
-            ResponseEntity<Iterable> responseEntity = POST('/api/v1/users', httpEntity, Iterable, standardClient)
-
-        then:
-            responseEntity.body[0].error == '400_bad_request'
-            responseEntity.body[0].errorDescription == 'Invalid phone number, please use E.164 international phone format, like +16123366715.'
-    }
-
     def '/api/v1/users/{id} GET - Anonymous access denied'() {
         when:
             ResponseEntity<Iterable> responseEntity = GET('/api/v1/users/1', Iterable)

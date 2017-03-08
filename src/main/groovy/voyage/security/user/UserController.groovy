@@ -70,28 +70,6 @@ class UserController {
 
     /**
      * @api {post} /v1/users Create user
-     * @apiExample Example usage:
-     *     endpoint: /api/v1/users
-     *
-     *     body:
-     *     {
-     *          "username": "admin",
-     *          "email": "admi1231n@admin.com",
-     *          "firstName": "Admin_First",
-     *          "lastName": "Admin_Last",
-     *          "password": "password",
-     *          "phones":
-     *              [
-     *                  {
-     *                      "phoneNumber": "+1231231233", "phoneType": "HOME"
-     *                  },
-     *                  {
-     *                      "phoneNumber": "+12345678901", "phoneType": "HOME"
-     *                  }
-     *              ]
-     *      }
-     *  phoneNumber should be in E.164 international phone number format. i.e starting with '+' and followed by country code (1-3 digits) and followed by subscriber number.
-     *
      * @apiVersion 1.0.0
      * @apiName UserCreate
      * @apiGroup User
