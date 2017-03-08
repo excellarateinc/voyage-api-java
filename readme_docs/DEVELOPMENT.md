@@ -36,8 +36,6 @@ These are the core standards that our development team agrees to follow. All of 
 :arrow_up: [Back to Top](#table-of-contents)
 
 ## Code Standards
-> __FINISH THIS SECTION__
-
 The following coding standards are agreed upon by the development team and are expected to be followed. Where possible, these rules will be enforced by the IDE. The goals of these standards are the following:
 
 1. Create a consistent look to the code, so that readers can focus on content, not layout.
