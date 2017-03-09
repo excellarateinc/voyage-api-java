@@ -152,24 +152,24 @@ Currently, the API supports 2 OAuth authentication methods
 * Implicit Authentication - Client + User authentication use mainly for web and mobile apps 
 
 #### OAuth2: Client Credentials
-__Overview__
+##### Overview
 * The client accesses the API directly without a user and uses a secure password to authenticate.
 * The client is the only actor using the API and must provide a client ID and password
 * The API will not load a User object into the session unless the client ID maps to a User username
 * API services that require a User object loaded into memory will not function with this authentication method
 * This authentication method is reserved for testing and for server-to-server exchanges
 
-__Web Service:__ `http://localhost:8080/oauth/token`
+##### Web Service: `http://localhost:8080/oauth/token`
 * used for Client Credential authentication
 * pass in the Client ID and Client Secret and get back an access token
 * returns a JWT bearer token that expires within a few hours
 
-__Client seed data:__
+##### Client seed data
 * client id: client-super
 * client secret: secret
 * see `/src/main/resources/db.changelog/v1-0/client.yaml`
 
-__Test Using cURL__ 
+##### Test Using cURL 
 ```
 curl -u client-super:secret -X POST -d "client_id=client-super&client_secret=secret&grant_type=client_credentials" http://localhost:8080/oauth/token
 
@@ -179,7 +179,7 @@ curl -u client-super:secret -X POST -d "client_id=client-super&client_secret=sec
 * POST to: /oauth/token
 * POST data: client_id, client_secret, grant_type=client_credentials
 
-__Test Using Postman__
+##### Test Using Postman
 ![Postman OAuth Client Credentials Authorization](./images/DEVELOPMENT_postman_auth1.png)
 
 
