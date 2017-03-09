@@ -57,28 +57,31 @@ __Best Practices__
 
 ### Required Software
 Download and install the following required software for development:
-* Java 1.8
-* MySQL
-* MySQL Workbench (Recommended)
-* IntelliJ
+* [Java SDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+* [MySQL Community Server - Database](https://dev.mysql.com/downloads/mysql/)
+* [MySQL Workbench](https://dev.mysql.com/downloads/workbench/) or [Sequel Pro Mac OSX](https://www.sequelpro.com)
+* [IntelliJ](https://www.jetbrains.com/idea/)
   * Plugin: Spock Framework Enhancements
 
 ### Instructions
 1. Download source via IntelliJ VCS
-   - Open IntelliJ.
-   - Using the top menu, navigate to "VCS -> Checkout from Version Control -> Github".
-   - If you have not used Github from IntelliJ before, you will be asked for your Github credentials.
-   - Once authenticated, you will see a dropdown containing a list of repositories you have access to.
-   - Choose "https://github.com/lssinc/voyage-api-java.git" from the list of repositories.
+   - Open IntelliJ
+   - Using the top menu, navigate to "VCS -> Checkout from Version Control -> Github"
+   - If you have not used Github from IntelliJ before, you will be asked for your Github credentials
+   - Once authenticated, you will see a dropdown containing a list of repositories you have access to
+   - Choose "https://github.com/lssinc/voyage-api-java.git" from the list of repositories
      * The official repository is located here https://github.com/lssinc/voyage-api-java
-   - Use the default path provided or change it to your desired path.
-   - Click "Clone".
+   - Use the default path provided or change it to your desired path
+   - Click "Clone" to create a local git repo with the GitHub repo as a source
 
 ![IntelliJ clone repo](./images/DEVELOPMENT_cloneRepository.JPG)
 
 2. Create the database
-   - Use MySQL Workbench to connect to your locally running instance of MySQL.
-   - Click the "Create a new schema in the selected server" button and enter the schema name "voyage".
+   - Use MySQL Workbench to connect to your locally running instance of MySQL
+     * Hostname: 127.0.0.1
+     * Username: root
+     * Password: > the password you entered during installation <
+   - Click the "Create a new schema in the selected server" button and enter the schema name "voyage"
 
    ![MySQL create schema](./images/DEVELOPMENT_createSchema.jpg)
    - Click the "Apply" button
@@ -90,14 +93,18 @@ Download and install the following required software for development:
 
    ![MySQL create schema](./images/DEVELOPMENT_createDbUser.jpg)
 
-
 3. Build it
-   - If you don't already have the Gradle Tool window visible, show it by navigating to "View -> Tool Windows -> Gradle"
+   - Configure the app database connection
+     * The default database configuration is located in /src/main/resource/application.yaml
+     * The spring -> datasource section of the application.yaml file contains the database URL, username, and password
+     * Change these details to connect to any database with any credentials
+     * NOTE: You can also override these properties following the [Spring Coniguration externalization conventions](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html)
+   - Invoke the "build" Gradle task from the Gradle Tool Window
+     * Open the Gradle Tool Window by navigating to "View -> Tool Windows -> Gradle"
 
    ![Gradle Tool Window](./images/DEVELOPMENT_gradleRun.JPG)
    - This tool window will show you a list of Gradle tasks.
    - Run the "build" task under the "build" section to build the project.
-
 
 > __SEED DATA__
 >
