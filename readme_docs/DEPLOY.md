@@ -6,7 +6,6 @@ Deploying to the upper environments (QA -> UAT -> PROD) will be handled by the C
 * [Server Configuration](#server-configuration)
 * [App Build & Test](#app-build--test)
 * [Docker Support](#docker-support)
-* [Ansible Automated Deployment](#ansible-automated-deployment)
 
 ## Continuous Integration (CI)
 [Jenkins](https://jenkins.io) continuous integration build manager will be used to configure jobs and triggers to faciliate the CI process. Reference your development team's WIKI for links to the Jenkins environment. 
@@ -125,7 +124,8 @@ gradlew war
   
 
 #### 2. Artifacts for deployment
-The artifacts that should be deployed will be contained in the .war file. This .war file can be dropped in Apache Tomcat's webapp folder to begin the deployment process.
+The artifacts that should be deployed will be contained in the .war file. This .war file can be dropped in 
+Apache Tomcat's webapp folder to begin the deployment process.
 
 
 
@@ -182,11 +182,3 @@ Tomcat unpacks and hosts the .war file. It requires a resource for your database
 
 :arrow_up: [Back to Top](#table-of-contents)
 
-## Ansible Automated Deployment
-> __FINISH DOCUMENTATION__
-
-* Ansible script to deploy to AWS EB
-  - Discuss everything necessary to educate
-  - steps to run the script, variables, etc
-
-:arrow_up: [Back to Top](#table-of-contents)

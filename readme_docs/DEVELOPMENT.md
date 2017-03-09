@@ -178,7 +178,7 @@ Popular IDEs like IntelliJ or Eclipse have plugins that support executing Gradle
    - Verify that tests are running within the Continuous Integration site (ie Jenkins)
    - Examine the tests that are failing and see if there is a common pattern to why they are failing
    - Pull in a peer developer or contact Voyage support for assistance if you cannot resolve the issue.
-* Executing 'bootRun' fails with liquibase checksum errors on a some of the migration scripts. 
+* Executing 'bootRun' fails with liquibase checksum errors on some of the migration scripts 
    - This is due to changes being made to the liquibase migration scripts that have already been applied to your local database
    - The fastest way to resolve this is to drop your local database and create a new database (see steps in the Workstation Setup instructions)
    - An alternative fix is to go into the DATABASECHANGELOG table in your database and delete the rows for the failing 
@@ -261,5 +261,7 @@ Continuous Integration (CI) is the process of integrating and testing new code a
 Developers must be aware that as soon as their code is merged into a long running branch (ie master), that the CI job "Build & Test" will be triggered on the new code. The primary function of the "Build & Test" job is to ensure that the latest changes can be built without error and that all unit, integration, and functional tests pass successfully. If the build or a single test fails, then the job fails and notifies the development team. 
 
 Whenever a job fails within the CI environment the whole development team is affected. It is the responsibility of the developer who broke the build to fix the issue as quickly as possible. A developer with repeated offenses should be made aware (however the team decides) that they need to improve their pre-merge quality checks. 
+
+Learn more about Continuous Integration within the [Deploy: Continuous Integration](DEPLOY.md#continuous-integration-ci) documentation.
 
 :arrow_up: [Back to Top](#table-of-contents)

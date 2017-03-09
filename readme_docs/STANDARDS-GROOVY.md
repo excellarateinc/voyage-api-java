@@ -1,6 +1,11 @@
-## Style guide
+## Groovy Style guide
+Apache Groovy is a dynamic language built on the JVM platform. Groovy is an optionally typed language that can compile 
+native Java, Groovy syntax, or a mix of both. Groovy was created as a way to quickly write Java code without much of the
+excessive verbosity of Java, and to layer on dynamic language features on top of the statically types Java language. 
 
-This is a modification of the [default Groovy style guide](http://groovy-lang.org/style-guide.html). Unlike the default style guide, we require strict typing for more self-documenting code and better IDE auto-complete. We've also stripped out basic language information, as that is not related to code style, but just features of the language.
+Read more about Groovy at [http://groovy-lang.org](http://groovy-lang.org)
+
+This Groovy style guide is a modification of the [default Groovy style guide](http://groovy-lang.org/style-guide.html). Unlike the default style guide, we require strict typing for more self-documenting code and better IDE auto-complete. We've also stripped out basic language information, as that is not related to code style, but just features of the language.
 
 ## Table of Contents
 * [Semicolons](#semicolons)
