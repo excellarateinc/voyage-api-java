@@ -127,10 +127,79 @@ Password: password
 2. Run the application
    - Gradle Task: bootRun
      * In the Gradle tool window, run the task "bootRun" under the "application" section.
-     * This will run any un-run migration scripts, build the project, and start a server on port 8080. 
+     * This will run any un-run migration scripts, build the project, and start a server on port 8080.
+     * Wait for the console to display "Started App in xx.xxx seconds (JVM running for xx.xxx)" before accessing the app
    - Access the running app at `http://localhost:8080`
 
    ![Voyage login screen](./images/DEVELOPMENT_loginScreen.JPG)
+
+3. Access an API
+   - `http://localhost:8080/api/status`
+   - `http://localhost:8080/api/v1/users` - requires authentication (see next section Access Secured Web Services)
+
+### Access Secured Web Services
+By default, the API secures all webservice endpoints with the exception of the /api/status public endpoint. Without going
+into how you secure a webservice endpoint (see Developer Recipes), this section will discuss the default OAuth2 security
+implementation and how to access web services. 
+
+#### Oauth2: Quick Overview
+OAuth2 is an authentication method that allows for 2 authenticating actors: Client, User. 
+* Client - the 'app' that is making the request to the API
+* User - the person that is using the app to make a request to the API
+
+Currently, the API supports 2 OAuth authentication methods 
+* Client Credentials - Client only authentication used mainly for server-to-server exchanges 
+* Implicit Authentication - Client + User authentication use mainly for web and mobile apps 
+
+#### OAuth2: Client Credentials
+__Overview__
+* The client accesses the API directly without a user and uses a secure password to authenticate.
+* The client is the only actor using the API and must provide a client ID and password
+* The API will not load a User object into the session unless the client ID maps to a User username
+* API services that require a User object loaded into memory will not function with this authentication method
+* This authentication method is reserved for testing and for server-to-server exchanges
+
+__Web Service:__ `http://localhost:8080/oauth/token`
+* used for Client Credential authentication
+* pass in the Client ID and Client Secret and get back an access token
+* returns a JWT bearer token that expires within a few hours
+
+__Client seed data:__
+* client id: client-super
+* client secret: secret
+* see `/src/main/resources/db.changelog/v1-0/client.yaml`
+
+__Test Using cURL__ 
+```
+curl -u client-super:secret -X POST -d "client_id=client-super&client_secret=secret&grant_type=client_credentials" http://localhost:8080/oauth/token
+
+```
+
+* Send the Client ID and Client Secret via basic auth
+* POST to: /oauth/token
+* POST data: client_id, client_secret, grant_type=client_credentials
+
+__Test Using Postman__
+![Postman OAuth Client Credentials Authorization](./images/DEVELOPMENT_postman_auth1.png)
+![Postman OAuth Client Credentials Get New Access Token](./images/DEVELOPMENT_postman_auth2.png)
+![Postman OAuth Client Credentials Request Token](./images/DEVELOPMENT_postman_auth3.png)
+![Postman OAuth Client Credentials Use Token](./images/DEVELOPMENT_postman_auth4.png)
+![Postman OAuth Client Credentials Authorization Header](./images/DEVELOPMENT_postman_auth5.png)
+
+#### OAuth2: Implicit Authentication
+* The user instructs the client 'app' to make API requests on the user's behalf. 
+* The client initiates the authentication using their client ID, but does not provide a password because
+  the user will be required to enter their own username and password to authorize the client. 
+* The API will load both the Client and User objects into the session
+* This authentication method is the preferred method for a web or mobile app
+
+Web Service: `http://localhost:8080/oauth/authorize`
+* used for Implicit Authentication
+* accepts the Client ID, redirect url, and few other params
+* redirects a server-side user login form
+* upon successful authentication of the user and client, a redirect back to the caller with the access token.
+* returns a JWT bearer token that expires within a few hours
+
 
 ### Common Gradle Tasks
 [Gradle](https://gradle.org) is the Java/Groovy build framework used to compile, test, analyze, package, and run the application.
