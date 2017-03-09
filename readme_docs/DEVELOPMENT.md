@@ -180,18 +180,20 @@ curl -u client-super:secret -X POST -d "client_id=client-super&client_secret=sec
 * POST data: client_id, client_secret, grant_type=client_credentials
 
 ##### Test Using Postman
+
+1. Within the Authorization section of a Postman request, choose the "OAuth2" option 
 ![Postman OAuth Client Credentials Authorization](./images/DEVELOPMENT_postman_auth1.png)
 
-
+2. Click the orange "Get New Access Token"
 ![Postman OAuth Client Credentials Get New Access Token](./images/DEVELOPMENT_postman_auth2.png)
 
-
+3. Enter the token URL and login information. Be sure to select Grant Type "Client Credentials" 
 ![Postman OAuth Client Credentials Request Token](./images/DEVELOPMENT_postman_auth3.png)
 
-
+4. Click on the new token row and select "Use Token" orange button to apply the token to your request.
 ![Postman OAuth Client Credentials Use Token](./images/DEVELOPMENT_postman_auth4.png)
 
-
+5. Click on the Headers section to verify that the Authorization header has been applied with the Access Token
 ![Postman OAuth Client Credentials Authorization Header](./images/DEVELOPMENT_postman_auth5.png)
 
 
