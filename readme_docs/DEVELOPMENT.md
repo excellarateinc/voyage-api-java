@@ -46,10 +46,9 @@ __Languages__
 * [Groovy](STANDARDS-GROOVY.md)     
      
 __Best Practices__
-* [Authorization](STANDARDS-AUTHORIZATION.md)
 * [Database](STANDARDS-DATABASE.md)
+* [Spring Framework](STANDARDS-SPRING.md)
 * [Web Services](STANDARDS-WEB-SERVICES.md)
-* [Spring](STANDARDS-SPRING.md)
 
 :arrow_up: [Back to Top](#table-of-contents)
 
