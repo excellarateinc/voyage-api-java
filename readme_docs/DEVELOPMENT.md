@@ -61,7 +61,7 @@ Download and install the following required software for development:
 * [MySQL Community Server - Database](https://dev.mysql.com/downloads/mysql/)
 * [MySQL Workbench](https://dev.mysql.com/downloads/workbench/) or [Sequel Pro Mac OSX](https://www.sequelpro.com)
 * [IntelliJ](https://www.jetbrains.com/idea/)
-  * Plugin: Spock Framework Enhancements
+  * Plugin: [Spock Framework Enhancements](https://plugins.jetbrains.com/plugin/7114-spock-framework-enhancements)
 
 ### Instructions
 1. Download source via IntelliJ VCS
@@ -93,12 +93,12 @@ Download and install the following required software for development:
 
    ![MySQL create schema](./images/DEVELOPMENT_createDbUser.jpg)
 
-3. Build it
+3. Build Voyage
    - Configure the app database connection
      * The default database configuration is located in /src/main/resource/application.yaml
-     * The spring -> datasource section of the application.yaml file contains the database URL, username, and password
+     * The "spring.datasource" section of the application.yaml file contains the database URL, username, and password
      * Change these details to connect to any database with any credentials
-     * NOTE: You can also override these properties following the [Spring Coniguration externalization conventions](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html)
+     * NOTE: You can also override these properties following the [Spring Configuration externalization conventions](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html)
    - Invoke the "build" Gradle task from the Gradle Tool Window
      * Open the Gradle Tool Window by navigating to "View -> Tool Windows -> Gradle"
 
@@ -110,24 +110,73 @@ Download and install the following required software for development:
 >
 > A default "admin" user with full access to everything will be seeded into the database when _Update-Database_ is run. Use this account when initially interacting with the web services or creating new users or applying new user roles. 
 ```
-Username: admin@admin.com
-Password: Hello123!
+Username: super
+Password: password
 ```
 
 :arrow_up: [Back to Top](#table-of-contents)
 
 ## Run App Locally
-> __FINISH THIS SECTION__
 
-1. Run the application
-   - To build and start the server, run the task "bootRun" under the "application" section in the Gradle tool window.
-   - This will run any un-run migration scripts, build the project, and start a server on port 8080. Opening `http://localhost:8080` should redirect you to the login screen.
+### Quick Guide
+1. Run the tests
+   - Before running the app locally, execute the tests to ensure the app code is working as expected.
+   - Gradle Task: test
+     * In the Gradle tool window, run the "test" task under the "verification" section.
+   - IntelliJ will run all tests and display failures in a console window pane
 
-        ![Voyage login screen](./images/DEVELOPMENT_loginScreen.JPG)
+2. Run the application
+   - Gradle Task: bootRun
+     * In the Gradle tool window, run the task "bootRun" under the "application" section.
+     * This will run any un-run migration scripts, build the project, and start a server on port 8080. 
+   - Access the running app at `http://localhost:8080`
 
-2. Run the tests
-   - In the Gradle tool window, run the "test" task under the "verification" section.
-   - IntelliJ will run all tests.
+   ![Voyage login screen](./images/DEVELOPMENT_loginScreen.JPG)
+
+### Common Gradle Tasks
+* application
+  - bootRun
+    - starts a local instance of Apache Tomcat and "injects" the app into the Tomcat container.
+    - runtime logs will be displayed in the console
+    - startup is complete when you see the log line "Started App in ___ seconds (JVM running for xx.xxx)"
+* build
+  - clean
+    - cleans out the /build folder and any other build artifacts gradle creates when building the app
+    - useful when you want to build from scratch or if your app doesn't seem to be working as expected
+  - build
+    - compiles all of the classes
+    - not used very often since this task is executed when 'bootRun', 'test', and 'war' are executed
+  - war
+    - creates a Web Archive (.war) file used to deploy into J2EE Servlet Containers like Apache Tomcat or RedHat JBoss
+    - stores the .war file in /build/libs folder
+* other
+  - codenarcMain
+    - invokes the CodeNarc static code analysis process on the /src/main files.
+    - CodeNarc rules are located in /codenarc/codenarc-main.rules
+    - a local file:// url will be displayed at the end of the codenarc process with details on the issues identified in the static code analysis
+    - this task should be executed before committing code to the Git repo
+    - this task is run during the CI/Jenkins build-test process and will fail the build if analysis fails 
+  - codenarcTest
+    - same as codenarcMain
+    - CodeNarc rules are located in /codenarc/codenarc-test.rules
+* verification
+  - test
+    - invokes all unit and integration tests found within the /src/test folder of the application
+    - displays successes and failures in the console. IntelliJ or other IDEs will display a success/failure within a console window
+    
+### Troubleshooting
+* Tests are failing when I run them locally
+   - Check to see if you have made any changes locally that would be adversely affecting tests
+   - Verify that tests are running within the Continuous Integration site (ie Jenkins)
+   - Examine the tests that are failing and see if there is a common pattern to why they are failing
+   - Pull in a peer developer or contact Voyage support for assistance if you cannot resolve the issue.
+* Executing 'bootRun' fails with liquibase checksum errors on a some of the migration scripts. 
+   - This is due to changes being made to the liquibase migration scripts that have already been applied to your local database
+   - The fastest way to resolve this is to drop your local database and create a new database (see steps in the Workstation Setup instructions)
+   - An alternative fix is to go into the DATABASECHANGELOG table in your database and delete the rows for the failing 
+     migration files. You will also need to manually revert the changes that this migration file applied so that when 
+     the migration script(s) run again, they don't fail trying to apply changes that already exist. 
+  
   
 :arrow_up: [Back to Top](#table-of-contents)
 
