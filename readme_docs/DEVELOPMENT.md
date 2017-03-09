@@ -134,6 +134,14 @@ Password: password
    ![Voyage login screen](./images/DEVELOPMENT_loginScreen.JPG)
 
 ### Common Gradle Tasks
+[Gradle](https://gradle.org) is the Java/Groovy build framework used to compile, test, analyze, package, and run the application.
+Popular IDEs like IntelliJ or Eclipse have plugins that support executing Gradle tasks from within the IDE with the output
+ displayed within a console window of the IDE. 
+ 
+ To access the Gradle tool window in IntelliJ, click menu option View > Tool Windows > Gradle. The following categories
+ will be found within the Gradle tool window. Double clicking on a task will execute the task and display the results in
+ an IDE console window. 
+ 
 * application
   - bootRun
     - starts a local instance of Apache Tomcat and "injects" the app into the Tomcat container.
