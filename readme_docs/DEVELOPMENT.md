@@ -181,10 +181,19 @@ curl -u client-super:secret -X POST -d "client_id=client-super&client_secret=sec
 
 __Test Using Postman__
 ![Postman OAuth Client Credentials Authorization](./images/DEVELOPMENT_postman_auth1.png)
+
+
 ![Postman OAuth Client Credentials Get New Access Token](./images/DEVELOPMENT_postman_auth2.png)
+
+
 ![Postman OAuth Client Credentials Request Token](./images/DEVELOPMENT_postman_auth3.png)
+
+
 ![Postman OAuth Client Credentials Use Token](./images/DEVELOPMENT_postman_auth4.png)
+
+
 ![Postman OAuth Client Credentials Authorization Header](./images/DEVELOPMENT_postman_auth5.png)
+
 
 #### OAuth2: Implicit Authentication
 * The user instructs the client 'app' to make API requests on the user's behalf. 
