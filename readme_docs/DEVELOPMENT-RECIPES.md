@@ -15,8 +15,8 @@ Instructional recipies for how to do something within the codebase.
   - [HTTP Request - Validate Request Data](#http-request---validate-request-data)
   - Securing a Web Service endpoint
 * [Service & Domain logic](#service-domain-logic)
-  - Error Handling w/ i18n support
   - [Create a Service](#creating-a-service)
+  - Error Handling w/ i18n support
 * [Build & Deploy](#build-and-deploy)
   - Clean workspace and rebuild
 * [Data Layer](#data-layer)
