@@ -233,38 +233,36 @@ it takes more effort to handle the temporary session cookie and to follow redire
 which will be demonstrated below. 
 
 1. Copy/paste the following URL into your browser address bar 
-```
-http://localhost:8080/oauth/authorize?client_id=client-super&redirect_uri=http://localhost:8080/oauth/&response_type=token
-```
-![OAuth Implicit Authorization Browser 1](./images/DEVELOPMENT_implicit_auth1.png)
-* Endpoint Address: http://localhost:8080/oauth/authorize
-* Parameters:
-  - client_id - the client identifier
-  - redirect_uri - the address to redirect back to with the access token upon successful user authentication
-  - response_type - the expected type of code to return back on the redirect_uri (code=temp code, token=longer term access token)
-* This assumes you are using the default seed data that comes with the app (see /src/main/resources/db.changelog/)
+   `http://localhost:8080/oauth/authorize?client_id=client-super&redirect_uri=http://localhost:8080/oauth/&response_type=token`
+   ![OAuth Implicit Authorization Browser 1](./images/DEVELOPMENT_implicit_auth1.png)
+   * Endpoint Address: http://localhost:8080/oauth/authorize
+   * Parameters:
+     - client_id - the client identifier
+     - redirect_uri - the address to redirect back to with the access token upon successful user authentication
+     - response_type - the expected type of code to return back on the redirect_uri (code=temp code, token=longer term access token)
+   * This assumes you are using the default seed data that comes with the app (see /src/main/resources/db.changelog/)
 
 2. Login as the 'super' user
-![OAuth Implicit Authorization Browser 2](./images/DEVELOPMENT_implicit_auth2.png)
-* Username: super
-* Password: password
+   ![OAuth Implicit Authorization Browser 2](./images/DEVELOPMENT_implicit_auth2.png)
+   * Username: super
+   * Password: password
 
 3. Accept the Grant Request
-![OAuth Implicit Authorization Browser 3](./images/DEVELOPMENT_implicit_auth3.png)
+   ![OAuth Implicit Authorization Browser 3](./images/DEVELOPMENT_implicit_auth3.png)
 
 4. Retrieve the Access Token from the URL parameters
-![OAuth Implicit Authorization Browser 4](./images/DEVELOPMENT_implicit_auth4.png)
-![OAuth Implicit Authorization Browser 5](./images/DEVELOPMENT_implicit_auth5.png)
-* Upon successful authentication, the app will redirect to the given redirect uri
-* The redirect uri doesn't likely existing on you local environment (or any environment)
-* You will receive a 404 Not Found error page
-* Look at the URL and you will see that there is a #access_token=eyJhbGciOiJSUzI1NiIsIn... as a parameter
-* Copy the entire URL out to a text editor and copy the enter access_token value
+   ![OAuth Implicit Authorization Browser 4](./images/DEVELOPMENT_implicit_auth4.png)
+   
+   ![OAuth Implicit Authorization Browser 5](./images/DEVELOPMENT_implicit_auth5.png)
+   
+   * Upon successful authentication, the app will redirect to the given redirect uri
+   * The redirect uri doesn't likely existing on you local environment (or any environment)
+   * You will receive a 404 Not Found error page
+   * Look at the URL and you will see that there is a #access_token=eyJhbGciOiJSUzI1NiIsIn... as a parameter
+   * Copy the entire URL out to a text editor and copy the enter access_token value
 
 Example access token:
-``` 
-eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODkxMjg4NDcsInVzZXJfbmFtZSI6InN1cGVyIiwiYXV0aG9yaXRpZXMiOlsiYXBpLnBlcm1pc3Npb25zLmRlbGV0ZSIsImFwaS5yb2xlcy5kZWxldGUiLCJhcGkucm9sZXMudXBkYXRlIiwiYXBpLnBlcm1pc3Npb25zLmxpc3QiLCJhcGkucGVybWlzc2lvbnMudXBkYXRlIiwiYXBpLnVzZXJzLmNyZWF0ZSIsImFwaS51c2Vycy5nZXQiLCJhcGkudXNlcnMubGlzdCIsImFwaS5wZXJtaXNzaW9ucy5nZXQiLCJhcGkucm9sZXMuZ2V0IiwiYXBpLnVzZXJzLnVwZGF0ZSIsImFwaS5yb2xlcy5jcmVhdGUiLCJhcGkudXNlcnMuZGVsZXRlIiwiYXBpLnBlcm1pc3Npb25zLmNyZWF0ZSIsImFwaS5yb2xlcy5saXN0Il0sImp0aSI6ImY0NTlkZWEwLTJlNGQtNDgxNi1hMjUwLTQ5YjhjNzQ5Mjg5YiIsImNsaWVudF9pZCI6ImNsaWVudC1zdXBlciIsInNjb3BlIjpbIlJlYWQgRGF0YSIsIldyaXRlIERhdGEiXX0.OAKT6c5cpfwkzlQRz5AS_svSRWBROo_UN6I9_aE2EHky4OjGUwh7DExiDTYwr-kcLE9o1P7ZDW28g_f2SZVpx8AYosOJiN727060zbrT1q2shmnKhVv7pQJomzshdrXdCo0Lwz1eQ7punQv21mwEohIz4x0aX8IrxkcV8_-1hanGyKYkcdRdOdcWKYx2D_2k1_Z_wRhLuyV8vhmtjOPqWpNBjg6XmwRyA2GaRxJQAsWlQdyGC69GOLV4HVCgPJSUX7rgK1yatVGR8WyTcXclTmb9E9XBrom2zkq2NxZ4ZDVnHu6oq9Fszv3BbM-uwsPggFFG0D0YKG6s00uetXWz_A
-```
+` eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODkxMjg4NDcsInVzZXJfbmFtZSI6InN1cGVyIiwiYXV0aG9yaXRpZXMiOlsiYXBpLnBlcm1pc3Npb25zLmRlbGV0ZSIsImFwaS5yb2xlcy5kZWxldGUiLCJhcGkucm9sZXMudXBkYXRlIiwiYXBpLnBlcm1pc3Npb25zLmxpc3QiLCJhcGkucGVybWlzc2lvbnMudXBkYXRlIiwiYXBpLnVzZXJzLmNyZWF0ZSIsImFwaS51c2Vycy5nZXQiLCJhcGkudXNlcnMubGlzdCIsImFwaS5wZXJtaXNzaW9ucy5nZXQiLCJhcGkucm9sZXMuZ2V0IiwiYXBpLnVzZXJzLnVwZGF0ZSIsImFwaS5yb2xlcy5jcmVhdGUiLCJhcGkudXNlcnMuZGVsZXRlIiwiYXBpLnBlcm1pc3Npb25zLmNyZWF0ZSIsImFwaS5yb2xlcy5saXN0Il0sImp0aSI6ImY0NTlkZWEwLTJlNGQtNDgxNi1hMjUwLTQ5YjhjNzQ5Mjg5YiIsImNsaWVudF9pZCI6ImNsaWVudC1zdXBlciIsInNjb3BlIjpbIlJlYWQgRGF0YSIsIldyaXRlIERhdGEiXX0.OAKT6c5cpfwkzlQRz5AS_svSRWBROo_UN6I9_aE2EHky4OjGUwh7DExiDTYwr-kcLE9o1P7ZDW28g_f2SZVpx8AYosOJiN727060zbrT1q2shmnKhVv7pQJomzshdrXdCo0Lwz1eQ7punQv21mwEohIz4x0aX8IrxkcV8_-1hanGyKYkcdRdOdcWKYx2D_2k1_Z_wRhLuyV8vhmtjOPqWpNBjg6XmwRyA2GaRxJQAsWlQdyGC69GOLV4HVCgPJSUX7rgK1yatVGR8WyTcXclTmb9E9XBrom2zkq2NxZ4ZDVnHu6oq9Fszv3BbM-uwsPggFFG0D0YKG6s00uetXWz_A`
 
 5. Copy the access token into the Authorization header of a webservice request (via cURL or Postman)
 ![OAuth Implicit Authorization Browser 6](./images/DEVELOPMENT_implicit_auth6.png)
