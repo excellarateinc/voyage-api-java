@@ -145,10 +145,10 @@ Each version of the an api will have a new controller source file and a unique u
 
 :arrow_up: [Back to Top](#table-of-contents)
 
-## Consuming API Services
+### Consuming API Services
 There are two type of services available via the API: anonymous and secure services. Anonymous services are those that can be used without any authentication. Meanwhile, secure services are those that require a bearer token in order to process the request.
 
-### Anonymous Services
+#### Anonymous Services
 Anonymous services can be used without including an Authorization header. The following endpoints are anonymous:
 
 | Path | Description | 
@@ -159,7 +159,7 @@ Anonymous services can be used without including an Authorization header. The fo
 
 Each of the services can be used by issuing a standard HTTP Request. For more information, see the API documentation for details on consuming these services.
 
-#### Sample Anonymous Request
+##### Sample Anonymous Request
 
 ```
 GET http://54.196.167.24/api/v1/hello HTTP/1.1
@@ -173,7 +173,7 @@ Accept-Encoding: gzip, deflate, sdch
 Accept-Language: en-US,en;q=0.8
 ```
 
-#### Sample Anonymous Response
+##### Sample Anonymous Response
 
 ```
 HTTP/1.1 200 OK
@@ -186,7 +186,7 @@ Date: Tue, 06 Dec 2016 21:43:57 GMT
 {"status": "alive", "datetime": "2016-12-23 17:55:55 UTC"}
 ```
 
-### Secure Services
+#### Secure Services
 Secure services need to have a special header included in the request. The header is:
 
 ```
@@ -206,7 +206,7 @@ The workflow for consuming these sevices is as follows:
 
 **Note:** The access_token can be reused for multiple requests. It is unnecessary to call Login prior to every secure request. 
 
-#### Sample Login Request
+##### Sample Login Request
 
 ```
 POST http://54.196.167.24/api/v1/login HTTP/1.1
@@ -226,7 +226,7 @@ grant_type=password&username=admin%40admin.com&password=Hello123!
 
 ```
 
-#### Sample Login Response
+##### Sample Login Response
 
 ```
 HTTP/1.1 200 OK
@@ -245,7 +245,7 @@ Date: Tue, 06 Dec 2016 21:47:04 GMT
 
 ```
 
-#### Sample Secure Request
+##### Sample Secure Request
 
 ```
 GET http://54.196.167.24/api/v1/roles HTTP/1.1
@@ -260,7 +260,7 @@ Accept-Encoding: gzip, deflate, sdch
 Accept-Language: en-US,en;q=0.8
 ```
 
-#### Sample Secure Response
+##### Sample Secure Response
 
 ```
 HTTP/1.1 200 OK
@@ -276,11 +276,11 @@ Date: Tue, 06 Dec 2016 21:47:50 GMT
 :arrow_up: [Back to Top](#table-of-contents)
 
 
-## Create a Web Service Endpoint Controller
+### Create a Web Service Endpoint Controller
 
 Creating a controller will expose a new API endpoint. Controllers should be concerned with the API endpoint route and returning an appropriate HttpStatusCode. They should depend on services to execute to the business logic and return an object that represents that result that should be passed to the client.
 
-### Annotations
+#### Annotations
 When adding a new controller, there are several annotations that should be used to decorate the class. The table below describes these attributes.
 
 | Annotation  | Example | Scope | Description |
@@ -344,7 +344,7 @@ class UserController {
 }
 ```
 
-### Implementation
+#### Implementation
 The following steps provide guidance around adding a new service
 
 1. Add a new class file to Voyage.Web in the correct feature folder
