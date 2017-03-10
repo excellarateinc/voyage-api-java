@@ -427,11 +427,12 @@ class User extends AuditableEntity {
 
 
 
+## Service & Domain Logic
 
-## Creating a Service
+### Creating a Service
 Services perform all business logic in the application.
 
-### Annotations
+#### Annotations
 
 | Annotation  | Example | Scope | Description |
 |:----|:----|:----|:----|
@@ -441,7 +442,7 @@ Services perform all business logic in the application.
 |NotNull|`User get(@NotNull Long id)`|Parameter|Validates that the parameter passed is not null|
 |Valid|`User saveDetached(@Valid User userIn)`|Parameter|Validates the object passed in based on annotations in the class definition|
 
-### Implementation
+#### Implementation
 The following steps provide guidance around adding a new service
 
 1. Add a new class to your feature folder
