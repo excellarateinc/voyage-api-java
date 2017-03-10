@@ -4,26 +4,33 @@ Instructional recipies for how to do something within the codebase.
 > __Keep Organized__ Keep the Table of Contents alphabetized and do your best to extend this document in a way that will be easy to read/scroll for all developers.
 
 ## Table of Contents
-* Return an expected error from a REST controller
-* Version a REST controller
-* Expose a web service endpoint to the public
-* Bypass User Verification process
-* 
-* [APIDoc - Document A Web Service](#apidoc---document-a-web-service)
-* [API Versioning](#api-versioning)
-* [Consuming API Services](#consuming-api-services)
-* [Folder by Feature](#folder-by-feature)
-* [Creating a Controller](#creating-a-controller)
-* [Creating a Service](#creating-a-service)
-* [HTTP Request - Validate Request Data](#http-request---validate-request-data)
+* [General](#general)
+  - [APIDoc - Document A Web Service](#apidoc---document-a-web-service)
+  - [Folder by Feature](#folder-by-feature)
+  - Run Tests
+* [Web Services](#web-services)
+  - [API Versioning](#api-versioning)
+  - [Create a Web Service Endpoint Controller](#creating-a-controller)
+  - [Consuming API Services](#consuming-api-services)
+  - [HTTP Request - Validate Request Data](#http-request---validate-request-data)
+  - Securing a Web Service endpoint
+* [Service & Domain logic](#service-domain-logic)
+  - Error Handling w/ i18n support
+  - [Create a Service](#creating-a-service)
+* [Build & Deploy](#build-and-deploy)
+  - Clean workspace and rebuild
+* [Data Layer](#data-layer)
+  - Create a database access Repository
+  - Add database structure changes
 
+## General
 
-## APIDoc - Document A Web Service
+### APIDoc - Document A Web Service
 Web service documentation for consumers is facilitated through the use of a framework called [apiDoc](http://apidocjs.com). apiDoc provides a set of annotation that are placed in a comment block within the web service controller class. To generate the documentation website for consumers, apiDoc provides a Node script that scans the source files for apiDoc annotations to create a pretty HTML website. 
 
 The complete documenation of apiDoc can be found on their website [http://apidocjs.com](http://apidocjs.com/).
 
-### Example
+#### Example
 Below is an example of the comments used to document an endpoint.
 
 ```
@@ -54,18 +61,18 @@ Below is an example of the comments used to document an endpoint.
 ...
 ```
 
-### Reusable apiDoc blocks
+#### Reusable apiDoc blocks
 apiDoc supports creating reusuable documentation blocks using [@apiDefine](http://apidocjs.com/#param-api-define). This 
 cuts down on repeated comment blocks for shared elements such as errors. 
 All reusable blocks should be placed in  ***apidoc/apidoc-header.js***
 
-### Current @apiDefine blocks
+#### Current @apiDefine blocks
 
-#### Headers
+##### Headers
 1. AuthHeader
     - Used when an API requires the authorization header 
     
-#### Errors
+##### Errors
 1. BadRequestError
    - Used when an API can return a 400
 2.  NotFoundError
@@ -73,16 +80,16 @@ All reusable blocks should be placed in  ***apidoc/apidoc-header.js***
 3. UnauthorizedError
     - Used when an API can generate a 401
 
-#### Request Params
+##### Request Params
 1. UserRequestModel
     - Used when an API takes a user as input
 
-#### Response Params
+##### Response Params
 1. UserSuccessModel
     - Used when an API returns a single user
 
     
-### Generating documentation
+#### Generating documentation
 To generate the api docs after a change:
 
 1. In ***apidoc/*** execute npm run doc
@@ -91,9 +98,35 @@ To generate the api docs after a change:
 
 To view the documentation either run the application and navigate to /docs/ or open the static index.html file.
 
+### Folder by Feature
+
+#### File and Folder Structure
+
+Voyage uses a folder-by-feature approach, where code is organized into package folders by feature rather than by class type. Packaging classes by feature provides a clear view of the "components" required to support the feature. Utilizing this organization method also allows for easier modularization when a feature is desirable in other apps. 
+
+#### Example
+/com/company/app
+   /search
+      SearchController
+      SearchService
+      SearchRepository
+      SearchCriteria
+   /security
+      UserController
+      UserService
+      UserRepository
+      User
+
+#### Notes
+* If you are adding a new feature, create a new folder. 
+* If you are modifying or adding to an existing feature, then work within that feature's folder. 
+* Be mindful of creating dependencies on other features. Too many depedencies on other feature may be a 'bad code smell' for your feature. 
+* Avoid putting features or utilities in a 'common' package if possible. ONLY put features into common if they are TRULY generic and non-feature specific. Otherwise, just make a dependency on the feature you need. 
+* Keep your folder structure as flat as possible, only build sub folders for sub features if the file count grows larger than ~7.
+
 :arrow_up: [Back to Top](#table-of-contents)
 
-## API Versioning
+### API Versioning
 API versioning is handled through URL versioning. See the [Web Service Pattern for API Versioning](WEB-SERVICE-PATTERNS.md#versioning). 
 
 Each version of the an api will have a new controller source file and a unique url that contains the version. The routing for these versions is handled via attributes. The steps for creating a new version of an API are roughly as follows:
@@ -236,14 +269,6 @@ Date: Tue, 06 Dec 2016 21:47:50 GMT
 ```
 
 :arrow_up: [Back to Top](#table-of-contents)
-
-## Folder by Feature
-
-### File and Folder Structure
-
-Voyage uses a folder-by-feature approach, where code is organized by feature rather than type. If you are adding a new feature, create a new folder. If you are modifying or adding to an existing feature, work within that feature's folder.
-
-Keep your folder structure as flat as possible, only build sub folders for sub features if the file count grows larger than ~7.
 
 ## Creating a Controller
 
