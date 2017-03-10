@@ -236,9 +236,7 @@ which will be demonstrated below.
 ```
 http://localhost:8080/oauth/authorize?client_id=client-super&redirect_uri=http://localhost:8080/oauth/&response_type=token
 ```
-
 ![OAuth Implicit Authorization Browser 1](./images/DEVELOPMENT_implicit_auth1.png)
-
 * Endpoint Address: http://localhost:8080/oauth/authorize
 * Parameters:
   - client_id - the client identifier
@@ -248,7 +246,6 @@ http://localhost:8080/oauth/authorize?client_id=client-super&redirect_uri=http:/
 
 2. Login as the 'super' user
 ![OAuth Implicit Authorization Browser 2](./images/DEVELOPMENT_implicit_auth2.png)
-
 * Username: super
 * Password: password
 
@@ -257,9 +254,7 @@ http://localhost:8080/oauth/authorize?client_id=client-super&redirect_uri=http:/
 
 4. Retrieve the Access Token from the URL parameters
 ![OAuth Implicit Authorization Browser 4](./images/DEVELOPMENT_implicit_auth4.png)
-
 ![OAuth Implicit Authorization Browser 5](./images/DEVELOPMENT_implicit_auth5.png)
-
 * Upon successful authentication, the app will redirect to the given redirect uri
 * The redirect uri doesn't likely existing on you local environment (or any environment)
 * You will receive a 404 Not Found error page
