@@ -22,7 +22,8 @@ Instructional recipies for how to do something within the codebase.
 * [Data Layer](#data-layer)
   - Create a database access Repository
   - Add database structure changes
-
+  
+  
 ## General
 
 ### APIDoc - Document A Web Service
@@ -98,9 +99,9 @@ To generate the api docs after a change:
 To view the documentation either run the application and navigate to /docs/ or open the static index.html file.
 
 :arrow_up: [Back to Top](#table-of-contents)
-
-
-
+  
+  
+ 
 ### Folder by Feature
 
 #### File and Folder Structure
