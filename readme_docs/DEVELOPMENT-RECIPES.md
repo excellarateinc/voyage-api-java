@@ -97,6 +97,8 @@ To generate the api docs after a change:
 
 To view the documentation either run the application and navigate to /docs/ or open the static index.html file.
 
+:arrow_up: [Back to Top](#table-of-contents)
+
 
 
 ### Folder by Feature
