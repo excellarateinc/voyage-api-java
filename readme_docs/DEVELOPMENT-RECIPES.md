@@ -10,8 +10,8 @@ Instructional recipies for how to do something within the codebase.
   - Run Tests
 * [Web Services](#web-services)
   - [API Versioning](#api-versioning)
-  - [Create a Web Service Endpoint Controller](#creating-a-controller)
   - [Consuming API Services](#consuming-api-services)
+  - [Create a Web Service Endpoint Controller](#create-a-web-service-endpoint-controller)
   - [HTTP Request - Validate Request Data](#http-request---validate-request-data)
   - Securing a Web Service endpoint
 * [Service & Domain logic](#service-domain-logic)
@@ -87,8 +87,7 @@ All reusable blocks should be placed in  ***apidoc/apidoc-header.js***
 ##### Response Params
 1. UserSuccessModel
     - Used when an API returns a single user
-
-    
+   
 #### Generating documentation
 To generate the api docs after a change:
 
@@ -97,6 +96,8 @@ To generate the api docs after a change:
    - This will scan the Controllers folder for endpoints and place the output in /docs
 
 To view the documentation either run the application and navigate to /docs/ or open the static index.html file.
+
+
 
 ### Folder by Feature
 
@@ -125,6 +126,10 @@ Voyage uses a folder-by-feature approach, where code is organized into package f
 * Keep your folder structure as flat as possible, only build sub folders for sub features if the file count grows larger than ~7.
 
 :arrow_up: [Back to Top](#table-of-contents)
+
+
+
+## Web Services
 
 ### API Versioning
 API versioning is handled through URL versioning. See the [Web Service Pattern for API Versioning](WEB-SERVICE-PATTERNS.md#versioning). 
@@ -270,7 +275,8 @@ Date: Tue, 06 Dec 2016 21:47:50 GMT
 
 :arrow_up: [Back to Top](#table-of-contents)
 
-## Creating a Controller
+
+## Create a Web Service Endpoint Controller
 
 Creating a controller will expose a new API endpoint. Controllers should be concerned with the API endpoint route and returning an appropriate HttpStatusCode. They should depend on services to execute to the business logic and return an object that represents that result that should be passed to the client.
 
@@ -338,7 +344,6 @@ class UserController {
 }
 ```
 
-
 ### Implementation
 The following steps provide guidance around adding a new service
 
@@ -359,6 +364,66 @@ ResponseEntity update(@RequestBody User user) {
 }
 ```
 :arrow_up: [Back to Top](#table-of-contents)
+
+
+
+### HTTP Request - Validate Request Data
+
+Request data is validated using the @NotNull and @Valid annotations on service parameters. @Valid uses the annotations on the object's class definition.
+
+#### Adding Validation
+
+* Annotate your model with validation annotations
+
+Example model
+
+```
+@Entity
+@Audited
+class User extends AuditableEntity {
+    @NotNull
+    String firstName
+
+    @NotNull
+    String lastName
+
+    @NotNull
+    String username
+
+    @Email
+    @NotNull
+    String email
+
+    @NotNull
+    String password
+
+    @NotNull
+    Boolean isEnabled = Boolean.TRUE
+
+    @NotNull
+    Boolean isAccountExpired = Boolean.FALSE
+
+    @NotNull
+    Boolean isAccountLocked = Boolean.FALSE
+
+    @NotNull
+    Boolean isCredentialsExpired = Boolean.FALSE
+
+    @NotNull
+    @JsonIgnore
+    Boolean isVerifyRequired = Boolean.FALSE
+
+    @ManyToMany
+    @JoinTable(name='user_role', joinColumns=@JoinColumn(name='user_id'), inverseJoinColumns=@JoinColumn(name='role_id'))
+    @JsonIgnore
+    Set<Role> roles
+}
+```
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+
+
 
 ## Creating a Service
 Services perform all business logic in the application.
@@ -421,59 +486,4 @@ class ClientService {
 
 :arrow_up: [Back to Top](#table-of-contents)
 
-
-## HTTP Request - Validate Request Data
-
-Request data is validated using the @NotNull and @Valid annotations on service parameters. @Valid uses the annotations on the object's class definition.
-
-#### Adding Validation
-
-* Annotate your model with validation annotations
-
-Example model
-
-```
-@Entity
-@Audited
-class User extends AuditableEntity {
-    @NotNull
-    String firstName
-
-    @NotNull
-    String lastName
-
-    @NotNull
-    String username
-
-    @Email
-    @NotNull
-    String email
-
-    @NotNull
-    String password
-
-    @NotNull
-    Boolean isEnabled = Boolean.TRUE
-
-    @NotNull
-    Boolean isAccountExpired = Boolean.FALSE
-
-    @NotNull
-    Boolean isAccountLocked = Boolean.FALSE
-
-    @NotNull
-    Boolean isCredentialsExpired = Boolean.FALSE
-
-    @NotNull
-    @JsonIgnore
-    Boolean isVerifyRequired = Boolean.FALSE
-
-    @ManyToMany
-    @JoinTable(name='user_role', joinColumns=@JoinColumn(name='user_id'), inverseJoinColumns=@JoinColumn(name='role_id'))
-    @JsonIgnore
-    Set<Role> roles
-}
-```
-
-:arrow_up: [Back to Top](#table-of-contents)
 
