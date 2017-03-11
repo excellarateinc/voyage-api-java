@@ -13,7 +13,7 @@ Instructional recipies for how to do something within the codebase.
   - [Consuming API Services](#consuming-api-services)
   - [Create a Web Service Endpoint Controller](#create-a-web-service-endpoint-controller)
   - [HTTP Request - Validate Request Data](#http-request---validate-request-data)
-  - Securing a Web Service endpoint
+  - [Securing a Web Service endpoint](#securing-a-web-service-endpoint)
 * [Service & Domain logic](#service--domain-logic)
   - [Create a Service](#creating-a-service)
   - Error Handling w/ i18n support
