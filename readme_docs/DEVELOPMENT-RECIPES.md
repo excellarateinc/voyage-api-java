@@ -16,7 +16,7 @@ Instructional recipies for how to do something within the codebase.
   - [Securing a Web Service endpoint](#securing-a-web-service-endpoint)
 * [Service & Domain logic](#service--domain-logic)
   - [Create a Service](#creating-a-service)
-  - Error Handling w/ i18n support
+  - [Error Handling w/ i18n support](#error-handling-w-i18n-support)
 * [Build & Deploy](#build-deploy)
   - [Clean workspace and rebuild](#clean-workspace-and-rebuild)
 * [Data Layer](#data-layer)
@@ -653,6 +653,139 @@ class ClientService {
 ```
 
 :arrow_up: [Back to Top](#table-of-contents)
+
+
+### Error Handling w/ i18n support
+#### Overview
+Error handling is a very important topic for a web services API because consumers of the API will need some uniform way to anticipate and process errors. Error handling can also be a very messy pattern within a code base because it's not always known where errors could come from or when they will occur. Fortunuately, Spring Framework has defined a nice error handling pattern in conjunction with Spring MVC where unchecked exceptions are intercepted and handed off to a error handler for futher processing. This API has extended the Spring MVC error handler within `/src/main/groovy/voyage/common/error/DefaultExceptionHandler` that intercepts Voyage `/src/main/groovy/voyage/common/error/AppException` unchecked exceptions and translates the contents into a well formed HTTP JSON response. 
+
+#### AppException 
+`/src/main/groovy/voyage/common/error/AppException` extends RuntimeException and defines an HTTP Status code and a message with the option to override the default generated error code. When AppException is thrown from anywhere in the app, SpringMVC will be watching for the exception and processing it using `/src/main/groovy/voyage/common/error/DefaultExceptionHandler`. Without going into much detail, the DefaultExceptionHandler will transform the AppException into a well formed JSON response and returned to the consumer. 
+
+When creating your own error exceptions, extend AppException with your own properly named implemenation. 
+```
+class UnknownIdentifierException extends AppException {
+    private static final HttpStatus HTTP_STATUS = HttpStatus.NOT_FOUND
+    private static final String DEFAULT_MESSAGE = 'Unknown record identifier provided'
+
+    UnknownIdentifierException() {
+        this(DEFAULT_MESSAGE)
+    }
+
+    UnknownIdentifierException(String message) {
+        super(HTTP_STATUS, message)
+    }
+
+    @Override
+    String getErrorCode() {
+        return HTTP_STATUS.value() + '_unknown_identifier'
+    }
+}
+```
+* Extending AppException provides an opportunitity to name your class with the specific error that it represents
+* Embedding the default HTTP Status code and API response message keeps these details out of the code layers that shouldn't know about HTTP or the consumer. 
+* getErrorCode() is overridden to provide a specific error code for consumers to use to translate the code into a language appropriate message to the end-user. 
+
+Example of how an AppException can be used within the code:
+```
+@Service
+class UserService {
+    private final UserRepository userRepository
+
+    @Autowired
+    UserService(UserRepository userRepository) {
+        this.userRepository = userRepository
+    }
+    
+    User get(@NotNull Long id) {
+        User user = userRepository.findOne(id)
+        if (!user) {
+            throw new UnknownIdentifierException()
+        }
+        return user
+    }
+}
+```
+
+#### Internationalization (i18n)
+This API does not technically support internationalization and likely never will. The consumer of the API is responsible with interfacing with the end-user and therefore is in complete control of the language presentation. To support consumers with the ability to properly display error messages in a user appropriate language, the error handling framework in this API will always return a unique error code that can be used for langauge translation lookups. See [AngularJS i18n docs](https://docs.angularjs.org/guide/i18n) for more information on how a consumer would use a message code to look up a language translation.  
+
+Error responses from web services of this API are described within the [Web Services Standards](./STANDARDS-WEB-SERVICES.md#response-errors) documentation. Please be sure to read through the Web Services Standards specification for a more thorough understanding of error handling for web services. 
+
+When AppException is translated into a JSON response, the output conform to the following JSON pattern:
+```
+HTTP Status: 40x
+[
+   {error: "unique.code.here", errorDescription: "human readable description"},
+   {error: "unique.code.here", errorDescription: "human readable description"},
+]
+```
+
+A concrete example of the UnkownIdentifierException would be:
+```
+HTTP Status: 404 Not Found
+[
+   {error: "404_unknown_identifier", errorDescription: "Unknown record identifier provided"}
+]
+```
+* Only one error is returned, but it is still contained within a list so that the consumer doesn't have to detect if there is a list response or an object response. Keeping this consistent makes for easier and consistent coding on the consumer side. 
+* 'error' is a custom error code that can be used by the consumer to look up a specific message for display to the end user
+* 'errorDescription' is an English message to the consumer that will likely not be used beyond testing. 
+
+By default, the 'error' value in the JSON response will be a generated code based on the HTTP Status + HTTP Status Name. For example:
+```
+class SomeException extends AppException {
+    private static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST
+    private static final String DEFAULT_MESSAGE = 'Some error just occurred'
+
+    SomeException() {
+        this(DEFAULT_MESSAGE)
+    }
+
+    SomeException(String message) {
+        super(HTTP_STATUS, message)
+    }
+}
+```
+* The parent AppException.getErrorCode() is not overridden
+* The code will be generated based on the HttpStatus.BAD_REQUEST value: 400_bad_request
+
+Example JSON output of SomeException will be:
+```
+HTTP Status: 404 Not Found
+[
+   {error: "400_bad_request", errorDescription: "Some error just occurred"}
+]
+```
+
+In many cases, the '400_bad_request' error code will be too generic for a consumer to translate into something meaningful for the end user. To provide a more meaningful error code, override the getErrorCode() method and create a unique error code.
+```
+class SomeException extends AppException {
+    private static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST
+    private static final String DEFAULT_MESSAGE = 'Some error just occurred'
+
+    SomeException() {
+        this(DEFAULT_MESSAGE)
+    }
+
+    SomeException(String message) {
+        super(HTTP_STATUS, message)
+    }
+    
+    @Override
+    String getErrorCode() {
+        return HTTP_STATUS.value() + '_some_error'
+    }
+}
+```
+
+Example JSON output of SomeException will now include a unique error code for the consumer to use and translate appropriately. 
+```
+HTTP Status: 404 Not Found
+[
+   {error: "400_some_error", errorDescription: "Some error just occurred"}
+]
+```
 
 
 
