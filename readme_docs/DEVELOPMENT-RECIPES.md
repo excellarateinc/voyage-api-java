@@ -577,6 +577,16 @@ interface UserRepository extends CrudRepository<User, Long> {
 * Create your own query using the method name convention described in [Working With Spring Repositories: Query Creation](http://docs.spring.io/spring-data/data-commons/docs/1.6.1.RELEASE/reference/html/repositories.html) section. 
 * NOTE: findOne(Long id) is overridden from the CrudRepository interface because an additional criteria of 'u.isDeleted = false' needed to be added because logical deletes are implemented on the table. 
 
+#### Create a Service method to interact with the Repository at runtime
+The Repository interface is automatically implemented at runtime and placed into the Spring dependency container. The repository needs to be injected into a Service instance in order to be accessible to the application. 
+
+NOTE: ALWAYS call the Repository instances from a Service instance. Do not call Repository classes directly from Controllers or any other non-service instance. Always follow a 3-tier separation of concerns: 
+ 1. Controllers
+ 2. Services
+ 3. Repositories
+ 
+Controllers shouldn't call Repositories and definitely not vice versa! The Service layer in the middle is there to hold all necessary business logic in the app and broker communications between the outside world (ie Controller) and the database (ie Repository). 
+
 :arrow_up: [Back to Top](#table-of-contents)
 
 ### Add database structure changes
