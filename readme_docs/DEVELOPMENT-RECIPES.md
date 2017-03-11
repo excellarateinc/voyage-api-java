@@ -444,6 +444,40 @@ class User extends AuditableEntity {
 :arrow_up: [Back to Top](#table-of-contents)
 
 
+### Securing a Web Service endpoint
+[Spring Security](https://projects.spring.io/spring-security/) is implemented within this API to control access to any area of the app. There are a number of authentication methods available for Spring Security, but regardless of which one is used, Spring Security will hand off authorization to the custom Spring Security extension `/src/main/voyage/security/PermissionBasedUserDetailsService.groovy`. The PermissionBasedUserDetailsService receives the authenticated User and does a look up on the Permissions assigned to the Roles associated with the User (Users -> Roles -> Permissions). Permissions are then assigned to web services or any other area of the app that must be restricted. 
+
+#### Secure Web Services
+Secure SpringMVC Controller methods using the [@PreAuthorize Spring Security Annotation](http://docs.spring.io/spring-security/site/docs/3.0.x/reference/el-access.html). There are other annotations that can be used, but they will not be discussed in this section (ie @PreAuthorize, @PreFilter, @PostAuthorize and @PostFilter). 
+
+```
+@RestController
+@RequestMapping(['/api/v1/users', '/api/v1.0/users'])
+class UserController {
+    private final UserService userService
+
+    @Autowired
+    UserController(UserService userService) {
+        this.userService = userService
+    }
+    
+    @GetMapping
+    @PreAuthorize("hasAuthority('api.users.list')")
+    ResponseEntity list() {
+        Iterable<User> users = userService.listAll()
+        return new ResponseEntity(users, HttpStatus.OK)
+    }
+}
+```
+* @PreAuthorize("hasAuthority('api.users.list')") is added above the method signature of the list() method
+* @PreAuthorize uses [Spring Expression Language (SpEL)](http://docs.spring.io/spring-security/site/docs/3.0.x/reference/el-access.html) inside the annotation to define the criteria for pre-authorization. 
+* hasAuthority(..) SpEL method fetches the current User and checks to see if the given 'api.users.list' string matches any of the User's permissions.
+  - If the current User has the permission, then the list() method is executed
+  - If the current User does NOT have the permission, then a 401 Unauthorized HTTP response will be returned.
+* The `/src/main/voyage/security/PermissionBasedUserDetailsService.groovy` class defines how Spring Security fetches the user and the User's permissions for analysis by the hasAuthority() method. 
+* __NOTE:__ Controller methods *without* a security annotation, like @PreAuthorize, will be open to the public. Be sure to secure methods that need it (which should be all of them in most cases)!
+
+
 
 ## Service & Domain Logic
 
