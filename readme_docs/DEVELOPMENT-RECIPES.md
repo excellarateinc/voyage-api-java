@@ -580,6 +580,30 @@ interface UserRepository extends CrudRepository<User, Long> {
 #### Create a Service method to interact with the Repository at runtime
 The Repository interface is automatically implemented at runtime and placed into the Spring dependency container. The repository needs to be injected into a Service instance in order to be accessible to the application. 
 
+```
+@Service
+class UserService {
+    private final UserRepository userRepository
+    
+    @Autowired
+    UserService(UserRepository userRepository) {
+        this.userRepository = userRepository
+    }
+
+    User findByUsername(@NotNull String username) {
+        return userRepository.findByUsername(username)
+    }
+
+    User get(@NotNull Long id) {
+        User user = userRepository.findOne(id)
+        if (!user) {
+            throw new UnknownIdentifierException()
+        }
+        return user
+    }
+}
+```
+
 NOTE: ALWAYS call the Repository instances from a Service instance. Do not call Repository classes directly from Controllers or any other non-service instance. Always follow a 3-tier separation of concerns: 
  1. Controllers
  2. Services
