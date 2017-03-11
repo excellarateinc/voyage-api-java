@@ -68,36 +68,41 @@ If at all possible, automate as much of the deployment process as possible to pr
 
 
 ## Server Configuration
-> __FINISH DOCUMENTATION__
 
-### Windows Server 2012
+### Prerequisties
+The following are required to be present on the server before building and hosting the Voyage API
+* [Java JDK 1-8.0](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+  - Used for building, testing, and packaging the application
+  - Used for the Apache Tomcat web application container
+* [Apache Tomcat 8.0](http://tomcat.apache.org)
+  - Only necessary if the server is going to host the web application
 
-### Webserver
-The Java API can be hosted with any of the following:
+Follow the instructions on the sites (linked above) as to the best methods for installing/configuring these prerequisites.
 
-* IIS
-* Apache Web Server
-* (Stand-alone) Apache Tomcat
-* MySQL or MSSQL Database
+### Optional: HTTP Web Server
+Apache Tomcat can act as both an HTTP web service and a Java web application container. Since Apache Tomcat doesn't provide much in the way of HTTP servers, it is often desireable to setup an HTTP Server that then proxies requests/responses to/from Apache Tomcat.
 
+Any HTTP Server can be used, including
+* [Apache HTTP Server](https://httpd.apache.org)
+  - Use [mod_proxy_ajp](https://httpd.apache.org/docs/2.4/mod/mod_proxy_ajp.html) to create a proxy connection between Apache HTTP Server and Apache Tomcat
+* [Microsoft IIS](https://www.iis.net)
+  - Use the [Apache Tomcat ISAPI Connector](https://tomcat.apache.org/connectors-doc/webserver_howto/iis.html) to create a proxy channel between IIS and Apache Tomcat
+
+Follow the instructions on the sites (linked above) as to the best methods for installing/configuring the HTTP server. 
 
 :arrow_up: [Back to Top](#table-of-contents)
 
 ## App Build & Test
-> __FINISH DOCUMENTATION__
 
 ### Prerequisties
-The following are the prequisties for building the application from the CI server.
-
-* Java JKD 1-8.0 
-* Gradle 3.3 -- Included in Gradle Wrapper
-* Apache Tomcat 8.0
+The following are required to be present on the server before building Voyage API:
+* [Java JDK 1-8.0](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
 
 ### Instructions
 
 #### 1. Build with Gradle Wrapper
 The Java API project uses Gradle to run unit and intergration tests, and then to build and package the API.
-Graddle Wrapper requires a Graddle installation and will install one if none can be found. 
+Gradle Wrapper requires a Gradle installation and will install one if none can be found. 
 ```
 gradlew clean
 ```
