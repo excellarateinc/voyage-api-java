@@ -20,8 +20,8 @@ Instructional recipies for how to do something within the codebase.
 * [Build & Deploy](#build-deploy)
   - [Clean workspace and rebuild](#clean-workspace-and-rebuild)
 * [Data Layer](#data-layer)
-  - Create a database access Repository
-  - Add database structure changes
+  - [Create a database access Repository](#create-a-database-access-repository)
+  - [Add database structure changes](#add-database-structure-changes)
   
   
 ## General
@@ -527,4 +527,58 @@ class ClientService {
 
 ## Data Layer
 
+### Create a database access Repository
+
+#### Quick Refresher
+1. Read up on Java Persistence API (JPA) to familiarize yourself with the annotation based decoration of domain objects to map to a relational database. 
+   - [Hibernate Overview](http://hibernate.org/orm/)
+   - [What's the difference between JPA & Hibernate](http://stackoverflow.com/questions/9881611/whats-the-difference-between-jpa-and-hibernate)
+2. Read up on Spring Data JPA to familiarize yourself with how repository implementations are created from interfaces
+   - [Getting Started: Accessing Data with JPA](https://spring.io/guides/gs/accessing-data-jpa/)
+   - [Working with Spring Data Repositories](http://docs.spring.io/spring-data/data-commons/docs/1.6.1.RELEASE/reference/html/repositories.html)
+   
+#### Create a domain object
+Create a domain object that represents a database table. This domain object will be used to map to a database table row. 
+```
+@Entity
+class User {
+    @NotNull
+    String firstName
+
+    @NotNull
+    String lastName
+} 
+```
+
+* @Entity - the main annotation that signals to JPA/Hibernate that this object represents an entity in the database
+* @NotNull - a constraint annotation that enforces that this field cannot be null when it is persisted to the database
+* There are number of other JPA annotation for mapping relationships between @Entity domain objects. Read the full JPA / Hibernate specification for more details
+
+#### Create a Repository interface
+Spring Data JPA will automatically generate an implementation of the interface at runtime. Simply create the interface and provide additional annotations if necessary to instruct the implementation on how to behave. 
+```
+interface UserRepository extends CrudRepository<User, Long> {
+    @Query('FROM User u WHERE u.username = ?1 AND u.isDeleted = false')
+    User findByUsername(String username)
+
+    @Query('FROM User u WHERE u.id = ?1 AND u.isDeleted = false')
+    User findOne(Long id)
+
+    @Query('FROM User u WHERE u.isDeleted = false')
+    Iterable<User> findAll()
+}
+```
+* interface - no need to create an actual implementation as Spring JPA will do this for you automatically at runtime
+* `extends CrudRepository` - There are a number of interfaces that can be extended to provide features based on common patterns, such as the Create-Read-Update-Delete pattern. 
+   - [CrudRepository JavaDoc](http://docs.spring.io/autorepo/docs/spring-data-commons/1.9.1.RELEASE/api/org/springframework/data/repository/CrudRepository.html)
+* @Query - Annotate a method with @Query to specify the [JPQL](https://docs.jboss.org/hibernate/orm/4.3/devguide/en-US/html/ch11.html) that will be executed when the method is called. 
+  - Note that the input parameters of the method are mapped into the query with a '?' followed by the input parameter order number. 
+  - The 'username' input param for findByUsername(String username) will be mapped to '?1' in the Query [JPQL](https://docs.jboss.org/hibernate/orm/4.3/devguide/en-US/html/ch11.html)
+* Create your own query using the method name convention described in [Working With Spring Repositories: Query Creation](http://docs.spring.io/spring-data/data-commons/docs/1.6.1.RELEASE/reference/html/repositories.html) section. 
+* NOTE: findOne(Long id) is overridden from the CrudRepository interface because an additional criteria of 'u.isDeleted = false' needed to be added because logical deletes are implemented on the table. 
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+### Add database structure changes
+  
 :arrow_up: [Back to Top](#table-of-contents)
