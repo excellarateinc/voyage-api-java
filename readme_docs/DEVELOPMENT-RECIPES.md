@@ -138,7 +138,7 @@ Voyage uses a folder-by-feature approach, where code is organized into package f
 2. gradle test
 
 #### IntelliJ
-1. Within the Project sidebar pane, right-click on /src/test
+1. Within the Project sidebar pane, right-click on /src/test 
 ![Test in IntelliJ](./images/RECIPES_RunTests1.png)
 
 2. Choose the 'Run All Tests' option to run all unit and integrations tests found
