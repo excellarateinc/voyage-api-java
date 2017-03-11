@@ -17,8 +17,8 @@ Instructional recipies for how to do something within the codebase.
 * [Service & Domain logic](#service--domain-logic)
   - [Create a Service](#creating-a-service)
   - Error Handling w/ i18n support
-* [Build & Deploy](#build-and-deploy)
-  - Clean workspace and rebuild
+* [Build & Deploy](#build-deploy)
+  - [Clean workspace and rebuild](#clean-workspace-and-rebuild)
 * [Data Layer](#data-layer)
   - Create a database access Repository
   - Add database structure changes
@@ -509,3 +509,22 @@ class ClientService {
 :arrow_up: [Back to Top](#table-of-contents)
 
 
+
+## Build & Deploy
+
+### Clean workspace and rebuild
+#### Command line
+`voyage-api-java > gradle clean build`
+
+#### IntelliJ
+1. Rebuild the IntelliJ compiled source files in /out folder by clicking the file menu 'Build' and option 'Rebuild Project'
+![IntelliJ Build & Deploy 1](./images/RECIPES_CleanAndBuild1.png)
+
+2. Rebuild by invoking the Gradle 'clean' and 'build' tasks within the Gradle tool window
+![IntelliJ Build & Deploy 2](./images/RECIPES_CleanAndBuild2.png)
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+## Data Layer
+
+:arrow_up: [Back to Top](#table-of-contents)
