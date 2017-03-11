@@ -7,14 +7,14 @@ Instructional recipies for how to do something within the codebase.
 * [General](#general)
   - [APIDoc - Document A Web Service](#apidoc---document-a-web-service)
   - [Folder by Feature](#folder-by-feature)
-  - Run Tests
+  - [Run Tests](#run-tests)
 * [Web Services](#web-services)
   - [API Versioning](#api-versioning)
   - [Consuming API Services](#consuming-api-services)
   - [Create a Web Service Endpoint Controller](#create-a-web-service-endpoint-controller)
   - [HTTP Request - Validate Request Data](#http-request---validate-request-data)
   - Securing a Web Service endpoint
-* [Service & Domain logic](#service-domain-logic)
+* [Service & Domain logic](#service--domain-logic)
   - [Create a Service](#creating-a-service)
   - Error Handling w/ i18n support
 * [Build & Deploy](#build-and-deploy)
@@ -131,6 +131,24 @@ Voyage uses a folder-by-feature approach, where code is organized into package f
 :arrow_up: [Back to Top](#table-of-contents)
 
 
+### Run Tests
+
+#### Command Line
+1. cd /path/to/my/workspace/voyage-api-java
+2. gradle test
+
+#### IntelliJ
+1. Within the Project sidebar pane, right-click on /src/test
+![Test in IntelliJ](./images/RECIPES_RunTests1.png)
+
+2. Choose the 'Run All Tests' option to run all unit and integrations tests found
+![Test in IntelliJ](./images/RECIPES_RunTests2.png)
+
+3. Run a specific test by right-clicking on the Test class and selecting 'Run >ClassNameSpec<'
+![Test in IntelliJ](./images/RECIPES_RunTests3.png)
+
+4. Alternatively, open the Gradle tool menu in IntelliJ and double click the 'verification > test' option
+![Test in IntelliJ](./images/RECIPES_RunTests4.png)
 
 ## Web Services
 
