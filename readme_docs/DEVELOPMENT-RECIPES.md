@@ -614,5 +614,62 @@ Controllers shouldn't call Repositories and definitely not vice versa! The Servi
 :arrow_up: [Back to Top](#table-of-contents)
 
 ### Add database structure changes
-  
+Database changes are managed within the app at start-up using the [Liquibase framework](http://www.liquibase.org). Liquibase employs a database migration strategy for deploying database changes, which means that changes are scripted and ordered into a progression of changes that are designed to bring the database to the latest structural state. 
+
+#### Liquibase Notes
+* Liqubase database migration scripts are stored in `/src/main/resources/db.changelog`
+* Liquibase uses a table called DATABASECHANGELOG to track all changes that have been applied to the database
+* Liquibase also generates a checksum on the migration script and will fail the app if an executed script checksum doesn't match the calculated checksum of the script in the filesystem. 
+* All migration scripts follow the [YAML](http://www.yaml.org/start.html) file structure since it's less verbose than XML
+
+#### Create a new liquibase migration file for your changes
+1. Go to `/src/main/resources/db.changelog`
+2. Go into the version sub-folder appropriate for your change OR create a new version folder if your changes are for a new version of the app. Example: `/src/main/resources/db.changelog/V1-0` 
+3. Create a new YAML file for your changes named after the table name that is being changed
+   - Exmample: user.yaml
+   - NOTE: If the changes are not related to a specific table, then name the file based on the actions that will be performed, like 'add-indexes-to-tables.yaml'
+   - Always use the 4 character extension for YAML files: .yaml
+4. Add the new file to the `_db.changelog.yaml` file in the current version folder. 
+   - If you are creating a new folder, then copy the `_db.changelog.yaml` file from another version folder as a template to modify for the new version folder. 
+   - insert a new reference into the `_db.changelog.yaml` file that points to the new migration .yaml file.
+   ```
+   databaseChangeLog:
+     - include:
+         file: db/changelog/v1-0/action_log.yaml
+     - include:
+         file: db/changelog/v1-0/user.yaml
+   ```
+
+#### Add database changes to the migration script
+1. Open the new migration file, like `/src/main/resources/db.changelog/V1-0/user.yaml`
+2. Start the migration file with the opening root entry `databaseChangeLog:`
+```
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-user-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+```
+3. Define each database within its own `- changeSet:` block (see above code block)
+   - 'id' is a required attribute and must be defined for each changeSet. Use a descriptive id name as this will be printed in the console output and stored in the database. A readable and explanitory ID makes for easier debugging. 
+   - 'author' is not required, but can be important for teams to identify who is responsible for the change
+   - 'changes' is a grouping of one or more change commands.
+4. Create liquibase change commands
+   - Examine the existing liquibase scripts within /src/main/resources/db.changelog to find examples of how to do common database change tasks.
+   - Read through the [Liquibase documentation](http://www.liquibase.org/documentation/index.html) to get a clear understanding on all of the available features
+5. Manually test your changes in your local environment by running the app
+   - `gradle bootRun`
+   - Make sure that the database changes were applied via the console logs as well as within the database
+
+
 :arrow_up: [Back to Top](#table-of-contents)
