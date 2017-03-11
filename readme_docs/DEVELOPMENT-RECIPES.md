@@ -138,17 +138,17 @@ Voyage uses a folder-by-feature approach, where code is organized into package f
 2. gradle test
 
 #### IntelliJ
-1. Within the Project sidebar pane, right-click on /src/test 
-![Test in IntelliJ](./images/RECIPES_RunTests1.png)
+1. Within the Project sidebar pane, right-click on the `/src/test` folder  
+   ![Test in IntelliJ](./images/RECIPES_RunTests1.png)
 
 2. Choose the 'Run All Tests' option to run all unit and integrations tests found
-![Test in IntelliJ 2](./images/RECIPES_RunTests2.png)
+   ![Test in IntelliJ 2](./images/RECIPES_RunTests2.png)
 
 3. Run a specific test by right-clicking on the Test class and selecting 'Run >ClassNameSpec<'
-![Test in IntelliJ 3](./images/RECIPES_RunTests3.png)
+   ![Test in IntelliJ 3](./images/RECIPES_RunTests3.png)
 
 4. Alternatively, open the Gradle tool menu in IntelliJ and double click the 'verification > test' option
-![Test in IntelliJ 4](./images/RECIPES_RunTests4.png)
+   ![Test in IntelliJ 4](./images/RECIPES_RunTests4.png)
 
 ## Web Services
 
