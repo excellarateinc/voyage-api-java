@@ -299,6 +299,7 @@ Date: Tue, 06 Dec 2016 21:47:50 GMT
 
 ### Create a Web Service Endpoint Controller
 
+#### Overview
 Creating a controller will expose a new API endpoint. Controllers should be concerned with the API endpoint route and returning an appropriate HttpStatusCode. They should depend on services to execute to the business logic and return an object that represents that result that should be passed to the client.
 
 #### Annotations
@@ -445,7 +446,13 @@ class User extends AuditableEntity {
 
 
 ### Securing a Web Service endpoint
-[Spring Security](https://projects.spring.io/spring-security/) is implemented within this API to control access to any area of the app. There are a number of authentication methods available for Spring Security, but regardless of which one is used, Spring Security will hand off authorization to the custom Spring Security extension `/src/main/voyage/security/PermissionBasedUserDetailsService.groovy`. The PermissionBasedUserDetailsService receives the authenticated User and does a look up on the Permissions assigned to the Roles associated with the User (Users -> Roles -> Permissions). Permissions are then assigned to web services or any other area of the app that must be restricted. 
+
+#### Overview
+[Spring Security](https://projects.spring.io/spring-security/) is implemented within this API to control access to any area of the app. Spring Security has a two primary concepts: Authentication, Authorization. Authentication is the act of recognizing a User, usually from a username and password. Authorization is the act of validating the permissions available to the user within the applicaiton. 
+
+Securing a web service endpoint within a Controller relates to Authorization. By the time Spring Security allows for the Controller method to be invoked, the developer can assume that there already exists a User object within the [SpringSecurityContext](http://docs.spring.io/spring-security/site/docs/3.0.x/reference/technical-overview.html). 
+
+The stock Spring Security implementation comes with [Role-based Authorization](http://docs.spring.io/spring-security/site/docs/3.0.x/reference/el-access.html), which assigns User's to roles and Roles are hardcoded into the source code to control access. The default Role based security pattern is not extensible without making source code changes. If a new role needs to be introduced, for example 'Manager 2', then developers must go into every area of the application, add the new role to the source code, and go through the entire deployment process to production. In some enterprise environments, this can be many weeks/months before the role can be accessible to the user. Because of this limitation, Voyage extends Spring Security and provides it's own `UserDetailsService` implemention (`/src/main/voyage/security/PermissionBasedUserDetailsService.groovy`) which introduces the concept of Permissions. Users have Roles, and Roles have Permissions. Permissions are hardcoded into the source code with names that are specific to that source code class or method. There shouldn't be a need to ever rename a permission once it's added to the source code, but Roles can change out permissions at any time by updating the role_permission relationship in the database. 
 
 #### Secure Web Services
 Secure SpringMVC Controller methods using the [@PreAuthorize Spring Security Annotation](http://docs.spring.io/spring-security/site/docs/3.0.x/reference/el-access.html). There are other annotations that can be used, but they will not be discussed in this section (ie @PreAuthorize, @PreFilter, @PostAuthorize and @PostFilter). 
@@ -476,6 +483,111 @@ class UserController {
   - If the current User does NOT have the permission, then a 401 Unauthorized HTTP response will be returned.
 * The `/src/main/voyage/security/PermissionBasedUserDetailsService.groovy` class defines how Spring Security fetches the user and the User's permissions for analysis by the hasAuthority() method. 
 * __NOTE:__ Controller methods *without* a security annotation, like @PreAuthorize, will be open to the public. Be sure to secure methods that need it (which should be all of them in most cases)!
+
+#### Instructions
+1. Create a new web service endpoint method in a Controller. This example creates a publicly accessible `list()` method in the ThingController.
+   ```
+   @RestController
+   @RequestMapping(['/api/v1/things'])
+   class ThingController {
+
+       @GetMapping
+       ResponseEntity list() {
+           List<Thing> things = [new Thing()]
+           return new ResponseEntity(things, HttpStatus.OK)
+       }
+   }
+   ```
+2. Add the @PreAuthorize annotation above the `list()` method signature to add a security check.
+   - Define a unique permission name: api.things.list
+   - Check the Permission table within the Voyage database to verify that this permission name is not already taken.
+   ```
+   @RestController
+   @RequestMapping(['/api/v1/things'])
+   class ThingController {
+
+       @GetMapping
+       @PreAuthorize("hasAuthority('api.things.list')")
+       ResponseEntity list() {
+           List<Thing> things = [new Thing()]
+           return new ResponseEntity(things, HttpStatus.OK)
+       }
+   }
+   ```
+3. Add the new permission name to the database
+   - Create a new Liquibase migration changelog file for the Permission change, or extend an existing Permission migration file for the current version of the app.
+   - Add a new changeSet block to the migration file
+     - Give the changeSet a unique ID and enter your name for the author
+     - Copy an existing permission changeSet from `/src/main/resources/db.changelog/v1-0/permission.yaml` and tweak as needed
+   - NOTE: Set permission.is_immutable to true or false depending on if you do not want the the permission to be modified through the API. There is a set of web services that allow for permissions to be added, updated, and deleted. Setting is_immutable to 'true' will ensure that the permissions API is not used on this permission. 
+   ```
+   databaseChangeLog:
+     - changeSet:
+      id: v1.0-permission-seed-things-list-api
+      author: Voyage
+      changes:
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: api.things.list
+              - column:
+                  name: description
+                  value: /things GET web service endpoint to return a full list of things
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+   ```
+4. Assign the new permission to one or more Roles
+   - Create a new Liquibase migration changelog file for the Role addition, or extend an existing Role migration file for the current version of the app.
+   - Add a new changeSet block to the migration file
+     - Give the chlkangeSet a unique ID and enter your name for the author
+     - Copy an existing role_permission changeSet from `/src/main/resources/db.changelog/v1-0/role_permission.yaml` and tweak as needed 
+   - NOTE: You will need to lookup the Role ID and the Permission ID from the database in one of two ways:
+     1. Run the migration scripts without the role_permission changeSet and look up the Role ID and Permission ID in a local database.
+     2. Leverage functions within Liquibase framework to dynamically look up the Role ID and Permission ID by name. This is out of scope for this developer recipe. 
+   ```
+   databaseChangeLog:
+     - changeSet:
+      id: v1.0-role-permission-things-list-api
+      author: Voyage
+      changes:
+        - insert:
+            tableName: role_permission
+            columns:
+              - column:
+                  name: role_id
+                  value: 1
+              - column:
+                  name: permission_id
+                  value: 15
+   ```
+5. Test the security of the web service
+   1. Start up the app and make sure all of the migration scripts run successfull
+   2. Inspect your local database to make sure that the data for permission and role_permission are correctly inserted
+   3. Authenticate to the web service API with a user that DOESN'T belong to the Role with the new permission (see [Development > Accessing Secure Web Services](./DEVELOPMENT.md#access-secured-web-services))
+      - There are 2 default users within the Voyage seed database: super, standard
+      - By default, 'super' user will have all permissions
+      - Test your web service security with the 'standard' user first, assuming 'standard' doesn't belong to a Role that has the new Permission. 
+   4. Verify that Spring Security returns a 401 Unauthorized when accessing the web service endpoint `http://localhost:8080/api/v1/things`
+   5. Authenticate to the web service API with a user that DOES belong to the Role with the new permission
+   6. Verify that the expected JSON response is returned when accessing the web service `http://localhost:8080/api/v1/things`
 
 
 
