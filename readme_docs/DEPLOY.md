@@ -152,12 +152,100 @@ Artifacts generated from `./gradlew war` are stored within `/voyage-api-java/bui
 
 The .war file generated from Gradle is compatible with J2EE Application Server containers like Apache Tomcat. The .war file will require configuration settings to be setup with the Java Application Server. See next step. 
 
-#### 4. Override Parameters By Environment
+#### 4. Apacht Tomcat Setup > Override Parameters By Environment
 The base Voyage API WAR file has bundled into it a base set of parameters that are configured for a local development environment. When deploying to another environment, review the parameters and override as needed. 
 
 > NOTE: At the very least, change the database username/password and the default security settings!
 
-There are [a number of ways to override parameters](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html) within the application. The recommended method for overriding parameters is to create a JNDI environment variables within the server environment. 
+There are [a number of ways to override parameters](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html) within the application. The method discussed in this section for overriding parameters is to create an application.yaml file that is stored within /tomcat/conf and loaded as a System parameter on Tomcat startup. The only exception will be the JNDI DataSource configuraiton, which will be added to the server.xml to take advantage of Tomcat's database connection pooling. 
+
+#### JDBC Configuration
+Configure the JDBC connection pool within the server.xml and then make it available to the web apps in the context.xml. 
+
+conf/server.xml
+```
+<GlobalNamingResources>
+   <Resource
+      name="jdbc/voyage"
+      auth="Container"
+      type="javax.sql.DataSource"
+      username="voyage-user"
+      password="password"
+      driverClassName="com.mysql.jdbc.Driver"
+      url="jdbc:mysql://localhost:3306/voyage"
+      initialSize = "10"
+      maxActive = "50"
+      maxIdle = "30"
+      maxWait = "1000"
+      removeAbandoned = "true"
+      removeAbandonedTimeout = "60"
+      logAbandoned = "true"
+      validationQuery = "SELECT 1"
+      factory="org.apache.tomcat.dbcp.dbcp2.BasicDataSourceFactory"
+   />
+</GlobalNamingResources>
+```
+
+conf/context.xml
+```
+<Context>
+    <ResourceLink
+                name="jdbc/voyage"
+                global="jdbc/voyage"
+                type="javax.sql.DataSource" />
+</Context>
+
+```
+
+##### Override application.yaml properties
+Override the properties defined within the application.yaml file that is bundled within the app for the server environment. 
+
+1. Create a new file `/conf/voyage-application.yaml`
+2. Copy the entire contents of the application.yaml file from the application into the `/conf/voyage-application.yaml`
+3. Override the properties in `/conf/voyage-application.yaml` to be environment specific
+   - jpa.properties.hibernate.dialect - should match the database type being connected to. 
+   - datasource.jndi-name - point to the JNDI name of the database resource defined in the Apache Tomcat /conf/server.xml (see prior section)
+   - oauth2.resource.jwt.key-value - update the JWT public key for the resource server to decode the JWT token
+   - jwt.key-store-filename - change the filename to a locally defined JWT keystore file
+   - jwt.key-store-password - provide the keystore password used to to unlock the keystore file on the server
+   - jwt.private-key-password - provide the private key password that was used to generate the private key within the environment
+   ```
+   jpa:
+     hibernate:
+       ddl-auto: none
+     properties:
+       hibernate:
+         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+   
+   datasource:
+     jndi-name: jdbc/voyage
+   
+   oauth2:
+     resource:
+       id: voyage
+       jwt:
+         key-value: |
+           -----BEGIN PUBLIC KEY-----
+           MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4REj5EYufU5OUnv9nij+
+           j9irwALL3BwX9XxB7oDx3uj93P5h8rzTTdG/suaG3aBqRr5rqXpmTgwG1nf6FBfR
+           8kiPp9R196cAT9g4OInsdNbux7oy5akUVsRo9pagEL0JB7eGbASi0z5A38QkpbjB
+           MhIN0W9zwghsGNbf7N6wTVQN1NFHDW9zMdWUS9VBPeEGUZAMkKElGltHVhCdJGBf
+           OdriLIO2KdimjO5q9Q9+qG2B96DFGNYvmuDlDLM11Q2fsre305CV1HN0vQulLhlr
+           MJo9QdZt1g2d1VN5uIKid5dxWTAuUvJhgla6yCaTfYeV1OGq5C3DFV7tKDGNAIXL
+           TQIDAQAB
+           -----END PUBLIC KEY-----
+
+   # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
+   # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+   jwt:
+     key-store-filename: /usr/share/tomcat7/conf/voyage-jwt.jks
+     key-store-password: changeme
+     private-key-name: jwt
+     private-key-password: changeme   
+   ```
+4. Update CATALINA_OPTS OS environment variable with a reference to the `voyage-application.yaml` file
+   - CATALINA_OPTS="-Denvfile=file:/usr/share/tomcat8/voyage-application.yaml"
+   - This will work on Windows or Linux. Search online for your respective OS if you are unsure about how to apply an OS environment variable to the server. 
 
 #### 4. Apache Tomcat 8.0 Deploy
 The voyage API requires a database to be configured within Tomcat
