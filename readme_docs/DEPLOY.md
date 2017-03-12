@@ -152,7 +152,16 @@ Artifacts generated from `./gradlew war` are stored within `/voyage-api-java/bui
 
 The .war file generated from Gradle is compatible with J2EE Application Server containers like Apache Tomcat. The .war file will require configuration settings to be setup with the Java Application Server. See next step. 
 
+#### 4. Override Parameters By Environment
+The base Voyage API WAR file has bundled into it a base set of parameters that are configured for a local development environment. When deploying to another environment, review the parameters and override as needed. 
+
+> NOTE: At the very least, change the database username/password and the default security settings!
+
+There are [a number of ways to override parameters](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html) within the application. The recommended method for overriding parameters is to create a JNDI environment variables within the server environment. 
+
 #### 4. Apache Tomcat 8.0 Deploy
+The voyage API requires a database to be configured within Tomcat
+
 Tomcat unpacks and hosts the .war file. It requires a resource for your database connection. That is done in the server.xml and context.xml configuration files. You will also need to provide a JDBC driver for your MySQL or MSSQL connection. 
 
 ##### Server.xml
