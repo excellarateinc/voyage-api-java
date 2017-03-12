@@ -124,27 +124,27 @@ The following Gradle tasks should be executed in the order defined below:
 
 Clean the workspace from the previous build
 ```
-gradlew clean
+./gradlew clean
 ```
 
 Run the unit and integration tests embedded within the source code
 ```
-gradlew test
+./gradlew test
 ```
 
 Run the CodeNarc static code analysis on the /src/main source code
 ```
-gradlew codenarcMain
+./gradlew codenarcMain
 ```
 
 Run the CodeNarc static code analysis on the /src/test source code
 ```
-gradlew codenarcTest
+./gradlew codenarcTest
 ```
 
 Package the compiled app into a Web Archive (WAR) file that is compatible with Java Application Servers like Apache Tomcat
 ```
-gradlew war
+./gradlew war
 ```
 
 #### 2. Artifacts for deployment
