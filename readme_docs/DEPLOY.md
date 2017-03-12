@@ -4,7 +4,7 @@ Deploying to the upper environments (QA -> UAT -> PROD) will be handled by the C
 ## Table of Contents
 * [Continuous Integration (CI)](#continuous-integration-ci)
 * [Server Configuration](#server-configuration)
-* [App Build & Test](#app-build--test)
+* [App Build & Test Manually](#app-build--test-manually)
 * [Docker Support](#docker-support)
 
 ## Continuous Integration (CI)
@@ -76,6 +76,8 @@ The following are required to be present on the server before building and hosti
   - Used for the Apache Tomcat web application container
 * [Apache Tomcat 8.0](http://tomcat.apache.org)
   - Only necessary if the server is going to host the web application
+* [git](https://git-scm.com/downloads)
+  - Used to download the latest source
 
 Follow the instructions on the sites (linked above) as to the best methods for installing/configuring these prerequisites.
 
@@ -92,41 +94,58 @@ Follow the instructions on the sites (linked above) as to the best methods for i
 
 :arrow_up: [Back to Top](#table-of-contents)
 
-## App Build & Test
+## App Build & Test Manually
 
 ### Prerequisties
 The following are required to be present on the server before building Voyage API:
 * [Java JDK 1-8.0](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+* [git](https://git-scm.com/downloads)
 
 ### Instructions
+These instructions are the base tasks for manually building, testing, and deploying without the assistance of a Continuous Integration server such as Jenkins or Team Foundation Server (TFS). 
 
-#### 1. Build with Gradle Wrapper
-The Java API project uses Gradle to run unit and intergration tests, and then to build and package the API.
-Gradle Wrapper requires a Gradle installation and will install one if none can be found. 
+#### 1. Download the Source
+Download the source code from Git into a local workspace
+```
+cd /my/workspace
+git clone https://github.com/lssinc/voyage-api-java
+```
+
+You might be required to provide your username and password to authenticate before being allowed to download the source. If so, use the following GitHub format:
+```
+cd /my/workspace
+git clone https://username@github.com/lssinc/voyage-api-java
+```
+
+#### 2. Build with Gradle Wrapper
+Voyage API project uses [Gradle](https://gradle.org) as the build platform, which compiles the app, executes tests, and packages the binaries into a Web Archive (.WAR). Gradle is invoked by using the `gradlew` Gradle Wrapper script located within the root of the project. Gradle Wrapper is a OS specific script that looks at the build.gradle file to see which Gradle version is supported. Gradle Wrapper will do the work of detecting if the supported version of Gradle is installed, and if not, will download and install the correct version of Gradle before executing the Gradle task. 
+
+The following Gradle tasks should be executed in the order defined below:
+
+Clean the workspace from the previous build
 ```
 gradlew clean
 ```
+
+Run the unit and integration tests embedded within the source code
 ```
 gradlew test
 ```
+
+Run the CodeNarc static code analysis on the /src/main source code
 ```
 gradlew codenarcMain
 ```
+
+Run the CodeNarc static code analysis on the /src/test source code
 ```
 gradlew codenarcTest
 ```
+
+Package the compiled app into a Web Archive (WAR) file that is compatible with Java Application Servers like Apache Tomcat
 ```
 gradlew war
 ```
-## Notes:
-* **clean**: wipes out old artifacts that may break new builds
-* **test**: runs the unit and intergration tests 
-* **codenarc**: framework of rules, analyzes groovey code against supplied rule set
-* **codenarcMain**: supplies the rule set
-* **codenarcTest**: Run static code analysis with rule set 
-* **war**: package API for deployment into a .war file
-
-  
 
 #### 2. Artifacts for deployment
 The artifacts that should be deployed will be contained in the .war file. This .war file can be dropped in 
