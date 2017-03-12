@@ -94,7 +94,7 @@ Follow the instructions on the sites (linked above) as to the best methods for i
 
 :arrow_up: [Back to Top](#table-of-contents)
 
-## App Build & Test Manually
+## App Build & Test (Manual)
 
 ### Prerequisties
 The following are required to be present on the server before building Voyage API:
