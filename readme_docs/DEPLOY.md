@@ -246,41 +246,35 @@ Override the properties defined within the application.yaml file that is bundled
 4. Update CATALINA_OPTS OS environment variable with a reference to the `voyage-application.yaml` file
    - CATALINA_OPTS="-Denvfile=file:/usr/share/tomcat8/voyage-application.yaml"
    - This will work on Windows or Linux. Search online for your respective OS if you are unsure about how to apply an OS environment variable to the server. 
+5. Restart Apache Tomcat to ensure the new settings are loaded
+   - Look at the log files in /logs to verify that the database connected properly
 
 #### 4. Apache Tomcat 8.0 Deploy
-The voyage API requires a database to be configured within Tomcat
-
-Tomcat unpacks and hosts the .war file. It requires a resource for your database connection. That is done in the server.xml and context.xml configuration files. You will also need to provide a JDBC driver for your MySQL or MSSQL connection. 
-
-##### Server.xml
-```
-	<Resource
-			name="jdbc/voyageapi"
-			auth="Container"
-			type="javax.sql.DataSource"
-			username="user"
-			password="pass"
-			driverClassName="com.mysql.jdbc.Driver"
-			url="jdbc:mysql://database.url:3306/voyageapi"
-			initialSize = "10"
-			maxActive = "50"
-			maxIdle = "30"
-			maxWait = "1000"
-			removeAbandoned = "true"
-			removeAbandonedTimeout = "60"
-			logAbandoned = "true"
-			validationQuery = "SELECT 1"
-			factory="org.apache.tomcat.dbcp.dbcp2.BasicDataSourceFactory"
-			/>
-```
-
-##### Context.xml
-```
-	<ResourceLink
-		name="jdbc/voyageapi"
-		global="jdbc/voyageapi"
-		type="javax.sql.DataSource" />
-```
+To deploy the WAR file into the Apache Tomcat container, perfom the following steps:
+1. Obtain a voyage-1.0.war file from a trusted source. 
+2. Make sure that the version number in the file or indicated from the WAR file source is the correct version for deployment. 
+3. Upload the voyage-1.0.war file to a temporary location on the deployment environment
+4. Copy the voyage-1.0.war file to a backup location for quick access in the event the application needs to be rolled back to a prior version
+5. Zip the current /webapps/voyage app to a file called `voyage-war-bkp-20161215` where the last 8 digits are the current date in format YYYYMMDD
+   - Zipping the /voyage folder is done in the event that artifacts were manually added or updated 
+   - This folder will be deleted when the app is deployed and it would be undesireable to lose manually updated files, even though modifing files directly on the server outside of the normal deploy process is a bad practice. 
+6. Copy the `voyage-war-bkp-DATE` file to a backup location for quick access in the event a rollback is required. 
+7. Initiate a hot backup of the Voyage database
+   - This is vitally important!!
+   - The database will likely need to be rolled back to a backup snapshot date if you have to roll back the version of the application. 
+8. Stop the Apache Tomcat service 
+   - Windows: Use the "Apache Tomcat 8.0" window service
+   - Linux: service tomcat8 stop
+   - Alt: You can manually kill the Apache Tomcat process if the service is not shutting down the process. Usually this indicates something is wrong with the application or configuration of Apache Tomcat
+9. Remove `/webapps/voyage.war` file and `/webapps/voyage` folder
+   - Be sure you have completed step 5 & 6
+11. Copy the `backups/voyage-1.0.war` file (from step 4) into the `/webapps` folder
+   - `cp /usr/share/tomcat8/backups/voyage-1-5.war /usr/share/tomcat8/webapps/voyage.war`
+   - NOTE: BE SURE TO COPY THE CORRECT VERSION OF THE WAR FILE!
+   - NOTE: BE SURE TO RENAME THE FILE TO EXCLUDE THE VERSION NUMBER (ex: voyage-1.5.war -> voyage.war). Apache Tomcat will use the filename (not extention) as the context path for the URL of the app. `voyage.war` will be `http://myserver/voyage`
+12. Start the Apache Tomcat service
+   - Windows: Use the "Apache Tomcat 8.0" window service
+   - Linux: service tomcat8 start
 
 :arrow_up: [Back to Top](#table-of-contents)
 
