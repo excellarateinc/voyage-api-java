@@ -147,18 +147,15 @@ Package the compiled app into a Web Archive (WAR) file that is compatible with J
 ./gradlew war
 ```
 
-#### 2. Artifacts for deployment
-The artifacts that should be deployed will be contained in the .war file. This .war file can be dropped in 
-Apache Tomcat's webapp folder to begin the deployment process.
+#### 3. Artifacts for deployment
+Artifacts generated from `./gradlew war` are stored within `/voyage-api-java/build/libs`. There should only be 1 .war file named after the app name defined in build.grade. For example: `voyage-1.0.war`. 
 
+The .war file generated from Gradle is compatible with J2EE Application Server containers like Apache Tomcat. The .war file will require configuration settings to be setup with the Java Application Server. See next step. 
 
-
-
-#### 3. Apache Tomcat 8.0
+#### 4. Apache Tomcat 8.0 Deploy
 Tomcat unpacks and hosts the .war file. It requires a resource for your database connection. That is done in the server.xml and context.xml configuration files. You will also need to provide a JDBC driver for your MySQL or MSSQL connection. 
 
-
-## Server.xml
+##### Server.xml
 ```
 	<Resource
 			name="jdbc/voyageapi"
@@ -180,7 +177,7 @@ Tomcat unpacks and hosts the .war file. It requires a resource for your database
 			/>
 ```
 
-## Context.xml
+##### Context.xml
 ```
 	<ResourceLink
 		name="jdbc/voyageapi"
@@ -188,10 +185,9 @@ Tomcat unpacks and hosts the .war file. It requires a resource for your database
 		type="javax.sql.DataSource" />
 ```
 
-
-
-
 :arrow_up: [Back to Top](#table-of-contents)
+
+
 
 
 ## Docker Support
