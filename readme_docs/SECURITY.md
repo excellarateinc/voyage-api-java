@@ -23,17 +23,20 @@ Overview of the Security considerations and configurations that have been implem
 
 ## Security Patterns
 
-## Cross Origin Resource Sharing (CORS)
+### Cross Origin Resource Sharing (CORS)
+#### Overview
 CORS is a feature built into web browsers and web servers that allow for bi-directional communication on the allowance for a web page to make calls to other servers other than the originator of the content. Browsers have for a long time restricted web sites from making calls out to sites that are not from the web page origin. 
 
 Voyage API implements server-side CORS instructions for consumers operating out of web browsers, such as an AngularJS app. 
 
+#### CORS Vulnerabilities
 Even though CORS provides valuable protection from hackers, it also exposes a fundamental architecture flaw that hackers are able to exploit. The 'CORS Abuse' reference link below describes the situation in detail. In short, a hacker can send to the web server an Origin header value containing any information that the hacker wants to send. For example:
 ```
 Origin: imahacker.com
 ```
 When the server application enables `Access-Control-Allow-Credentials: true`, then the CORS spec doesn't allow a public wildcard `Access-Control-Allow-Origin: *`, instead the server must return back a specific domain. Many HTTP Servers and frameworks that offer CORS support (include Spring Security CORS add-on), will simply echo back the value that is provided in the `Origin` request header. Anytime a server echos back values given to it, that echo'd response becomes a hacker foothold for all sorts of mischief. 
 
+#### Custom CORS Filter for Voyage
 Voyage API provides it's own implementation of the CORS filter at `/src/main/groovy/voyage/security/CorsServletFilter`. Features of this custom CORS filter are:
 * Integrated with the OAuth 'client' invoking the request
 * if the 'client' requesting access to the API is authenticated, then the given Origin on the request is matched to the Client Origins in the database (client_origin table)
@@ -44,7 +47,7 @@ Voyage API provides it's own implementation of the CORS filter at `/src/main/gro
 
 > NOTE: Defaulting to permissive origin in CorsServletFilter because an assumption is made that the security framework will catch unauthorized requests and prevent access. For a more restrictive implementation, consider extending this class or replacing it with a different implementation.
 
-References:
+#### References
 * [OWASP: Cross Origin Resource Sharing - Origin Header Scrutiny](https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny)
 * [CORS Abuse](https://blog.secureideas.com/2013/02/grab-cors-light.html)
 
@@ -53,6 +56,7 @@ References:
 
 
 ### Cross-Site Request Forgery (CSRF)
+#### Overview
 CSRF is the ability of a hacker to hijack session information stored within a web browser by invoking a request to the website where the session information was generated. The hijacker may not be able to access the session information in the browser, but they can impersonate a prior session and get valuable information back from the website. For example, if the end-user logged into a banking website and a Session Cookie was pushed to the end-user's browser to keep them logged in, then a hijacker could invoke banking requests as an authenticated user without having to know the user's login credentials. 
 
 The common way to thwart this attack is by including a web server generated code that is embedded into each page displayed to the end-user. When the user submits information back to the server, the web server generated code must be given back to the server where it is validated before any actions are processed.
@@ -63,7 +67,7 @@ The initial construction of Voyage API strongly discourages the use of the Servl
 
 Given the architecture of Voyage API, no CSRF controls are built into the API. Please revise this section if the web services API for this app requires the use of Cookies and/or Sessions that span multiple requests. 
 
-References:
+#### References
 * [OWASP: CSRF Prevention Sheet](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet)
 
 :arrow_up: [Back to Top](#table-of-contents)
