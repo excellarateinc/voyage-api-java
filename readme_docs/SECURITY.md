@@ -36,7 +36,10 @@ All programmers working on this app should at least read through the reference m
 * http://owasp-academy.teachable.com
 * https://www.lynda.com/Programming-Foundations-tutorials/Techniques-Developing-Secure-Software/418266-2.html
 
-## Security Patterns
+:arrow_up: [Back to Top](#table-of-contents)
+
+
+## Security Features
 
 ### Authentication: OAuth2 (default)
 #### Overview
