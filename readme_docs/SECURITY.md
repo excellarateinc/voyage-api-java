@@ -25,6 +25,7 @@ Overview of the Security considerations and configurations that have been implem
 
 ## Cross Origin Resource Sharing (CORS)
 [OWASP: Cross Origin Resource Sharing - Origin Header Scrutiny](https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny)
+
 [CORS Abuse](https://blog.secureideas.com/2013/02/grab-cors-light.html)
 
 CORS is a feature built into web browsers and web servers that allow for bi-directional communication on the allowance for a web page to make calls to other servers other than the originator of the content. Browsers have for a long time restricted web sites from making calls out to sites that are not from the web page origin. 
