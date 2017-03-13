@@ -10,6 +10,7 @@ Overview of the Security considerations and configurations that have been implem
   - [Cross Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
   - [Cross Site Request Forgery (CSRF)](#cross-site-request-forgery-csrf)
   - Forgot Password
+  - OWASP Top 10
   - User Verification
 * Security Configuration
   - CORS 
@@ -173,9 +174,29 @@ security:
     private-key-password: changeme       
 ```
 
-#### 
 
-## OWASP
+### OWASP Top 10
+#### Overview
+The most recent Open Web Association of Secure Programmers (OWASP) top 10 most exploited custom app vulnerabilities are as follows:
+1. Injection
+2. Weak authentication and session management
+3. XSS
+4. Insecure Direct Object References
+5. Security Misconfiguration
+6. Sensitive Data Exposure
+7. Missing Function Level Access Control
+8. Cross Site Request Forgery
+9. Using Components with Known Vulnerabilities
+10. Unvalidated Redirects and Forwards
+
+#### 1. Injection
+
+#### 2. Weak authentication and session management
+
+#### 3. XSS
+
+#### Resources
+* [OWASP Top 10 Cheat Sheet](https://www.owasp.org/index.php/OWASP_Top_Ten_Cheat_Sheet)
 
 ## Stateless Server Authentication
 JWT provides for for stateless authentication so that we don't have to worry about storing the token in the backend server. This should avoid having to do OAuth2 token storage. 
