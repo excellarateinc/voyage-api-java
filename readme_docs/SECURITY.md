@@ -10,7 +10,7 @@ Overview of the Security considerations and configurations that have been implem
   - [Cross Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
   - [Cross Site Request Forgery (CSRF)](#cross-site-request-forgery-csrf)
   - Forgot Password
-  - OWASP Top 10
+  - [OWASP Top 10](#owasp-top-10)
   - User Verification
 * Security Configuration
   - CORS 
@@ -178,6 +178,7 @@ security:
 ### OWASP Top 10
 #### Overview
 The most recent Open Web Association of Secure Programmers (OWASP) top 10 most exploited custom app vulnerabilities are as follows:
+
 1. Injection
 2. Weak authentication and session management
 3. XSS
