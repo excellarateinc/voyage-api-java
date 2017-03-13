@@ -2,6 +2,7 @@
 Overview of the Security considerations and configurations that have been implemented within the Voyage API. 
 
 ## Table of Contents
+* Secure Programming
 * Security Patterns
   - Authentication: OAuth2 (default)
   - Authentication: User Credentials
@@ -21,6 +22,14 @@ Overview of the Security considerations and configurations that have been implem
 * Audit Logging
   - Action Logs
   - Change Logs
+
+## Secure Programming
+
+#### References
+* https://www.owasp.org/index.php/OWASP_Secure_Coding_Practices_-_Quick_Reference_Guide
+* https://www.securecoding.cert.org/confluence/display/seccode/Top+10+Secure+Coding+Practices
+* http://www.onlamp.com/pub/a/onlamp/excerpt/PUIS3_chap16/index1.html
+* https://www.securecoding.cert.org/confluence/display/java/Java+Coding+Guidelines 
 
 ## Security Patterns
 
