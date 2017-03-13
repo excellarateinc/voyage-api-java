@@ -54,9 +54,9 @@ Walk through accessing secured web services using both Implicit Authentication a
 #### Authentication Server
 The Authentication Server is an independent component of OAuth2 that is responsible for authenticating users and returning secure tokens for accessing the Resource Server. The Authentication Server can be a third-party entity (ie Google, Facebook) or a privately hosted server. Voyage API implements its own Authentication Server following the [Spring Security OAuth2](https://projects.spring.io/spring-security-oauth/docs/oauth2.html) defined structure.  
 
-The configuration for the Authentication Server can be found at `/src/main/groovy/voyage/config/OAuth2Config.groovy`. Within the config class, both of the Authorization Server and the Resource Server are defined. 
+The configuration for the Authentication Server is discussed in more detail within the [Security Configuration](#security-configuration) section. The implementation of the Authentication Server can be found at `/src/main/groovy/voyage/config/OAuth2Config.groovy`. Within the config class, both of the Authorization Server and the Resource Server are defined. 
 
-##### Highlights of the Authorization Server config:
+##### Highlights of the Authorization Server implementation:
 ```
 @Configuration
 class OAuth2Config {
@@ -134,6 +134,79 @@ class OAuth2Config {
    - Inspect `/src/main/groovy/voyage/security/PermissionBasedClientDetailsService` for implementation details.
 
 #### Resource Server
+The Resource Server is an independent component of OAuth2 that is responsible for facilitating secured access to the web services provided by the API (ie HTTP GET /api/users). The Resource service is always implemented by the API application as it hosts the web services that comprise the API product. The Resource Server shouldn't need to know anything about the Authentication Server's location or how it operates other than the method by which to validate tokens and certify that they originated from the Authentication Server. Voyage API implements the Resource Server following the [Spring Security OAuth2](https://projects.spring.io/spring-security-oauth/docs/oauth2.html) defined structure.  
+
+The configuration for the Resource Server is discussed in more detail within the [Security Configuration](#security-configuration) section. The implementation of the Resource Server can be found at `/src/main/groovy/voyage/config/OAuth2Config.groovy`. Within the config class, both of the Authorization Server and the Resource Server are defined. 
+
+##### Highlights of the Resource Server config:
+```
+@Configuration
+class OAuth2Config {
+...
+
+    @Configuration
+    @EnableResourceServer
+    class ResourceServerConfig extends ResourceServerConfigurerAdapter {
+        private static final String ANY_PATH = '/**'
+        private static final String API_PATH = '/api/**'
+        private static final String READ = "#oauth2.hasScope('Read Data')"
+        private static final String WRITE = "#oauth2.hasScope('Write Data')"
+
+        @Value('${security.permitAll}')
+        private String[] permitAllUrls
+
+        @Autowired
+        private WebResponseExceptionTranslator apiWebResponseExceptionTranslator
+
+        @Override
+        void configure(HttpSecurity http) throws Exception {
+            http
+
+                // Limit this Config to only handle /api requests. This will also disable authentication filters on
+                // /api requests and enable the OAuth2 token filter as the only means of stateless authentication.
+                .requestMatchers()
+                    .antMatchers(API_PATH)
+                    .and()
+
+                // Bypass URLs that are public endpoints, like /api/v1/forgotPassword
+                .authorizeRequests()
+                    .antMatchers(permitAllUrls).permitAll()
+                    .and()
+
+                // Enforce client 'scope' permissions on all authenticated requests
+                .authorizeRequests()
+                    .antMatchers(HttpMethod.GET, ANY_PATH).access(READ)
+                    .antMatchers(HttpMethod.POST, ANY_PATH).access(WRITE)
+                    .antMatchers(HttpMethod.PUT, ANY_PATH).access(WRITE)
+                    .antMatchers(HttpMethod.PATCH, ANY_PATH).access(WRITE)
+                    .antMatchers(HttpMethod.DELETE, ANY_PATH).access(WRITE)
+                    .and()
+        }
+
+        @Override
+        void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+            resources
+                // Override exception formatting by injecting the accessDeniedHandler & authenticationEntryPoint
+                .accessDeniedHandler(accessDeniedHandler())
+                .authenticationEntryPoint(authenticationEntryPoint())
+        }
+        ...
+    }
+}
+```
+1. Extends the stock Spring Security OAuth2 framework
+2. Implements a stateless JWT token for authentication
+3. Intercepts all `/api` requests and authenticates the user based on the JWT token
+   - All other requests are ignored and naturally picked up by the base Spring Security frameowrk for processing.
+   - Base Spring Security implementation is located at `/src/main/groovy/voyage/security/WebSecurityConfig.groovy`
+4. Defaults all `/api` requests to be secured
+5. Allows for exposure of publicly accessible `/api` access by specifying public URL paths in an external configuration file
+6. Implements a custom exception translator to ensure all expected or unexptected issues are handled consistently
+7. Enforces client Authorization based on the grants associated with their profile
+   - The only grants supported are 'READ' and 'WRITE'
+   - READ grant maps to HTTP GET
+   - WRITE grant maps to HTTP POST, PUT, PATCH, DELETE
+   - Client's that do not have these grants configured in their profile stored in the database cannot perform these operations. 
 
 #### Implicit Authorization
 
