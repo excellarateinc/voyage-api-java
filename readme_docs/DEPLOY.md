@@ -6,6 +6,7 @@ Deploying to the upper environments (QA -> UAT -> PROD) will be handled by the C
 * [Server Configuration](#server-configuration)
 * [App Build & Deploy Manually](#app-build--test-manual)
 * App Build & Test w/ Jenkins
+* App Build & Deploy Docker
 
 ## Continuous Integration (CI)
 [Jenkins](https://jenkins.io) continuous integration build manager will be used to configure jobs and triggers to faciliate the CI process. Reference your development team's WIKI for links to the Jenkins environment. 
