@@ -1,5 +1,5 @@
 ## Security
-Overview of the Security considerations and configurations that have been implemented within the Voyage API. 
+Overview of the Security features and configurations that have been implemented within the Voyage API. 
 
 ## Table of Contents
 * [Secure Programming](#secure-programming)
