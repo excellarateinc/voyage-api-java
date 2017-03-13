@@ -308,6 +308,8 @@ When the Voyage API app is started on a new server in any sized application clus
 The Voyage API does not provide guideance on how to implement a high availability database. The most that the Voyage API provides for high transaction database management is to encourage usage of the built-in Apache Tomcat database connection pool. Otherwise, the Voyage API will create connections to the datasources and will assume that the Database Administrators have the database infrastructure configured appropriately. 
 
 ### Amazon Elastic Beanstalk 
-[Amazon AWS Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/) (EB) is supported via the Docker implementation specificed within this document. Voyage API works very well within AWS EB environment, especially as a Docker container. We've tested and deployed Voyage API to test and production environments successfully!
+[Amazon AWS Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/) (EB) is supported via the Docker implementation specificed within this document. Voyage API works very well within AWS EB environment, especially as a Docker container. We've tested and deployed Voyage API to test and production environments successfully. 
+
+Reference the Docker configuraiton described in this document for instructions on how to bundle the app into a deployable Docker container. 
 
 :arrow_up: [Back to Top](#table-of-contents)
