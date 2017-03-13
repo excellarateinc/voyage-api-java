@@ -4,8 +4,8 @@ Deploying to the upper environments (QA -> UAT -> PROD) will be handled by the C
 ## Table of Contents
 * [Continuous Integration (CI)](#continuous-integration-ci)
 * [Server Configuration](#server-configuration)
-* [App Build & Test Manually](#app-build--test-manual)
-* [Docker Support](#docker-support)
+* [App Build & Deploy Manually](#app-build--test-manual)
+* App Build & Test w/ Jenkins
 
 ## Continuous Integration (CI)
 [Jenkins](https://jenkins.io) continuous integration build manager will be used to configure jobs and triggers to faciliate the CI process. Reference your development team's WIKI for links to the Jenkins environment. 
@@ -278,18 +278,4 @@ To deploy the WAR file into the Apache Tomcat container, perfom the following st
 
 :arrow_up: [Back to Top](#table-of-contents)
 
-
-
-
-## Docker Support
-> __FINISH DOCUMENTATION__
-
-* Dockerfile configuration
-  - Why the config
-  - AWS EB components
-* AWS Elastic Beanstalk HOWTO
-  - how to build the docker zip to upload to AWS
-  - How to deploy in AWS EB console
-
-:arrow_up: [Back to Top](#table-of-contents)
 
