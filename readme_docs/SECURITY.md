@@ -7,7 +7,7 @@ Overview of the Security considerations and configurations that have been implem
   - Authentication: User Credentials
   - Authorization: Permission Based
   - 2-Factor Authentication
-  - Cross Origin Resource Sharing (CORS)
+  - [Cross Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
   - [Cross Site Request Forgery (CSRF)](#cross-site-request-forgery-csrf)
   - Forgot Password
   - User Verification
@@ -23,7 +23,7 @@ Overview of the Security considerations and configurations that have been implem
 
 ## Security Patterns
 
-## Cross Origin Resource Sharign (CORS)
+## Cross Origin Resource Sharing (CORS)
 [OWASP: Cross Origin Resource Sharing - Origin Header Scrutiny](https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny)
 [CORS Abuse](https://blog.secureideas.com/2013/02/grab-cors-light.html)
 
@@ -47,6 +47,9 @@ Voyage API provides it's own implementation of the CORS filter at `/src/main/gro
 
 > NOTE: Defaulting to permissive origin in CorsServletFilter because an assumption is made that the security framework will catch unauthorized requests and prevent access. For a more restrictive implementation, consider extending this class or replacing it with a different implementation.
 
+:arrow_up: [Back to Top](#table-of-contents)
+
+
 ### Cross-Site Request Forgery (CSRF)
 [OWASP: CSRF Prevention Sheet](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet)
 
@@ -59,6 +62,9 @@ Web service APIs are typicaly single transactions, in fact, good APIs strive to 
 The initial construction of Voyage API strongly discourages the use of the Servlet Session or anything that would retain state beyond the HTTP Request. The current authentication and authorization of the `/api` resource server uses JWT tokens transmitted through the HTTP Request Headers, which must be placed into the header for each request. No Cookies are supported in the `/api` resource server and HTTP Basic Auth is disabled. 
 
 Given the architecture of Voyage API, no CSRF controls are built into the API. Please revise this section if the web services API for this app requires the use of Cookies and/or Sessions that span multiple requests. 
+
+:arrow_up: [Back to Top](#table-of-contents)
+
 
 ## User 'Forgot Password' Pattern
 * Why did we go the approach we did. 
