@@ -4,7 +4,7 @@ Deploying to the upper environments (QA -> UAT -> PROD) will be handled by the C
 ## Table of Contents
 * [Continuous Integration (CI)](#continuous-integration-ci)
 * [Server Configuration](#server-configuration)
-* [App Build & Deploy Manually](#app-build--test-manual)
+* [App Build & Deploy (Manual)](#app-build--test-manual)
 * App Build & Test w/ Jenkins
 * App Build & Deploy Docker
 
