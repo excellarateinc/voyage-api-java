@@ -1,4 +1,27 @@
-## Password Reset
+## Security
+Overview of the Security considerations and configurations that have been implemented within the Voyage API. 
+
+## Table of Contents
+* Security Patterns
+  - Authentication: OAuth2 (default)
+  - Authentication: User Credentials
+  - Authorization: Permission Based
+  - 2-Factor Authentication
+  - Cross Origin Resource Sharing
+  - Cross Site Request Forgery (CSRF)
+  - Forgot Password
+  - User Verification
+* Security Configuration
+  - CORS 
+  - Environment Specific Application Properties
+  - JWT Public/Private Key
+  - Public Resources
+  - User Verification
+* Audit Logging
+  - Action Logs
+  - Change Logs
+
+## User 'Forgot Password' Pattern
 * Why did we go the approach we did. 
 * References to OWASP and other security sources
 
