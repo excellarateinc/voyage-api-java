@@ -7,6 +7,7 @@ Deploying to the upper environments (QA -> UAT -> PROD) will be handled by the C
 * [App Build & Deploy (Manual)](#app-build--test-manual)
 * App Build & Test w/ Jenkins
 * App Build & Deploy Docker
+* [High Availability Support](#high-availability-supprt)
 
 ## Continuous Integration (CI)
 [Jenkins](https://jenkins.io) continuous integration build manager will be used to configure jobs and triggers to faciliate the CI process. Reference your development team's WIKI for links to the Jenkins environment. 
@@ -280,3 +281,33 @@ To deploy the WAR file into the Apache Tomcat container, perfom the following st
 :arrow_up: [Back to Top](#table-of-contents)
 
 
+## High Availability Support
+
+### Overview
+Voyage has been constructed to support high availability scaling at any level. The choices that have been made with regards to the technology framework and configuration are always bearing in mind that the app will need to be hosted on multiple servers in datacenter regions all over the world. 
+
+### Mostly Stateless
+Voyage API follow a common pattern where the app container Session is only available for the life of the HTTP Request. In order for the server to track a session between HTTP Requests is for the end-user to hold the SESSIONID (typically in a browser Cookie) and pass this value into the HTTP Request header. The API could require the consumer to pass a Cookie on the header, but ideally an API is providing its consumers with a single transactable action per HTTP Request. Web service endpoints that have a sequential dependency of execution that requires the consumer to keep track of a SESSIONID for proper processing makes for a complicated and confusing API. Additionally, using SESSIONIDs in the Cookie opens up additional hacking possibilities that are simply not necessary in most web services. 
+
+While Voyage API implements the base components for an API platform, the Voyage architects strongly recommend finding every possible opportunity to remain as stateless as possible and avoid requiring the consumer to track a SESSIONID unnecessarily. 
+
+> __OAuth2 Requires a Session__
+> An exception to this Stateless claim is with the OAuth2 implementation. When authenticating using OAuth2 Implicit Authentication, the consumer invokes `/oauth/authorize` with a set of parameter. The `/oauth/authorize` endpoint is secured and requires the end-user to authenticate with a form-based login page hosted by the Voyage API server. Before Spring Security redirects the end-user to the form-based login page, the parameters included within the `/oauth/authorize` request are stored in a Servlet Session with a JSESSIONID Cookie passed back to the end-users web browser (during redirect). When the form-based login page is submitted to the Voyage API server, the end-user web browser is expected to pass the JSESSIONID within a Cookie to the server so that the OAuth authentication can resume the session using the parameters stored within the Session. 
+
+### Load Balancer Support
+Given that Voyage API is not a stateless API when OAuth2 is active, all requests for the /oauth/ path should be routed to the same server or employ sticky sessions. Ideally, all requests coming in on `/api/` would be evenly distributed to healthy servers as these web service endpoints _should_ be stateless. 
+
+> NOTE: As the application evolves, consider revising this section to be accurrate for the current app. 
+
+### Automatic Database Migration
+When the Voyage API app is started on a new server in any sized application cluster, the app will connect to the database and determine if it needs to be migrated to a new version. If the database has already been upgraded, then nothing will occur with the database migration. If the database needs an upgrade, then the new app will execute the migration scripts that haven't yet been applied. The benefit of integrating migration scripts is that everything needed to upgrade an environment is completely bundled into the single WAR file package. 
+
+> NOTE: When performing rolling deploys during high volumes of traffice, the database migration scripts might cause servers-yet-to-be-upgraded to throw exceptions on transactions in process. In large environments, consider segregating databases by region and employing tactics that would redirect all traffic to another region before upgrading an entire region at once.
+
+### Database Support
+The Voyage API does not provide guideance on how to implement a high availability database. The most that the Voyage API provides for high transaction database management is to encourage usage of the built-in Apache Tomcat database connection pool. Otherwise, the Voyage API will create connections to the datasources and will assume that the Database Administrators have the database infrastructure configured appropriately. 
+
+### Amazon Elastic Beanstalk 
+[Amazon AWS Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/) (EB) is supported via the Docker implementation specificed within this document. Voyage API works very well within AWS EB environment, especially as a Docker container. We've tested and deployed Voyage API to test and production environments successfully!
+
+:arrow_up: [Back to Top](#table-of-contents)
