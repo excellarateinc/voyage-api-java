@@ -27,7 +27,7 @@ Overview of the Security considerations and configurations that have been implem
 ## Secure Programming
 The majority of technology security breaches that occur are through software applications. As developers create new software they need to be very mindful of secure programming principals in order to protect the users and companies that use the software. A developer needs to simply Google "Secure Coding" or "Secure Programming" to find many articles on best practices for secure programming. We've included a number of references below that are a great start. 
 
-All programmers working on Voyage should at least read through the reference materials and take the introductory courses on secure programming offered by the [OWASP Academy](http://owasp-academy.teachable.com) with course title 'OWASP AppSec Tutorials' by Jerry Hoff.
+All programmers working on this app should at least read through the reference materials and take the introductory courses on secure programming offered by the [OWASP Academy](http://owasp-academy.teachable.com) with course title 'OWASP AppSec Tutorials' by Jerry Hoff. While the Voyage API lays down many protections within the frameworks and features it uses, every developer is responsible for understanding why these frameworks were put in place, how these frameworks fortify security, and what to do in their own code when they are building new features. 
 
 #### References
 * https://www.owasp.org/index.php/OWASP_Secure_Coding_Practices_-_Quick_Reference_Guide
