@@ -24,21 +24,17 @@ Overview of the Security considerations and configurations that have been implem
 ## Security Patterns
 
 ### Cross-Site Request Forgery (CSRF)
-Provide an example or link to the OWASP cheat sheet for CSRF (https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet)
+[OWASP: CSRF Prevention Sheet](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet)
 
-Voyage API uses JWT that is transmitted through HTTP Request Headers, no Cookies used. HTTP Basic Auth is disabled. 
+CSRF is the ability of a hacker to hijack session information stored within a web browser by invoking a request to the website where the session information was generated. The hijacker may not be able to access the session information in the browser, but they can impersonate a prior session and get valuable information back from the website. For example, if the end-user logged into a banking website and a Session Cookie was pushed to the end-user's browser to keep them logged in, then a hijacker could invoke banking requests as an authenticated user without having to know the user's login credentials. 
 
-Discuss how the CSRF token is generated and what happens if/when it expires, or if/when it is invalid (401 Access Denied. CSRF token was not valid)
-* Get the token from the response header and retry the request
-* Token is alive for the duration of the session, so if the session invalidates on the server or if the user is routed to a different web server instance (via load balancer), then 
+The common way to thwart this attack is by including a web server generated code that is embedded into each page displayed to the end-user. When the user submits information back to the server, the web server generated code must be given back to the server where it is validated before any actions are processed.
 
-X-CSRF-TOKEN is provided on every response
+Web service APIs are typicaly single transactions, in fact, good APIs strive to be a simple request/response to complete a task. Requiring a consumer to call a web service to get a CSRF token to then submit to another web service request seems a bit much. Even still, if a web service API maintains state between web service requests via a Cookie or persistent Basic Auth, then a web service is open to a possible CSRF attack. 
 
-X-CSRF-TOKEN is required on any "save" HTTP methods: POST, PUT, PATCH, DELETE.
+The initial construction of Voyage API strongly discourages the use of the Servlet Session or anything that would retain state beyond the HTTP Request. The current authentication and authorization of the `/api` resource server uses JWT tokens transmitted through the HTTP Request Headers, which must be placed into the header for each request. No Cookies are supported in the `/api` resource server and HTTP Basic Auth is disabled. 
 
-/getCsrfToken web service endpoint is available to obtain a valid token when the X-CSRF-TOKEN is not available. 
-
-Walk through some examples of how to use this when saving. 
+Given the architecture of Voyage API, no CSRF controls are built into the API. Please revise this section if the web services API for this app requires the use of Cookies and/or Sessions that span multiple requests. 
 
 ## User 'Forgot Password' Pattern
 * Why did we go the approach we did. 
