@@ -199,6 +199,9 @@ The most recent Open Web Association of Secure Programmers (OWASP) top 10 most e
 #### Resources
 * [OWASP Top 10 Cheat Sheet](https://www.owasp.org/index.php/OWASP_Top_Ten_Cheat_Sheet)
 
+:arrow_up: [Back to Top](#table-of-contents)
+
+
 ## Stateless Server Authentication
 JWT provides for for stateless authentication so that we don't have to worry about storing the token in the backend server. This should avoid having to do OAuth2 token storage. 
 
