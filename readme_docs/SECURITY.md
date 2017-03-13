@@ -4,7 +4,7 @@ Overview of the Security considerations and configurations that have been implem
 ## Table of Contents
 * [Secure Programming](#secure-programming)
 * Security Features
-  - Authentication: OAuth2 (default)
+  - [Authentication: OAuth2 (default)](#authentication-oauth2-default)
   - Authentication: User Credentials
   - Authorization: Permission Based
   - 2-Factor Authentication
@@ -42,9 +42,9 @@ All programmers working on this app should at least read through the reference m
 ## Security Features
 
 ### Authentication: OAuth2 (default)
-#### Overview
 ![OAuth2 Implicit Authentication Workflow](./images/SECURITY_OAUTH2.png)
 
+#### Overview
 The default security configuration of Voyage API is OAuth2 with the Implicit Authentication and Client Credentials authenticaiton workflows implemented. OAuth2 was chosen as the default authentication mechanism over a simple username/password workflow because it provides a common pattern implemented by many enterprises, allows for a more secure login process when using Implicit Authentication, and enables the API to be a branded Authorization server should it desire to allow third-party apps to interface with its web services. 
 
 Voyage API implements OAuth2 natively within the application using [Spring Security OAuth2](https://projects.spring.io/spring-security-oauth/docs/oauth2.html) framework. 
