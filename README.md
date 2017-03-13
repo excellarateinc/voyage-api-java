@@ -5,6 +5,7 @@ If you are extending this API to build a new app, then replace this section with
 
 ## Topics
 * [Features](#features)
+* [Security](readme_docs/SECURITY.md)
 * [Development](readme_docs/DEVELOPMENT.md)
 * [Development Recipes](readme_docs/DEVELOPMENT-RECIPES.md)
 * [Testing](readme_docs/STANDARDS-TESTING.md)
