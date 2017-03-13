@@ -14,7 +14,7 @@ Overview of the Security considerations and configurations that have been implem
   - [OWASP Top 10](#owasp-top-10)
   - Password Policy
   - User Verification
-* Security Configuration
+* [Security Configuration](#security-configuration)
   - CORS 
   - Environment Specific Application Properties
   - JWT Public/Private Key
@@ -43,6 +43,103 @@ All programmers working on this app should at least read through the reference m
 
 ### Authentication: OAuth2 (default)
 #### Overview
+![OAuth2 Implicit Authentication Workflow](./images/SECURITY_OAUTH2.png)
+
+The default security configuration of Voyage API is OAuth2 with the Implicit Authentication and Client Credentials authenticaiton workflows implemented. OAuth2 was chosen as the default authentication mechanism over a simple username/password workflow because it provides a common pattern implemented by many enterprises, allows for a more secure login process when using Implicit Authentication, and enables the API to be a branded Authorization server should it desire to allow third-party apps to interface with its web services. 
+
+Voyage API implements OAuth2 natively within the application using [Spring Security OAuth2](https://projects.spring.io/spring-security-oauth/docs/oauth2.html) framework. 
+
+#### Authentication Server
+The Authentication Server is an independent component of OAuth2 that is responsible for authenticating users and returning secure tokens for accessing the Resource Server. The Authentication Server can be a third-party entity (ie Google, Facebook) or a privately hosted server. Voyage API implements its own Authentication Server following the [Spring Security OAuth2](https://projects.spring.io/spring-security-oauth/docs/oauth2.html) defined structure.  
+
+The configuration for the Authentication Server can be found at `/src/main/groovy/voyage/config/OAuth2Config.groovy`. Within the config class, both of the Authorization Server and the Resource Server are defined. 
+
+##### Highlights of the Authorization Server config:
+```
+@Configuration
+class OAuth2Config {
+
+    /**
+     * Configures the OAuth2 Authorization server to use a custom ClientDetailsService and to govern access to
+     * authorization endpoints.
+     */
+    @Configuration
+    @EnableAuthorizationServer
+    class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
+
+        @Value('${security.jwt.key-store-filename}')
+        private String keyStoreFileName
+
+        @Value('${security.jwt.key-store-password}')
+        private String keyStorePassword
+
+        @Value('${security.jwt.private-key-name}')
+        private String privateKeyName
+
+        @Value('${security.jwt.private-key-password}')
+        private String privateKeyPassword
+
+        @Autowired
+        private AuthenticationManager authenticationManager
+
+        @Autowired
+        private PermissionBasedClientDetailsService permissionBasedClientDetailsService
+
+        @Autowired
+        private WebResponseExceptionTranslator apiWebResponseExceptionTranslator
+
+        @Bean
+        JwtAccessTokenConverter accessTokenConverter() {
+            KeyStoreKeyFactory keyFactory = new KeyStoreKeyFactory(new ClassPathResource(keyStoreFileName), keyStorePassword.toCharArray())
+            KeyPair keyPair = keyFactory.getKeyPair(privateKeyName, privateKeyPassword.toCharArray())
+            JwtAccessTokenConverter converter = new JwtAccessTokenConverter()
+            converter.keyPair = keyPair
+            return converter
+        }
+
+        @Override
+        void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
+            oauthServer
+
+                // Expose the verifier key endpoint "/oauth/token_key" to the public for validation of the JWT token
+                .tokenKeyAccess('permitAll()')
+
+                // Require users to be authenticated before accessing "/oauth/check_token"
+                .checkTokenAccess('isAuthenticated()')
+        }
+
+        @Override
+        void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+            endpoints
+                    .authenticationManager(authenticationManager)
+                    .accessTokenConverter(accessTokenConverter())
+                    .exceptionTranslator(apiWebResponseExceptionTranslator)
+        }
+
+        @Override
+        void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+            clients.withClientDetails(permissionBasedClientDetailsService)
+        }
+    }
+...
+```
+1. Extends the stock Spring Security OAuth2 framework
+2. Implements stateless JSON Web Token (JWT) as the token provider with a changeable public/private key for encoding the token. 
+   - See [Security Configuration](#security-configuration) for instructions on how to configure the JWT public/private key by environment
+3. Implements a custom exception translator to ensure all expected or unexptected issues are handled consistently
+4. Implements a custom Permission Based Client authorization service that grants access to resources based on the Permission records associated with their profile. 
+   - See [Authorization: Permission Based](#authorization-permission-based) for more information. 
+   - Inspect `/src/main/groovy/voyage/security/PermissionBasedClientDetailsService` for implementation details.
+
+#### Resource Server
+
+#### Implicit Authorization
+
+#### Client Credentials
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+
 
 ### Cross Origin Resource Sharing (CORS)
 #### Overview
