@@ -2,8 +2,8 @@
 Overview of the Security considerations and configurations that have been implemented within the Voyage API. 
 
 ## Table of Contents
-* Secure Programming
-* Security Patterns
+* [Secure Programming](#secure-programming)
+* Security Features
   - Authentication: OAuth2 (default)
   - Authentication: User Credentials
   - Authorization: Permission Based
@@ -12,6 +12,7 @@ Overview of the Security considerations and configurations that have been implem
   - [Cross Site Request Forgery (CSRF)](#cross-site-request-forgery-csrf)
   - Forgot Password
   - [OWASP Top 10](#owasp-top-10)
+  - Password Policy
   - User Verification
 * Security Configuration
   - CORS 
@@ -24,14 +25,21 @@ Overview of the Security considerations and configurations that have been implem
   - Change Logs
 
 ## Secure Programming
+The majority of technology security breaches that occur are through software applications. As developers create new software they need to be very mindful of secure programming principals in order to protect the users and companies that use the software. A developer needs to simply Google "Secure Coding" or "Secure Programming" to find many articles on best practices for secure programming. We've included a number of references below that are a great start. 
+
+All programmers working on Voyage should at least read through the reference materials and take the introductory courses on secure programming offered by the [OWASP Academy](http://owasp-academy.teachable.com) with course title 'OWASP AppSec Tutorials' by Jerry Hoff.
 
 #### References
 * https://www.owasp.org/index.php/OWASP_Secure_Coding_Practices_-_Quick_Reference_Guide
 * https://www.securecoding.cert.org/confluence/display/seccode/Top+10+Secure+Coding+Practices
-* http://www.onlamp.com/pub/a/onlamp/excerpt/PUIS3_chap16/index1.html
 * https://www.securecoding.cert.org/confluence/display/java/Java+Coding+Guidelines 
+* http://owasp-academy.teachable.com
+* https://www.lynda.com/Programming-Foundations-tutorials/Techniques-Developing-Secure-Software/418266-2.html
 
 ## Security Patterns
+
+### Authentication: OAuth2 (default)
+#### Overview
 
 ### Cross Origin Resource Sharing (CORS)
 #### Overview
@@ -200,6 +208,9 @@ The most recent Open Web Association of Secure Programmers (OWASP) top 10 most e
 10. Unvalidated Redirects and Forwards
 
 #### 1. Injection
+* Hibernate SQL/HQL Injection concerns
+  - Uses JPA with SQL/HQL parameter being applied to the SQL/HQL query only through Hibernate supplied setters()
+  - Hibernate query parameter setters() assume all content is insecure and escapes all characters that would conflict with the sytax of the query. 
 
 #### 2. Weak authentication and session management
 
