@@ -7,7 +7,7 @@ Overview of the Security considerations and configurations that have been implem
   - Authentication: User Credentials
   - Authorization: Permission Based
   - 2-Factor Authentication
-  - Cross Origin Resource Sharing
+  - Cross Origin Resource Sharing (CORS)
   - [Cross Site Request Forgery (CSRF)](#cross-site-request-forgery-csrf)
   - Forgot Password
   - User Verification
@@ -22,6 +22,30 @@ Overview of the Security considerations and configurations that have been implem
   - Change Logs
 
 ## Security Patterns
+
+## Cross Origin Resource Sharign (CORS)
+[OWASP: Cross Origin Resource Sharing - Origin Header Scrutiny](https://www.owasp.org/index.php/CORS_OriginHeaderScrutiny)
+[CORS Abuse](https://blog.secureideas.com/2013/02/grab-cors-light.html)
+
+CORS is a feature built into web browsers and web servers that allow for bi-directional communication on the allowance for a web page to make calls to other servers other than the originator of the content. Browsers have for a long time restricted web sites from making calls out to sites that are not from the web page origin. 
+
+Voyage API implements server-side CORS instructions for consumers operating out of web browsers, such as an AngularJS app. 
+
+Even though CORS provides valuable protection from hackers, it also exposes a fundamental architecture flaw that hackers are able to exploit. The 'CORS Abuse' link at the top of this section describe the situation in detail. In short, a hacker can send to the web server an Origin header value containing any information that the hacker wants to send. For example:
+```
+Origin: imahacker.com
+```
+When the server application enables `Access-Control-Allow-Credentials: true`, then the CORS spec doesn't allow a public wildcard `Access-Control-Allow-Origin: *`, instead the server must return back a specific domain. Many HTTP Servers and frameworks that offer CORS support (include Spring Security CORS add-on), will simply echo back the value that is provided in the `Origin` request header. Anytime a server echos back values given to it, that echo'd response becomes a hacker foothold for all sorts of mischief. 
+
+Voyage API provides it's own implementation of the CORS filter at `/src/main/groovy/voyage/security/CorsServletFilter`. Features of this custom CORS filter are:
+* Integrated with the OAuth 'client' invoking the request
+* if the 'client' requesting access to the API is authenticated, then the given Origin on the request is matched to the Client Origins in the database (client_origin table)
+  - if a match is found, then return the value _in the database_ as the value for `Access-Control-Allow-Origin` header response
+  - if no match is found, then default to being permissive and return a public wildcard `Access-Control-Allow-Origin: *`
+* if the request is anonymous (client not logged in)
+  - default to being permissive and return a public wildcard `Access-Control-Allow-Origin: *`
+
+> NOTE: Defaulting to permissive origin in CorsServletFilter because an assumption is made that the security framework will catch unauthorized requests and prevent access. For a more restrictive implementation, consider extending this class or replacing it with a different implementation.
 
 ### Cross-Site Request Forgery (CSRF)
 [OWASP: CSRF Prevention Sheet](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet)
@@ -43,13 +67,6 @@ Given the architecture of Voyage API, no CSRF controls are built into the API. P
 ## 2-Factor Authentication
 * User Verification Servlet Filter
 * How to exlclude resources from this filter
-
-## CORS
-* What is it and how to override it by environment
-  * 
-* Ionic apps are not affected since the local browser that runs the app loads resources using file://, which doesn't enforce CORS.
-  * When running Ionic in emulate mode, the app resources will be loaded with http://, which will enforce CORS
-  * http://blog.ionic.io/handling-cors-issues-in-ionic/
 
 ## Tokens
 * Since we are using JWT, we don't have an easy way to revoke tokens other than the expiration date since we do not store these tokens in the database. 
