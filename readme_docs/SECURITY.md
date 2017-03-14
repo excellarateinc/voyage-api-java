@@ -3,7 +3,7 @@ Overview of the Security features and configurations that have been implemented 
 
 ## Table of Contents
 * [Secure Programming](#secure-programming)
-* Security Features
+* [Security Features](#security-features)
   - [Authentication: OAuth2 (default)](#authentication-oauth2-default)
   - [Authentication: Spring Security](#authentication-spring-security)
   - Authorization: Permission Based
@@ -249,6 +249,83 @@ Even though the default authentication method is OAuth2, Spring Security does su
 To support an alternative Spring Security configuration, visit the main [Spring Security project](https://projects.spring.io/spring-security/) for an overview of the standard configurations for supported authentication. Once familiar with how Spring Security works, particularly for [Spring Boot](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-security.html) projects, then there are two configuration files that must be modified: OAuth2Config.groovy, WebSecurityConfig.groovy. `OAuth2Config.groovy` simply needs to be removed if OAuth2 is no longer supported (along with supporting OAuth2 classes and config). `WebSecurityConfig.groovy` is where the base Spring Security configuration is located and simply needs to be updated to support the features desired. 
 
 > NOTE: Be sure to read the Spring Security documentation clearly before attempting to make any changes to the security configuration. An uninformed security configuration change might expose the app to the public in unexpected ways and jeapordize the security of the data that the app represents. 
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+
+### Authorization: Permission Based
+#### Overview
+Authorization is the process by which an authenticated user is granted access rights to specific areas of the application. Spring Security comes standard with Role Based security and many examples where a developer should embed the role name into areas of the source code. Role based security then allows for a User to be associated with one or more Roles. The challenge with this approach is that roles might need to change or expand over time and with every change required the source code will need to be modified. For example, a healthcare application might be originally written with roles Doctor, Nurse, Patient but after 6 months if the new role of Pharmacist needs to be added, then the role will need to be added to the source code in every place that a pharmacist can have access. Any time that the source code needs to be augmented to modify roles there is a risk that new bugs or security issues might be introduced. 
+
+The less invasive and more dynamic method for securing methods within an application is to apply a unique Permission name to the method and register the Permission within a `permission` database table. With each permission registered within the database, Roles are then associated with one or more permissions within the `role_permission` database table. Extending or changing a role is as simple as updating the role with permission changes. If a new permission is added to a new feature in the application, then once the permission is registered in the `permission` table of the database, then it can be associated within the roles that require the permission. 
+
+Finally, User records are associated with one or more Roles, which are associated with one or more Permissions. When Spring Security loads a User record for authorization, it examines the User's total set of permissions against the secured object or method being requested to provide a valid or invalid result. 
+
+#### Spring Security Extension
+Since Spring Security comes preconfigured with only Role based authorization, the Voyage API extends Spring Security with a Permission based authorization extension. In short, the primary extension implemented is an extension of the Spring Security `UserDetailsService` interface with overridden methods that describe how to load a user and how to generate the list of GrantedAuthorities for the User. 
+
+/src/main/groovy/voyage/security/PermissionBasedUserDetailsService.groovy
+```
+@Service
+@Transactional(readOnly = true)
+class PermissionBasedUserDetailsService implements UserDetailsService {
+    private final UserService userService
+    private final PermissionService permissionService
+
+    PermissionBasedUserDetailsService(UserService userService, PermissionService permissionService) {
+        this.userService = userService
+        this.permissionService = permissionService
+    }
+
+    @Override
+    PermissionBasedUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userService.findByUsername(username)
+        if (!user || !user.isEnabled) {
+            throw new UsernameNotFoundException("User ${username} was not found.")
+        }
+        return new PermissionBasedUserDetails(user, getAuthorities(user))
+    }
+
+    private Collection<? extends GrantedAuthority> getAuthorities(User user) {
+        Set<SimpleGrantedAuthority> authorities = [] as Set<SimpleGrantedAuthority>
+        Iterable<Permission> permissions = permissionService.findAllByUser(user.id)
+        permissions?.each { permission ->
+            authorities.add(new SimpleGrantedAuthority(permission.name))
+        }
+        return authorities
+    }
+}
+```
+Highlights
+* PermissionBasedUserDetailsService is configured within the `/src/main/groovy/voyage/config/WebSecurityConfig.groovy` file
+* loadByUsername creates a PermissionBasedUserDetails object with a listing of GrantedAuthority objects
+* getAuthorities(User user) fetches all permissions associated with the user
+
+Example of a service protected using Permission based authorization: UserController
+```
+@RestController
+@RequestMapping(['/api/v1/users'])
+class UserController {
+    private final UserService userService
+
+    @Autowired
+    UserController(UserService userService) {
+        this.userService = userService
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('api.users.list')")
+    ResponseEntity list() {
+        Iterable<User> users = userService.listAll()
+        return new ResponseEntity(users, HttpStatus.OK)
+    }
+}
+```
+Highlights
+* @PreAuthorize is SpringSecurity annotation that uses Spring Expression Language (SpEL) to define rules before the method can be executed
+* hasAuthority('api.users.list') executes the SpEL hasAuthority to verify if the given 'api.users.list' is within the currently logged in User's GrantedAuthority list.
+* If the user has the matching granted authority, then the method will be executed. If the user does not have the granted authority, then an access denied exception will be thrown by Spring Security. 
+
 
 :arrow_up: [Back to Top](#table-of-contents)
 
