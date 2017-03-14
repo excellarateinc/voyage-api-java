@@ -213,17 +213,31 @@ An authentication workflow that essentially is initiated by the client app (ie m
 
 > NOTE: The Spring Security implicit authentication currently supports multiple redirect URLs. OAuth2 requires that the client provide the redirect_url in the initial hand-off of the end-user. Spring Security OAuth2 framework will validate that the given redirect_url matches a value within the client's profile in the database. If the given redirect_url value doesn't match a client redirect_url in the database exactly, then the authentication process will throw an error and stop. 
 
-Workflow
+Key points:
 
 1. The user instructs the client 'app' to make API requests on the user's behalf. 
 2. The client initiates the authentication using their client ID, but does not provide a password because the user will be required to enter their own username and password to authorize the client. 
 3. The API will load both the Client and User objects into the session
 4. This authentication method is the preferred method for a web or mobile app
 
+Walk through accessing secured web services using both Implicit Authentication and Client Credentials in the [Development: Access Secured Web Services](./DEVELOPMENT.md#access-secured-web-services) section. 
+
 #### Client Credentials
+A server-to-server authentication workflow where a client passes to the authenticaiton server a Client ID and Client Secret to authenticate. Upon successful authentication, the client is given an access token that can be used for web service requests. The Client Credentials workflow should only be used in situations where the client can guarantee secure storage of the Client Secret, which would reserve this communication method to server-side integration with the authentication server. Client-side apps, like Javascript clients (AngularJS), native mobile apps, or hybrid mobile apps are not considered secure and should not have an embedded Client Secret within the source code. Therefore, client apps should NOT use Client Credentials as an authentication method. 
+
+> NOTE: Some might argue that compiling a secure password into the native mobile app binary and deploying that to a mobile device is secure. This is definitely not the case! There are many examples on the Internet on [decompiling Java/Android](https://infosecguide.wordpress.com/2013/12/17/step-by-step-guide-to-decompiling-android-apps/) and [iOS native mobile apps](http://reverseengineering.stackexchange.com/questions/4096/decompiling-iphone-app) to reveal source code and to grab passwords. 
+
+Key points:
+
+1. The client accesses the API directly without a user and uses a secure password to authenticate.
+2. The client is the only actor using the API and must provide a client ID and password
+3. The API will not load a User object into the session unless the client ID maps to a User username
+4. API services that require a User object loaded into memory will not function with this authentication method
+5. This authentication method is reserved for testing and for server-to-server exchanges
+
+Walk through accessing secured web services using both Implicit Authentication and Client Credentials in the [Development: Access Secured Web Services](./DEVELOPMENT.md#access-secured-web-services) section. 
 
 :arrow_up: [Back to Top](#table-of-contents)
-
 
 
 ### Cross Origin Resource Sharing (CORS)
