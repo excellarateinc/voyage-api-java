@@ -208,7 +208,16 @@ class OAuth2Config {
    - WRITE grant maps to HTTP POST, PUT, PATCH, DELETE
    - Client's that do not have these grants configured in their profile stored in the database cannot perform these operations. 
 
-#### Implicit Authorization
+#### Implicit Authentication
+An authentication workflow that essentially is initiated by the client app (ie mobile app with embedded client ID) where the end-user is transfered over to the server-side authentication form(s). The Authentication server will validate the incoming client ID (no password is given), and then facilitate one or more secure login pages that accept and validate the end-user. Once the end-user authentication has completed successfully, then the user is redirected back to the client using the "redirect_url" from the client's profile in the database. Redirecting the user back to the client URL is a safe and secure way of getting the user back to a known / registered app. 
+
+> NOTE: The Spring Security implicit authentication currently supports multiple redirect URLs. OAuth2 requires that the client provide the redirect_url in the initial hand-off of the end-user. Spring Security OAuth2 framework will validate that the given redirect_url matches a value within the client's profile in the database. If the given redirect_url value doesn't match a client redirect_url in the database exactly, then the authentication process will throw an error and stop. 
+
+Workflow
+1. The user instructs the client 'app' to make API requests on the user's behalf. 
+2. The client initiates the authentication using their client ID, but does not provide a password because the user will be required to enter their own username and password to authorize the client. 
+3. The API will load both the Client and User objects into the session
+4. This authentication method is the preferred method for a web or mobile app
 
 #### Client Credentials
 
