@@ -5,7 +5,7 @@ Overview of the Security features and configurations that have been implemented 
 * [Secure Programming](#secure-programming)
 * Security Features
   - [Authentication: OAuth2 (default)](#authentication-oauth2-default)
-  - [Authentication: User Credentials](#authentication-user-credentials)
+  - [Authentication: Spring Security](#authentication-spring-security)
   - Authorization: Permission Based
   - 2-Factor Authentication
   - [Cross Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
@@ -241,10 +241,14 @@ Walk through accessing secured web services using both Implicit Authentication a
 
 
 
-### Authentication: User Credentials
-Even though the default authentication method is OAuth2, Spring Security does support other authentication methods such as Basic Auth and Forms Login. In fact, Spring Security can support any authentication pattern required. 
+### Authentication: Spring Security
+[Spring Security](https://projects.spring.io/spring-security/) is the foundational security framework implemented within the Voyage API. Since Voyage API utilizes [Spring Boot](https://projects.spring.io/spring-boot/) to bootstrap the app, the [Spring Security Spring Boot](https://projects.spring.io/spring-boot/) module was added to the project to provide base level Spring Security features. 
 
-To support a stock Spring Security implementation, visit the main [Spring Security project](https://projects.spring.io/spring-security/) for an overview of the standard configurations for supported authentication. Once familiar with how Spring Security works, particularly for [Spring Boot](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-security.html) projects, then there are two configuration files that must be modified: OAuth2Config.groovy, WebSecurityConfig.groovy. `OAuth2Config.groovy` simply needs to be removed if OAuth2 is no longer supported (along with supporting OAuth2 classes and config). `WebSecurityConfig.groovy` is where the base Spring Security configuration is located and simply needs to be updated to support the features desired. All of these changes can be made very quickly for someone familiar with Spring and Spring Security. 
+Even though the default authentication method is OAuth2, Spring Security does support other authentication methods such as direct user Basic Auth and Forms Login. In fact, Spring Security can support any authentication pattern required through add-on or custom extensions.  
+
+To support an alternative Spring Security configuration, visit the main [Spring Security project](https://projects.spring.io/spring-security/) for an overview of the standard configurations for supported authentication. Once familiar with how Spring Security works, particularly for [Spring Boot](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-security.html) projects, then there are two configuration files that must be modified: OAuth2Config.groovy, WebSecurityConfig.groovy. `OAuth2Config.groovy` simply needs to be removed if OAuth2 is no longer supported (along with supporting OAuth2 classes and config). `WebSecurityConfig.groovy` is where the base Spring Security configuration is located and simply needs to be updated to support the features desired. 
+
+> NOTE: Be sure to read the Spring Security documentation clearly before attempting to make any changes to the security configuration. An uninformed security configuration change might expose the app to the public in unexpected ways and jeapordize the security of the data that the app represents. 
 
 :arrow_up: [Back to Top](#table-of-contents)
 
