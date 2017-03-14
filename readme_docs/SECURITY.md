@@ -5,7 +5,7 @@ Overview of the Security features and configurations that have been implemented 
 * [Secure Programming](#secure-programming)
 * Security Features
   - [Authentication: OAuth2 (default)](#authentication-oauth2-default)
-  - Authentication: User Credentials
+  - [Authentication: User Credentials](#authentication-user-credentials)
   - Authorization: Permission Based
   - 2-Factor Authentication
   - [Cross Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
@@ -236,6 +236,15 @@ Key points:
 5. This authentication method is reserved for testing and for server-to-server exchanges
 
 Walk through accessing secured web services using both Implicit Authentication and Client Credentials in the [Development: Access Secured Web Services](./DEVELOPMENT.md#access-secured-web-services) section. 
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+
+
+### Authentication: User Credentials
+Even though the default authentication method is OAuth2, Spring Security does support other authentication methods such as Basic Auth and Forms Login. In fact, Spring Security can support any authentication pattern required. 
+
+To support a stock Spring Security implementation, visit the main [Spring Security project](https://projects.spring.io/spring-security/) for an overview of the standard configurations for supported authentication. Once familiar with how Spring Security works, particularly for [Spring Boot](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-security.html) projects, then there are two configuration files that must be modified: OAuth2Config.groovy, WebSecurityConfig.groovy. `OAuth2Config.groovy` simply needs to be removed if OAuth2 is no longer supported (along with supporting OAuth2 classes and config). `WebSecurityConfig.groovy` is where the base Spring Security configuration is located and simply needs to be updated to support the features desired. All of these changes can be made very quickly for someone familiar with Spring and Spring Security. 
 
 :arrow_up: [Back to Top](#table-of-contents)
 
