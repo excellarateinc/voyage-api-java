@@ -214,6 +214,7 @@ An authentication workflow that essentially is initiated by the client app (ie m
 > NOTE: The Spring Security implicit authentication currently supports multiple redirect URLs. OAuth2 requires that the client provide the redirect_url in the initial hand-off of the end-user. Spring Security OAuth2 framework will validate that the given redirect_url matches a value within the client's profile in the database. If the given redirect_url value doesn't match a client redirect_url in the database exactly, then the authentication process will throw an error and stop. 
 
 Workflow
+
 1. The user instructs the client 'app' to make API requests on the user's behalf. 
 2. The client initiates the authentication using their client ID, but does not provide a password because the user will be required to enter their own username and password to authorize the client. 
 3. The API will load both the Client and User objects into the session
