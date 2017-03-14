@@ -6,7 +6,7 @@ Overview of the Security features and configurations that have been implemented 
 * [Security Features](#security-features)
   - [Authentication: OAuth2 (default)](#authentication-oauth2-default)
   - [Authentication: Spring Security](#authentication-spring-security)
-  - Authorization: Permission Based
+  - [Authorization: Permission Based](#authorization-permission-based)
   - 2-Factor Authentication
   - [Cross Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
   - [Cross Site Request Forgery (CSRF)](#cross-site-request-forgery-csrf)
