@@ -14,7 +14,7 @@ Overview of the Security features and configurations that have been implemented 
   - [OWASP Top 10](#owasp-top-10)
   - Password Attempts Tracking
   - Password Policy
-  - Password Recovery
+  - [Password Recovery](#password-recovery)
   - [User Verification](#user-verification)
 * [Security Configuration](#security-configuration)
   - CORS 
