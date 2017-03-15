@@ -377,11 +377,22 @@ A secure web service endpoint that requires the user in need of verification to 
 
 Parameters: none
 
-Result: HTTP 204 No Content
+Possible Results
+* HTTP 204 No Content
 
-
-#### HTTP POST /api/v1/verify
+##### HTTP POST /api/v1/verify
 A secure web service endpoint that requires the user in need of verification to be authenticated by either a username/password or through security questions. Invoking the /verify POST web service requires that the body contains the code delivered to the user's mobile phone via SMS. The code provided in the web service will be verified against the code stored in the User's account. 
+
+Post Body: 
+```
+{
+   code: 53432
+}
+```
+
+Possible Results: 
+* HTTP 204 No Content
+* HTTP 400 Bad Request
 
 #### Technical Notes
 By default, Voyage API integrates with Amazon AWS SMS as the text message provider. In order for Voyage API to faciliate SMS deliveries, an AWS account must be provided within the configuration of the Voyage API. See the [Deploy](#deploy) section for instructions on how to apply the AWS credentials. 
