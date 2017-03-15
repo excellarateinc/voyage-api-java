@@ -331,7 +331,27 @@ Highlights
 ### 2-Factor Authentication
 2-Factor Authentication, in short, is validating a user by something they know AND by something they have in their possession. Voyage implements a 2-factor authentication workflow that requires user authentication through a username and password, and then requires the user to be able to receive a code via SMS and enter it into the app as the second form of authentication. If a user forgets their username or password, then a set of security questions are asked of the user that require the user to demonstrate "something they know". Once again, after the user answers the security questions successfully, then they are required to verify their identity by entering a code sent to their mobile phone via SMS. Only after validating both of these data from the user will the user have fully authenticated themselves.
 
-The process of validating the user's identity via SMS in Voyage API is called [User Verification](#user-verification) and can be triggered at any time by updating the user's profile with the parameter ```user.isVerifyRequired = true```. 
+#### Trigger 2-Factor Authentication
+The process of validating the user's identity via SMS in Voyage API is called [User Verification](#user-verification). User Verification is an independent component within the Voyage API and can be triggered by the following methods:
+
+1. Direct database update
+   - Insert/update the `user` database table column `is_verify_required` to `true`
+2. User update via the UserService with the API source code
+   - Get the User object to update
+   - Set user.isVerifyRequired = true
+   - Call the UserService.save(...) method to persist the changes to the database
+
+When an authenticated user makes a call to the API, their user profile is examined to see if they require User Verification. If the User.isVerifyRequired = true, then the API returns an HTTP 403 Forbidden response with JSON body:
+```
+{
+   error:'403_verify_user',
+   errorDescription:'User verification is required',
+}
+```
+
+This response should be anticipated by the consumer of the API and should initiate the proper process to notify the user that a verification is required and be able to capture the verification code from the user to complete the verification process. 
+
+Once the verification code is validated, then the User Verification process will update the User record with value `isVerifyRequired = false`.
 
 #### Workflow
 
@@ -349,6 +369,19 @@ Login Workflow
 5. User is presented with an "Enter Code" form to validate the SMS code
 6. User receives the validate code from their device and enters it into the form
 7. User is granted access to the site once the code is validated successfully.
+
+#### Web Services
+
+##### HTTP GET /api/v1/verify/send
+A secure web service endpoint that requires the user in need of verification to be authenticated by either a username/password or through security questions. Invoking the /verify/send web services initiates the delivery of a verification code to the mobile phone on the user's account. The code that is delivered will be a 6-digit code that will be stored securely in the database using the same password hashing method (bcrypt). A mobile phone is required at account creation. 
+
+Parameters: none
+
+Result: HTTP 204 No Content
+
+
+#### HTTP POST /api/v1/verify
+A secure web service endpoint that requires the user in need of verification to be authenticated by either a username/password or through security questions. Invoking the /verify POST web service requires that the body contains the code delivered to the user's mobile phone via SMS. The code provided in the web service will be verified against the code stored in the User's account. 
 
 #### Technical Notes
 By default, Voyage API integrates with Amazon AWS SMS as the text message provider. In order for Voyage API to faciliate SMS deliveries, an AWS account must be provided within the configuration of the Voyage API. See the [Deploy](#deploy) section for instructions on how to apply the AWS credentials. 
