@@ -8,21 +8,21 @@ class VerifyCodeExpiredExceptionSpec extends Specification {
 
     def 'default exception creates a 400 Bad Request exception'() {
         when:
-            AppException ex = new InvalidVerificationMethodException()
+            AppException ex = new VerifyCodeExpiredException()
 
         then:
             ex.httpStatus == HttpStatus.BAD_REQUEST
-            ex.errorCode == '400_verify_method_invalid'
-            ex.message == 'The verification method provided is invalid. Please select a valid verification method and try again.'
+            ex.errorCode == '400_verify_code_expired'
+            ex.message == 'The verification code provided has expired. Please request another verification code and try again.'
     }
 
     def 'Override the exception message only affects the description'() {
         when:
-            AppException ex = new InvalidVerificationMethodException('TEST MESSAGE')
+            AppException ex = new VerifyCodeExpiredException('TEST MESSAGE')
 
         then:
             ex.httpStatus == HttpStatus.BAD_REQUEST
-            ex.errorCode == '400_verify_method_invalid'
+            ex.errorCode == '400_verify_code_expired'
             ex.message == 'TEST MESSAGE'
     }
 }

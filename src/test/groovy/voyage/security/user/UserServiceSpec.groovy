@@ -9,8 +9,8 @@ class UserServiceSpec extends Specification {
     UserService userService = new UserService(userRepository)
 
     def setup() {
-        user = new User(firstName:'LSS', lastName:'India')
-        modifiedUser = new User(firstName:'LSS', lastName:'Inc')
+        user = new User(username:'username', firstName:'LSS', lastName:'India')
+        modifiedUser = new User(username:'username', firstName:'LSS', lastName:'Inc')
     }
 
     def 'listAll - returns a single result' () {
@@ -31,6 +31,26 @@ class UserServiceSpec extends Specification {
             'LSS' == savedUser.firstName
             'India' == savedUser.lastName
             !savedUser.isDeleted
+    }
+
+    def 'save - applies the values and calls the userRepository with UsernameAlreadyInUseException' () {
+        setup:
+            userRepository.findByUsername(_) >> user
+        when:
+            userService.saveDetached(user)
+        then:
+            thrown(UsernameAlreadyInUseException)
+    }
+
+    def 'save - applies the values and calls the userRepository with existing user and UsernameAlreadyInUseException' () {
+        setup:
+            User newUser = new User(id:1, username:'newusername', firstName:'LSS', lastName:'India')
+            userRepository.findOne(_) >> user
+            userRepository.findByUsername(_) >> user
+        when:
+            userService.saveDetached(newUser)
+        then:
+            thrown(UsernameAlreadyInUseException)
     }
 
     def 'get - calls the userRepository.findOne' () {

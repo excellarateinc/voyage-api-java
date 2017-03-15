@@ -69,6 +69,19 @@ class VerifyServiceSpec extends Specification {
             thrown(InvalidVerificationCodeException)
     }
 
+    def 'verifyCurrentUser - validate verified is true' () {
+        setup:
+            user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password',
+                    isVerifyRequired:true, verifyCode:'code',)
+            userService.currentUser >> user
+        when:
+            verifyService.verifyCurrentUser('code')
+        then:
+            false == user.isVerifyRequired
+            null == user.verifyCode
+            null == user.verifyCodeExpiresOn
+    }
+
     def 'sendVerifyCodeToCurrentUser - validate sendVerifyCodeToEmail' () {
         setup:
             VerifyMethod verifyMethod = new VerifyMethod()
@@ -107,5 +120,17 @@ class VerifyServiceSpec extends Specification {
             verifyService.sendVerifyCodeToCurrentUser(verifyMethod)
         then:
             thrown(UnknownIdentifierException)
+    }
+
+    def 'sendVerifyCodeToCurrentUser - validate with InvalidVerificationMethodException' () {
+        setup:
+            VerifyMethod verifyMethod = new VerifyMethod()
+            verifyMethod.label = user.phones[0].maskedPhoneNumber
+            verifyMethod.value = '2'
+            userService.currentUser >> user
+        when:
+            verifyService.sendVerifyCodeToCurrentUser(verifyMethod)
+        then:
+            thrown(InvalidVerificationMethodException)
     }
 }
