@@ -7,7 +7,7 @@ Overview of the Security features and configurations that have been implemented 
   - [Authentication: OAuth2 (default)](#authentication-oauth2-default)
   - [Authentication: Spring Security](#authentication-spring-security)
   - [Authorization: Permission Based](#authorization-permission-based)
-  - 2-Factor Authentication
+  - [2-Factor Authentication](#2-factor-authentication)
   - [Cross Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
   - [Cross Site Request Forgery (CSRF)](#cross-site-request-forgery-csrf)
   - Forgot Password
@@ -326,6 +326,36 @@ Highlights
 * hasAuthority('api.users.list') executes the SpEL hasAuthority to verify if the given 'api.users.list' is within the currently logged in User's GrantedAuthority list.
 * If the user has the matching granted authority, then the method will be executed. If the user does not have the granted authority, then an access denied exception will be thrown by Spring Security. 
 
+:arrow_up: [Back to Top](#table-of-contents)
+
+### 2-Factor Authentication
+2-Factor Authentication, in short, is validating a user by something they know AND by something they have in their possession. Voyage implements a 2-factor authentication workflow that requires user authentication through a username and password, and then requires the user to be able to receive a code via SMS and enter it into the app as the second form of authentication. If a user forgets their username or password, then a set of security questions are asked of the user that require the user to demonstrate "something they know". Once again, after the user answers the security questions successfully, then they are required to verify their identity by entering a code sent to their mobile phone via SMS. Only after validating both of these data from the user will the user have fully authenticated themselves.
+
+The process of validating the user's identity via SMS in Voyage API is called [User Verification](#user-verification) and can be triggered at any time by updating the user's profile with the parameter ```user.isVerifyRequired = true```. 
+
+#### Workflow
+
+Account Creation Workflow
+1. User is presented with a New Account page where they can fill out the required account information
+2. User is required to enter their mobile phone number for identity verification
+3. User is required to enter in a unique username and secure password (according to password policy rules)
+4. User submits the required information and is redirected to the login page (no auto-login allowed)
+
+Login Workflow
+1. User is presented with a login page to enter their username and password
+2. User submits their username and password
+3. User is presented with a "Send verification code to your mobile phone" using the mobile phone entered upon account creation.
+4. User clicks "Send code now"... and an SMS code is delivered to their mobile phone within their account
+5. User is presented with an "Enter Code" form to validate the SMS code
+6. User receives the validate code from their device and enters it into the form
+7. User is granted access to the site once the code is validated successfully.
+
+#### Technical Notes
+By default, Voyage API integrates with Amazon AWS SMS as the text message provider. In order for Voyage API to faciliate SMS deliveries, an AWS account must be provided within the configuration of the Voyage API. See the [Deploy](#deploy) section for instructions on how to apply the AWS credentials. 
+
+#### References 
+* [What is Two Factor Authentication](https://www.securenvoy.com/two-factor-authentication/what-is-2fa.shtm)
+* [Testing Multiple Factors Authentication](https://www.owasp.org/index.php/Testing_Multiple_Factors_Authentication_(OWASP-AT-009))
 
 :arrow_up: [Back to Top](#table-of-contents)
 
