@@ -19,7 +19,7 @@ Overview of the Security features and configurations that have been implemented 
 * [Security Configuration](#security-configuration)
   - [CORS Configuration](#cors-configuration)
   - [Environment Specific Application Properties](#environment-specific-application-properties)
-  - JWT Public/Private Key
+  - [JWT Public/Private Key Configuration](#jwt-publicprivate-key-configuration)
   - Public Resources
   - User Verification
 * Audit Logging
@@ -619,40 +619,63 @@ security:
     access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
 ```
 
+:arrow_up: [Back to Top](#table-of-contents)
+
+
+
+### Environment Specific Application Properties
+
+#### Overview
+The API application externalizes properties into an application.yaml file located within `/src/main/resources/application.yaml`. The properties contained within the application.yaml file are values that had a high likelyhood of being changed depending application use or the environment in which the application was running in. For example: database connection parameters, security settings, logg file locations, etc...
+
+#### YAML
+Spring supports two type of property file formats: .properties, .yaml. 
+
+Properties files follow a simple key=value per line format. When there are multiple properties for an entity, then dots are used as a way to categorize properties. For example:
+```
+security.private-key=ALKJSLKFJS)(*)(*#$#FDSFS
+security.public-key=IOUERJLN)*#JNLu80w348r0u2
+```
+
+Properties file are fine, but limiting in its ability to group properties. 
+
+YAML is an acronym for Yet Another Markup Language or YAML Ain't Markup Language. More information about how YAML formats files can be read online at [yaml.org](http://www.yaml.org). In short, YAML extends properties file functionality by adding in nested properties through its indendtation structure. YAML files are generally easier to read and accomodate structures like lists much better than the properties file format. 
+
+YAML is the preferred property file format of choice for this API. 
+
+#### Embedded application.yaml
+An embedded application.yaml file has been created and stored within `/src/main/resources/application.yaml`. The properties that are included in this file are meant only for local development or testing lab environments. These properties will get the application up and running quickly on default settings. Also, this application.yaml file is embedded within the application distribution .WAR file and will be used as the default settings at application runtime. It is important to override these default properties when deploying the API to "upper environments" such as Quality Assurance (QA), User Acceptance Testing (UAT), and especially Production (PROD).
+
+#### Overriding default properties
+[Spring Framework](STANDARDS-SPRING.md) provides for various methods to override properties that are defined within the `/src/main/resources/application.yaml` application properties file. Read more about [Spring's Externalized Configuration](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html). 
+
+Two common methods used by the Voyage development team for overriding Spring properties are as follows. 
+
+1. application.yaml file stored securely on the server filesystem
+   - Copy the default application.yaml file
+   - Change the values to match the requirements for a given server environment
+   - Copy the environment specific file `uat-application.yaml` to the server environment in a secure location like `/etc/api-app/uat-application.yaml`
+   - Secure the file to be readable by the Apache Tomcat process and system administrators
+   - Add a Java System Property to the execution script of Apache Tomcat to notify the Spring Framework about the location of the uat-application.yaml file. The easiest way to do this is to add an environment variable named `CATALINA_OPTS` with the following contents:
+   ```
+   -DenvFile=/etc/api-app/uat-application.yaml
+   ```
+   - Read a more detailed description of how to implement this tactic at [DEPLOY: App Build & Test](https://github.com/lssinc/voyage-api-java/blob/master/readme_docs/DEPLOY.md#4-apacht-tomcat-setup--override-parameters-by-environment). 
+2. OS Environment variable
+   - Useful for a dev or test lab environment
+   - Create an OS environment variable named `SPRING_APPLICATION_JSON` and include a JSON formatted string with application property overrides. 
+3. Apache Tomcat JNDI Environment Variables
+   - Useful for any environment where the API WAR file is being run within an Apache Tomcat container (as opposed to a local development environment)
+   - Update the Tomcat `/conf/context.xml` document with `<Environment>` attributes for individual properties to override. 
+   - NOTE: When defining properties outside of a .yaml file, default to using normal .properties file notation. See the YAML section above for more details on the .properties file format. 
+   - Read more about this method on the [Apache Tomcat docs website](https://tomcat.apache.org/tomcat-7.0-doc/jndi-resources-howto.html#context.xml_configuration)
+
 
 :arrow_up: [Back to Top](#table-of-contents)
 
 
-## Stateless Server Authentication
-JWT provides for for stateless authentication so that we don't have to worry about storing the token in the backend server. This should avoid having to do OAuth2 token storage. 
 
-## User 'Forgot Password' Pattern
-* Why did we go the approach we did. 
-* References to OWASP and other security sources
-
-## Tokens
-* Since we are using JWT, we don't have an easy way to revoke tokens other than the expiration date since we do not store these tokens in the database. 
-* If someone somehow steals the token, they can impersonate that user completely. 
-* Keeping a short expiration on the token is a way to force the client to "re up", typically using the stored refresh token. 
-* What is the default TTL for the tokens for the API? 
-  * Long Lived Tokens
-    * 60 day before expiration
-    * Refresh tokens are given out and can be used to get a new access token
-    * Mobile apps get long-lived-tokens in Facebook
-  * Short Lived Tokens
-    * 1-2 hours before expiration
-    * Refresh tokens are given out and can be used to get a new access token
-    * Web apps get short-lived-tokens in Facebook
-    * Short lived tokens can be exchanged for long lived tokens. The implementor can essentially decide.
-* Tokens
-  * User Tokens: /authorize grant=token
-  * Client/App Token: /token (w/ client_id & secret)
-  * Refresh Tokens
-  * Following Facebook's explanations: https://developers.facebook.com/docs/facebook-login/access-tokens
-
-## Setup
-
-### Configure Spring OAuth with JWT & asymmetric RSA keypair
+### JWT Public/Private Key Configuration
 Following the example found in https://beku8.wordpress.com/2015/03/31/configuring-spring-oauth2-with-jwt-asymmetric-rsa-keypair/
 
 #### Generate Private/Public keys for OAUTH2 JWT
@@ -720,24 +743,4 @@ security:
     key-store-password: changeme
     private-key-name: jwt
     private-key-password: changeme       
-```
-
-
-## OAuth2
-Properties
-* URL: /api/oauth/token
-* Post Body: grant_type=client_credentials
-* Client ID: my-client-with-secret
-* Secret: secret
-
-Example Token Generation:
-
-```
-curl -H "Accept: application/json" my-client-with-secret:secret@localhost:8080/oauth/token -d grant_type=client_credentials
-```
-
-Apply token to request header
-
-```
-Authorization: Bearer caaafafd-08bb-4b83-b9cc-a3b78e500e91
 ```
