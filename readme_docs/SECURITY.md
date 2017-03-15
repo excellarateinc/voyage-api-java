@@ -18,7 +18,7 @@ Overview of the Security features and configurations that have been implemented 
   - [User Verification](#user-verification)
 * [Security Configuration](#security-configuration)
   - [CORS Configuration](#cors-configuration)
-  - Environment Specific Application Properties
+  - [Environment Specific Application Properties](#environment-specific-application-properties)
   - JWT Public/Private Key
   - Public Resources
   - User Verification
