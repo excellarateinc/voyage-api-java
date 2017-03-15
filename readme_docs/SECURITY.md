@@ -17,7 +17,7 @@ Overview of the Security features and configurations that have been implemented 
   - [Password Recovery](#password-recovery)
   - [User Verification](#user-verification)
 * [Security Configuration](#security-configuration)
-  - [Cross Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
+  - [CORS Configuration](#cors-configuration)
   - Environment Specific Application Properties
   - JWT Public/Private Key
   - Public Resources
@@ -587,7 +587,7 @@ The UserVerificationServletFilter located at `/src/main/groovy/voyage/security/U
 
 ## Security Configuration
 
-### Cross Origin Resource Sharing (CORS)
+### CORS Configuration
 
 #### Source Code
 The CORS filter logic is located in `/src/main/groovy/voyage/security/CorsServletFilter`. The filter is fairly basic with the only configurable variable being the "Access-Control-Allow-Headers".
