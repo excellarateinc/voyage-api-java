@@ -17,7 +17,7 @@ Overview of the Security features and configurations that have been implemented 
   - [Password Recovery](#password-recovery)
   - [User Verification](#user-verification)
 * [Security Configuration](#security-configuration)
-  - [CORS](#cors)
+  - [Cross Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
   - Environment Specific Application Properties
   - JWT Public/Private Key
   - Public Resources
