@@ -17,7 +17,7 @@ Overview of the Security features and configurations that have been implemented 
   - [Password Recovery](#password-recovery)
   - [User Verification](#user-verification)
 * [Security Configuration](#security-configuration)
-  - CORS 
+  - [CORS](#cors)
   - Environment Specific Application Properties
   - JWT Public/Private Key
   - Public Resources
@@ -585,7 +585,42 @@ The UserVerificationServletFilter located at `/src/main/groovy/voyage/security/U
 
 
 
+## Security Configuration
 
+### Cross Origin Resource Sharing (CORS)
+
+#### Source Code
+The CORS filter logic is located in `/src/main/groovy/voyage/security/CorsServletFilter`. The filter is fairly basic with the only configurable variable being the "Access-Control-Allow-Headers".
+
+#### Access-Control-Allow-Headers
+When a browser app makes a request to the API, a CORS OPTION request will be made to the API to get parameters on what the API server allows for the CORS interaction. The stock responses are one of the following:
+
+Anonymous Access Request
+```
+Headers:
+   Access-Control-Allow-Origin: *
+   Access-Control-Allow-Headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
+```
+
+Authenticated User Request
+```
+Headers:
+   Vary: Origin
+   Access-Control-Allow-Origin: [origin for the client from the database]
+   Access-Control-Allow-Credentials: true
+   Access-Control-Allow-Headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
+```
+
+##### Configure Access-Control-Allow-Headers
+In /src/main/resources/application.yaml, update the security.cors.access-control-allow-headers section with the appropriate headers that should be supported by the API.
+```
+security:
+  cors:
+    access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
+```
+
+
+:arrow_up: [Back to Top](#table-of-contents)
 
 
 ## Stateless Server Authentication
