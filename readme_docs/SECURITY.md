@@ -391,13 +391,134 @@ Given the architecture of Voyage API, no CSRF controls are built into the API. P
 :arrow_up: [Back to Top](#table-of-contents)
 
 
+
+### OWASP Top 10
+#### Overview
+The most recent Open Web Association of Secure Programmers (OWASP) top 10 most exploited custom app vulnerabilities are as follows:
+
+1. Injection
+2. Weak authentication and session management
+3. XSS
+4. Insecure Direct Object References
+5. Security Misconfiguration
+6. Sensitive Data Exposure
+7. Missing Function Level Access Control
+8. Cross Site Request Forgery
+9. Using Components with Known Vulnerabilities
+10. Unvalidated Redirects and Forwards
+
+#### 1. Injection
+* Hibernate SQL/HQL Injection concerns
+  - Uses JPA with SQL/HQL parameter being applied to the SQL/HQL query only through Hibernate supplied setters()
+  - Hibernate query parameter setters() assume all content is insecure and escapes all characters that would conflict with the sytax of the query. 
+
+#### 2. Weak authentication and session management
+
+#### 3. XSS
+
+#### Resources
+* [OWASP Top 10 Cheat Sheet](https://www.owasp.org/index.php/OWASP_Top_Ten_Cheat_Sheet)
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+
+
+### User Verification
+#### Overview 
+User Verification is a feature that will essentially block user access to the API until they have gone through a verification process. The verification process can be triggered at any time for any reason. The primary uses for the User Verification feature is to validate the user's identity after account registration or password recovery process. 
+
+#### SMS Verification
+The only method of User Verification currently implemented is a code delivered to the user via SMS text message. When the user account is created, a mobile phone is required in order to receive SMS messages for the completion of the user verification process. 
+
+#### Trigger User Verification
+User Verification is an independent component within the Voyage API and can be triggered by the following methods:
+
+1. Direct database update
+   - Insert/update the `user` database table column `is_verify_required` to `true`
+2. User update via the UserService with the API source code
+   - Get the User object to update
+   - Set user.isVerifyRequired = true
+   - Call the UserService.save(...) method to persist the changes to the database
+
+When an authenticated user makes a call to the API, their user profile is examined to see if they require User Verification. If the User.isVerifyRequired = true, then the API returns an HTTP 403 Forbidden response with JSON body:
+```
+{
+   error:'403_verify_user',
+   errorDescription:'User verification is required',
+}
+```
+
+This response should be anticipated by the consumer of the API and should initiate the proper process to notify the user that a verification is required and be able to capture the verification code from the user to complete the verification process. 
+
+Once the verification code is validated, then the User Verification process will update the User record with value `isVerifyRequired = false`.
+
+#### Workflow
+
+Account Creation Workflow
+1. User is presented with a New Account page where they can fill out the required account information
+2. User is required to enter their mobile phone number for identity verification
+3. User is required to enter in a unique username and secure password (according to password policy rules)
+4. User submits the required information and is redirected to the login page (no auto-login allowed)
+
+Login Workflow
+1. User is presented with a login page to enter their username and password
+2. User submits their username and password
+3. User is presented with a "Send verification code to your mobile phone" using the mobile phone entered upon account creation.
+4. User clicks "Send code now"... and an SMS code is delivered to their mobile phone within their account
+5. User is presented with an "Enter Code" form to validate the SMS code
+6. User receives the validate code from their device and enters it into the form
+7. User is granted access to the site once the code is validated successfully.
+
+#### Web Services
+
+##### HTTP GET /api/v1/verify/send
+A secure web service endpoint that requires the user in need of verification to be authenticated by either a username/password or through security questions. Invoking the /verify/send web services initiates the delivery of a verification code to the mobile phone on the user's account. The code that is delivered will be a 6-digit code that will be stored securely in the database using the same password hashing method (bcrypt). A mobile phone is required at account creation. 
+
+Parameters: none
+
+Possible Results
+* HTTP 204 No Content
+
+##### HTTP POST /api/v1/verify
+A secure web service endpoint that requires the user in need of verification to be authenticated by either a username/password or through security questions. Invoking the /verify POST web service requires that the body contains the code delivered to the user's mobile phone via SMS. The code provided in the web service will be verified against the code stored in the User's account. 
+
+Post Body: 
+```
+{
+   code: 53432
+}
+```
+
+Possible Results: 
+* HTTP 204 No Content
+* HTTP 400 Bad Request
+
+#### Technical Notes
+
+##### AWS SMS Service Integration
+By default, Voyage API integrates with Amazon [AWS SNS](http://docs.aws.amazon.com/sns/latest/dg/SMSMessages.html) as the text message provider. In order for the API to faciliate SMS deliveries, an AWS account must be provided within the configuration of the API. See the [Deploy](#deploy) section for instructions on how to apply the AWS credentials. 
+
+##### UserVerificationServletFilter
+The UserVerificationServletFilter located at `/src/main/groovy/voyage/security/UserVerificationServletFilter.groovy` intercepts incoming requests by authenticated users and examines the User account to see if the `User.isVerifyRequired` is true. If the isVerifyRequired is true, then the request is immediately stopped and an error message is returned to the consumer notifying them that the user must complete the User Verification process. 
+
+#### References 
+* [What is Two Factor Authentication](https://www.securenvoy.com/two-factor-authentication/what-is-2fa.shtm)
+* [Testing Multiple Factors Authentication](https://www.owasp.org/index.php/Testing_Multiple_Factors_Authentication_(OWASP-AT-009))
+
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+
+
+
+
+
+## Stateless Server Authentication
+JWT provides for for stateless authentication so that we don't have to worry about storing the token in the backend server. This should avoid having to do OAuth2 token storage. 
+
 ## User 'Forgot Password' Pattern
 * Why did we go the approach we did. 
 * References to OWASP and other security sources
-
-## 2-Factor Authentication
-* User Verification Servlet Filter
-* How to exlclude resources from this filter
 
 ## Tokens
 * Since we are using JWT, we don't have an easy way to revoke tokens other than the expiration date since we do not store these tokens in the database. 
@@ -491,142 +612,6 @@ security:
     private-key-password: changeme       
 ```
 
-
-### OWASP Top 10
-#### Overview
-The most recent Open Web Association of Secure Programmers (OWASP) top 10 most exploited custom app vulnerabilities are as follows:
-
-1. Injection
-2. Weak authentication and session management
-3. XSS
-4. Insecure Direct Object References
-5. Security Misconfiguration
-6. Sensitive Data Exposure
-7. Missing Function Level Access Control
-8. Cross Site Request Forgery
-9. Using Components with Known Vulnerabilities
-10. Unvalidated Redirects and Forwards
-
-#### 1. Injection
-* Hibernate SQL/HQL Injection concerns
-  - Uses JPA with SQL/HQL parameter being applied to the SQL/HQL query only through Hibernate supplied setters()
-  - Hibernate query parameter setters() assume all content is insecure and escapes all characters that would conflict with the sytax of the query. 
-
-#### 2. Weak authentication and session management
-
-#### 3. XSS
-
-#### Resources
-* [OWASP Top 10 Cheat Sheet](https://www.owasp.org/index.php/OWASP_Top_Ten_Cheat_Sheet)
-
-:arrow_up: [Back to Top](#table-of-contents)
-
-
-## User Verification
-### Overview 
-User Verification is a feature that will essentially block user access to the API until they have gone through a verification process. The verification process can be triggered at any time for any reason. The primary uses for the User Verification feature is to validate the user's identity after account registration or password recovery process. 
-
-### SMS Verification
-The only method of User Verification currently implemented is a code delivered to the user via SMS text message. When the user account is created, a mobile phone is required in order to receive SMS messages for the completion of the user verification process. 
-
-### Trigger User Verification
-User Verification is an independent component within the Voyage API and can be triggered by the following methods:
-
-1. Direct database update
-   - Insert/update the `user` database table column `is_verify_required` to `true`
-2. User update via the UserService with the API source code
-   - Get the User object to update
-   - Set user.isVerifyRequired = true
-   - Call the UserService.save(...) method to persist the changes to the database
-
-When an authenticated user makes a call to the API, their user profile is examined to see if they require User Verification. If the User.isVerifyRequired = true, then the API returns an HTTP 403 Forbidden response with JSON body:
-```
-{
-   error:'403_verify_user',
-   errorDescription:'User verification is required',
-}
-```
-
-This response should be anticipated by the consumer of the API and should initiate the proper process to notify the user that a verification is required and be able to capture the verification code from the user to complete the verification process. 
-
-Once the verification code is validated, then the User Verification process will update the User record with value `isVerifyRequired = false`.
-
-### Workflow
-
-Account Creation Workflow
-1. User is presented with a New Account page where they can fill out the required account information
-2. User is required to enter their mobile phone number for identity verification
-3. User is required to enter in a unique username and secure password (according to password policy rules)
-4. User submits the required information and is redirected to the login page (no auto-login allowed)
-
-Login Workflow
-1. User is presented with a login page to enter their username and password
-2. User submits their username and password
-3. User is presented with a "Send verification code to your mobile phone" using the mobile phone entered upon account creation.
-4. User clicks "Send code now"... and an SMS code is delivered to their mobile phone within their account
-5. User is presented with an "Enter Code" form to validate the SMS code
-6. User receives the validate code from their device and enters it into the form
-7. User is granted access to the site once the code is validated successfully.
-
-### Web Services
-
-#### HTTP GET /api/v1/verify/send
-A secure web service endpoint that requires the user in need of verification to be authenticated by either a username/password or through security questions. Invoking the /verify/send web services initiates the delivery of a verification code to the mobile phone on the user's account. The code that is delivered will be a 6-digit code that will be stored securely in the database using the same password hashing method (bcrypt). A mobile phone is required at account creation. 
-
-Parameters: none
-
-Possible Results
-* HTTP 204 No Content
-
-#### HTTP POST /api/v1/verify
-A secure web service endpoint that requires the user in need of verification to be authenticated by either a username/password or through security questions. Invoking the /verify POST web service requires that the body contains the code delivered to the user's mobile phone via SMS. The code provided in the web service will be verified against the code stored in the User's account. 
-
-Post Body: 
-```
-{
-   code: 53432
-}
-```
-
-Possible Results: 
-* HTTP 204 No Content
-* HTTP 400 Bad Request
-
-### Technical Notes
-
-#### AWS SMS Service Integration
-By default, Voyage API integrates with Amazon [AWS SNS](http://docs.aws.amazon.com/sns/latest/dg/SMSMessages.html) as the text message provider. In order for the API to faciliate SMS deliveries, an AWS account must be provided within the configuration of the API. See the [Deploy](#deploy) section for instructions on how to apply the AWS credentials. 
-
-#### UserVerificationServletFilter
-The UserVerificationServletFilter located at `/src/main/groovy/voyage/security/UserVerificationServletFilter.groovy` intercepts incoming requests by authenticated users and examines the User account to see if the `User.isVerifyRequired` is true. If the isVerifyRequired is true, then the request is immediately stopped and an error message is returned to the consumer notifying them that the user must complete the User Verification process. 
-
-### References 
-* [What is Two Factor Authentication](https://www.securenvoy.com/two-factor-authentication/what-is-2fa.shtm)
-* [Testing Multiple Factors Authentication](https://www.owasp.org/index.php/Testing_Multiple_Factors_Authentication_(OWASP-AT-009))
-
-
-:arrow_up: [Back to Top](#table-of-contents)
-
-
-
-
-
-
-## Stateless Server Authentication
-JWT provides for for stateless authentication so that we don't have to worry about storing the token in the backend server. This should avoid having to do OAuth2 token storage. 
-
-## Role Based Access Control
-
-### Actors (aka Users) 
-
-### Roles
-Convention: role.super, role.admin, role.doctor, role.nurse
-
-### Permissions
-Convention: api.roles.list, api.roles.get, api.roles.create, api.roles.update, api.roles.delete
-api.user.list, api.user.get, api.user.create, api.user.update, api.user.delete
-
-api.account.get, api.account.update
 
 ## OAuth2
 Properties
