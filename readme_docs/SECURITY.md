@@ -745,28 +745,28 @@ security:
     private-key-password: changeme       
 ```
 
-### Security Firewall: Make Resources Public
+### Public Resources
 By default Spring Security protects all resources within the API. In order to expose certain resources as public with no authentication or authorization required, then these resources must be called out explicitly within an application.yaml file. Following are two ways that to grant public access to resources. 
 
 #### Ignored
-The "security.ignored" parameter takes a list of url paths in the [AntPath syntax](http://ant.apache.org/manual/dirtasks.html#patterns). Whenever a request comes in, Spring Security will check to see if the request URL matches any of the items on the ignored list. If the incoming request URL does match the ignored list, then Spring Security will completely ignore the URL and will not apply any authentication or authorization to the request. 
+The "security.ignored" parameter accepts a list of url paths in the [AntPath syntax](http://ant.apache.org/manual/dirtasks.html#patterns). Whenever a request comes in, Spring Security will check to see if the request URL matches any of the items on the ignored list. If the incoming request URL does match the ignored list, then Spring Security will completely ignore the URL and will not apply any authentication or authorization to the request. 
 
-Ignoring URL paths should only be used for resources that do not require a Spring SecurityContext to be loaded, especially if the resource needs an authorized User to perform it's function. Ignored URLs are typically used for static resources like CSS, images, JS, and other static documents. 
+Ignoring URL paths should only be used for resources that do not require a Spring SecurityContext to be loaded, especially if the resource needs an authorized User to perform it's function. Ignored URLs are typically used for static resources like CSS, images, JS, and other static documents.  
 
 application.yaml
 ```
 security:
-
   ignored: /resources/**, /webjars/**, /docs/**
-  permitAll: /login, /api/hello
 ```
 
 #### Permit All
+The "security.permitAll" parameter accepts a list of url paths in the [AntPath syntax](http://ant.apache.org/manual/dirtasks.html#patterns). Much like the "security.ignored" parameter, when a request comes in, Spring Security will check to see if the request URL matches any of the patterns in the permitAll list. If the incoming request URL does match a permitAll pattern, then Spring Security will grant the user with full access to the resource and will create a Spring SecurityContext for the request. If the request contains valid authentication credentials, then the authenticated User will be added to the Spring SecurityContext. If the User cannot be determined, then an Anonymous user will be placed into the Spring SecurityContext. 
+
+The primary difference between "ignored" and "permitAll" is that "ignored" URLs do not have a SecurityContext and "permitAll" URLs do have a SecurityContext. Use the "permitAll" parameter when a resource needs to be made public and requires the use of the Spring SecurityContext. 
+
 application.yaml
 ```
 security:
-
-  ignored: /resources/**, /webjars/**, /docs/**
   permitAll: /login, /api/hello
 ```
 
