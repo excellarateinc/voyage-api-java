@@ -20,7 +20,7 @@ Overview of the Security features and configurations that have been implemented 
   - [CORS Configuration](#cors-configuration)
   - [Environment Specific Application Properties](#environment-specific-application-properties)
   - [JWT Public/Private Key Configuration](#jwt-publicprivate-key-configuration)
-  - Public Resources
+  - [Public App Resources](#public-app-resources)
   - User Verification
 * Audit Logging
   - Action Logs
@@ -744,3 +744,29 @@ security:
     private-key-name: jwt
     private-key-password: changeme       
 ```
+
+### Security Firewall: Make Resources Public
+By default Spring Security protects all resources within the API. In order to expose certain resources as public with no authentication or authorization required, then these resources must be called out explicitly within an application.yaml file. Following are two ways that to grant public access to resources. 
+
+#### Ignored
+The "security.ignored" parameter takes a list of url paths in the [AntPath syntax](http://ant.apache.org/manual/dirtasks.html#patterns). Whenever a request comes in, Spring Security will check to see if the request URL matches any of the items on the ignored list. If the incoming request URL does match the ignored list, then Spring Security will completely ignore the URL and will not apply any authentication or authorization to the request. 
+
+Ignoring URL paths should only be used for resources that do not require a Spring SecurityContext to be loaded, especially if the resource needs an authorized User to perform it's function. Ignored URLs are typically used for static resources like CSS, images, JS, and other static documents. 
+
+application.yaml
+```
+security:
+
+  ignored: /resources/**, /webjars/**, /docs/**
+  permitAll: /login, /api/hello
+```
+
+#### Permit All
+application.yaml
+```
+security:
+
+  ignored: /resources/**, /webjars/**, /docs/**
+  permitAll: /login, /api/hello
+```
+
