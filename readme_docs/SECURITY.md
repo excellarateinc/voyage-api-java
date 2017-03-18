@@ -20,7 +20,7 @@ Overview of the Security features and configurations that have been implemented 
   - [CORS Configuration](#cors-configuration)
   - [Environment Specific Application Properties](#environment-specific-application-properties)
   - [JWT Public/Private Key Configuration](#jwt-publicprivate-key-configuration)
-  - [Public App Resources](#public-app-resources)
+  - [Public Resources](#public-resources)
   - User Verification
 * Audit Logging
   - Action Logs
