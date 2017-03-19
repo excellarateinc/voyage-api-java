@@ -802,6 +802,9 @@ The following information is stored in the database:
 * Created Date - the date and time the action log was created
 * Last Modified Date - the date and time the action log was updated, which would be with an update with the response content
 
+:arrow_up: [Back to Top](#table-of-contents)
+
+
 ### Change Logs
 Change logs track the state of a database record over time. Every insert, update, delete that occurs within the database will have a record written to the change log that tracks the data modified, the authenticated user that made the change, and the time that the change occurred. 
 
@@ -836,6 +839,9 @@ class User extends AuditableEntity {
 ```
 
 All domain objects that implement @Auditing annotation must configure the \_AUD mirror tables within [Liquibase migration scripts](./DEVELOPMENT-RECIPES.md#add-database-structure-changes) in `/src/main/resources/db.changelog/`. 
+
+:arrow_up: [Back to Top](#table-of-contents)
+
 
 ### User & Date Stamps
 Each record within the API ought to have a User and Date stamp for when the record was created and who the last user was to modify the record. While these user & date stamps do not provide a complete picture, they do provide some helpful information, in particular with the last modified user and date. Combined with Change Log auditiing, these fields are very helpful to see the last modified user and date over time. 
@@ -894,6 +900,9 @@ Extending AuditableEntity for a domain object requires adding the fields defined
 
 All domain objects that extend AuditableEntity are required to have the column `is_deleted` added to the table (along with the other AuditableEntity fields). These columns should [added to the Liquibase migration scripts](./DEVELOPMENT-RECIPES.md#add-database-structure-changes) in `/src/main/resources/db.changelog/`. 
 
+:arrow_up: [Back to Top](#table-of-contents)
+
+
 ### Logical Deletes
 A logical delete (sometimes referred to as a soft delete) is when a record in the database is not physically deleted from the database, but instead "marked" as deleted. Records that are "marked" as deleted will be filtered out of all results from the application, effectively ignoring the "marked" record. Logical deletes might not be immediately seens as an auditing feature, but it is vitally important that every piece of data entered into the database is preserved for historical and audit reporting reasons. Forensics are difficult to perform on deleted data since the data is difficult to recover (if even possible).
 
@@ -939,3 +948,4 @@ class AuditableEntity {
 
 All domain objects that extend AuditableEntity are required to have the column `is_deleted` added to the table (along with the other AuditableEntity fields). These columns should [added to the Liquibase migration scripts](./DEVELOPMENT-RECIPES.md#add-database-structure-changes) in `/src/main/resources/db.changelog/`. 
 
+:arrow_up: [Back to Top](#table-of-contents)
