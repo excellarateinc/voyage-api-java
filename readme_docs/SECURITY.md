@@ -474,7 +474,7 @@ NOTE: UserPasswordExpiredServletFilter will intercept this and force password re
 The most recent Open Web Association of Secure Programmers (OWASP) top 10 most exploited custom app vulnerabilities are as follows:
 
 1. [Injection](#1-injection)
-2. [Weak authentication and session management](#weak-authentication-and-session-management)
+2. [Weak authentication and session management](#2-weak-authentication-and-session-management)
 3. XSS
 4. Insecure Direct Object References
 5. Security Misconfiguration
