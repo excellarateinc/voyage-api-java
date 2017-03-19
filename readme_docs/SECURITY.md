@@ -560,8 +560,6 @@ While this is a broad topic, OWASP evaluates if an app is vulnerable by the foll
 ##### Password storage
 Per [OWASP recommendations](https://www.owasp.org/index.php/Cryptographic_Storage_Cheat_Sheet), the API utilizes the [bcrypt](https://en.wikipedia.org/wiki/Bcrypt) one-way hashing module based on the blowfish cipher. All passwords (user and client) and security question answers are stored as one-way hashes that require the user to enter the values exactly as they were originally entered in order for the hash to be reproduced and matched with the hash stored in the database. 
 
-:arrow_up: [Back to Top](#table-of-contents)
-
 ##### Session Management
 The current position of the API is that sessions are to be avoided if at all possible as they are not that useful within a stateless API and can expose severe vulnerabilities if not handled properly. The [OWASP documentation on Session Management](https://www.owasp.org/index.php/Session_Management_Cheat_Sheet) does a good job of explaining how Sessions should be handled if/when they need to be used within an application. 
 
@@ -585,6 +583,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 }
 ```
+
+:arrow_up: [Back to Top](#table-of-contents)
+
 
 #### 3. XSS
 
