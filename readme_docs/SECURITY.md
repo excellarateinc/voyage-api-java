@@ -805,14 +805,14 @@ Change logs track the state of a database record over time. Every insert, update
 
 The API utilizes [Hibernate Envers framework](https://docs.jboss.org/envers/docs/) to handle data change tracking. Envers data change tracking follows a complete database state model where every database change increments the "version" of the database state. Envers provides tools that allow for an app or database administrator to query the database change logs to see what the data looked like at any state version in the past. For example, if the current database state version was at 850, an admin could ask the Envers framework what the database state looked like at version 450. In order for Envers to provide this detailed level of change tracking and state versioning, each database table that requires auditing must have a mirror table with the same name + "\_AUD" extension. The mirror table also requires two added fields to track the revision (aka version) of the data: REV, REVTYPE. REV holds the revision number of the data change, and REVTYPE describes the type of change (0-INSERT, 1-UPDATE, 2-DELETE). 
 
-user table
 ```
+user
 - id
 - name
 ```
 
-user_aud table
 ```
+user_aud
 - id 
 - name
 - REV
