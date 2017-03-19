@@ -473,8 +473,8 @@ NOTE: UserPasswordExpiredServletFilter will intercept this and force password re
 #### Overview
 The most recent Open Web Association of Secure Programmers (OWASP) top 10 most exploited custom app vulnerabilities are as follows:
 
-1. Injection
-2. Weak authentication and session management
+1. [Injection](#1-injection)
+2. [Weak authentication and session management](#weak-authentication-and-session-management)
 3. XSS
 4. Insecure Direct Object References
 5. Security Misconfiguration
@@ -521,8 +521,9 @@ The parameter `first_name` has a question mark (?) as the parameter place holder
 select count(*) from t_actor where first_name = 'Joe'' or 1=1'
 ```
 The SQL query above would be interpreted to look for any first name containing "Joe'' or 1=1", which is not likely going to be any first name in the table. 
-
-#### HQL Injection
+  
+  
+##### HQL Injection
 Hibernate Query Language (HQL), also known as Java Persistence Query Language (JPQL), is just as vulnerable to attackers as SQL when a query is constructed using bare string concatination. Just like SQL injection, HQL must utilizing the Hibernate query builders to SET parameters into the query for processing and replacement into the final query to the database. 
 
 Utilzing the [Repository interface for Spring Hibernate](https://docs.spring.io/spring-data/data-commons/docs/1.6.1.RELEASE/reference/html/repositories.html) makes the task easy by simply defining the query with parameter placeholders as an annotation. Spring + Hibernate take care of the rest without concer for HQL injection. 
@@ -543,9 +544,53 @@ interface UserRepository extends CrudRepository<User, Long> {
 
 In the UserRepository interface define in the above code snippet, two of the queries have parameter placeholders defined with a question mark (?) and a number indicating which method argument to use. Spring does the work to translate the method argument and set it into a parameterized HQL query so that the parameter is handled and processed as if it were untrusted data. 
 
+:arrow_up: [Back to Top](#table-of-contents)
+
+
 #### 2. Weak authentication and session management
+While this is a broad topic, OWASP evaluates if an app is vulnerable by the following interogation (not inclusive of every possible attack vector):
+1. User credentials stored using strong hashing or encryption? 
+2. Accounts can be guessed or overwritten if account creation is weak, change/recover password is weak, weak session IDs, etc.
+3. Session IDs are exposed in the URL
+4. Session IDs are vulnerable to [session fixation](https://www.owasp.org/index.php/Session_fixation) attacks. 
+5. Session IDs, access tokens, or SSO is not properly invalidated during logout
+6. Session IDs are not rotated after successful login
+7. Passwords, session IDs, and other credentials are sent over unencrypted connections. 
+
+##### Password storage
+Per [OWASP recommendations](https://www.owasp.org/index.php/Cryptographic_Storage_Cheat_Sheet), the API utilizes the [bcrypt](https://en.wikipedia.org/wiki/Bcrypt) one-way hashing module based on the blowfish cipher. All passwords (user and client) and security question answers are stored as one-way hashes that require the user to enter the values exactly as they were originally entered in order for the hash to be reproduced and matched with the hash stored in the database. 
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+##### Session Management
+The current position of the API is that sessions are to be avoided if at all possible as they are not that useful within a stateless API and can expose severe vulnerabilities if not handled properly. The [OWASP documentation on Session Management](https://www.owasp.org/index.php/Session_Management_Cheat_Sheet) does a good job of explaining how Sessions should be handled if/when they need to be used within an application. 
+
+The only area within the application that currently utilizes a session is during the [OAuth2 implicit authentication workflow](#implicit-authentication). The OAuth2 implicit authentication workflow receives a request from a Client (ie mobile app) to authenticate with the API. When the authentication request is received, OAuth2 stores the client credentials, returns a JSESSIONID cookie for storage into the user's browser, and then redirects the user's browsers to the login page. The user will then enter their login credentials and upon successful authentication of credentials, the JSESSIONID will be used to lookup the client credentials for validation before redirecting the user back to the client application. 
+
+Notes about the security in place during the JSESSIONID session ID stored within the user's Cookies:
+1. The entire transaction must be conducted over SSL
+   - This must be enforced by the system administrators when routing requests to the API via a web server or load balancer
+   - Exposing the JSESSIONID through unencrypted traffic would allow for an attacker to impersonate the end-user
+2. The JSESSIONID is used only to store the client credentials until the user successfully authenticates. 
+3. Once the user authenticates, then the JSESSIONID is invalidated
+4. All requests made to the API do not use a JSSESSIONID, which makes the session ID useless for attacks on any other part of the system
+
+##### SSL / Encrypted Channel
+The API doesn't implement controls to enforce SSL for every transaction by default. Spring Security offers a featuer in which the API will detect if the HTTP Protocol is not HTTPS and will redirect to an HTTPS port (default 443). Should the system administrators wish to enforce SSL within the application, then the following example from [Spring Security - Requires Channel](http://docs.spring.io/spring-security/site/docs/3.2.0.RC2/apidocs/org/springframework/security/config/annotation/web/builders/HttpSecurity.html#requiresChannel%28%29) can be implemented within the API `WebSecurityConfig.groovy` file.
+
+```
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    protected void configure(HttpSecurity http) {
+        http.requiresChannel().anyRequest().requiresSecure();
+    }
+}
+```
 
 #### 3. XSS
+
+
+:arrow_up: [Back to Top](#table-of-contents)
+
 
 #### Resources
 * [OWASP Top 10 Cheat Sheet](https://www.owasp.org/index.php/OWASP_Top_Ten_Cheat_Sheet)
