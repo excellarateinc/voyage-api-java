@@ -22,9 +22,9 @@ Overview of the Security features and configurations that have been implemented 
   - [JWT Public/Private Key Configuration](#jwt-publicprivate-key-configuration)
   - [Public Resources](#public-resources)
   - User Verification
-* Audit Logging
-  - Action Logs
-  - Change Logs
+* [Audit Logging](#audit-logging)
+  - [Action Logs](#action-logs)
+  - [Change Logs](#change-logs)
 
 ## Secure Programming
 The majority of technology security breaches that occur are through software applications. As developers create new software they need to be very mindful of secure programming principals in order to protect the users and companies that use the software. A developer needs to simply Google "Secure Coding" or "Secure Programming" to find many articles on best practices for secure programming. We've included a number of references below that are a great start. 
@@ -769,4 +769,171 @@ application.yaml
 security:
   permitAll: /login, /api/hello
 ```
+
+## Audit Logging
+All enterprise level applications require audit logging of activities and data changes within each of their applications. Some business verticals legally require auditing, such as US banking regulations and US healthcare HIPAA law. While audit logging is required in many industries, every application should include audit logging as a rule because of the many benefits, such as: 
+* Monitoring user activity & volume with specificity
+* Track data changes to the database
+* Analyze activity for suspicious behavior
+* Be alerted when errors occur (before your user notifies you)
+* Retrospectively analyze user's who report bugs, errors, or is having trouble with the app
+* Measure Request/Response duration and track slow processing
+
+### Action Logs
+Action logs track individual actions that were requested by users. When the API receives an API request, the details of the request are inserted into the database table `action_log`. Before the APi returns back the response to the consumer, details about the response are updated within the action log record to complete the transaction details. 
+
+Action logs are important because they track all requests made of the system from anonymous and authenticated users. With this informaiton, many security features can be built to detect malicious behaviors (IP getting too many 401 Unauthorized requests in a small period of time) that can block activity for a specific IP address or user. Also, action logs that track duration of the complete request/response transaction allow for tracking slow requests for continual performance enhancements. In addition to providing significant awareness to the administrators of the app, action logging is a required component for knowing if a user made a request to a resource, was granted access to fulfill the request, and what was the user given back as a response. In a security breach situation, it's important to be able to quickly identify the level of exposure and be able to perform forensic operations to identify how the breach occurred. 
+
+The following information is stored in the database:
+
+* IP Address - the IP address of the originator of the request (aka user). If the API is being hosted behind a load balancer, then the IP Address will be retrieved from the request header `X-Forwarded-For`. 
+* Protocol - the request protocol used by the user. HTTP or HTTPS in most cases. 
+* URL - the URL of the HTTP request
+* HTTP Method - the method used for the request: GET, POST, PUT, PATCH, DELETE
+* HTTP Status - the http response status of the request. Example: 200, 401, 404
+* Principal - the authenticated username associated with the request
+* Client ID - the ID of the client that initiated the request
+* User ID - the ID of the authenticated user
+* Request Headers - a listing of headers that were sent by the consumer
+* Request Body - the POST/PUT/PATCH content provided within the request
+* Response Body - the content response from the API
+* Created Date - the date and time the action log was created
+* Last Modified Date - the date and time the action log was updated, which would be with an update with the response content
+
+### Change Logs
+Change logs track the state of a database record over time. Every insert, update, delete that occurs within the database will have a record written to the change log that tracks the data modified, the authenticated user that made the change, and the time that the change occurred. 
+
+The API utilizes [Hibernate Envers framework](https://docs.jboss.org/envers/docs/) to handle data change tracking. Envers data change tracking follows a complete database state model where every database change increments the "version" of the database state. Envers provides tools that allow for an app or database administrator to query the database change logs to see what the data looked like at any state version in the past. For example, if the current database state version was at 850, an admin could ask the Envers framework what the database state looked like at version 450. In order for Envers to provide this detailed level of change tracking and state versioning, each database table that requires auditing must have a mirror table with the same name + "\_AUD" extension. The mirror table also requires two added fields to track the revision (aka version) of the data: REV, REVTYPE. REV holds the revision number of the data change, and REVTYPE describes the type of change (0-INSERT, 1-UPDATE, 2-DELETE). 
+
+user table
+```
+- id
+- name
+```
+
+user_aud table
+```
+- id 
+- name
+- REV
+- REVTYPE
+```
+
+Add the `@Audited` annotation above the class signature of all application domain objects that require change logging in the database. The Hibernate Envers framework scans for domain objects with the `@Auditied` annotation and will "wire it up" so that when Hibernate persists changes to the database, the Envers framework will be triggered to submit the changes into the `\_AUD` table. 
+
+```
+@Entity
+@Audited
+class User extends AuditableEntity {
+    @NotNull
+    String firstName
+
+    @NotNull
+    String lastName
+}
+```
+
+All domain objects that implement @Auditing annotation must configure the \_AUD mirror tables within [Liquibase migration scripts](./DEVELOPMENT-RECIPES.md#add-database-structure-changes) in `/src/main/resources/db.changelog/`. 
+
+### User & Date Stamps
+Each record within the API ought to have a User and Date stamp for when the record was created and who the last user was to modify the record. While these user & date stamps do not provide a complete picture, they do provide some helpful information, in particular with the last modified user and date. Combined with Change Log auditiing, these fields are very helpful to see the last modified user and date over time. 
+
+To enable User & Date timestamps within the API domain objects, simply extend AuditableEntity like:
+```
+@Entity
+@Audited
+class User extends AuditableEntity {
+    @NotNull
+    String firstName
+
+    @NotNull
+    String lastName
+}
+```
+
+AuditableEntity simply contains the fields that are required on every domain object within the API
+```
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener)
+@EqualsAndHashCode
+class AuditableEntity {
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    Long id
+
+    @CreatedBy
+    @Audited
+    @JsonIgnore
+    String createdBy
+
+    @CreatedDate
+    @Audited
+    @JsonIgnore
+    Date createdDate
+
+    @LastModifiedBy
+    @Audited
+    @JsonIgnore
+    String lastModifiedBy
+
+    @LastModifiedDate
+    @Audited
+    @JsonIgnore
+    Date lastModifiedDate
+
+    @NotNull
+    @Audited
+    @JsonIgnore
+    Boolean isDeleted = Boolean.FALSE
+}
+```
+
+Extending AuditableEntity for a domain object requires adding the fields defined in AuditableEntity as columns on the domain object table. For example, with the user object shown in the code sample above, the `user` table will require columns `created_by`, `created_date`, `last_modified_by`, and `last_modified_date`. 
+
+All domain objects that extend AuditableEntity are required to have the column `is_deleted` added to the table (along with the other AuditableEntity fields). These columns should [added to the Liquibase migration scripts](./DEVELOPMENT-RECIPES.md#add-database-structure-changes) in `/src/main/resources/db.changelog/`. 
+
+### Logical Deletes
+A logical delete (sometimes referred to as a soft delete) is when a record in the database is not physically deleted from the database, but instead "marked" as deleted. Records that are "marked" as deleted will be filtered out of all results from the application, effectively ignoring the "marked" record. Logical deletes might not be immediately seens as an auditing feature, but it is vitally important that every piece of data entered into the database is preserved for historical and audit reporting reasons. Forensics are difficult to perform on deleted data since the data is difficult to recover (if even possible).
+
+A nice side benefit of logical deletes is that if data is accidentally marked as deleted by the application, then it's a simple record update by a DBA to restore the data for the user. 
+
+To enable logical deletes for a domain object, simply extend the `AuditableEntity` class to include the base auditable fields, which includes a field titled `isDeleted`.
+
+```
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener)
+@EqualsAndHashCode
+class AuditableEntity {
+    @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    Long id
+
+    @CreatedBy
+    @Audited
+    @JsonIgnore
+    String createdBy
+
+    @CreatedDate
+    @Audited
+    @JsonIgnore
+    Date createdDate
+
+    @LastModifiedBy
+    @Audited
+    @JsonIgnore
+    String lastModifiedBy
+
+    @LastModifiedDate
+    @Audited
+    @JsonIgnore
+    Date lastModifiedDate
+
+    @NotNull
+    @Audited
+    @JsonIgnore
+    Boolean isDeleted = Boolean.FALSE
+}
+```
+
+All domain objects that extend AuditableEntity are required to have the column `is_deleted` added to the table (along with the other AuditableEntity fields). These columns should [added to the Liquibase migration scripts](./DEVELOPMENT-RECIPES.md#add-database-structure-changes) in `/src/main/resources/db.changelog/`. 
 
