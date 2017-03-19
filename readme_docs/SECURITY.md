@@ -25,6 +25,8 @@ Overview of the Security features and configurations that have been implemented 
 * [Audit Logging](#audit-logging)
   - [Action Logs](#action-logs)
   - [Change Logs](#change-logs)
+  - [User & Date Stamps](#user--date-stamps)
+  - [Logical Deletes)(#logical-deletes)
 
 ## Secure Programming
 The majority of technology security breaches that occur are through software applications. As developers create new software they need to be very mindful of secure programming principals in order to protect the users and companies that use the software. A developer needs to simply Google "Secure Coding" or "Secure Programming" to find many articles on best practices for secure programming. We've included a number of references below that are a great start. 
