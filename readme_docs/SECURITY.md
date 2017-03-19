@@ -485,9 +485,63 @@ The most recent Open Web Association of Secure Programmers (OWASP) top 10 most e
 10. Unvalidated Redirects and Forwards
 
 #### 1. Injection
-* Hibernate SQL/HQL Injection concerns
-  - Uses JPA with SQL/HQL parameter being applied to the SQL/HQL query only through Hibernate supplied setters()
-  - Hibernate query parameter setters() assume all content is insecure and escapes all characters that would conflict with the sytax of the query. 
+SQL/HQL, OS, and LDAP injection occur when untrusted data is passed in to the API request and applied to a command that is then sent to an interpreter like a SQL or LDAP engine. If the command that is sent to the interpreter is not properly screened, then the attacker can trick the interpreter to perform tasks that were not originally intended. 
+
+A simple SQL injection attack: 
+
+Vulnerable code:
+```
+String sql = "SELECT * FROM user WHERE username='" + username + "' AND password='" + password + "'
+Result result = database.query(sql)
+```
+
+Attacker parameters:
+```
+username=admin
+password=1' OR 1=1
+```
+
+When the final SQL is constructed and stored in the `sql` variable in the app, the attacker SQL will look like:
+```
+SELECT * FROM user WHERE username='admin' AND password='1' OR 1=1
+```
+
+Every SQL interpreter will translate this command to return any user where the username is 'admin' and the password is '1' or where 1=1, which is always true. The end result of this query is to return all user records. If the application is only expecting one record back, sometimes the database API will simply return the first record in the list as a fail-safe option, which would then authenticate the user. 
+
+##### SQL Injection
+SQL injection is prevented within the API by following a strict rule to always using a parameterized SQL builder such as the [Spring JDBC template](https://docs.spring.io/spring/docs/current/spring-framework-reference/html/jdbc.html#jdbc-core). The Spring JDBC template provides a parameter replacement feature that will also assume all parameter values are untrusted and will escape all special characters that would interfere with a SQL query, such as a single quote. 
+
+```
+int countOfActorsNamedJoe = this.jdbcTemplate.queryForObject(
+        "select count(*) from t_actor where first_name = ?", Integer.class, "Joe");
+```
+
+The parameter `first_name` has a question mark (?) as the parameter place holder. The following two parameters of the `queryForObject` method include the paramter datatype and the parameter value. If the parameter value contained a value like `Joe' or 1=1`, then the Spring JDBC Template processor would escape the single tick character with a second single tick and translate that into the following query:
+```
+select count(*) from t_actor where first_name = 'Joe'' or 1=1'
+```
+The SQL query above would be interpreted to look for any first name containing "Joe'' or 1=1", which is not likely going to be any first name in the table. 
+
+#### HQL Injection
+Hibernate Query Language (HQL), also known as Java Persistence Query Language (JPQL), is just as vulnerable to attackers as SQL when a query is constructed using bare string concatination. Just like SQL injection, HQL must utilizing the Hibernate query builders to SET parameters into the query for processing and replacement into the final query to the database. 
+
+Utilzing the [Repository interface for Spring Hibernate](https://docs.spring.io/spring-data/data-commons/docs/1.6.1.RELEASE/reference/html/repositories.html) makes the task easy by simply defining the query with parameter placeholders as an annotation. Spring + Hibernate take care of the rest without concer for HQL injection. 
+
+```
+interface UserRepository extends CrudRepository<User, Long> {
+
+    @Query('FROM User u WHERE u.username = ?1 AND u.isDeleted = false')
+    User findByUsername(String username)
+
+    @Query('FROM User u WHERE u.id = ?1 AND u.isDeleted = false')
+    User findOne(Long id)
+
+    @Query('FROM User u WHERE u.isDeleted = false')
+    Iterable<User> findAll()
+}
+```
+
+In the UserRepository interface define in the above code snippet, two of the queries have parameter placeholders defined with a question mark (?) and a number indicating which method argument to use. Spring does the work to translate the method argument and set it into a parameterized HQL query so that the parameter is handled and processed as if it were untrusted data. 
 
 #### 2. Weak authentication and session management
 
