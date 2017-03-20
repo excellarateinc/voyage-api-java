@@ -475,7 +475,7 @@ The most recent Open Web Association of Secure Programmers (OWASP) top 10 most e
 
 1. [Injection](#1-injection)
 2. [Weak authentication and session management](#2-weak-authentication-and-session-management)
-3. [XSS](#xss)
+3. [XSS](#3-xss)
 4. Insecure Direct Object References
 5. Security Misconfiguration
 6. Sensitive Data Exposure
