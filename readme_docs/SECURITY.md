@@ -588,6 +588,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 #### 3. XSS
+Cross-Site Scripting (XSS) is perhaps one of the most common web app exploits on the Internet. In short, XSS is when an attacker inputs malicious coding into an HTTP request (usually via an input field) and the malicious coding is sent back to a user for execution. The malicious coding is executed because, like SQL Injection, the coding terminates the ending of a string and then provides executable code for the web browser interperter to consume and execute. 
+
+A web services API is a server-side component of a web or mobile application and is the hub by which a XSS malicious code is either saved to the database and sent back upon request to an unsuspecting user, or the XSS malicious code is immediately echoed back to the user through an error message or something similar. The OWASP group has a solid article that provides great detail called [OWASP XSS Prevention Cheat Sheet](https://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet). In short, in order to keep the API secure from XSS attacks, the following precautions must always be followed: 
+
+1. Validate incoming data
+   - Ensure the data complies with the allowable range of information (numbers, money, text, lists, ...)
+   - When updating objects/records, explicitly get the data from the request that is expected, validate the range of data, then explicitly set the validated data into the database object/record. 
+   - Do not blindly trust incoming data. Do not dynamically set data directly from the request into a database object/record
+   - ASSUME that any request could be a potentially attacker, including authenticated and authorized users!
+2. Escape HTML/CSS/JS content before inserting into the database
+   - Understand that storing code within the database that will be executed is a potentially dangerous feature!
+   - See the [OWASP XSS Prevention Cheat Sheet](https://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet) for a detailed description on specific content types and vulnerabilities.
+   - Do not rely on the response output to properly escape data because other systems might use the database directly
+3. Properly escape special characters in all response header and body values
+   - so that a string or number or boolean (etc) cannot be hijacked
+   - JSON encoding helps, right? 
+   - CORS Servlet filter
+
+
+... talk about the patterns that we need to adhere to for secure programming (getting request params and manually setting them into database objects)
+
+CORS Servlet filter work
+
+Tools to use for saving HTML/CSS/Javascript escaped text
+
+JSON escaping
+
 
 
 :arrow_up: [Back to Top](#table-of-contents)
