@@ -471,7 +471,7 @@ NOTE: UserPasswordExpiredServletFilter will intercept this and force password re
 
 ### OWASP Top 10
 #### Overview
-The most recent Open Web Association of Secure Programmers (OWASP) top 10 most exploited custom app vulnerabilities are as follows:
+The most recent Open Web Association of Secure Programmers (OWASP) [Top 10 most exploited custom app vulnerabilities](https://www.owasp.org/index.php/OWASP_Top_Ten_Cheat_Sheet) are as follows:
 
 1. [Injection](#1-injection)
 2. [Weak authentication and session management](#2-weak-authentication-and-session-management)
@@ -672,12 +672,6 @@ When request data comes into the app, it's important that the header and paramet
 Use [Spring Validation framework](https://docs.spring.io/spring/docs/current/spring-framework-reference/html/validation.html) following examples like [validation of an input form](https://spring.io/guides/gs/validating-form-input/) to apply annotations to domain object properties to enforce field nullability, size range, type, minimum value, maximum value, and more. Utilize the [@Pattern](http://stackoverflow.com/questions/17481029/pattern-for-alphanumeric-string-bean-validation) validator to create your own custom validation. 
 
 For reference validation within this API, see `/src/main/groovy/voyage/security/user/User.groovy`.
-
-:arrow_up: [Back to Top](#table-of-contents)
-
-
-#### Resources
-* [OWASP Top 10 Cheat Sheet](https://www.owasp.org/index.php/OWASP_Top_Ten_Cheat_Sheet)
 
 :arrow_up: [Back to Top](#table-of-contents)
 
