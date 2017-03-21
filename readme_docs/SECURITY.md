@@ -597,24 +597,71 @@ A web services API is a server-side component of a web or mobile application and
    - When updating objects/records, explicitly get the data from the request that is expected, validate the range of data, then explicitly set the validated data into the database object/record. 
    - Do not blindly trust incoming data. Do not dynamically set data directly from the request into a database object/record
    - ASSUME that any request could be a potentially attacker, including authenticated and authorized users!
-2. Escape HTML/CSS/JS content before inserting into the database
+2. Encode request content before handling or validating within the app
    - Understand that storing code within the database that will be executed is a potentially dangerous feature!
    - See the [OWASP XSS Prevention Cheat Sheet](https://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat_Sheet) for a detailed description on specific content types and vulnerabilities.
-   - Do not rely on the response output to properly escape data because other systems might use the database directly
+   - Do not rely on the response output to handle escaping data values on-the-fly because other systems might use the database directly
+   - Encode for: HTML, CSS, JS, XML, SQL, URL, LDAP, VBScript, OS Commands
 3. Properly escape special characters in all response header and body values
-   - so that a string or number or boolean (etc) cannot be hijacked
-   - JSON encoding helps, right? 
-   - CORS Servlet filter
+   - When returning data back to the user, ensure that data values are properly escaped so as to prevent HTML/CSS/JS injection
+   - Escape all special characters in request parameters echoed back in the response
 
+The API currently employs the following configuration and patterns to prevent XSS attacks:
 
-... talk about the patterns that we need to adhere to for secure programming (getting request params and manually setting them into database objects)
+##### Encoded Request Headers & Parameters
+The API encodes all incoming request data (headers & parameters) to escape potentially malicious content BEFORE the API handles the data. The encoded content supported is as follows: HTML, CSS, Javascript, VBScript, SQL, OS Commands, LDAP, XPATH, XML, URL.
 
-CORS Servlet filter work
+Encoding is handled using the [OWASP Enterprise Security API (ESAPI)](https://www.owasp.org/index.php/Category:OWASP_Enterprise_Security_API), which provides out-of-the-box encoding. 
 
-Tools to use for saving HTML/CSS/Javascript escaped text
+The encoding is handled in `/src/main/groovy/voyage/security/XssServletFilter.groovy` within the `stripXSS(String value)` method
+```
+private static String stripXSS(String value) {
+   if (value) {
+      // Avoid encoded attacks by parsing the value using ESAPI
+      value = ESAPI.encoder().canonicalize(value)
 
-JSON escaping
+      // Avoid null characters
+      value = value.replaceAll("", "")
 
+      // Remove all sections that match a pattern
+      for (Pattern pattern : patterns) {
+         value = pattern.matcher(value).replaceAll("")
+      }
+   }
+   return value
+}
+```
+
+The `stringXSS(String value)` method is called whenever the API gets request header values or request parameters. See the full details of how the XssServlet filter works within the source referenced above. 
+
+##### XSS Request Header & Parameter Pattern 
+The API examines all incoming request data (headers & parameters) to identify and remove suspicious XSS content before the API logic uses the data. 
+
+XSS patterns are defined within `/src/main/groovy/voyage/security/XssServletFilter.groovy` with the actualy bulk of the work being done in the `stripXSS(String value)` method (see previous section for code details). Embedded within the XssServletFilter class is a list of predefined [regex](http://regexr.com) patterns that are examined whenever the API requests data from the incoming Request. 
+
+Recognized XSS patterns:
+```
+<script>(.*?)</script>
+</script>
+<script(.*?)>
+src[\r\n]*=[\r\n]*\\\'
+eval\\((.*?)\\)
+expression\\((.*?)\\)
+javascript:
+vbscript:
+onload(.*?)=
+```
+
+These parameters may be expanded by adding additional parameters within the `XssServletFilter` class. 
+
+##### XSS Response Headers
+Spring Security is pre-configured by default to always add `X-XSS-Protection` header, which is supported by [modern web browsers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection) and essentially stops pages from loading if they detect reflected XSS attacks. Reflected data is when the user submits data and it is echoed back from the server verbatim and the data contains potentially malicious coding. 
+
+```
+X-XSS-Protection: 1; mode=block
+```
+
+The default setting from Spring Security is to enable X-XSS-Protection by returning a value of `1`, and then instructing the web browser with `mode=block` to not render the page if it detects a XSS attack. 
 
 
 :arrow_up: [Back to Top](#table-of-contents)
