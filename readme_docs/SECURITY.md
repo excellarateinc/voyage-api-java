@@ -661,8 +661,17 @@ Spring Security is pre-configured by default to always add `X-XSS-Protection` he
 X-XSS-Protection: 1; mode=block
 ```
 
-The default setting from Spring Security is to enable X-XSS-Protection by returning a value of `1`, and then instructing the web browser with `mode=block` to not render the page if it detects a XSS attack. 
+The default setting from Spring Security is to [enable X-XSS-Protection](http://docs.spring.io/spring-security/site/docs/current/reference/html/headers.html#headers-xss-protection) by returning a value of `1`, and then instructing the web browser with `mode=block` to not render the page if it detects a XSS attack. 
 
+
+##### Validate Incoming Data
+When request data comes into the app, it's important that the header and parameter values are validated against what is expected within the app. Be quick to reject invalid data with an error message to the user explaining what happened. 
+
+> NOTE: Do NOT echo back in the error message the failed data as this might create a XSS vulnerability. 
+
+Use [Spring Validation framework](https://docs.spring.io/spring/docs/current/spring-framework-reference/html/validation.html) following examples like [validation of an input form](https://spring.io/guides/gs/validating-form-input/) to apply annotations to domain object properties to enforce field nullability, size range, type, minimum value, maximum value, and more. Utilize the [@Pattern](http://stackoverflow.com/questions/17481029/pattern-for-alphanumeric-string-bean-validation) validator to create your own custom validation. 
+
+For reference validation within this API, see `/src/main/groovy/voyage/security/user/User.groovy`.
 
 :arrow_up: [Back to Top](#table-of-contents)
 
