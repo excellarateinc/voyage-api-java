@@ -706,7 +706,7 @@ Once the attacker is inside the security perimeter, then they can observe the UR
 ##### Prevention 
 The question that every software developer must ask themselves when they write a web service API (or any user accessible code) "What would happen if an identifier was passed in that doesn't 'belong' to the user?". 
 
-It's not practical or possible to create a global filter for all API endpoints that would prevent insecure direct object references. The most practical solution to prevent this type of attack is to educate software developers to write secure code that programmatically checks each user and their access to the data that is being requested.
+It's not practical or possible to create a global filter for all API endpoints that would prevent insecure direct object references because each web service endpoint may be unique in the data it provides. The most practical solution to prevent this type of attack is to educate software developers to write secure code that programmatically checks each user and their access to the data that is being requested.
 
 See the Developer Recipe [Prevent Insecure Direct Object References](DEVELOPER-RECIPES.md) for educational and practical short recipe for developers to create awareness of this type of attack with example scenarios on how to write secure code to prevent the app from being vulnerable. 
 
