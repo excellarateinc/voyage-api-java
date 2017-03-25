@@ -476,7 +476,7 @@ The most recent Open Web Association of Secure Programmers (OWASP) [Top 10 most 
 1. [Injection](#1-injection)
 2. [Weak authentication and session management](#2-weak-authentication-and-session-management)
 3. [XSS](#3-xss)
-4. Insecure Direct Object References
+4. [Insecure Direct Object References](#4-insecure-direct-object-references)
 5. Security Misconfiguration
 6. Sensitive Data Exposure
 7. Missing Function Level Access Control
@@ -675,6 +675,43 @@ For reference validation within this API, see `/src/main/groovy/voyage/security/
 
 :arrow_up: [Back to Top](#table-of-contents)
 
+#### 4. Insecure Direct Object References
+Most API applications expose "direct object references" through the request parameters or POST parameters to indicate which specific record is being requested. The "object references" are typically in the form of a unique identifier. For example:
+```
+http://some-app/api/v1/users/1
+```
+The URL is meant to be human friendly and easy to read. In this case, the URL reads "requesting user ID=1 from API version 1 at some-app". 
+
+Other examples might be even more explicit and include multiple identifiers, like:
+```
+http://some-app/api/v1/users?id=1
+
+http://some-app/api/v1/users?site_id=3&user_id=1
+```
+
+It's also pretty easy for a hacker to change any of these parameters to see what happens. In the case of an "insecure direct object reference" the attacker would be able to change the `/users?id=1` to `/users?id=2` or any number to gain access to other records. This type of attack is very easy to try out by simply manipulating the URL in your browser on a website. 
+
+##### Public access
+The first line of defense is to ensure that all API endpoints that have non-public data are behind the security perimeter. By default, this API assumes that every request requires an authenticated user. If an anonymous user attempts to access an API resource, and the resource is not on a whitelist, then the request will be rejected. 
+
+The second line of defence is to ensure that all API endpoints are restricted to security groups so that authenticated users are only eligible to access API resources that are associated with the security group(s) of the users. 
+
+If anonymous and unauthorized requests are rejected, then there is no chance that the API resource will even be accessible to attempt this attack. 
+
+##### Authenticated access
+Having a strong security perimeter requiring authentication and verifying permissions to access API endpoints isn't enough for this type of attack. If an API allows for open registration of accounts, then any anonymous attacker can get behind the security perimeter by simply creating an account. Even if open registration is not enabled, every app should assume that its users will have malicous intent or perhaps a healthy amount of curiousity. 
+
+Once the attacker is inside the security perimeter, then they can observe the URLs that are displayed within the web app in the browser and the URLs that are being requested to the server-side API. Any visible URL can be modified and resent with different parameters to try to get different results back. 
+
+##### Prevention 
+The question that every software developer must ask themselves when they write a web service API (or any user accessible code) "What would happen if an identifier was passed in that doesn't 'belong' to the user?". 
+
+It's not practical or possible to create a global filter for all API endpoints that would prevent insecure direct object references. The most practical solution to prevent this type of attack is to educate software developers to write secure code that programmatically checks each user and their access to the data that is being requested.
+
+See the Developer Recipe [Prevent Insecure Direct Object References](DEVELOPER-RECIPES.md) for educational and practical short recipe for developers to create awareness of this type of attack with example scenarios on how to write secure code to prevent the app from being vulnerable. 
+
+
+:arrow_up: [Back to Top](#table-of-contents)
 
 
 ### User Verification
