@@ -83,7 +83,7 @@ class DefaultExceptionHandlerSpec extends Specification {
             usernameRequiredError.defaultMessage >> 'Username is required'
             firstNameRequiredError.code >> 'field.firstName'
             firstNameRequiredError.defaultMessage >> 'First Name is required'
-      
+
             responseEntity.statusCodeValue == 400
             responseEntity.body.size() == 2
             responseEntity.body[0].error == 'field.username'
