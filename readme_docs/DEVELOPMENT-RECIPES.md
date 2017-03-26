@@ -771,7 +771,11 @@ Security highlights:
 4. The exception doesn't return any explict reason for aborting the process other than the Site ID is invalid. Don't tell the attacker why they are being blocked as it might reveal insights into how to better attack the service. 
 
 ##### 4. Be paranoid and assume any request could be an attack to steal data.
+"Just because you're paranoid doesn't mean they aren't after you." - Joseph Heller, Catch-22
 
+If you think of the Internet as a dirty, smelly, criminal infested, and extremely dangerous subway system, then well, you've got the picture of how it truly is. Most people use the Internet for good, but it only takes one thief to steal a lot of data. Chances are you have that thief banging on your door 1,000 times a day. And just because you might be writing Intranet apps doesn't mean you're safe. Most computer viruses or worms try to get into your Intranet and then go to work on infecting poorly secured Intranet environments. Custom Intranet apps are perhaps the most vulnerable since many developers do not think about security and are not required to undergo the same security scrutiny as a public facing app. 
+
+Assume that the app you are building WILL BE hacked at some point by a disgruntled employee, mischevious contractor, soverign nation, hacker group, security penetration testers, computer worm or virus, etc...
 
 :arrow_up: [Back to Top](#table-of-contents)
 
