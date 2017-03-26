@@ -764,6 +764,63 @@ There are a number of prevention techniques that can be followed. Most of the pr
 :arrow_up: [Back to Top](#table-of-contents)
 
 
+#### 6. Sensitive Data Exposure
+##### Overview
+
+##### Prevention
+
+##### References
+* [OWASP Top 10 - A6-Sensitive Data Exposure](https://www.owasp.org/index.php/Top_10_2013-A6-Sensitive_Data_Exposure)
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+
+#### 7. Missing Function Level Access Control
+##### Overview
+
+##### Prevention
+
+##### References
+* [OWASP Top 10 - A7-Missing Function Level Access Control](https://www.owasp.org/index.php/Top_10_2013-A7-Missing_Function_Level_Access_Control)
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+
+#### 8. Cross-Site Request Forgery (CSRF)
+##### Overview
+
+##### Prevention
+
+##### References
+* [OWASP Top 10 - A8-Cross-Site Request Forgery (CSRF)](https://www.owasp.org/index.php/Top_10_2013-A8-Cross-Site_Request_Forgery_(CSRF))
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+
+#### 9. Using Components with Known Vulnerabilities
+##### Overview
+
+##### Prevention
+
+##### References
+* [OWASP Top 10 - A9-Using Components with Known Vulnerabilities](https://www.owasp.org/index.php/Top_10_2013-A9-Using_Components_with_Known_Vulnerabilities)
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+
+#### 10. Unvalidated Redirects and Forwards
+##### Overview
+
+##### Prevention
+
+##### References
+* [OWASP Top 10 - A10-Unvalidated Redirects and Forwards](https://www.owasp.org/index.php/Top_10_2013-A10-Unvalidated_Redirects_and_Forwards)
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+
+
+
 ### User Verification
 #### Overview 
 User Verification is a feature that will essentially block user access to the API until they have gone through a verification process. The verification process can be triggered at any time for any reason. The primary uses for the User Verification feature is to validate the user's identity after account registration or password recovery process. 
