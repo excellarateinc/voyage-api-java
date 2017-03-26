@@ -477,7 +477,7 @@ The most recent Open Web Association of Secure Programmers (OWASP) [Top 10 most 
 2. [Weak authentication and session management](#2-weak-authentication-and-session-management)
 3. [XSS](#3-xss)
 4. [Insecure Direct Object References](#4-insecure-direct-object-references)
-5. Security Misconfiguration
+5. [Security Misconfiguration](#5-security-misconfiguration)
 6. Sensitive Data Exposure
 7. Missing Function Level Access Control
 8. Cross Site Request Forgery
@@ -712,6 +712,30 @@ It's not practical or possible to create a global filter for all API endpoints t
 
 See the Developer Recipe [Prevent Insecure Direct Object References](DEVELOPMENT-RECIPES.md#prevent-insecure-direct-object-references) for educational and practical short recipe for developers to create awareness of this type of attack with example scenarios on how to write secure code to prevent the app from being vulnerable. 
 
+##### References
+* [OWASP Top 10 - A4 Insecure Direct Object References](https://www.owasp.org/index.php/Top_10_2013-A4-Insecure_Direct_Object_References)
+
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+#### 5. Security Misconfiguration
+##### Overview
+* Default all requests to requiring authentication and authorization and force a configuration for public access to resources
+* Update default configuration values, especially default admin passwords
+* Follow security best practices for hardening the OS, network, web server, etc
+* Do not display configuration or any type of application or data specifics in error messages
+  - Could reveal insightful information to attackers on how they can use a different angle for an attack
+* Remove API web service endpoints and code that are not used (these can easily be forgotten and left out-of-date)
+* Update frameworks
+  - Use automated scanners for detecting missing patches, misconfigurations, use of default accounts, unnecessary services
+  - Rely on Voyage subscription service to receive regular updates on security vulnerabilities, patches, and updates to frameworks
+
+
+##### 
+
+
+##### References
+* [OWASP Top 10 - A5 Security Misconfiguration](https://www.owasp.org/index.php/Top_10_2013-A5-Security_Misconfiguration)
 
 :arrow_up: [Back to Top](#table-of-contents)
 
