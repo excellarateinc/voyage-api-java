@@ -604,16 +604,145 @@ Key Security segments to read as you begin to create secure software:
 * Development Recipe: [Securing a Web Service endpoint](#securing-a-web-service-endpoint)
 
 ### Prevent Insecure Direct Object References
+#### Overview
 A direct object reference is a data record identifier embedded into a URL, HTTP header, or POST parameters. An insecure direct object reference is when a user manually changes the identifier to a value that references a data record that should not be accessible by the user. For example:
 ```
 http://some-app/api/v1/users?user_id=1
 ```
 If the URL above is clearly visible in a web browser, then anyone can very easily change the `user_id=1` to `user_id=2` and hit ENTER. While the user might have permissions to make the request for data, the user might not have access to the data being requested. For more information, go to the Security reference [Insecure Direct Object References](SECURITY.md#4-insecure-direct-object-references).
 
+#### Prevention
+Preventing unauthorized access to data is entirely up to the software developer. Some rules to live by:
+
+##### 1. Only grant users access to web services that accept identifers when the user is authorized to view all data 
+Example: A mobile app would like to display the account profile of the currently logged in user. There already exists a `/users` web service endpoint that returns user profile information. The mobile app could fetch the user's profile information by making the following HTTP request:
+```
+https://some-app/api/v1/users/553
+```
+Which would execute service code like:
+```
+@Service
+class UserService {
+   User getUser(long id) {
+      return userRepository.getUserById(id)
+   }
+}
+```
+If the `/users` web service endpoint is not secured, then not much is stopping the mobile app user from grabbing this URL and changing the user identifier from `553` to any other identifier number. This approach would put an enterprise organization on the headlines of large media outlets! Only allow trusted users to access endpoints where they are allowed to change the identifiers. 
+
+##### 2. Rely on the authenticated user loaded in the current session for user identity
+Following the example in prior section, a far more secure approach to fetching the current user's account profile would be to create a new web service that doesn't accept an identifier, but rather looks up the user profile based on the authenticated User stored in the API session by the security process.
+```
+https://some-app/api/v1/account/profile
+```
+Which would execute code like:
+```
+@Service
+class AccountService {
+   UserService userService
+   AccountRepository accountRepository
+
+   @Autowired
+   AccountService(UserService userService, AccountRepository accountRepository) {
+      this.userService = userService
+      this.accountRepository = accountRepository
+   }
+
+   UserProfile getProfile() {
+      User user = userService.getCurrentUser()
+      return accountRepository.getUserProfile(user)
+   }
+}
+```
+The identifier is retrieved from the `userService.getCurrentUser()` method which returns a User object that was created by the security authentication process. There is no outside influence beyond the authenticated User that is able to interfere with the retrieval of the user account profile. The code above is highly secure because it doesn't afford the user any choice in which user profile is returned. 
+
+The best way to lock down data programmatically in a method is to use the authenticated User record created by the security process. Pass in the User object and write smart database queries that limit the data returned by the authenticated User. 
+
+##### 3. Restrict database queries to be limited by what the user can access
+A more common scenario on the Internet are [multi-tenant](https://en.wikipedia.org/wiki/Multitenancy) platforms that provide users or organizations a private data environment. For example, popular online e-commerce storefront services (like Shopify.com) allow anyone to create their own storefront online with their own products. The storefront has a unique identifier in the URL that instructs the e-commerce service codebase to only display the data that is associated with that identifier. Often times the storefront identifier in multi-tenant e-commerce applications will be called a "site identifier". 
+
+Securing a multi-tenant application will require exposing a "site ID" identifier. For example, creating a new product for a site:
+```
+POST https://my-store/api/v1/products?site_id=443
+```
+An administrator of a storefront would need to create new products in their catalog and would require permission to POST to `/products` web service. Since the software platform is a multi-tenant environment, a `site_id` is required so that the e-commerce application can know which site the products belong to. 
+
+In order to secure the POST `/products` request from allowing users to create products in someone else's storefront, the following precautions must be taken.
+
+ProductController.groovy
+```
+@RestController
+@RequestMapping(['/api/v1/products'])
+class ProductController {
+    private final ProductService productService
+    
+    @Autowired
+    ProductController(ProductService productService) {
+        this.productService = productService
+    }
+
+    @PostMapping
+    @PreAuthorize("hasAuthority('api.products.create')")
+    ResponseEntity save(@RequestBody Product product) {
+        Product newProduct = productService.saveDetached(product)
+        HttpHeaders headers = new HttpHeaders()
+        headers.set(HttpHeaders.LOCATION, "/api/v1/products/${newProduct.id}")
+        return new ResponseEntity(newProduct, headers, HttpStatus.CREATED)
+    }
+```
+
+ProductService.groovy
+```
+@Service
+class ProductService {
+    private final ProductRepository productRepository
+    private final UserService userService
+    private final SiteService siteService
+
+    ProductService(ProductRepository productRepository, UserService userService, SiteService siteService) {
+        this.productRepository = productRepository
+        this.userService = userService
+        this.siteService = siteService
+    }
+
+    Product saveDetached(@Valid Product productIn) {
+       Product product
+       User currentUser = userService.getCurrentUser()
+
+       // Validate the user's access to the given Site ID
+       Site siteIn = siteService.getSite(product.siteId, currentUser)
+       if (!siteIn) {
+          throw new InvalidSiteIdentifierException()
+       }
+
+       // Apply the product parameters and save to the database
+       if (productIn.id) { 
+          product = get(productIn.id)
+       } else {
+          product = new Product()
+       }
+
+       product.with {
+          sku = productIn.sku
+          name = productIn.name
+          description = productIn.description
+          price = productIn.price
+          site = siteIn
+       }
+
+       return productRepository.save(product)
+    }
+}
+```
+
+SiteService.groovy
+```
+```
+
+##### 4. Be paranoid and assume any request could be an attack to steal data.
 
 
 :arrow_up: [Back to Top](#table-of-contents)
-
 
 
 ## Service & Domain Logic
