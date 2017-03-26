@@ -676,7 +676,9 @@ For reference validation within this API, see `/src/main/groovy/voyage/security/
 :arrow_up: [Back to Top](#table-of-contents)
 
 #### 4. Insecure Direct Object References
-Most API applications expose "direct object references" through the request parameters or POST parameters to indicate which specific record is being requested. The "object references" are typically in the form of a unique identifier. For example:
+A direct object reference is a data record identifier embedded into a URL, HTTP header, or POST parameters. An insecure direct object reference is when a user manually changes the identifier to a value that references a data record that should not be accessible by the user. 
+
+Most API applications expose direct object references through the request parameters or POST parameters to indicate which specific record is being requested. The "object references" are typically in the form of a unique identifier. For example:
 ```
 http://some-app/api/v1/users/1
 ```
