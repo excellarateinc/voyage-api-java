@@ -544,6 +544,9 @@ interface UserRepository extends CrudRepository<User, Long> {
 
 In the UserRepository interface define in the above code snippet, two of the queries have parameter placeholders defined with a question mark (?) and a number indicating which method argument to use. Spring does the work to translate the method argument and set it into a parameterized HQL query so that the parameter is handled and processed as if it were untrusted data. 
 
+##### References
+* [OWASP Top 10 - A1-Injection](https://www.owasp.org/index.php/Top_10_2013-A1-Injection)
+
 :arrow_up: [Back to Top](#table-of-contents)
 
 
@@ -583,6 +586,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 }
 ```
+
+##### References
+* [OWASP Top 10 - A2-Broken Authentication and Session Management](https://www.owasp.org/index.php/Top_10_2013-A2-Broken_Authentication_and_Session_Management)
+
 
 :arrow_up: [Back to Top](#table-of-contents)
 
@@ -673,7 +680,11 @@ Use [Spring Validation framework](https://docs.spring.io/spring/docs/current/spr
 
 For reference validation within this API, see `/src/main/groovy/voyage/security/user/User.groovy`.
 
+##### References
+* [OWASP Top 10 - A3-Cross-Site Scripting (XSS)](https://www.owasp.org/index.php/Top_10_2013-A3-Cross-Site_Scripting_(XSS))
+
 :arrow_up: [Back to Top](#table-of-contents)
+
 
 #### 4. Insecure Direct Object References
 A direct object reference is a data record identifier embedded into a URL, HTTP header, or POST parameters. An insecure direct object reference is when a user manually changes the identifier to a value that references a data record that should not be accessible by the user. 
@@ -715,24 +726,37 @@ See the Developer Recipe [Prevent Insecure Direct Object References](DEVELOPMENT
 ##### References
 * [OWASP Top 10 - A4 Insecure Direct Object References](https://www.owasp.org/index.php/Top_10_2013-A4-Insecure_Direct_Object_References)
 
-
 :arrow_up: [Back to Top](#table-of-contents)
+
 
 #### 5. Security Misconfiguration
 ##### Overview
-* Default all requests to requiring authentication and authorization and force a configuration for public access to resources
+Intentionally configuring every hardware and software component within a system is vitally important to creating a hacker-proof environment. Many successful security attacks are the result of software installers not configuring the software, which defaults to whatever the software was pre-packaged to use for configuration. In many software products, a default administrative user is created with a default password like "password". If an attacker is able to obtain the user manual or source code of the software, it's faily simple to try the default account and password as a first line attack. 
+
+##### Prevention
+There are a number of prevention techniques that can be followed. Most of the prevention is through education, awareness, and strict protocol that enforce system administrators to know each configuraiton option and to set a standard configuration plan. 
+
+* Require all requests to be secured by default
+  - Default all incoming requests to require an authenticated user
+  - Any resource request that should be public must update a configuration file to add an exception
+  - Prevents attackers from being able to freely snoop around without at least having a user account, which records their actions within the action log. 
 * Update default configuration values, especially default admin passwords
+  - The API comes pre-configured with default accounts and passwords, and a default configuration setup
+  - Override the account username and passwords within `/src/main/resources/db.changelog/v1-0/user.yaml`
+  - Override the default configuration within `/src/main/resources/application.yaml` by following the [various ways of overriding properties](DEPLOY.md#4-apacht-tomcat-setup--override-parameters-by-environment)
 * Follow security best practices for hardening the OS, network, web server, etc
+  - There are many guides online for how to harden the security of hardware and software stacks. Research each technology and create a written security protcol for how each one is meant to be configured for each environment. 
 * Do not display configuration or any type of application or data specifics in error messages
-  - Could reveal insightful information to attackers on how they can use a different angle for an attack
+  - Ensure that all error messages display just enough information for the consumer of the API to know what to do next. 
+  - Do not reveal additional information that could provide attackers insight into how they could exploit any part of the application, including configuration settings or default properties. 
 * Remove API web service endpoints and code that are not used (these can easily be forgotten and left out-of-date)
-* Update frameworks
-  - Use automated scanners for detecting missing patches, misconfigurations, use of default accounts, unnecessary services
-  - Rely on Voyage subscription service to receive regular updates on security vulnerabilities, patches, and updates to frameworks
-
-
-##### 
-
+  - Keep the application clean at all times by removing excess code, modules, frameworks, and configurations that are no longer used or needed. 
+  - When starting an app using Voyage API, be sure to assess the components that are included and determine if any of them are not needed by the new app being built. 
+* Update frameworks with the latest versions whenever a security patch is available
+  - Attackers scour commonly used libraries and publicized security exploits to built predatory tools
+  - Once an exploit is known, then attackers have a small window of opportunity to use the exploit before security conscious apps close the hole. 
+  - Apps that do not close the exploitable holes quickly are susceptible for as long as the exploit is not patched!!
+  - Rely on services like the Voyage subscription service to receive regular security vulnerabilty information, security patches, framework upgrades, and custom component upgrades.
 
 ##### References
 * [OWASP Top 10 - A5 Security Misconfiguration](https://www.owasp.org/index.php/Top_10_2013-A5-Security_Misconfiguration)
