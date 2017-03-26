@@ -599,11 +599,17 @@ A complete Voyage API security reference can be found within the [/readme_docs/S
 
 Key Security segments to read as you begin to create secure software:
 * [Secure Programming Intro](SECURITY.md#secure-programming) and Reference links
-* [OWASP Top 10] Security vulnerabilities(SECURITY.md#owasp-top-10)
+* [OWASP Top 10](SECURITY.md#owasp-top-10) Security vulnerabilities
 * [Permission Based Authorization](SECURITY.md#authorization-permission-based)
 * Development Recipe: [Securing a Web Service endpoint](#securing-a-web-service-endpoint)
 
 ### Prevent Insecure Direct Object References
+A direct object reference is a data record identifier embedded into a URL, HTTP header, or POST parameters. An insecure direct object reference is when a user manually changes the identifier to a value that references a data record that should not be accessible by the user. For example:
+```
+http://some-app/api/v1/users?user_id=1
+```
+If the URL above is clearly visible in a web browser, then anyone can very easily change the `user_id=1` to `user_id=2` and hit ENTER. While the user might have permissions to make the request for data, the user might not have access to the data being requested. For more information, go to the Security reference [Insecure Direct Object References](SECURITY.md#4-insecure-direct-object-references).
+
 
 
 :arrow_up: [Back to Top](#table-of-contents)
