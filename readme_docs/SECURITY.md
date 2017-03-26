@@ -1019,26 +1019,65 @@ Two common methods used by the Voyage development team for overriding Spring pro
 :arrow_up: [Back to Top](#table-of-contents)
 
 
+### Encryption Public/Private Key Configuration
+
+#### Generate Private/Public keys for asymmetric encryption
+```
+keytool -genkeypair -alias asymmetric -keyalg RSA \
+-dname "CN=Web Server,OU=Unit,O=Organization,L=City,S=State,C=US" \
+-keypass changeme -keystore keystore.jks -storepass changeme
+```
+
+* Revise the keytool statement above with your own personalized parameters
+* For development, copy the keystore.jks to your /src/main/resources folder so that it is available on the classpath when running the app locally and for tests. 
+
+> NOTE: These are the default settings. Be sure to document any changes in the "keypass" or "storepass" in a _secure location_
+(ie not .MD files in source control) so that you don't lose these!  
+
+#### Configure the keystore parameters within the application.yaml
+Update the /src/main/resources/application.yaml file or override the properties inside application.yaml using the [externalized configuration options](DEPLOY.md#override-applicationyaml-properties). 
+
+```
+security:
+  # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
+  # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+  key-store:
+    filename: keystore.jks
+    password: changeme
+
+  crypto:
+    private-key-name: asymmetric
+    private-key-password: changeme
+```
+
+Replace or override the values in the application.yaml to match the configuration settings when the private/public key was generated.
+
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+
 
 ### JWT Public/Private Key Configuration
 Following the example found in https://beku8.wordpress.com/2015/03/31/configuring-spring-oauth2-with-jwt-asymmetric-rsa-keypair/
 
 #### Generate Private/Public keys for OAUTH2 JWT
+Reuse the keystore generated with above for asymmetric encryption.
+
 ```
 keytool -genkeypair -alias jwt -keyalg RSA \
 -dname "CN=Web Server,OU=Unit,O=Organization,L=City,S=State,C=US" \
--keypass changeme -keystore jwt.jks -storepass changeme
+-keypass changeme -keystore keystore.jks -storepass changeme
 ```
 
 * Revise the keytool statement above with your own personalized parameters
-* Copy the jwt.jks to your /src/main/resources folder so that it is available on the classpath
+* For development, copy the keystore.jks to your /src/main/resources folder (if it's not there already) so that it is available on the classpath when running the app locally and for tests. 
 
 > NOTE: These are the default settings. Be sure to document any changes in the "keypass" or "storepass" in a _secure location_
 (ie not .MD files in source control) so that you don't lose these!  
 
 #### Export the Public Key
 ```
-keytool -export -keystore jwt.jks -alias jwt -file jwt.cer
+keytool -export -keystore keystore.jks -alias jwt -file jwt.cer
 ```
 * Enter the password used to generate the keystore (ie changeme)
 * The key will be exported to jwt.cer
@@ -1066,6 +1105,19 @@ and private key information, like:
 
 ```
 security:
+
+  # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
+  # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+  key-store:
+    filename: keystore.jks
+    password: changeme
+
+  # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
+  # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+  jwt:
+    private-key-name: jwt
+    private-key-password: changeme    
+    
   oauth2:
     resource:
       id: voyage
@@ -1079,15 +1131,7 @@ security:
           OdriLIO2KdimjO5q9Q9+qG2B96DFGNYvmuDlDLM11Q2fsre305CV1HN0vQulLhlr
           MJo9QdZt1g2d1VN5uIKid5dxWTAuUvJhgla6yCaTfYeV1OGq5C3DFV7tKDGNAIXL
           TQIDAQAB
-          -----END PUBLIC KEY-----
-
-  # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
-  # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
-  jwt:
-    key-store-filename: jwt.jks
-    key-store-password: changeme
-    private-key-name: jwt
-    private-key-password: changeme       
+          -----END PUBLIC KEY-----   
 ```
 
 ### Public Resources
