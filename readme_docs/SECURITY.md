@@ -480,7 +480,7 @@ The most recent Open Web Association of Secure Programmers (OWASP) [Top 10 most 
 5. [Security Misconfiguration](#5-security-misconfiguration)
 6. [Sensitive Data Exposure](#6-sensitive-data-exposure)
 7. [Missing Function Level Access Control](#7-missing-function-level-access-control)
-8. [Cross Site Request Forgery](#8-cross-site-request-forgery)
+8. [Cross Site Request Forgery](#8-cross-site-request-forgery-csrf)
 9. [Using Components with Known Vulnerabilities](#9-using-components-with-known-vulnerabilities)
 10. [Unvalidated Redirects and Forwards](#10-unvalidated-redirects-and-forwards)
 
@@ -766,8 +766,30 @@ There are a number of prevention techniques that can be followed. Most of the pr
 
 #### 6. Sensitive Data Exposure
 ##### Overview
+The OWASP Top 10 description of Sensitive Data Exposure is sensitive data that is essentially unencrypted while being transported or at rest. Common exploits of sensitive data exposure include transporting sensitive data over unencrypted channels, like HTTP (instead of HTTPS), not encrypting sensitive data in the database allowing a SQL Injection attack to reveal private data, old cryptographic libraries used that are weak and/or have known vulnerabilities, and other situations like these. See the links in the References section below for the full description. 
 
 ##### Prevention
+Many of the prevention techniques come down to consistent implementation by software developers and system administrators. There are no quick-fix frameworks or tools that can know what is sensitive data and what is not. Each component built by a software development must have a secure programming approach where every piece of data is analyzed and handled appropriately. 
+
+* Always use HTTPS when transferring data internally or externally
+  - Prevent attackers from capturing clear text data in transit by using HTTPS 
+  - Use HTTPS when communicating within the LAN to prevent internal attacks looking to steal clear text data transmissions
+* Encrypt all sensitive data
+  - Create an organizational policy on what constitutes 'sensitive data'. The policy should include government or industry requirements such as HIPAA or PCI.
+  - Educate all developers on the Sensitive Data policy and ensure security and quality assurance have procedures to validate all data storage. 
+  - Use the `/src/main/groovy/voyage/security/crypto/CryptoService` to encrypt passwords and text (as well as decrypt)
+* Only store sensitive data when necessary (ie credit card security code)
+  - Do not blindly store all data as some sensitive data should not or cannot be stored. 
+  - Understand the sensitive data policy within your organization
+  - Example: PCI credit card data storage requires that the security code on the back of a credit card should never be stored in the database. 
+* Use strong encryption
+  - Follow the [OWASP Top 10 Cryptographic Cheat Sheet](https://www.owasp.org/index.php/Cryptographic_Storage_Cheat_Sheet) to determine the best encryption protocols for your organization
+  - Default password encoding using [bCrypt](https://en.wikipedia.org/wiki/Bcrypt)
+  - Default encryption using RSA public/private key encryption from the Java Cryptography Extension bundled within the JRE
+  - Use the `/src/main/groovy/voyage/security/crypto/CryptoService` to encrypt passwords and text (as well as decrypt)
+* Store passwords with a strong one-way hash encryption
+  - Default password encoding using [bCrypt](https://en.wikipedia.org/wiki/Bcrypt)
+  - Use the `/src/main/groovy/voyage/security/crypto/CryptoService` to encode passwords
 
 ##### References
 * [OWASP Top 10 - A6-Sensitive Data Exposure](https://www.owasp.org/index.php/Top_10_2013-A6-Sensitive_Data_Exposure)
