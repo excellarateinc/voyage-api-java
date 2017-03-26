@@ -478,11 +478,11 @@ The most recent Open Web Association of Secure Programmers (OWASP) [Top 10 most 
 3. [XSS](#3-xss)
 4. [Insecure Direct Object References](#4-insecure-direct-object-references)
 5. [Security Misconfiguration](#5-security-misconfiguration)
-6. Sensitive Data Exposure
-7. Missing Function Level Access Control
-8. Cross Site Request Forgery
-9. Using Components with Known Vulnerabilities
-10. Unvalidated Redirects and Forwards
+6. [Sensitive Data Exposure](#6-sensitive-data-exposure)
+7. [Missing Function Level Access Control](#7-missing-function-level-access-control)
+8. [Cross Site Request Forgery](#8-cross-site-request-forgery)
+9. [Using Components with Known Vulnerabilities](#9-using-components-with-known-vulnerabilities)
+10. [Unvalidated Redirects and Forwards](#10-unvalidated-redirects-and-forwards)
 
 #### 1. Injection
 SQL/HQL, OS, and LDAP injection occur when untrusted data is passed in to the API request and applied to a command that is then sent to an interpreter like a SQL or LDAP engine. If the command that is sent to the interpreter is not properly screened, then the attacker can trick the interpreter to perform tasks that were not originally intended. 
