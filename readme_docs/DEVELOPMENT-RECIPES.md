@@ -710,7 +710,7 @@ class ProductService {
        User currentUser = userService.getCurrentUser()
 
        // Validate the user's access to the given Site ID
-       Site siteIn = siteService.getSite(product.siteId, currentUser)
+       Site siteIn = siteService.getSiteByUser(product.siteId, currentUser)
        if (!siteIn) {
           throw new InvalidSiteIdentifierException()
        }
@@ -737,7 +737,38 @@ class ProductService {
 
 SiteService.groovy
 ```
+@Service
+class SiteService {
+    private final SiteRepository siteRepository
+
+    SiteService(SiteRepository siteRepository) {
+        this.siteRepository = siteRepository
+    }
+
+    Site getSiteByUser(long siteId, User user) {
+        return siteRepository.findSiteBySiteIdAndUser(siteId, user)
+    }
+}
 ```
+
+Code highlights:
+1. ProductController doesn't bother with any validation
+   - It's primary concern should be permission based security, receiving the request, passing off 100% to a service, then handling the HTTP response. 
+   - The controller should do _NOTHING ELSE_
+2. ProductService.saveDetatched(..) fetches the Site for the current User as a way of validation
+   - The siteService.getSiteByUser(..) will do the work to look up the user and verify that they have access to the site
+   - If the siteId is not associated with the user account, then `null` is returned from getSiteByUser(..)
+   - If the siteId doesn't exist, then `null` is returned from getSiteByUser(..)
+   - If the siteIn object is `null`, then an exception is thrown an the saving of the Product is completely aborted. 
+3. SiteService.getSiteByUser(..) is simply a database query to find the site only if it is associated with the given user
+   - If the database record exist that links the site with the user, then the site is returned. 
+   - If the siteId doesn't exist, then nothing will be found
+
+Security highlights:
+1. The user is retrieved from the session and not from request parameters.
+2. A lookup is done on the site object for the given user BEFORE any work is done
+3. If the site object is not found for any reason, then an exception is thrown and the process aborts
+4. The exception doesn't return any explict reason for aborting the process other than the Site ID is invalid. Don't tell the attacker why they are being blocked as it might reveal insights into how to better attack the service. 
 
 ##### 4. Be paranoid and assume any request could be an attack to steal data.
 
