@@ -14,6 +14,8 @@ Instructional recipies for how to do something within the codebase.
   - [Create a Web Service Endpoint Controller](#create-a-web-service-endpoint-controller)
   - [HTTP Request - Validate Request Data](#http-request---validate-request-data)
   - [Securing a Web Service endpoint](#securing-a-web-service-endpoint)
+* [Security](#security)
+  - [Prevent Insecure Direct Object References](#prevent-insecure-direct-object-references)
 * [Service & Domain logic](#service--domain-logic)
   - [Create a Service](#creating-a-service)
   - [Error Handling w/ i18n support](#error-handling-w-i18n-support)
@@ -588,6 +590,23 @@ class UserController {
    4. Verify that Spring Security returns a 401 Unauthorized when accessing the web service endpoint `http://localhost:8080/api/v1/things`
    5. Authenticate to the web service API with a user that DOES belong to the Role with the new permission
    6. Verify that the expected JSON response is returned when accessing the web service `http://localhost:8080/api/v1/things`
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+
+## Security
+A complete Voyage API security reference can be found within the [/readme_docs/Security.md](SECURITY.md) document. Reading through the entire Security reference is worthwhile for every developer and it is highly encouraged. 
+
+Key Security segments to read as you begin to create secure software:
+* [Secure Programming Intro](SECURITY.md#secure-programming) and Reference links
+* [OWASP Top 10] Security vulnerabilities(SECURITY.md#owasp-top-10)
+* [Permission Based Authorization](SECURITY.md#authorization-permission-based)
+* Development Recipe: [Securing a Web Service endpoint](#securing-a-web-service-endpoint)
+
+### Prevent Insecure Direct Object References
+
+
+:arrow_up: [Back to Top](#table-of-contents)
 
 
 
