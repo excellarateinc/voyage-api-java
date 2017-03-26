@@ -710,7 +710,7 @@ The question that every software developer must ask themselves when they write a
 
 It's not practical or possible to create a global filter for all API endpoints that would prevent insecure direct object references because each web service endpoint may be unique in the data it provides. The most practical solution to prevent this type of attack is to educate software developers to write secure code that programmatically checks each user and their access to the data that is being requested.
 
-See the Developer Recipe [Prevent Insecure Direct Object References](DEVELOPER-RECIPES.md) for educational and practical short recipe for developers to create awareness of this type of attack with example scenarios on how to write secure code to prevent the app from being vulnerable. 
+See the Developer Recipe [Prevent Insecure Direct Object References](DEVELOPMENT-RECIPES.md#prevent-insecure-direct-object-references) for educational and practical short recipe for developers to create awareness of this type of attack with example scenarios on how to write secure code to prevent the app from being vulnerable. 
 
 
 :arrow_up: [Back to Top](#table-of-contents)
