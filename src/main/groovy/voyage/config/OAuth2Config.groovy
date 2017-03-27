@@ -1,12 +1,9 @@
 package voyage.config
 
-import voyage.error.WebResponseExceptionTranslator
-import voyage.security.PermissionBasedClientDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.core.io.ClassPathResource
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -21,10 +18,11 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler
 import org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter
-import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.access.AccessDeniedHandler
-
+import voyage.error.WebResponseExceptionTranslator
+import voyage.security.PermissionBasedClientDetailsService
+import voyage.security.crypto.KeyStoreService
 import java.security.KeyPair
 
 @Configuration
@@ -37,18 +35,14 @@ class OAuth2Config {
     @Configuration
     @EnableAuthorizationServer
     class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
-
-        @Value('${security.jwt.key-store-filename}')
-        private String keyStoreFileName
-
-        @Value('${security.jwt.key-store-password}')
-        private String keyStorePassword
-
         @Value('${security.jwt.private-key-name}')
         private String privateKeyName
 
         @Value('${security.jwt.private-key-password}')
         private String privateKeyPassword
+
+        @Autowired
+        private KeyStoreService keyStoreService
 
         @Autowired
         private AuthenticationManager authenticationManager
@@ -61,8 +55,7 @@ class OAuth2Config {
 
         @Bean
         JwtAccessTokenConverter accessTokenConverter() {
-            KeyStoreKeyFactory keyFactory = new KeyStoreKeyFactory(new ClassPathResource(keyStoreFileName), keyStorePassword.toCharArray())
-            KeyPair keyPair = keyFactory.getKeyPair(privateKeyName, privateKeyPassword.toCharArray())
+            KeyPair keyPair = keyStoreService.getRsaKeyPair(privateKeyName, privateKeyPassword.toCharArray())
             JwtAccessTokenConverter converter = new JwtAccessTokenConverter()
             converter.keyPair = keyPair
             return converter
