@@ -19,6 +19,7 @@ Overview of the Security features and configurations that have been implemented 
 * [Security Configuration](#security-configuration)
   - [CORS Configuration](#cors-configuration)
   - [Environment Specific Application Properties](#environment-specific-application-properties)
+  - [Encryption Public/Private Key Configuration](#encryption-publicprivate-key-configuration)
   - [JWT Public/Private Key Configuration](#jwt-publicprivate-key-configuration)
   - [Public Resources](#public-resources)
   - User Verification
@@ -1023,7 +1024,7 @@ Two common methods used by the Voyage development team for overriding Spring pro
 
 #### Generate Private/Public keys for asymmetric encryption
 ```
-keytool -genkeypair -alias asymmetric -keyalg RSA \
+keytool -genkeypair -alias asymmetric -keyalg RSA -keysize 2048 \
 -dname "CN=Web Server,OU=Unit,O=Organization,L=City,S=State,C=US" \
 -keypass changeme -keystore keystore.jks -storepass changeme
 ```
@@ -1064,7 +1065,7 @@ Following the example found in https://beku8.wordpress.com/2015/03/31/configurin
 Reuse the keystore generated with above for asymmetric encryption.
 
 ```
-keytool -genkeypair -alias jwt -keyalg RSA \
+keytool -genkeypair -alias jwt -keyalg RSA -keysize 2048 \
 -dname "CN=Web Server,OU=Unit,O=Organization,L=City,S=State,C=US" \
 -keypass changeme -keystore keystore.jks -storepass changeme
 ```
