@@ -207,10 +207,11 @@ Override the properties defined within the application.yaml file that is bundled
 3. Override the properties in `/conf/voyage-application.yaml` to be environment specific
    - jpa.properties.hibernate.dialect - should match the database type being connected to. 
    - datasource.jndi-name - point to the JNDI name of the database resource defined in the Apache Tomcat /conf/server.xml (see prior section)
-   - oauth2.resource.jwt.key-value - update the JWT public key for the resource server to decode the JWT token
-   - jwt.key-store-filename - change the filename to a locally defined JWT keystore file
-   - jwt.key-store-password - provide the keystore password used to to unlock the keystore file on the server
-   - jwt.private-key-password - provide the private key password that was used to generate the private key within the environment
+   - security.key-store.filename - change the filename to a locally defined public/private key keystore file
+   - security.key-store.password - provide the keystore password used to to unlock the keystore file on the server
+   - security.crypto.private-key-password - provide the password used to secure the private key for general RSA asymmetric encryption
+   - security.jwt.private-key-password - provide the private key password that was used to generate the JWT public/private keys 
+   - security.oauth2.resource.jwt.key-value - update the JWT public key for the resource server to decode the JWT token provided by the authentication server
    ```
    jpa:
      hibernate:
@@ -222,29 +223,40 @@ Override the properties defined within the application.yaml file that is bundled
    datasource:
      jndi-name: jdbc/voyage
    
-   oauth2:
-     resource:
-       id: voyage
-       jwt:
-         key-value: |
-           -----BEGIN PUBLIC KEY-----
-           MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4REj5EYufU5OUnv9nij+
-           j9irwALL3BwX9XxB7oDx3uj93P5h8rzTTdG/suaG3aBqRr5rqXpmTgwG1nf6FBfR
-           8kiPp9R196cAT9g4OInsdNbux7oy5akUVsRo9pagEL0JB7eGbASi0z5A38QkpbjB
-           MhIN0W9zwghsGNbf7N6wTVQN1NFHDW9zMdWUS9VBPeEGUZAMkKElGltHVhCdJGBf
-           OdriLIO2KdimjO5q9Q9+qG2B96DFGNYvmuDlDLM11Q2fsre305CV1HN0vQulLhlr
-           MJo9QdZt1g2d1VN5uIKid5dxWTAuUvJhgla6yCaTfYeV1OGq5C3DFV7tKDGNAIXL
-           TQIDAQAB
-           -----END PUBLIC KEY-----
+   security:
+     # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
+     # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+     key-store:
+       filename: keystore.jks
+       password: changeme
+     
+     crypto:
+       private-key-name: asymmetric
+       private-key-password: changeme
 
-   # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
-   # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
-   jwt:
-     key-store-filename: /usr/share/tomcat7/conf/voyage-jwt.jks
-     key-store-password: changeme
-     private-key-name: jwt
-     private-key-password: changeme   
-   ```
+     # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
+     # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+     jwt:
+       private-key-name: jwt
+       private-key-password: changeme
+
+     # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
+     # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+     oauth2:
+       resource:
+         id: voyage
+         jwt:
+           key-value: |
+             -----BEGIN PUBLIC KEY-----
+             MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyfgFBATB9oJjCUOVtwsr
+             s8H6b8jiwl1gAuOVEHCgQbxuZPJ+YvcJad2xsEQLKbZBatbWF8gQIE0YNPW27niN
+             CrH9QKYyFih5Ko2B8M5xbDr1L/AiQUsVwiqBmyj0krswacF9zRHwKHurFoxihhP0
+             L6/NYrny8f5No8DNCC/abDYGFksqCE6gzLVB8moFGGcOk71l4CHJmlVrGS/Ec5Jj
+             ktQuBza5RwiSb62PYiHGy5mLl8owdH0m0PCaXZBO2QzPbecFp2+W/5aXfIRchcjH
+             Itcr8HKAqDO13XDo+xtqtVkFEn6hXXj5YESMkwukbWopDWOpfcGoQZStMhAEN7Xt
+             zQIDAQAB
+             -----END PUBLIC KEY-----
+      ```
 4. Update CATALINA_OPTS OS environment variable with a reference to the `voyage-application.yaml` file
    - CATALINA_OPTS="-Denvfile=file:/usr/share/tomcat8/voyage-application.yaml"
    - This will work on Windows or Linux. Search online for your respective OS if you are unsure about how to apply an OS environment variable to the server. 
