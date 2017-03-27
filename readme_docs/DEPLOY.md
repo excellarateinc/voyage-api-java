@@ -200,7 +200,14 @@ conf/context.xml
 ```
 
 ##### Override application.yaml properties
-Override the properties defined within the application.yaml file that is bundled within the app for the server environment. 
+Override the properties defined within the application.yaml file that is bundled within the app for the server environment. Review the security configurations for the application within the [Security Configurations](SECURITY.md#security-configuration) section of the API [Security](SECURITY.md) documentation. 
+
+> NOTE: Be sure to update the default passwords for:
+> * Default users created in /src/main/resources/db.changelog/v1-0/user.yaml
+> * Default password for the /src/main/resources/Keystore.jks file (requires recreating the Keystore
+> * Default password for the 'asymmetric' public/private key
+> * Default password fro the 'jwt' public/private key
+> Thoroughly read through the [Security](SECURITY.md) documentation, specifically [Security Configurations](SECURITY.md#security-configuration)
 
 1. Create a new file `/conf/voyage-application.yaml`
 2. Copy the entire contents of the application.yaml file from the application into the `/conf/voyage-application.yaml`
