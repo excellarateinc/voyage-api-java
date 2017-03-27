@@ -68,6 +68,24 @@ security:
   ignored: /resources/**, /webjars/**, /docs/**
   permitAll: /login, /api/hello
 
+  # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
+  # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+  key-store:
+    filename: keystore.jks
+    password: changeme
+
+  crypto:
+    private-key-name: asymmetric
+    private-key-password: changeme
+
+  # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
+  # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+  jwt:
+    private-key-name: jwt
+    private-key-password: changeme
+
+  # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
+  # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
   oauth2:
     resource:
       id: voyage
@@ -82,14 +100,6 @@ security:
           MJo9QdZt1g2d1VN5uIKid5dxWTAuUvJhgla6yCaTfYeV1OGq5C3DFV7tKDGNAIXL
           TQIDAQAB
           -----END PUBLIC KEY-----
-
-  # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
-  # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
-  jwt:
-    key-store-filename: jwt.jks
-    key-store-password: changeme
-    private-key-name: jwt
-    private-key-password: changeme
 
   user-verification:
     exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /WEB-INF/jsp/**.jsp

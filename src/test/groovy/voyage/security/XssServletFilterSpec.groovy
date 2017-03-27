@@ -16,7 +16,7 @@ class XssServletFilterSpec extends Specification {
         response = Mock(HttpServletResponse)
         xssRequestWrapper = new XSSRequestWrapper(request)
     }
-    
+
     def 'filter wraps the incoming request with a XSSRequestWrapper'() {
         given:
             XssServletFilter filter = new XssServletFilter()
