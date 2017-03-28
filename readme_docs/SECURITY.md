@@ -800,8 +800,11 @@ Many of the prevention techniques come down to consistent implementation by soft
 
 #### 7. Missing Function Level Access Control
 ##### Overview
+The "missing function level access control" is when a resource (aka function) is supposed to restrict access but it doesn't. The cause for why the resource is not restricted usually is that a software developer didn't implement the restriction configuration or business logic to the resource. 
 
 ##### Prevention
+As with many of the security vulnerabilities highlighted within the OWASP Top 10 list, prevention starts with awareness of the issue and 
+
 
 ##### References
 * [OWASP Top 10 - A7-Missing Function Level Access Control](https://www.owasp.org/index.php/Top_10_2013-A7-Missing_Function_Level_Access_Control)
