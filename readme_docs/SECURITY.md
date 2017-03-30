@@ -803,18 +803,18 @@ Many of the prevention techniques come down to consistent implementation by soft
 The "missing function level access control" is when a resource (aka function) is supposed to restrict access but it doesn't. The cause for why the resource is not restricted usually is that a software developer didn't implement the restriction configuration or business logic to the resource. While many web apps will hide features or functions if the user doesn't have access, many web app developers fail to secure the server-side functions for retrieving data or performing the actual task. Attackers are wise to this oversight by developers and will look in the web app browser HTML and Javascript code to find clues as to which features are hidden from view and how the back-end function is executed. When hidden functions and backend function calls are found, they are targeted for security vulnerabilities. Needless to say, an backend web service API that is missing security permission is a wide open door for an attacker to not only steal data, but potentially exploit the entire server-side infrastructure. 
 
 ##### Prevention
-1. Require all developement work tickets to include a requirement for the level of security
+* Require all developement work tickets to include a requirement for the level of security
    - Be explicit to the developer what the security requirements are for each task
    - Writing down the requirement communicates to Quality Assurance and/or Security Quality Assurance that they need to test the security requirement
-2. Prevent Unauthenticated Users
+* Prevent Unauthenticated Users
    - The Voyage API comes pre-configured with Spring Security and a policy that forces all requests to `/api/` to be authenticated. 
    - Developers can exempt specific web services from being automatically protected in the [Public Resources](#public-resources) application properties.
    - Web services not defined in `/api` are not protected by default. Update `/src/main/groovy/voyage/config/OAuth2Config` to include additional URL patterns. 
-3. Prevent Unauthorized Users
+* Prevent Unauthorized Users
    - Once a user is authenticated, there is still a vulnerability of an authenticated user accessing a web service endpoint that _doesn't_ have a permission restriction placed on it. 
    - Web service endpoints that do not have a permission restriction on them are defaulted to being accessible to any authenticated user
    - The responsibility is on the developer to ensure that a web service endpoint is secured with a permission. See the Developer Recipe [Securing a Web Service Endpoint](DEVELOPMENT-RECIPES.md#securing-a-web-service-endpoint)
-4. Test For Security
+* Test For Security
    - Require automated unit / integration tests that validate the security permission before the feature is considered "done"
    - Quality Assurance team should write a manual or automated regression test that asserts the security permission required in order to execute the function. 
 
@@ -828,11 +828,35 @@ The "missing function level access control" is when a resource (aka function) is
 
 #### 8. Cross-Site Request Forgery (CSRF)
 ##### Overview
+CSRF attacks occur when a user authenticates with a website (ie bank) and the website places a Cookie into the web browser as an identity token for subsequent requests. The identity token is a way for the website to identify the authenticated user and their session data without requiring the user to authenticate again. Whenever the user makes a request (GET, POST, ...) to a web server, the web browser will automatically look for all stored Cookies that match the web server address and bundle them into the request. 
+
+While it's difficult to get access to Cookies, it's not terribly difficult for an attacker to force the web browser to submit a request blindly to a known web server address. For example:
+
+1. User logs into http://my-bank with a Cookie of "Secure User ID: 123" that is stored in the web browser cache
+2. User does their banking tasks and does not log out
+3. Attacker injects their exploit onto the user's web browser that POSTs a "get account details" AJAX request within the web browser window
+   - Web browser submits the request and sends the user identity Cookie along with the request
+4. Web server sees the Cookie, verifies the request as valid, and returns the secure information
+5. Attacker receives the response from the bank and is in possession of restricted data
 
 ##### Prevention
+The Voyage API comes out of the box as a JSON web services API with stateless authentication and authorization security. Cookies are not used to access `/api` resources, so the risk of a CSRF attack is very low to not possible with the base Voyage API install. There is a potential for a CSRF attack within the OAuth2 login process where a Cookie session ID reference is used to temporary data during the login process. After interrogation, we have yet to find a way to exploit the login process using a CSRF attack and strongly encourage the initiated white-hat hackers to pursue this area of the app for CSRF exploits.  
+
+The following are best practices for preventing CSRF attacks. If the API requires the use of Sessions for authentication between requests, then utilize [CSRF tokens provided by the Spring Security framework](https://docs.spring.io/spring-security/site/docs/current/reference/html/csrf.html). As of this writing, CSRF tokens are not implemented since there is no risk of CSRF attacks with a stateless security API (as far as we have been able to determine in our extensive testing). 
+
+1. Avoid using Cookies for storing authentication identifiers
+   - Cookies are automatically sent to the server without programmatic intervention
+   - CSRF leverages this automatic Cookie delivery feature in browsers to exploit server-side infrastructure
+2. In a web app, programmatically set authentication credentials into the request header before every request is made to the API 
+   - Don't leave it to the browser to auto-set these values
+3. If Cookies are required for authentication between requests, then use CSRF Tokens
+   - Spring Security provides a CSRF mechanism that generates a CSRF token on every response
+   - CSRF tokens are required to be passed back to the server on every POST, PUT, DELETE, PATCH request
+   - The CSRF token must match the token given to the user in the most recent response
 
 ##### References
 * [OWASP Top 10 - A8-Cross-Site Request Forgery (CSRF)](https://www.owasp.org/index.php/Top_10_2013-A8-Cross-Site_Request_Forgery_(CSRF))
+* [Spring Security CSRF](https://docs.spring.io/spring-security/site/docs/current/reference/html/csrf.html)
 
 :arrow_up: [Back to Top](#table-of-contents)
 
