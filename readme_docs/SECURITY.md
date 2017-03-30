@@ -800,14 +800,28 @@ Many of the prevention techniques come down to consistent implementation by soft
 
 #### 7. Missing Function Level Access Control
 ##### Overview
-The "missing function level access control" is when a resource (aka function) is supposed to restrict access but it doesn't. The cause for why the resource is not restricted usually is that a software developer didn't implement the restriction configuration or business logic to the resource. 
+The "missing function level access control" is when a resource (aka function) is supposed to restrict access but it doesn't. The cause for why the resource is not restricted usually is that a software developer didn't implement the restriction configuration or business logic to the resource. While many web apps will hide features or functions if the user doesn't have access, many web app developers fail to secure the server-side functions for retrieving data or performing the actual task. Attackers are wise to this oversight by developers and will look in the web app browser HTML and Javascript code to find clues as to which features are hidden from view and how the back-end function is executed. When hidden functions and backend function calls are found, they are targeted for security vulnerabilities. Needless to say, an backend web service API that is missing security permission is a wide open door for an attacker to not only steal data, but potentially exploit the entire server-side infrastructure. 
 
 ##### Prevention
-As with many of the security vulnerabilities highlighted within the OWASP Top 10 list, prevention starts with awareness of the issue and 
-
+1. Require all developement work tickets to include a requirement for the level of security
+   - Be explicit to the developer what the security requirements are for each task
+   - Writing down the requirement communicates to Quality Assurance and/or Security Quality Assurance that they need to test the security requirement
+2. Prevent Unauthenticated Users
+   - The Voyage API comes pre-configured with Spring Security and a policy that forces all requests to `/api/` to be authenticated. 
+   - Developers can exempt specific web services from being automatically protected in the [Public Resources](#public-resources) application properties.
+   - Web services not defined in `/api` are not protected by default. Update `/src/main/groovy/voyage/config/OAuth2Config` to include additional URL patterns. 
+3. Prevent Unauthorized Users
+   - Once a user is authenticated, there is still a vulnerability of an authenticated user accessing a web service endpoint that _doesn't_ have a permission restriction placed on it. 
+   - Web service endpoints that do not have a permission restriction on them are defaulted to being accessible to any authenticated user
+   - The responsibility is on the developer to ensure that a web service endpoint is secured with a permission. See the Developer Recipe [Securing a Web Service Endpoint](DEVELOPMENT-RECIPES.md#securing-a-web-service-endpoint)
+4. Test For Security
+   - Require automated unit / integration tests that validate the security permission before the feature is considered "done"
+   - Quality Assurance team should write a manual or automated regression test that asserts the security permission required in order to execute the function. 
 
 ##### References
 * [OWASP Top 10 - A7-Missing Function Level Access Control](https://www.owasp.org/index.php/Top_10_2013-A7-Missing_Function_Level_Access_Control)
+* [Voyage API - Authorization: Permission Based](SECURITY.md#authorization-permission-based)
+* [Voyage API - Securing a Web Service Endpoint](DEVELOPMENT-RECIPES.md#securing-a-web-service-endpoint)
 
 :arrow_up: [Back to Top](#table-of-contents)
 
