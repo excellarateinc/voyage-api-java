@@ -1103,8 +1103,30 @@ runtime - Runtime dependencies for source set 'main'.
 
 #### 10. Unvalidated Redirects and Forwards
 ##### Overview
+When redirecting/forwarding to a new location, do not allow the end-user the option of specifying the URL to redirect/forward to. The concern is that if a request has a parameter of "URL" and the web or mobile app blindly redirects to that URL, then an attacker might be able to inject a malicious URL into the parameter field and redirect unsuspecting users into a trap. 
 
+The OAuth2 authentication pattern is an example that accepts a URL parameter, but validates before redirecting the user. You can see this pattern implemented within the Voyage API. See the [OAuth2](https://github.com/lssinc/voyage-api-java/blob/master/readme_docs/SECURITY.md#authentication-oauth2-default) section within this security document. 
+* Mobile app provides a "Login" button that contains a link like `http://secure-api/ouath/authorize?client_id=1&redirect_url=http://mobile-app/oauth?token=`
+* When the user clicks on the "Login" button, the OAuth2 process receives the redirect_url (including the other params)
+* The OAuth2 process then requires the user to authenticate with their username and password
+* Upon successful authentication, the OAuth2 process compares the redirect_url on the request with the URL stored in the database for the given client_id. 
+  - If the two URLs match, then the user is redirected to the URL in the database. The URL given on the request is assumed untrusted, so the database URL is what is used to do the actual redirect
+  - If the two URLs do not match, then an error is returned to the end user notifying them that something went wrong. 
+  
+The OAuth2 URL redirect is considered a validated URL redirect approach and is safe.
+  
 ##### Prevention
+This particular security vulnerability might not be applicable to an API given that an API is typically a request -> response transaction that wouldn't handle redirecting or forwarding the user to a different address. Even still, it's very important to be aware that a web service should never use request data to build a location for a redirect or forward. 
+
+* Avoid using redirects and forwards with exposed URL parameters
+  - Most web applications that serve JSP or ASP or PHP pages are doing internal redirects on nearly every request, which is fine. 
+  - Do not store redirect parameters into hidden fields in a web page for use later as a redirect location.
+  - Do not allow external / public parameters to be concatinated to the redirect/forward location
+* When redirecting/forwarding with user provided values, verify the values before executing a redirect
+  - If URLs or URL parameters are to be accepted by the user, then create a policy that restricts what is allowable on the URL or URL parameters. 
+  - Encode the URL so that special characters cannot be used malicious to instruct a web browser to do extra tasks beside redirecting or forwarding. 
+  - Store an allowable set of redirects in a file or the database so that the choices are limited
+  - Assume that an attacker will exploit the URL redirect/forward functionality!
 
 ##### References
 * [OWASP Top 10 - A10-Unvalidated Redirects and Forwards](https://www.owasp.org/index.php/Top_10_2013-A10-Unvalidated_Redirects_and_Forwards)
