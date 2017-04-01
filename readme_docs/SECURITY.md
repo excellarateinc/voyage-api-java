@@ -1080,11 +1080,23 @@ runtime - Runtime dependencies for source set 'main'.
 ```
 
 ##### Prevention
-
-
+* Active awareness of dependencies
+  - Catalog in a database or spreadsheet the library dependencies that are used within each application
+  - Obtain the library dependency tree by using the dependency management tool (Maven, NuGet, NPM, ...) to generate a dependency tree
+* Continuously review security on dependent libraries using vulnerability databases
+  - There a few government sponsored databases that track security vulnerabilities such as [CVE](http://cve.mitre.org/) and [NVD](https://nvd.nist.gov/), which are both provided by the United States Dept of Homeland Security. 
+  - Use a tool like [OWASP Dependency-Check](https://www.owasp.org/index.php/OWASP_Dependency_Check#tab=Main) to compare your app dependencies with the National Vulnerability Database
+  - NOTE: The vulnerabilitiy databases are not perfectly complete and may not contain all of the latest FOSS libraries. Be aware of what might be missing from the database, just as much as what is in the database.
+  - NOTE: Dependency checking tools like the OWASP Dependency-Check are not perfect because the look-up process with the NVD is not perfect due to no "unique key" between the two systems. Do not rely solely on the depedency checker for the complete source of truth. 
+* Create a Security QA Team
+  - Assign a full-time person or team to reviewing all of the dependent third-party libraries periodically for new vulnerabilities. 
+  - Continuously review security publications for new vulnerabilities and exploits and document them in a shared database
+  - Aggressively perform security quality assurance reviews on every new or updated application before being deployed to production (Intranet or Internet). 
 
 ##### References
 * [OWASP Top 10 - A9-Using Components with Known Vulnerabilities](https://www.owasp.org/index.php/Top_10_2013-A9-Using_Components_with_Known_Vulnerabilities)
+* [OWASP Dependency-Check](https://www.owasp.org/index.php/OWASP_Dependency_Check#tab=Main)
+* [National Vulnerability Database](https://nvd.nist.gov/)
 
 :arrow_up: [Back to Top](#table-of-contents)
 
