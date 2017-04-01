@@ -863,8 +863,225 @@ The following are best practices for preventing CSRF attacks. If the API require
 
 #### 9. Using Components with Known Vulnerabilities
 ##### Overview
+Very rarely are software applications written completely from scratch without any third-party frameworks or components. One of the major benefits of the Internet and the Free Open Source Software (FOSS) community is the abundance of frameworks available for routine to highly complex tasks. With the many constraints on time and budget, it's not realistic, or advisable, to build a complete application from scratch and not depend on third-party libraries. 
+
+Building apps using third-party libraries has been much easier with public library repositories built upon library dependency tools like Maven, NPM, NuGet, etc... When a dependency is included within an application, like Spring Framework, the dependency management framework will also resolve the dependencies of the included framework, which will review all of the dependencies of the dependencies until all required third-party libraries are downloaded. In an application that simply uses one or two large popular frameworks (like Spring and Hibernate), it's very easy to have well over 100 third-party libraries required in order to run your application. 
+
+To illustrate the point, the following dependencies are required for the Voyage API (Java) to function. Each one of these dependent libraries has a potential to contain a security exploit that might possibly compromise the whole application. In all likelihood, the most vulnerable libraries will be the ones handling the public exchange of information, like a file upload utility. Libraries that are used to calculate date ranges or format text in the lower parts of the data layer are less likely to be exploited even if they have a security vulnerability. The degree of difficulty in exploiting a security vulnerability increases with every layer of software code between the attacker and the vulnerability. 
+
+```
+> gradle dependencies --configuration runtime
+
+------------------------------------------------------------
+Root project
+------------------------------------------------------------
+
+runtime - Runtime dependencies for source set 'main'.
++--- org.springframework.boot:spring-boot-starter-web:1.4.2.RELEASE
+|    +--- org.springframework.boot:spring-boot-starter:1.4.2.RELEASE
+|    |    +--- org.springframework.boot:spring-boot:1.4.2.RELEASE
+|    |    |    +--- org.springframework:spring-core:4.3.4.RELEASE
+|    |    |    |    \--- commons-logging:commons-logging:1.2
+|    |    |    \--- org.springframework:spring-context:4.3.4.RELEASE
+|    |    |         +--- org.springframework:spring-aop:4.3.4.RELEASE
+|    |    |         |    +--- org.springframework:spring-beans:4.3.4.RELEASE
+|    |    |         |    |    \--- org.springframework:spring-core:4.3.4.RELEASE (*)
+|    |    |         |    \--- org.springframework:spring-core:4.3.4.RELEASE (*)
+|    |    |         +--- org.springframework:spring-beans:4.3.4.RELEASE (*)
+|    |    |         +--- org.springframework:spring-core:4.3.4.RELEASE (*)
+|    |    |         \--- org.springframework:spring-expression:4.3.4.RELEASE
+|    |    |              \--- org.springframework:spring-core:4.3.4.RELEASE (*)
+|    |    +--- org.springframework.boot:spring-boot-autoconfigure:1.4.2.RELEASE
+|    |    |    \--- org.springframework.boot:spring-boot:1.4.2.RELEASE (*)
+|    |    +--- org.springframework.boot:spring-boot-starter-logging:1.4.2.RELEASE
+|    |    |    +--- ch.qos.logback:logback-classic:1.1.7
+|    |    |    |    +--- ch.qos.logback:logback-core:1.1.7
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.20 -> 1.7.21
+|    |    |    +--- org.slf4j:jcl-over-slf4j:1.7.21
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.21
+|    |    |    +--- org.slf4j:jul-to-slf4j:1.7.21
+|    |    |    |    \--- org.slf4j:slf4j-api:1.7.21
+|    |    |    \--- org.slf4j:log4j-over-slf4j:1.7.21
+|    |    |         \--- org.slf4j:slf4j-api:1.7.21
+|    |    +--- org.springframework:spring-core:4.3.4.RELEASE (*)
+|    |    \--- org.yaml:snakeyaml:1.17
+|    +--- org.springframework.boot:spring-boot-starter-tomcat:1.4.2.RELEASE
+|    |    +--- org.apache.tomcat.embed:tomcat-embed-core:8.5.6
+|    |    +--- org.apache.tomcat.embed:tomcat-embed-el:8.5.6
+|    |    \--- org.apache.tomcat.embed:tomcat-embed-websocket:8.5.6
+|    |         \--- org.apache.tomcat.embed:tomcat-embed-core:8.5.6
+|    +--- org.hibernate:hibernate-validator:5.2.4.Final
+|    |    +--- javax.validation:validation-api:1.1.0.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.2.1.Final -> 3.3.0.Final
+|    |    \--- com.fasterxml:classmate:1.1.0 -> 1.3.3
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.8.4
+|    |    +--- com.fasterxml.jackson.core:jackson-annotations:2.8.0 -> 2.8.4
+|    |    \--- com.fasterxml.jackson.core:jackson-core:2.8.4
+|    +--- org.springframework:spring-web:4.3.4.RELEASE
+|    |    +--- org.springframework:spring-aop:4.3.4.RELEASE (*)
+|    |    +--- org.springframework:spring-beans:4.3.4.RELEASE (*)
+|    |    +--- org.springframework:spring-context:4.3.4.RELEASE (*)
+|    |    \--- org.springframework:spring-core:4.3.4.RELEASE (*)
+|    \--- org.springframework:spring-webmvc:4.3.4.RELEASE
+|         +--- org.springframework:spring-aop:4.3.4.RELEASE (*)
+|         +--- org.springframework:spring-beans:4.3.4.RELEASE (*)
+|         +--- org.springframework:spring-context:4.3.4.RELEASE (*)
+|         +--- org.springframework:spring-core:4.3.4.RELEASE (*)
+|         +--- org.springframework:spring-expression:4.3.4.RELEASE (*)
+|         \--- org.springframework:spring-web:4.3.4.RELEASE (*)
++--- org.springframework.boot:spring-boot-starter-data-jpa:1.4.2.RELEASE
+|    +--- org.springframework.boot:spring-boot-starter:1.4.2.RELEASE (*)
+|    +--- org.springframework.boot:spring-boot-starter-aop:1.4.2.RELEASE
+|    |    +--- org.springframework.boot:spring-boot-starter:1.4.2.RELEASE (*)
+|    |    +--- org.springframework:spring-aop:4.3.4.RELEASE (*)
+|    |    \--- org.aspectj:aspectjweaver:1.8.9
+|    +--- org.springframework.boot:spring-boot-starter-jdbc:1.4.2.RELEASE
+|    |    +--- org.springframework.boot:spring-boot-starter:1.4.2.RELEASE (*)
+|    |    +--- org.apache.tomcat:tomcat-jdbc:8.5.6
+|    |    |    \--- org.apache.tomcat:tomcat-juli:8.5.6
+|    |    \--- org.springframework:spring-jdbc:4.3.4.RELEASE
+|    |         +--- org.springframework:spring-beans:4.3.4.RELEASE (*)
+|    |         +--- org.springframework:spring-core:4.3.4.RELEASE (*)
+|    |         \--- org.springframework:spring-tx:4.3.4.RELEASE
+|    |              +--- org.springframework:spring-beans:4.3.4.RELEASE (*)
+|    |              \--- org.springframework:spring-core:4.3.4.RELEASE (*)
+|    +--- org.hibernate:hibernate-core:5.0.11.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.3.0.Final
+|    |    +--- org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final
+|    |    +--- org.javassist:javassist:3.18.1-GA -> 3.20.0-GA
+|    |    +--- antlr:antlr:2.7.7
+|    |    +--- org.jboss:jandex:2.0.0.Final
+|    |    +--- dom4j:dom4j:1.6.1
+|    |    |    \--- xml-apis:xml-apis:1.0.b2 -> 1.4.01
+|    |    \--- org.hibernate.common:hibernate-commons-annotations:5.0.1.Final
+|    |         \--- org.jboss.logging:jboss-logging:3.3.0.Final
+|    +--- org.hibernate:hibernate-entitymanager:5.0.11.Final
+|    |    +--- org.jboss.logging:jboss-logging:3.3.0.Final
+|    |    +--- org.hibernate:hibernate-core:5.0.11.Final (*)
+|    |    +--- dom4j:dom4j:1.6.1 (*)
+|    |    +--- org.hibernate.common:hibernate-commons-annotations:5.0.1.Final (*)
+|    |    +--- org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final
+|    |    \--- org.javassist:javassist:3.18.1-GA -> 3.20.0-GA
+|    +--- javax.transaction:javax.transaction-api:1.2
+|    +--- org.springframework.data:spring-data-jpa:1.10.5.RELEASE
+|    |    +--- org.springframework.data:spring-data-commons:1.12.5.RELEASE
+|    |    |    +--- org.springframework:spring-core:4.2.8.RELEASE -> 4.3.4.RELEASE (*)
+|    |    |    +--- org.springframework:spring-beans:4.2.8.RELEASE -> 4.3.4.RELEASE (*)
+|    |    |    +--- org.slf4j:slf4j-api:1.7.21
+|    |    |    \--- org.slf4j:jcl-over-slf4j:1.7.21 (*)
+|    |    +--- org.springframework:spring-orm:4.2.8.RELEASE -> 4.3.4.RELEASE
+|    |    |    +--- org.springframework:spring-beans:4.3.4.RELEASE (*)
+|    |    |    +--- org.springframework:spring-core:4.3.4.RELEASE (*)
+|    |    |    +--- org.springframework:spring-jdbc:4.3.4.RELEASE (*)
+|    |    |    \--- org.springframework:spring-tx:4.3.4.RELEASE (*)
+|    |    +--- org.springframework:spring-context:4.2.8.RELEASE -> 4.3.4.RELEASE (*)
+|    |    +--- org.springframework:spring-aop:4.2.8.RELEASE -> 4.3.4.RELEASE (*)
+|    |    +--- org.springframework:spring-tx:4.2.8.RELEASE -> 4.3.4.RELEASE (*)
+|    |    +--- org.springframework:spring-beans:4.2.8.RELEASE -> 4.3.4.RELEASE (*)
+|    |    +--- org.springframework:spring-core:4.2.8.RELEASE -> 4.3.4.RELEASE (*)
+|    |    +--- org.slf4j:slf4j-api:1.7.21
+|    |    \--- org.slf4j:jcl-over-slf4j:1.7.21 (*)
+|    \--- org.springframework:spring-aspects:4.3.4.RELEASE
+|         \--- org.aspectj:aspectjweaver:1.8.9
++--- org.springframework.boot:spring-boot-starter-security:1.4.2.RELEASE
+|    +--- org.springframework.boot:spring-boot-starter:1.4.2.RELEASE (*)
+|    +--- org.springframework:spring-aop:4.3.4.RELEASE (*)
+|    +--- org.springframework.security:spring-security-config:4.1.3.RELEASE
+|    |    +--- aopalliance:aopalliance:1.0
+|    |    +--- org.springframework.security:spring-security-core:4.1.3.RELEASE
+|    |    |    +--- aopalliance:aopalliance:1.0
+|    |    |    +--- org.springframework:spring-aop:4.3.2.RELEASE -> 4.3.4.RELEASE (*)
+|    |    |    +--- org.springframework:spring-beans:4.3.2.RELEASE -> 4.3.4.RELEASE (*)
+|    |    |    +--- org.springframework:spring-context:4.3.2.RELEASE -> 4.3.4.RELEASE (*)
+|    |    |    +--- org.springframework:spring-core:4.3.2.RELEASE -> 4.3.4.RELEASE (*)
+|    |    |    \--- org.springframework:spring-expression:4.3.2.RELEASE -> 4.3.4.RELEASE (*)
+|    |    +--- org.springframework:spring-aop:4.3.2.RELEASE -> 4.3.4.RELEASE (*)
+|    |    +--- org.springframework:spring-beans:4.3.2.RELEASE -> 4.3.4.RELEASE (*)
+|    |    +--- org.springframework:spring-context:4.3.2.RELEASE -> 4.3.4.RELEASE (*)
+|    |    \--- org.springframework:spring-core:4.3.2.RELEASE -> 4.3.4.RELEASE (*)
+|    \--- org.springframework.security:spring-security-web:4.1.3.RELEASE
+|         +--- aopalliance:aopalliance:1.0
+|         +--- org.springframework.security:spring-security-core:4.1.3.RELEASE (*)
+|         +--- org.springframework:spring-beans:4.3.2.RELEASE -> 4.3.4.RELEASE (*)
+|         +--- org.springframework:spring-context:4.3.2.RELEASE -> 4.3.4.RELEASE (*)
+|         +--- org.springframework:spring-core:4.3.2.RELEASE -> 4.3.4.RELEASE (*)
+|         +--- org.springframework:spring-expression:4.3.2.RELEASE -> 4.3.4.RELEASE (*)
+|         \--- org.springframework:spring-web:4.3.2.RELEASE -> 4.3.4.RELEASE (*)
++--- org.springframework.security:spring-security-jwt:1.0.7.RELEASE
+|    \--- org.bouncycastle:bcpkix-jdk15on:1.55
+|         \--- org.bouncycastle:bcprov-jdk15on:1.55
++--- org.springframework.security.oauth:spring-security-oauth2:2.0.12.RELEASE
+|    +--- org.springframework:spring-beans:4.0.9.RELEASE -> 4.3.4.RELEASE (*)
+|    +--- org.springframework:spring-core:4.0.9.RELEASE -> 4.3.4.RELEASE (*)
+|    +--- org.springframework:spring-context:4.0.9.RELEASE -> 4.3.4.RELEASE (*)
+|    +--- org.springframework:spring-webmvc:4.0.9.RELEASE -> 4.3.4.RELEASE (*)
+|    +--- org.springframework.security:spring-security-core:3.2.8.RELEASE -> 4.1.3.RELEASE (*)
+|    +--- org.springframework.security:spring-security-config:3.2.8.RELEASE -> 4.1.3.RELEASE (*)
+|    +--- org.springframework.security:spring-security-web:3.2.8.RELEASE -> 4.1.3.RELEASE (*)
+|    \--- commons-codec:commons-codec:1.9 -> 1.10
++--- org.codehaus.groovy:groovy-all:2.4.7
++--- org.liquibase:liquibase-core: -> 3.5.3
+|    \--- org.yaml:snakeyaml:1.17
++--- com.h2database:h2:1.4.192
++--- mysql:mysql-connector-java:5.1.40
++--- org.hibernate:hibernate-envers:5.0.11.Final
+|    +--- org.jboss.logging:jboss-logging:3.3.0.Final
+|    +--- org.hibernate:hibernate-core:5.0.11.Final (*)
+|    \--- org.hibernate:hibernate-entitymanager:5.0.11.Final (*)
++--- org.apache.tomcat.embed:tomcat-embed-jasper: -> 8.5.6
+|    +--- org.apache.tomcat.embed:tomcat-embed-core:8.5.6
+|    +--- org.apache.tomcat.embed:tomcat-embed-el:8.5.6
+|    \--- org.eclipse.jdt.core.compiler:ecj:4.5.1
++--- javax.servlet:jstl: -> 1.2
++--- org.webjars:webjars-locator:0.30
+|    +--- org.webjars:webjars-locator-core:0.30
+|    |    +--- org.slf4j:slf4j-api:1.7.7 -> 1.7.21
+|    |    +--- org.apache.commons:commons-lang3:3.1 -> 3.5
+|    |    \--- org.apache.commons:commons-compress:1.9
+|    +--- com.fasterxml.jackson.core:jackson-databind:2.3.3 -> 2.8.4 (*)
+|    \--- org.apache.commons:commons-lang3:3.4 -> 3.5
++--- org.webjars:bootstrap:3.3.7
+|    \--- org.webjars:jquery:1.11.1
++--- org.apache.commons:commons-lang3:3.5
++--- commons-codec:commons-codec:1.10
+\--- org.owasp.esapi:esapi:2.1.0.1
+     +--- commons-configuration:commons-configuration:1.10
+     |    +--- commons-lang:commons-lang:2.6
+     |    \--- commons-logging:commons-logging:1.1.1 -> 1.2
+     +--- commons-beanutils:commons-beanutils-core:1.8.3
+     |    \--- commons-logging:commons-logging:1.1.1 -> 1.2
+     +--- commons-fileupload:commons-fileupload:1.3.1
+     |    \--- commons-io:commons-io:2.2
+     +--- commons-collections:commons-collections:3.2.2
+     +--- log4j:log4j:1.2.17
+     +--- xom:xom:1.2.5
+     |    +--- xml-apis:xml-apis:1.3.03 -> 1.4.01
+     |    +--- xerces:xercesImpl:2.8.0 -> 2.11.0
+     |    |    \--- xml-apis:xml-apis:1.4.01
+     |    \--- xalan:xalan:2.7.0
+     |         \--- xml-apis:xml-apis:2.0.2 -> 1.4.01
+     +--- org.beanshell:bsh-core:2.0b4
+     +--- org.owasp.antisamy:antisamy:1.5.3
+     |    +--- org.apache.xmlgraphics:batik-css:1.7 -> 1.8
+     |    |    +--- org.apache.xmlgraphics:batik-ext:1.8
+     |    |    |    \--- xml-apis:xml-apis:1.3.04 -> 1.4.01
+     |    |    +--- org.apache.xmlgraphics:batik-util:1.8
+     |    |    +--- xml-apis:xml-apis:1.3.04 -> 1.4.01
+     |    |    \--- xml-apis:xml-apis-ext:1.3.04
+     |    +--- net.sourceforge.nekohtml:nekohtml:1.9.16 -> 1.9.22
+     |    |    \--- xerces:xercesImpl:2.11.0 (*)
+     |    \--- commons-httpclient:commons-httpclient:3.1
+     |         +--- commons-logging:commons-logging:1.0.4 -> 1.2
+     |         \--- commons-codec:commons-codec:1.2 -> 1.10
+     \--- org.apache.xmlgraphics:batik-css:1.8 (*)
+
+(*) - dependencies omitted (listed previously)
+
+```
 
 ##### Prevention
+
+
 
 ##### References
 * [OWASP Top 10 - A9-Using Components with Known Vulnerabilities](https://www.owasp.org/index.php/Top_10_2013-A9-Using_Components_with_Known_Vulnerabilities)
