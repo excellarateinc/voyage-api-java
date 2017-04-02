@@ -36,8 +36,6 @@ These are the core standards that our development team agrees to follow. All of 
 :arrow_up: [Back to Top](#table-of-contents)
 
 ## Code Standards
-> __FINISH THIS SECTION__
-
 The following coding standards are agreed upon by the development team and are expected to be followed. Where possible, these rules will be enforced by the IDE. The goals of these standards are the following:
 
 1. Create a consistent look to the code, so that readers can focus on content, not layout.
@@ -48,114 +46,279 @@ __Languages__
 * [Groovy](STANDARDS-GROOVY.md)     
      
 __Best Practices__
-* [Authorization](STANDARDS-AUTHORIZATION.md)
 * [Database](STANDARDS-DATABASE.md)
+* [Spring Framework](STANDARDS-SPRING.md)
 * [Web Services](STANDARDS-WEB-SERVICES.md)
-* ?? [Logging](DEVELOPMENT-BEST-PRACTICES.md#logging)
-* ?? [Dependency Injection](DEVELOPMENT-BEST-PRACTICES.md#dependency-injection)
 
 :arrow_up: [Back to Top](#table-of-contents)
 
 ## Workstation Setup
-> __FINISH THIS SECTION__
 
 ### Required Software
 Download and install the following required software for development:
-* IntelliJ
-  * Plugin: Spock Framework Enhancements
+* [Java SDK 1.8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+* [MySQL Community Server - Database](https://dev.mysql.com/downloads/mysql/)
+* [MySQL Workbench](https://dev.mysql.com/downloads/workbench/) or [Sequel Pro Mac OSX](https://www.sequelpro.com)
+* [IntelliJ](https://www.jetbrains.com/idea/)
+  * Plugin: [Spock Framework Enhancements](https://plugins.jetbrains.com/plugin/7114-spock-framework-enhancements)
 
 ### Instructions
-> __EXPLAIN the process start-to-finish with no assumptions__
+1. Download source via IntelliJ VCS
+   - Open IntelliJ
+   - Using the top menu, navigate to "VCS -> Checkout from Version Control -> Github"
+   - If you have not used Github from IntelliJ before, you will be asked for your Github credentials
+   - Once authenticated, you will see a dropdown containing a list of repositories you have access to
+   - Choose "https://github.com/lssinc/voyage-api-java.git" from the list of repositories
+     * The official repository is located here https://github.com/lssinc/voyage-api-java
+   - Use the default path provided or change it to your desired path
+   - Click "Clone" to create a local git repo with the GitHub repo as a source
 
-1. Download source via Visual Studio GitHub extension
-   - Open Visual Studio with administrator privileges. 
-   - Go to the "Team Explorer" tab.
-   - Click the "Manage Connections" button (Green electrical outlet icon). 
-   - Under the GitHub section, click "Clone".
-   - Enter your GitHub credentials.
-   - Choose "voyage-api-dotnet" from the list of repositories.
-     * The official repository is located here https://github.com/lssinc/voyage-api-dotnet
-   - Choose a path. (Example C:\Source)
-   - Click "Clone".
-   - Once cloning is complete, open the "Voyage.API" solution.
-2. Build it
-   - With the solution open, press Control + Shift + B or right click the solution and select "Build Solution".
-   - Visual Studio should automatically restore the dependencies on the first build.
-   - If packages aren't restored on build, you have two options. 
-     * You can right click the solution in Visual Studio and select "Restore NuGet Packages".
-     * Go to the "Tools" tab, select "NuGet Package Manager" then "Package Manager Console". From the console that shows up, click the "Restore" button in the upper right corner.
-3. Create the database
-   - NOTE: This app uses a SQL Database and Code First Migrations. This migration strategy will be replaced with a TBD tool.
-   - In Visual Studio, open the package manager console by going to the "Tools" tab, select "NuGet Package Manager" then "Package Manager Console". 
-   - Set the Default project to Voyage.Data in the "Default project" dropdown.
-   - Type "Update-Database" (no quotes) in the console and hit enter to create the database. This will run the Entity Framework migration scripts. If this fails with a message telling you the command is unrecognized, restart Visual Studio and try again.
-     * The connection string in Voyage.Web web.config determines where the database will be created
-     * The default is localhost/sqlexpress with initial catalog Voyage
-     * If you have a different instance name, change the "Data Source" portion of this to your instance. Also change this value in the app.config in Voyage.Data.IntegrationTests.
-4. Install IIS
-   - Open up the Control Panel.
-   - Click "Programs".
-   - Click "Turn Windows features on or off".
-   - Expand the "Internet Information Services" node.
-   - Check the "Web Management Tools" checkbox.
-   - Check the "World Wide Web Services" checkbox.
-   - Expand the "World Wide Web Services node.
-   - Expand the "Application Development Features" node.
-   - Check the "ASP.NET 4.6" checkbox.
-   - Click "OK".
-5. Add the voyage application to IIS
-   - Click the start button, and search for "inetmgr". Open the IIS Manager application.
-   - Expand the root node, right click on "Sites" and select "Add Website".
-   - Enter "Voyage" as the Site name and point the physical path to the full path of the Voyage.Web folder. (Example: C:\Source\voyage-dotnet-api\Voyage.Web)
-   - Change port 80 to 52431.
-   - Click OK
-   - Click "Application Pools" from the left nav. 
-   - Right click the "Voyage" application pool and select "Advanced Settings...".
-   - Ensure the .NET CLR Version is v4.0.
-   - Under the "Process Model" section, click the bolded word "ApplicationPoolIdentity", then click the "..." button.
-   - Click "Custom account" and click "Set"
-   - Type in your windows credentials and click OK.   
-6. Add your windows credentials to SQL Server
-   - Open up SQL Server Management Studio.
-   - Enter "localhost" as the server name.
-   - Click "Connect"
-   - Expand the "Security" folder
-   - Expand the "Logins" folder
-   - Right click on your windows username and select "Properties".
-   - Click "User Mapping" from the left navigation.
-   - Click the checkbox next to "Voyage"
-   - Click the checkbox next to "db_owner" in the bottom panel.
-   - Click OK   
-7. Install the API Documentation
-   - Open up a command prompt
-   - Run "npm install apidoc -g"
-   - Change directory "cd" to the Voyage.Web folder.
-   - Run this command: "npm run doc"
-   - You will see a "Done" message when it is complete.   
-   - **Note:** If the script fails to execute, try closing the command prompt and opening a new one and run the command again. If there are multiple prompts open at the same time, the command prompt will not always pick up the new global module when both commands are not run from the same instance.
+![IntelliJ clone repo](./images/DEVELOPMENT_cloneRepository.JPG)
+
+2. Create the database
+   - Use MySQL Workbench to connect to your locally running instance of MySQL
+     * Hostname: 127.0.0.1
+     * Username: root
+     * Password: > the password you entered during installation <
+   - Click the "Create a new schema in the selected server" button and enter the schema name "voyage"
+
+   ![MySQL create schema](./images/DEVELOPMENT_createSchema.jpg)
+   - Click the "Apply" button
+   - Click "Finish" on the popup that appears to create the schema.
+   - Go to the "Users and Privileges" section.
+   - Click "Add Account" and create a user with username and password "voyage".
+   - Click the "Administrative Rolls" tab and check the checkbox next to "DBA".
+   - No other manual steps are required for the database, all tables will be created on app startup via Liquibase migration scripts.
+
+   ![MySQL create schema](./images/DEVELOPMENT_createDbUser.jpg)
+
+3. Build Voyage
+   - Configure the app database connection
+     * The default database configuration is located in /src/main/resource/application.yaml
+     * The "spring.datasource" section of the application.yaml file contains the database URL, username, and password
+     * Change these details to connect to any database with any credentials
+     * NOTE: You can also override these properties following the [Spring Configuration externalization conventions](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html)
+   - Invoke the "build" Gradle task from the Gradle Tool Window
+     * Open the Gradle Tool Window by navigating to "View -> Tool Windows -> Gradle"
+
+   ![Gradle Tool Window](./images/DEVELOPMENT_gradleRun.JPG)
+   - This tool window will show you a list of Gradle tasks.
+   - Run the "build" task under the "build" section to build the project.
 
 > __SEED DATA__
 >
 > A default "admin" user with full access to everything will be seeded into the database when _Update-Database_ is run. Use this account when initially interacting with the web services or creating new users or applying new user roles. 
 ```
-Username: admin@admin.com
-Password: Hello123!
+Username: super
+Password: password
 ```
 
 :arrow_up: [Back to Top](#table-of-contents)
 
 ## Run App Locally
-> __FINISH THIS SECTION__
+* [Quick Guide](#quick-guide)
+* [Access Secured Web Services](#access-secured-web-services)
+* [Common Gradle Tasks](#common-gradle-tasks)
+* [Troubleshooting](#troubleshooting)
 
-1. Run the application
-   - Open Visual Studio with administrator privileges.
-   - Open the "Voyage.API" solution.
-   - Press Control + F5.
-   - You are now up and running. Your browser will open and display the API documentation for the application.
-2. Run the tests   
-   - In Visual Studio, click the "Test" tab, select "Windows" then "Test Explorer".
-   - Click "Run All" from this tab. 
-   - The unit and integration tests will execute.
+### Quick Guide
+1. Run the tests
+   - Before running the app locally, execute the tests to ensure the app code is working as expected.
+   - Gradle Task: test
+     * In the Gradle tool window, run the "test" task under the "verification" section.
+   - IntelliJ will run all tests and display failures in a console window pane
+
+2. Run the application
+   - Gradle Task: bootRun
+     * In the Gradle tool window, run the task "bootRun" under the "application" section.
+     * This will run any un-run migration scripts, build the project, and start a server on port 8080.
+     * Wait for the console to display "Started App in xx.xxx seconds (JVM running for xx.xxx)" before accessing the app
+   - Access the running app at `http://localhost:8080`
+
+   ![Voyage login screen](./images/DEVELOPMENT_loginScreen.JPG)
+
+3. Access an API
+   - `http://localhost:8080/api/status`
+   - `http://localhost:8080/api/v1/users` - requires authentication (see next section Access Secured Web Services)
+
+### Access Secured Web Services
+By default, the API secures all webservice endpoints with the exception of the /api/status public endpoint. Without going
+into how you secure a webservice endpoint (see Developer Recipes), this section will discuss the default OAuth2 security
+implementation and how to access web services. 
+
+#### Oauth2: Quick Overview
+OAuth2 is an authentication method that allows for 2 authenticating actors: Client, User. 
+* Client - the 'app' that is making the request to the API
+* User - the person that is using the app to make a request to the API
+
+Currently, the API supports 2 OAuth authentication methods 
+* Client Credentials - Client only authentication used mainly for server-to-server exchanges 
+* Implicit Authentication - Client + User authentication use mainly for web and mobile apps 
+
+#### OAuth2: Client Credentials
+##### Overview
+* The client accesses the API directly without a user and uses a secure password to authenticate.
+* The client is the only actor using the API and must provide a client ID and password
+* The API will not load a User object into the session unless the client ID maps to a User username
+* API services that require a User object loaded into memory will not function with this authentication method
+* This authentication method is reserved for testing and for server-to-server exchanges
+
+##### Web Service: `http://localhost:8080/oauth/token`
+* used for Client Credential authentication
+* pass in the Client ID and Client Secret and get back an access token
+* returns a JWT bearer token that expires within a few hours
+
+##### Client seed data
+* client id: client-super
+* client secret: secret
+* see `/src/main/resources/db.changelog/v1-0/client.yaml`
+
+##### Test Using cURL 
+```
+curl -u client-super:secret -X POST -d "client_id=client-super&client_secret=secret&grant_type=client_credentials" http://localhost:8080/oauth/token
+
+```
+
+* Send the Client ID and Client Secret via basic auth
+* POST to: /oauth/token
+* POST data: client_id, client_secret, grant_type=client_credentials
+* The result will be an access code value
+
+##### Test Using Postman
+
+1. Within the Authorization section of a Postman request, choose the "OAuth2" option 
+![Postman OAuth Client Credentials Authorization](./images/DEVELOPMENT_postman_auth1.png)
+
+2. Click the orange "Get New Access Token"
+![Postman OAuth Client Credentials Get New Access Token](./images/DEVELOPMENT_postman_auth2.png)
+
+3. Enter the token URL and login information. Be sure to select Grant Type "Client Credentials" 
+![Postman OAuth Client Credentials Request Token](./images/DEVELOPMENT_postman_auth3.png)
+
+4. Click on the new token row and select "Use Token" orange button to apply the token to your request.
+![Postman OAuth Client Credentials Use Token](./images/DEVELOPMENT_postman_auth4.png)
+
+5. Click on the Headers section to verify that the Authorization header has been applied with the Access Token
+![Postman OAuth Client Credentials Authorization Header](./images/DEVELOPMENT_postman_auth5.png)
+
+
+#### OAuth2: Implicit Authentication
+##### Overview
+* The user instructs the client 'app' to make API requests on the user's behalf. 
+* The client initiates the authentication using their client ID, but does not provide a password because
+  the user will be required to enter their own username and password to authorize the client. 
+* The API will load both the Client and User objects into the session
+* This authentication method is the preferred method for a web or mobile app
+
+##### Web Service: `http://localhost:8080/oauth/authorize`
+* used for Implicit Authentication
+* accepts the Client ID, redirect url, and few other params
+* redirects a server-side user login form
+* upon successful authentication of the user and client, a redirect back to the caller with the access token.
+* returns a JWT bearer token that expires within a few hours
+
+#### Client seed data
+* client id: client-super
+* client secret: secret
+* see `/src/main/resources/db.changelog/v1-0/client.yaml`
+
+#### User seed data
+* username: super
+* password: password
+* see `/src/main/resources/db.changelog/v1-0/user.yaml`
+
+#### Test Using Browser
+The method described below is easiest to perform within a web browser. While it is possible to do this within cURL,
+it takes more effort to handle the temporary session cookie and to follow redirects. The simplest way is to use a browser,
+which will be demonstrated below. 
+
+1. Copy/paste the following URL into your browser address bar 
+   `http://localhost:8080/oauth/authorize?client_id=client-super&redirect_uri=http://localhost:8080/oauth/&response_type=token`
+   ![OAuth Implicit Authorization Browser 1](./images/DEVELOPMENT_implicit_auth1.png)
+   * Endpoint Address: http://localhost:8080/oauth/authorize
+   * Parameters:
+     - client_id - the client identifier
+     - redirect_uri - the address to redirect back to with the access token upon successful user authentication
+     - response_type - the expected type of code to return back on the redirect_uri (code=temp code, token=longer term access token)
+   * This assumes you are using the default seed data that comes with the app (see /src/main/resources/db.changelog/)
+
+2. Login as the 'super' user
+   ![OAuth Implicit Authorization Browser 2](./images/DEVELOPMENT_implicit_auth2.png)
+   * Username: super
+   * Password: password
+
+3. Accept the Grant Request
+   ![OAuth Implicit Authorization Browser 3](./images/DEVELOPMENT_implicit_auth3.png)
+
+4. Retrieve the Access Token from the URL parameters
+   ![OAuth Implicit Authorization Browser 4](./images/DEVELOPMENT_implicit_auth4.png)
+   
+   ![OAuth Implicit Authorization Browser 5](./images/DEVELOPMENT_implicit_auth5.png)
+   
+   * Upon successful authentication, the app will redirect to the given redirect uri
+   * The redirect uri doesn't likely existing on you local environment (or any environment)
+   * You will receive a 404 Not Found error page
+   * Look at the URL and you will see that there is a #access_token=eyJhbGciOiJSUzI1NiIsIn... as a parameter
+   * Copy the entire URL out to a text editor and copy the enter access_token value
+
+   Example access token: `eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE0ODkxMjg4NDcsInVzZXJfbmFtZSI6InN1cGVyIiwiYXV0aG9yaXRpZXMiOlsiYXBpLnBlcm1pc3Npb25zLmRlbGV0ZSIsImFwaS5yb2xlcy5kZWxldGUiLCJhcGkucm9sZXMudXBkYXRlIiwiYXBpLnBlcm1pc3Npb25zLmxpc3QiLCJhcGkucGVybWlzc2lvbnMudXBkYXRlIiwiYXBpLnVzZXJzLmNyZWF0ZSIsImFwaS51c2Vycy5nZXQiLCJhcGkudXNlcnMubGlzdCIsImFwaS5wZXJtaXNzaW9ucy5nZXQiLCJhcGkucm9sZXMuZ2V0IiwiYXBpLnVzZXJzLnVwZGF0ZSIsImFwaS5yb2xlcy5jcmVhdGUiLCJhcGkudXNlcnMuZGVsZXRlIiwiYXBpLnBlcm1pc3Npb25zLmNyZWF0ZSIsImFwaS5yb2xlcy5saXN0Il0sImp0aSI6ImY0NTlkZWEwLTJlNGQtNDgxNi1hMjUwLTQ5YjhjNzQ5Mjg5YiIsImNsaWVudF9pZCI6ImNsaWVudC1zdXBlciIsInNjb3BlIjpbIlJlYWQgRGF0YSIsIldyaXRlIERhdGEiXX0.OAKT6c5cpfwkzlQRz5AS_svSRWBROo_UN6I9_aE2EHky4OjGUwh7DExiDTYwr-kcLE9o1P7ZDW28g_f2SZVpx8AYosOJiN727060zbrT1q2shmnKhVv7pQJomzshdrXdCo0Lwz1eQ7punQv21mwEohIz4x0aX8IrxkcV8_-1hanGyKYkcdRdOdcWKYx2D_2k1_Z_wRhLuyV8vhmtjOPqWpNBjg6XmwRyA2GaRxJQAsWlQdyGC69GOLV4HVCgPJSUX7rgK1yatVGR8WyTcXclTmb9E9XBrom2zkq2NxZ4ZDVnHu6oq9Fszv3BbM-uwsPggFFG0D0YKG6s00uetXWz_A`
+
+5. Copy the access token into the Authorization header of a webservice request (via cURL or Postman)
+   ![OAuth Implicit Authorization Browser 6](./images/DEVELOPMENT_implicit_auth6.png)
+
+
+### Common Gradle Tasks
+[Gradle](https://gradle.org) is the Java/Groovy build framework used to compile, test, analyze, package, and run the application.
+Popular IDEs like IntelliJ or Eclipse have plugins that support executing Gradle tasks from within the IDE with the output
+ displayed within a console window of the IDE. 
+ 
+ To access the Gradle tool window in IntelliJ, click menu option View > Tool Windows > Gradle. The following categories
+ will be found within the Gradle tool window. Double clicking on a task will execute the task and display the results in
+ an IDE console window. 
+ 
+* application
+  - bootRun
+    - starts a local instance of Apache Tomcat and "injects" the app into the Tomcat container.
+    - runtime logs will be displayed in the console
+    - startup is complete when you see the log line "Started App in ___ seconds (JVM running for xx.xxx)"
+* build
+  - clean
+    - cleans out the /build folder and any other build artifacts gradle creates when building the app
+    - useful when you want to build from scratch or if your app doesn't seem to be working as expected
+  - build
+    - compiles all of the classes
+    - not used very often since this task is executed when 'bootRun', 'test', and 'war' are executed
+  - war
+    - creates a Web Archive (.war) file used to deploy into J2EE Servlet Containers like Apache Tomcat or RedHat JBoss
+    - stores the .war file in /build/libs folder
+* other
+  - codenarcMain
+    - invokes the CodeNarc static code analysis process on the /src/main files.
+    - CodeNarc rules are located in /codenarc/codenarc-main.rules
+    - a local file:// url will be displayed at the end of the codenarc process with details on the issues identified in the static code analysis
+    - this task should be executed before committing code to the Git repo
+    - this task is run during the CI/Jenkins build-test process and will fail the build if analysis fails 
+  - codenarcTest
+    - same as codenarcMain
+    - CodeNarc rules are located in /codenarc/codenarc-test.rules
+* verification
+  - test
+    - invokes all unit and integration tests found within the /src/test folder of the application
+    - displays successes and failures in the console. IntelliJ or other IDEs will display a success/failure within a console window
+    
+### Troubleshooting
+* Tests are failing when I run them locally
+   - Check to see if you have made any changes locally that would be adversely affecting tests
+   - Verify that tests are running within the Continuous Integration site (ie Jenkins)
+   - Examine the tests that are failing and see if there is a common pattern to why they are failing
+   - Pull in a peer developer or contact Voyage support for assistance if you cannot resolve the issue.
+* Executing 'bootRun' fails with liquibase checksum errors on some of the migration scripts 
+   - This is due to changes being made to the liquibase migration scripts that have already been applied to your local database
+   - The fastest way to resolve this is to drop your local database and create a new database (see steps in the Workstation Setup instructions)
+   - An alternative fix is to go into the DATABASECHANGELOG table in your database and delete the rows for the failing 
+     migration files. You will also need to manually revert the changes that this migration file applied so that when 
+     the migration script(s) run again, they don't fail trying to apply changes that already exist. 
+  
   
 :arrow_up: [Back to Top](#table-of-contents)
 
@@ -232,5 +395,7 @@ Continuous Integration (CI) is the process of integrating and testing new code a
 Developers must be aware that as soon as their code is merged into a long running branch (ie master), that the CI job "Build & Test" will be triggered on the new code. The primary function of the "Build & Test" job is to ensure that the latest changes can be built without error and that all unit, integration, and functional tests pass successfully. If the build or a single test fails, then the job fails and notifies the development team. 
 
 Whenever a job fails within the CI environment the whole development team is affected. It is the responsibility of the developer who broke the build to fix the issue as quickly as possible. A developer with repeated offenses should be made aware (however the team decides) that they need to improve their pre-merge quality checks. 
+
+Learn more about Continuous Integration within the [Deploy: Continuous Integration](DEPLOY.md#continuous-integration-ci) documentation.
 
 :arrow_up: [Back to Top](#table-of-contents)

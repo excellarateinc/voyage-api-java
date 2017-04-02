@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
-    <logger name="voyage" level="DEBUG"/>
-    <logger name="org.springframework.security" level="DEBUG"/>
+    <logger name="voyage" level="INFO"/>
+    <logger name="org.springframework.security" level="INFO"/>
+
+    <!-- Suppressing warnings that occur only when running the app locally or executing tests.
+         The issue is that Tomcat JAR scanner cannot find the dependencies of the ESAPI.jar because
+         Gradle/Maven screened them out since they were already referenced by other other .jar files.
+
+         This issue does not occur when a WAR file is built since the /lib folder contains the single
+         set of JARs and the Tomcat JAR scanner doesn't have additional information about versions, etc.
+    -->
+    <logger name="org.apache.tomcat.util.scan.StandardJarScanner" level="ERROR"/>
 </configuration>

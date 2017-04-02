@@ -51,18 +51,16 @@ class DefaultExceptionHandlerSpec extends Specification {
             emailConstraint.propertyPath >> emailConstraintPath
             emailConstraintPath.toString() >> 'field.name'
 
-            responseEntity.statusCodeValue == 400
-            responseEntity.body.size() == 2
-            Iterable<ErrorResponse> errors = responseEntity.body.sort { it.errorDescription }
-            errors[0].error == 'field.name.invalid_email_address'
-            errors[0].errorDescription == 'Invalid email address'
-
             notNullConstraint.message >> 'Phone number required'
             notNullConstraint.propertyPath >> notNullConstraintPath
             notNullConstraintPath.toString() >> 'field.phone'
 
-            errors[1].error == 'field.phone.phone_number_required'
-            errors[1].errorDescription == 'Phone number required'
+            responseEntity.statusCodeValue == 400
+            responseEntity.body.size() == 2
+            responseEntity.body*.error.contains('field.name.invalid_email_address')
+            responseEntity.body*.errorDescription.contains('Invalid email address')
+            responseEntity.body*.error.contains('field.phone.phone_number_required')
+            responseEntity.body*.errorDescription.contains('Phone number required')
     }
 
     def 'handle() MethodArgumentNotValidException returns an Bad Request error'() {

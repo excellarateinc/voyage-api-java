@@ -4,9 +4,10 @@ Deploying to the upper environments (QA -> UAT -> PROD) will be handled by the C
 ## Table of Contents
 * [Continuous Integration (CI)](#continuous-integration-ci)
 * [Server Configuration](#server-configuration)
-* [App Build & Test](#app-build--test)
-* [Docker Support](#docker-support)
-* [Ansible Automated Deployment](#ansible-automated-deployment)
+* [App Build & Deploy (Manual)](#app-build--test-manual)
+* App Build & Test w/ Jenkins
+* App Build & Deploy Docker
+* [High Availability Support](#high-availability-support)
 
 ## Continuous Integration (CI)
 [Jenkins](https://jenkins.io) continuous integration build manager will be used to configure jobs and triggers to faciliate the CI process. Reference your development team's WIKI for links to the Jenkins environment. 
@@ -69,108 +70,265 @@ If at all possible, automate as much of the deployment process as possible to pr
 
 
 ## Server Configuration
-> __FINISH DOCUMENTATION__
-
-### Windows Server 2012
-
-### IIS
-
-#### Application Pool
-The application pool should be configued as follows:
-
-* Framework => .Net Framework v4.0.30319
-* Managed pipeline mode => Integrated
-
-#### Connection Strings
-The application assumes that the connectionString will be called VoyageDataContext and this setting will be inherited. This can be placed in the machine or a parent site configuration. 
-
-Please note that the default IIS editor does not appear to add the required providerName attribute to the connectionString. As a result, it may be necessary to edit the web.config directly in order to add the attribute. Failure to do so will result in a 500 error.
-
-:arrow_up: [Back to Top](#table-of-contents)
-
-## App Build & Test
-> __FINISH DOCUMENTATION__
 
 ### Prerequisties
-The following are the prequisties for building the application from the CI server.
+The following are required to be present on the server before building and hosting the Voyage API
+* [Java JDK 1-8.0](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+  - Used for building, testing, and packaging the application
+  - Used for the Apache Tomcat web application container
+* [Apache Tomcat 8.0](http://tomcat.apache.org)
+  - Only necessary if the server is going to host the web application
+* [git](https://git-scm.com/downloads)
+  - Used to download the latest source
 
-* Visual Studio 2015 <-- REALLY? 
-* SQL Server <-- REALLY? 
-* .NET Framework vXXX.XXX
-* Node
-* apiDocJs
-  1. npm install -g apidoc
+Follow the instructions on the sites (linked above) as to the best methods for installing/configuring these prerequisites.
+
+### Optional: HTTP Web Server
+Apache Tomcat can act as both an HTTP web service and a Java web application container. Since Apache Tomcat doesn't provide much in the way of HTTP servers, it is often desireable to setup an HTTP Server that then proxies requests/responses to/from Apache Tomcat.
+
+Any HTTP Server can be used, including
+* [Apache HTTP Server](https://httpd.apache.org)
+  - Use [mod_proxy_ajp](https://httpd.apache.org/docs/2.4/mod/mod_proxy_ajp.html) to create a proxy connection between Apache HTTP Server and Apache Tomcat
+* [Microsoft IIS](https://www.iis.net)
+  - Use the [Apache Tomcat ISAPI Connector](https://tomcat.apache.org/connectors-doc/webserver_howto/iis.html) to create a proxy channel between IIS and Apache Tomcat
+
+Follow the instructions on the sites (linked above) as to the best methods for installing/configuring the HTTP server. 
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+## App Build & Test (Manual)
+
+### Prerequisties
+The following are required to be present on the server before building Voyage API:
+* [Java JDK 1-8.0](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+* [git](https://git-scm.com/downloads)
 
 ### Instructions
+These instructions are the base tasks for manually building, testing, and deploying without the assistance of a Continuous Integration server such as Jenkins or Team Foundation Server (TFS). 
 
-#### 1. Nuget Restore
-The API project uses nuget to manage external dependencies. The first step of the build process is to run: 
+#### 1. Download the Source
+Download the source code from Git into a local workspace
 ```
-nuget.exe restore Voyage.API.sln
-```
-
-#### 2. MSBUILD Command
-The following msbuild command can be used to build the project. 
-
-```
-msbuild /t:Rebuild /p:OutDir=..\publish\;Configuration=Release;UseWPP_CopyWebApplication=True;PipelineDependsOnBuild=False Voyage.API.sln
+cd /my/workspace
+git clone https://github.com/lssinc/voyage-api-java
 ```
 
-Notes:
-* **/t:Rebuild** specifies that all projects should be rebuilt
-* **/p:** represents ; delimited parameters
-* **OutDir** specifies where the build output should be placed
-* **Configuration** represents the target configuration
-* **UseWPP_CopyWebApplication=True;PipelineDependsOnBuild=False** will force the web project output to be placed in the publish/\_publishedWebsite/{ProjectName} folder
-  1. These artifacts can be used deploy the website
-
-#### 3. Unit Tests
-Unit tests should be run after MSBUILD by excuting the batch script **execute-unit-tests.bat** - the result code will be non-zero when a test fails. 
-
-The script scans the publish folder for any .dlls that contain "UnitTests" in the filename. This script is purposely excluding integration tests since an integration test strategy has not be finalized. 
-
-#### 4. APIDoc
-API doc should be run after unit tests. This process ouputs a set of static files. 
-
-The following command will run the apidoc process
-
+You might be required to provide your username and password to authenticate before being allowed to download the source. If so, use the following GitHub format:
 ```
-apidoc -o publish\_PublishedWebsites\Voyage.Web\docs -i .\\Voyage.Web -f ".cs$" -f "_apidoc.js"
+cd /my/workspace
+git clone https://username@github.com/lssinc/voyage-api-java
 ```
 
-Notes:
-* apidoc is assumed to have been installed as a global node module
-* -o is the output directory. 
-  1. In the above example, the deployable artifacts are assumed to be placed in publish\_PublishedWebistes\Voyage.Web\docs
-* -i is the input directory
-  1. In the above example, it assumes the command is executed from the root repo directory. 
-* -f are filters. These are files that will be evaluated for documentation comments.
-  1. In the above example, there are 2 filters. The first filter includes only .cs files. The second filter, includes a 
-  special javascript file that contains reusable comment blocks.
-  
-#### 5. Artifacts for deployment
-The artifacts that should be deployed will be contained in the publish\_PublishedWebsites\Voyage.Web folder. The artifacts will include both the apidoc files as well as the API bin files.
+#### 2. Build with Gradle Wrapper
+Voyage API project uses [Gradle](https://gradle.org) as the build platform, which compiles the app, executes tests, and packages the binaries into a Web Archive (.WAR). Gradle is invoked by using the `gradlew` Gradle Wrapper script located within the root of the project. Gradle Wrapper is a OS specific script that looks at the build.gradle file to see which Gradle version is supported. Gradle Wrapper will do the work of detecting if the supported version of Gradle is installed, and if not, will download and install the correct version of Gradle before executing the Gradle task. 
+
+The following Gradle tasks should be executed in the order defined below:
+
+Clean the workspace from the previous build
+```
+./gradlew clean
+```
+
+Run the unit and integration tests embedded within the source code
+```
+./gradlew test
+```
+
+Run the CodeNarc static code analysis on the /src/main source code
+```
+./gradlew codenarcMain
+```
+
+Run the CodeNarc static code analysis on the /src/test source code
+```
+./gradlew codenarcTest
+```
+
+Package the compiled app into a Web Archive (WAR) file that is compatible with Java Application Servers like Apache Tomcat
+```
+./gradlew war
+```
+
+#### 3. Artifacts for deployment
+Artifacts generated from `./gradlew war` are stored within `/voyage-api-java/build/libs`. There should only be 1 .war file named after the app name defined in build.grade. For example: `voyage-1.0.war`. 
+
+The .war file generated from Gradle is compatible with J2EE Application Server containers like Apache Tomcat. The .war file will require configuration settings to be setup with the Java Application Server. See next step. 
+
+#### 4. Apacht Tomcat Setup > Override Parameters By Environment
+The base Voyage API WAR file has bundled into it a base set of parameters that are configured for a local development environment. When deploying to another environment, review the parameters and override as needed. 
+
+> NOTE: At the very least, change the database username/password and the default security settings!
+
+There are [a number of ways to override parameters](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html) within the application. The method discussed in this section for overriding parameters is to create an application.yaml file that is stored within /tomcat/conf and loaded as a System parameter on Tomcat startup. The only exception will be the JNDI DataSource configuraiton, which will be added to the server.xml to take advantage of Tomcat's database connection pooling. 
+
+#### JDBC Configuration
+Configure the JDBC connection pool within the server.xml and then make it available to the web apps in the context.xml. 
+
+conf/server.xml
+```
+<GlobalNamingResources>
+   <Resource
+      name="jdbc/voyage"
+      auth="Container"
+      type="javax.sql.DataSource"
+      username="voyage-user"
+      password="password"
+      driverClassName="com.mysql.jdbc.Driver"
+      url="jdbc:mysql://localhost:3306/voyage"
+      initialSize = "10"
+      maxActive = "50"
+      maxIdle = "30"
+      maxWait = "1000"
+      removeAbandoned = "true"
+      removeAbandonedTimeout = "60"
+      logAbandoned = "true"
+      validationQuery = "SELECT 1"
+      factory="org.apache.tomcat.dbcp.dbcp2.BasicDataSourceFactory"
+   />
+</GlobalNamingResources>
+```
+
+conf/context.xml
+```
+<Context>
+    <ResourceLink
+                name="jdbc/voyage"
+                global="jdbc/voyage"
+                type="javax.sql.DataSource" />
+</Context>
+
+```
+
+##### Override application.yaml properties
+Override the properties defined within the application.yaml file that is bundled within the app for the server environment. Review the security configurations for the application within the [Security Configurations](SECURITY.md#security-configuration) section of the API [Security](SECURITY.md) documentation. 
+
+> NOTE: Be sure to update the default passwords for:
+> * Default users created in /src/main/resources/db.changelog/v1-0/user.yaml
+> * Default password for the /src/main/resources/Keystore.jks file (requires recreating the Keystore
+> * Default password for the 'asymmetric' public/private key
+> * Default password fro the 'jwt' public/private key
+> Thoroughly read through the [Security](SECURITY.md) documentation, specifically [Security Configurations](SECURITY.md#security-configuration)
+
+1. Create a new file `/conf/voyage-application.yaml`
+2. Copy the entire contents of the application.yaml file from the application into the `/conf/voyage-application.yaml`
+3. Override the properties in `/conf/voyage-application.yaml` to be environment specific
+   - jpa.properties.hibernate.dialect - should match the database type being connected to. 
+   - datasource.jndi-name - point to the JNDI name of the database resource defined in the Apache Tomcat /conf/server.xml (see prior section)
+   - security.key-store.filename - change the filename to a locally defined public/private key keystore file
+   - security.key-store.password - provide the keystore password used to to unlock the keystore file on the server
+   - security.crypto.private-key-password - provide the password used to secure the private key for general RSA asymmetric encryption
+   - security.jwt.private-key-password - provide the private key password that was used to generate the JWT public/private keys 
+   - security.oauth2.resource.jwt.key-value - update the JWT public key for the resource server to decode the JWT token provided by the authentication server
+   ```
+   jpa:
+     hibernate:
+       ddl-auto: none
+     properties:
+       hibernate:
+         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+   
+   datasource:
+     jndi-name: jdbc/voyage
+   
+   security:
+     # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
+     # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+     key-store:
+       filename: keystore.jks
+       password: changeme
+     
+     crypto:
+       private-key-name: asymmetric
+       private-key-password: changeme
+
+     # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
+     # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+     jwt:
+       private-key-name: jwt
+       private-key-password: changeme
+
+     # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
+     # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
+     oauth2:
+       resource:
+         id: voyage
+         jwt:
+           key-value: |
+             -----BEGIN PUBLIC KEY-----
+             MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyfgFBATB9oJjCUOVtwsr
+             s8H6b8jiwl1gAuOVEHCgQbxuZPJ+YvcJad2xsEQLKbZBatbWF8gQIE0YNPW27niN
+             CrH9QKYyFih5Ko2B8M5xbDr1L/AiQUsVwiqBmyj0krswacF9zRHwKHurFoxihhP0
+             L6/NYrny8f5No8DNCC/abDYGFksqCE6gzLVB8moFGGcOk71l4CHJmlVrGS/Ec5Jj
+             ktQuBza5RwiSb62PYiHGy5mLl8owdH0m0PCaXZBO2QzPbecFp2+W/5aXfIRchcjH
+             Itcr8HKAqDO13XDo+xtqtVkFEn6hXXj5YESMkwukbWopDWOpfcGoQZStMhAEN7Xt
+             zQIDAQAB
+             -----END PUBLIC KEY-----
+      ```
+4. Update CATALINA_OPTS OS environment variable with a reference to the `voyage-application.yaml` file
+   - CATALINA_OPTS="-Denvfile=file:/usr/share/tomcat8/voyage-application.yaml"
+   - This will work on Windows or Linux. Search online for your respective OS if you are unsure about how to apply an OS environment variable to the server. 
+5. Restart Apache Tomcat to ensure the new settings are loaded
+   - Look at the log files in /logs to verify that the database connected properly
+
+#### 4. Apache Tomcat 8.0 Deploy
+To deploy the WAR file into the Apache Tomcat container, perfom the following steps:
+1. Obtain a voyage-1.0.war file from a trusted source. 
+2. Make sure that the version number in the file or indicated from the WAR file source is the correct version for deployment. 
+3. Upload the voyage-1.0.war file to a temporary location on the deployment environment
+4. Copy the voyage-1.0.war file to a backup location for quick access in the event the application needs to be rolled back to a prior version
+5. Zip the current /webapps/voyage app to a file called `voyage-war-bkp-20161215` where the last 8 digits are the current date in format YYYYMMDD
+   - Zipping the /voyage folder is done in the event that artifacts were manually added or updated 
+   - This folder will be deleted when the app is deployed and it would be undesireable to lose manually updated files, even though modifing files directly on the server outside of the normal deploy process is a bad practice. 
+6. Copy the `voyage-war-bkp-DATE` file to a backup location for quick access in the event a rollback is required. 
+7. Initiate a hot backup of the Voyage database
+   - This is vitally important!!
+   - The database will likely need to be rolled back to a backup snapshot date if you have to roll back the version of the application. 
+8. Stop the Apache Tomcat service 
+   - Windows: Use the "Apache Tomcat 8.0" window service
+   - Linux: service tomcat8 stop
+   - Alt: You can manually kill the Apache Tomcat process if the service is not shutting down the process. Usually this indicates something is wrong with the application or configuration of Apache Tomcat
+9. Remove `/webapps/voyage.war` file and `/webapps/voyage` folder
+   - Be sure you have completed step 5 & 6
+11. Copy the `backups/voyage-1.0.war` file (from step 4) into the `/webapps` folder
+   - `cp /usr/share/tomcat8/backups/voyage-1-5.war /usr/share/tomcat8/webapps/voyage.war`
+   - NOTE: BE SURE TO COPY THE CORRECT VERSION OF THE WAR FILE!
+   - NOTE: BE SURE TO RENAME THE FILE TO EXCLUDE THE VERSION NUMBER (ex: voyage-1.5.war -> voyage.war). Apache Tomcat will use the filename (not extention) as the context path for the URL of the app. `voyage.war` will be `http://myserver/voyage`
+12. Start the Apache Tomcat service
+   - Windows: Use the "Apache Tomcat 8.0" window service
+   - Linux: service tomcat8 start
 
 :arrow_up: [Back to Top](#table-of-contents)
 
 
-## Docker Support
-> __FINISH DOCUMENTATION__
+## High Availability Support
 
-* Dockerfile configuration
-  - Why the config
-  - AWS EB components
-* AWS Elastic Beanstalk HOWTO
-  - how to build the docker zip to upload to AWS
-  - How to deploy in AWS EB console
+### Overview
+Voyage has been constructed to support high availability scaling at any level. The choices that have been made with regards to the technology framework and configuration are always bearing in mind that the app will need to be hosted on multiple servers in datacenter regions all over the world. 
 
-:arrow_up: [Back to Top](#table-of-contents)
+### Mostly Stateless
+Voyage API follow a common pattern where the app container Session is only available for the life of the HTTP Request. In order for the server to track a session between HTTP Requests is for the end-user to hold the SESSIONID (typically in a browser Cookie) and pass this value into the HTTP Request header. The API could require the consumer to pass a Cookie on the header, but ideally an API is providing its consumers with a single transactable action per HTTP Request. Web service endpoints that have a sequential dependency of execution that requires the consumer to keep track of a SESSIONID for proper processing makes for a complicated and confusing API. Additionally, using SESSIONIDs in the Cookie opens up additional hacking possibilities that are simply not necessary in most web services. 
 
-## Ansible Automated Deployment
-> __FINISH DOCUMENTATION__
+While Voyage API implements the base components for an API platform, the Voyage architects strongly recommend finding every possible opportunity to remain as stateless as possible and avoid requiring the consumer to track a SESSIONID unnecessarily. 
 
-* Ansible script to deploy to AWS EB
-  - Discuss everything necessary to educate
-  - steps to run the script, variables, etc
+> __OAuth2 Requires a Session__
+> An exception to this Stateless claim is with the OAuth2 implementation. When authenticating using OAuth2 Implicit Authentication, the consumer invokes `/oauth/authorize` with a set of parameter. The `/oauth/authorize` endpoint is secured and requires the end-user to authenticate with a form-based login page hosted by the Voyage API server. Before Spring Security redirects the end-user to the form-based login page, the parameters included within the `/oauth/authorize` request are stored in a Servlet Session with a JSESSIONID Cookie passed back to the end-users web browser (during redirect). When the form-based login page is submitted to the Voyage API server, the end-user web browser is expected to pass the JSESSIONID within a Cookie to the server so that the OAuth authentication can resume the session using the parameters stored within the Session. 
+
+### Load Balancer Support
+Given that Voyage API is not a stateless API when OAuth2 is active, all requests for the /oauth/ path should be routed to the same server or employ sticky sessions. Ideally, all requests coming in on `/api/` would be evenly distributed to healthy servers as these web service endpoints _should_ be stateless. 
+
+> NOTE: As the application evolves, consider revising this section to be accurrate for the current app. 
+
+### Automatic Database Migration
+When the Voyage API app is started on a new server in any sized application cluster, the app will connect to the database and determine if it needs to be migrated to a new version. If the database has already been upgraded, then nothing will occur with the database migration. If the database needs an upgrade, then the new app will execute the migration scripts that haven't yet been applied. The benefit of integrating migration scripts is that everything needed to upgrade an environment is completely bundled into the single WAR file package. 
+
+> NOTE: When performing rolling deploys during high volumes of traffice, the database migration scripts might cause servers-yet-to-be-upgraded to throw exceptions on transactions in process. In large environments, consider segregating databases by region and employing tactics that would redirect all traffic to another region before upgrading an entire region at once.
+
+### Database Support
+The Voyage API does not provide guideance on how to implement a high availability database. The most that the Voyage API provides for high transaction database management is to encourage usage of the built-in Apache Tomcat database connection pool. Otherwise, the Voyage API will create connections to the datasources and will assume that the Database Administrators have the database infrastructure configured appropriately. 
+
+### Amazon Elastic Beanstalk 
+[Amazon AWS Elastic Beanstalk](https://aws.amazon.com/elasticbeanstalk/) (EB) is supported via the Docker implementation specificed within this document. Voyage API works very well within AWS EB environment, especially as a Docker container. We've tested and deployed Voyage API to test and production environments successfully. 
+
+Reference the Docker configuraiton described in this document for instructions on how to bundle the app into a deployable Docker container. 
 
 :arrow_up: [Back to Top](#table-of-contents)
