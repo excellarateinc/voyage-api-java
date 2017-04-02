@@ -59,9 +59,9 @@ class SecurityIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.headers.getFirst('Location').indexOf('/login') > 0
     }
 
-    def 'Anonymous access to "/api/hello" is permitted'() {
+    def 'Anonymous access to "/api/status" is permitted'() {
         when:
-            ResponseEntity<String> responseEntity = GET('/api/hello', String)
+            ResponseEntity<String> responseEntity = GET('/api/status', String)
 
         then:
             responseEntity.statusCode.value() == 200

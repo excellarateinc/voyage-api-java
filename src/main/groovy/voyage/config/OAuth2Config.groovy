@@ -20,7 +20,7 @@ import org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEn
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.access.AccessDeniedHandler
-import voyage.error.WebResponseExceptionTranslator
+import voyage.common.error.WebResponseExceptionTranslator
 import voyage.security.PermissionBasedClientDetailsService
 import voyage.security.crypto.KeyStoreService
 import java.security.KeyPair

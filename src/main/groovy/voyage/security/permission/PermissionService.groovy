@@ -1,7 +1,7 @@
 package voyage.security.permission
 
-import voyage.error.ImmutableRecordException
-import voyage.error.UnknownIdentifierException
+import voyage.common.error.ImmutableRecordException
+import voyage.common.error.UnknownIdentifierException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated

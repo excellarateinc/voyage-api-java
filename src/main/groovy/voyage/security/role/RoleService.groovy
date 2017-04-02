@@ -1,6 +1,6 @@
 package voyage.security.role
 
-import voyage.error.UnknownIdentifierException
+import voyage.common.error.UnknownIdentifierException
 import voyage.security.permission.Permission
 import voyage.security.permission.PermissionService
 import org.springframework.stereotype.Service

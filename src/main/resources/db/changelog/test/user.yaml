@@ -1,0 +1,102 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-test-user-seed-users
+      author: Jagadeesh Manne
+      context: test
+      changes:
+        - insert:
+            tableName: user
+            columns:
+              - column:
+                  name: first_name
+                  value: Super Client
+              - column:
+                  name: last_name
+                  value: User Client
+              - column:
+                  name: username
+                  value: client-super
+              - column:
+                  name: password
+                  value: $2a$10$.Qa2l9VysOeG5M8HhgUbQ.h8KlTBLdMY/slPwMtL/I5OYibYUFQle
+              - column:
+                  name: email
+                  value: client-super@LighthouseSoftware.com
+              - column:
+                  name: is_enabled
+                  valueBoolean: true
+              - column:
+                  name: is_account_expired
+                  valueBoolean: false
+              - column:
+                  name: is_credentials_expired
+                  valueBoolean: false
+              - column:
+                  name: is_account_locked
+                  valueBoolean: false
+              - column:
+                  name: is_verify_required
+                  valueBoolean: false
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  value: "2013-03-19 16:57:04"
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  value: "2013-03-19 16:57:04"
+        - insert:
+            tableName: user
+            columns:
+              - column:
+                  name: first_name
+                  value: Standard
+              - column:
+                  name: last_name
+                  value: User
+              - column:
+                  name: username
+                  value: client-standard
+              - column:
+                  name: password
+                  value: $2a$10$.Qa2l9VysOeG5M8HhgUbQ.h8KlTBLdMY/slPwMtL/I5OYibYUFQle
+              - column:
+                  name: email
+                  value: client-standard@user.com
+              - column:
+                  name: is_enabled
+                  valueBoolean: true
+              - column:
+                  name: is_account_expired
+                  valueBoolean: false
+              - column:
+                  name: is_credentials_expired
+                  valueBoolean: false
+              - column:
+                  name: is_account_locked
+                  valueBoolean: false
+              - column:
+                  name: is_verify_required
+                  valueBoolean: false
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  value: "2013-03-19 16:57:04"
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  value: "2013-03-19 16:57:04"

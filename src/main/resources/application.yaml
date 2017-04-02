@@ -15,12 +15,21 @@ logging:
   file: voyage-api.log
 
 #######################################################################################################################
+# Liquibase Database Migration
+#######################################################################################################################
+liquibase.contexts: '!test'
+
+#######################################################################################################################
 # Spring Configuration
 #######################################################################################################################
 spring:
 
   application:
     name: Voyage API
+
+  autoconfigure:
+    exclude:
+      - org.springframework.cloud.aws.autoconfigure.mail.MailSenderAutoConfiguration
 
   mvc:
     view:
@@ -53,6 +62,16 @@ spring:
     #minEvictableIdleTimeMillis: 30000
     #timeBetweenEvictionRunsMillis: 30000
 
+  mail:
+      host: localhost
+      port: 3025
+      overrideAddress: testmsg@LighthouseSoftware.com
+
+  freemarker:
+    template-loader-path: classpath:/email/
+    charset: UTF-8
+    suffix: .ftl
+
 #######################################################################################################################
 # Spring Boot Web / Embedded Tomcat
 #######################################################################################################################
@@ -65,8 +84,8 @@ server:
 #######################################################################################################################
 security:
 
-  ignored: /resources/**, /webjars/**, /docs/**
-  permitAll: /login, /api/hello
+  ignored: /resources/**, /webjars/**, /docs, /docs/**
+  permitAll: /login, /api/status
 
   # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
   # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
@@ -102,7 +121,17 @@ security:
           -----END PUBLIC KEY-----
 
   user-verification:
-    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /WEB-INF/jsp/**.jsp
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify/*, /WEB-INF/jsp/**.jsp
 
   cors:
     access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
+
+  verify-code-expire-minutes: 30
+
+#######################################################################################################################
+# AWS Configuration to send Emails and SMS
+#######################################################################################################################
+cloud.aws credentials.accessKey: ENTER YOUR CODE
+cloud.aws.credentials.secretKey: ENTER YOUR CODE
+cloud.aws.region.auto: true
+cloud.aws.region.static: us-east-1
