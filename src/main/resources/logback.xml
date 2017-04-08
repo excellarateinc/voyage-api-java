@@ -2,7 +2,9 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <logger name="voyage" level="INFO"/>
-    <logger name="org.springframework.security" level="INFO"/>
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.springframework.security" level="WARN"/>
 
     <!-- Suppressing warnings that occur only when running the app locally or executing tests.
          The issue is that Tomcat JAR scanner cannot find the dependencies of the ESAPI.jar because

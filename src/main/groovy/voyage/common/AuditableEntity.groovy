@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener)
-@EqualsAndHashCode
+@EqualsAndHashCode(includes=['id'])
 class AuditableEntity {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)

@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: v1.0-test-user-phone-seed
+      author: Laxman Bandi
+      changes:
+        - insert:
+            tableName: user_phone
+            columns:
+              - column:
+                  name: user_id
+                  valueComputed: (SELECT id FROM user WHERE username = 'client-super')
+              - column:
+                  name: phone_type
+                  value: MOBILE
+              - column:
+                  name: phone_number
+                  value: 1234567718
+              - column:
+                  name: is_validated
+                  valueBoolean: false
+              - column:
+                  name: verify_code
+                  value: $2a$10$ard2nk.muYlGgiHkr3JX2OGCA0Lcu2Cy5BNGWbq0DhVDpqU.GfnN6
+              - column:
+                  name: verify_code_expires_on
+                  valueDate: ${future}
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: user_phone
+            columns:
+              - column:
+                  name: user_id
+                  valueComputed: (SELECT id FROM user WHERE username = 'client-super')
+              - column:
+                  name: phone_type
+                  value: OFFICE
+              - column:
+                  name: phone_number
+                  value: 1234567151
+              - column:
+                  name: is_validated
+                  valueBoolean: false
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

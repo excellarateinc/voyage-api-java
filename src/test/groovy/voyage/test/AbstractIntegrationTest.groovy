@@ -50,14 +50,14 @@ class AbstractIntegrationTest extends Specification {
         return restTemplate.postForEntity(uri, null, responseType, Collections.EMPTY_MAP)
     }
 
-    protected <T> ResponseEntity<T> POST(String uri, HttpEntity<T> httpEntity, Class<T> responseType, TestClient testClient = null) {
+    protected <T> ResponseEntity<T> POST(String uri, HttpEntity<?> httpEntity, Class<T> responseType, TestClient testClient = null) {
         if (testClient) {
             httpEntity = authorize(testClient, httpEntity)
         }
         return restTemplate.exchange(uri, HttpMethod.POST, httpEntity, responseType, Collections.EMPTY_MAP)
     }
 
-    protected <T> ResponseEntity<T> PUT(String uri, HttpEntity<T> httpEntity, Class<T> responseType, TestClient testClient = null) {
+    protected <T> ResponseEntity<T> PUT(String uri, HttpEntity<?> httpEntity, Class<T> responseType, TestClient testClient = null) {
         if (testClient) {
             httpEntity = authorize(testClient, httpEntity)
         }
@@ -75,7 +75,7 @@ class AbstractIntegrationTest extends Specification {
         return restTemplate.exchange(uri, HttpMethod.DELETE, httpEntity, responseType, Collections.EMPTY_MAP)
     }
 
-    protected <T> ResponseEntity<T> OPTIONS(String uri, HttpEntity<T> httpEntity, Class<T> responseType, TestClient testClient = null) {
+    protected <T> ResponseEntity<T> OPTIONS(String uri, HttpEntity<?> httpEntity, Class<T> responseType, TestClient testClient = null) {
         if (testClient) {
             httpEntity = authorize(testClient, httpEntity)
         }

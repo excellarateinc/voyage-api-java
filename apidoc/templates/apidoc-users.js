@@ -33,7 +33,7 @@
  *             "phoneNumber" : "5555551212"
  *         }
  *     ],
- *     "isActive": true
+ *     "isEnabled": true
  * }
  */
 
@@ -88,3 +88,18 @@
  *  }
  */
 
+// ------------------------------------------------------------------------------------------
+// Mobile Phone Number Required Error
+// ------------------------------------------------------------------------------------------
+/**
+ *  @apiDefine MobilePhoneNumberRequiredError
+ *
+ *  @apiError BadRequest At least one mobile phone is required
+ *
+ *  @apiErrorExample Error-Response
+ *  HTTP/1.1 400: Bad Request
+ *  {
+ *      "error": "400_mobile_phone_required",
+ *      "errorDescription": "At least one mobile phone is required for a new account"
+ *  }
+ */

@@ -1,4 +1,4 @@
-package voyage.security
+package voyage.security.verify
 
 import org.apache.commons.lang3.RandomStringUtils
 

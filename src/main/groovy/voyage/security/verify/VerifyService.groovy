@@ -1,129 +1,98 @@
 package voyage.security.verify
 
 import groovy.time.TimeCategory
-import voyage.security.user.User
-import voyage.security.user.UserPhone
-import voyage.security.user.UserService
-import voyage.common.sms.SmsMessage
-import voyage.common.sms.AwsSmsService
-import voyage.common.error.UnknownIdentifierException
-import voyage.common.mail.MailMessage
-import voyage.common.mail.MailService
-import voyage.security.SecurityCode
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
+import voyage.common.sms.AwsSmsService
+import voyage.common.sms.SmsMessage
+import voyage.security.crypto.CryptoService
+import voyage.security.user.PhoneType
+import voyage.security.user.User
+import voyage.security.user.UserPhone
+import voyage.security.user.UserService
+
 import javax.validation.constraints.NotNull
 
 @Service
 @Validated
 class VerifyService {
-    private static final Logger LOG = LoggerFactory.getLogger(VerifyService)
-
-    @Value('${security.verify-code-expire-minutes}')
+    @Value('${security.user-verification.verify-code-expire-minutes}')
     private int verifyCodeExpires
 
     @Value('${app.name}')
     private String appName
 
     private final UserService userService
-    private final MailService mailService
+    private final CryptoService cryptoService
     private final AwsSmsService smsService
 
     @Autowired
-    VerifyService(UserService userService, MailService mailService, AwsSmsService smsService) {
+    VerifyService(UserService userService, CryptoService cryptoService, AwsSmsService smsService) {
         this.userService = userService
-        this.mailService = mailService
+        this.cryptoService = cryptoService
         this.smsService = smsService
-    }
-
-    List<VerifyMethod> getVerifyMethodsForCurrentUser() {
-        User user = userService.currentUser
-        List<VerifyMethod> verifyMethods = []
-        if (user.email) {
-            VerifyMethod verifyMethod = new VerifyMethod()
-            verifyMethod.label = user.maskedEmail
-            verifyMethod.verifyType = VerifyType.EMAIL
-            verifyMethod.value = 1
-            verifyMethods.add(verifyMethod)
-        }
-        user.phones?.each { userPhone ->
-            VerifyMethod verifyMethod = new VerifyMethod()
-            verifyMethod.label = userPhone.maskedPhoneNumber
-            verifyMethod.value = userPhone.id
-            verifyMethod.verifyType = VerifyType.TEXT
-            verifyMethods.add(verifyMethod)
-        }
-        return verifyMethods
     }
 
     boolean verifyCurrentUser(@NotNull String code) {
         User user = userService.currentUser
-        if (!user.isVerifyRequired) {
-            LOG.info('User is already verified. Skipping user verification.')
-            return true
+
+        UserPhone userPhone = user.phones?.find { phone ->
+            cryptoService.hashMatches(code, phone.verifyCode)
         }
-        if (user.verifyCodeExpired) {
-            throw new VerifyCodeExpiredException()
-        }
-        if (user.verifyCode != code?.trim()) {
+
+        if (!userPhone) {
             throw new InvalidVerificationCodeException()
         }
-        user.with {
-            verifyCode = null
-            verifyCodeExpiresOn = null
-            isVerifyRequired = false
+
+        if (userPhone.verifyCodeExpired) {
+            throw new VerifyCodeExpiredException()
         }
+
+        userPhone.isValidated = true
+        userPhone.verifyCode = null
+        userPhone.verifyCodeExpiresOn = null
+        user.isVerifyRequired = false
+
         userService.saveDetached(user)
+
         return true
     }
 
-    void sendVerifyCodeToCurrentUser(VerifyMethod verifyMethod) {
+    void sendVerifyCodeToCurrentUser() {
         User user = userService.currentUser
-        if (verifyMethod.verifyType == VerifyType.EMAIL) {
-            sendVerifyCodeToEmail(user)
-        } else if (verifyMethod.verifyType == VerifyType.TEXT) {
-            sendVerifyCodeToPhoneNumber(user, verifyMethod.value as long)
-        } else {
-            throw new InvalidVerificationMethodException()
-        }
-    }
 
-    private sendVerifyCodeToEmail(@NotNull User user) {
-        user.verifyCode = SecurityCode.userVerifyCode
-        use(TimeCategory) {
-            user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
+        Iterable<UserPhone> mobilePhones = user.phones?.findAll {
+            it.phoneType == PhoneType.MOBILE
         }
-        MailMessage mailMessage = getVerifyCodeEmailMessage(user)
-        mailService.send(mailMessage)
+
+        if (!mobilePhones) {
+            throw new InvalidVerificationPhoneNumberException()
+        }
+
+        user.isVerifyRequired = true
+
+        // Limit the number of phones that can receive a verification code to 5. This prevents an attacker from overloading
+        // the list of phone numbers for a user and spamming an infinite number of phones with security codes.
+        int count = (mobilePhones.size() > 5 ? 5 : mobilePhones.size())
+        for (int i=0; i < count; i++) {
+            sendVerifyCodeToPhoneNumber(mobilePhones[i])
+        }
+
         userService.saveDetached(user)
     }
 
-    private sendVerifyCodeToPhoneNumber(@NotNull User user, @NotNull long userPhoneId) {
-        UserPhone userPhone = user.phones?.find { it.id == userPhoneId }
-        if (!userPhone) {
-            throw new UnknownIdentifierException("Provided phone number doesn't exist")
-        }
-        user.verifyCode = SecurityCode.userVerifyCode
+    private sendVerifyCodeToPhoneNumber(@NotNull UserPhone mobilePhone) {
+        String verifyCode = SecurityCode.userVerifyCode
+        mobilePhone.verifyCode = cryptoService.hashEncode(verifyCode)
         use(TimeCategory) {
-            user.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
+            mobilePhone.verifyCodeExpiresOn = new Date() + verifyCodeExpires.minutes
         }
+
         SmsMessage smsMessage = new SmsMessage()
-        smsMessage.to = userPhone.phoneNumber
-        smsMessage.text = "Your ${appName} verification code is: ${user.verifyCode}"
+        smsMessage.to = mobilePhone.phoneNumber
+        smsMessage.text = "Your ${appName} verification code is: ${verifyCode}"
         smsService.send(smsMessage)
-        userService.saveDetached(user)
-    }
-
-    private MailMessage getVerifyCodeEmailMessage(@NotNull User user) {
-        MailMessage mailMessage = new MailMessage()
-        mailMessage.to = user.email
-        mailMessage.model = ['user':user]
-        mailMessage.subject = "${appName} Verification Code"
-        mailMessage.template = 'account-verification.ftl'
-        return mailMessage
     }
 }

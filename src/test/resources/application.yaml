@@ -94,7 +94,8 @@ security:
           -----END PUBLIC KEY-----
 
   user-verification:
-    exclude-resources: /oauth/**, /resources/**, /webjars/**, /login, /WEB-INF/jsp/**.jsp
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp
+    verify-code-expire-minutes: 30
 
   test:
     clients:
@@ -108,12 +109,11 @@ security:
   cors:
     access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
 
-  verify-code-expire-minutes: 30
-
 #######################################################################################################################
 # AWS Configuration to send Emails and SMS
 #######################################################################################################################
-cloud.aws.credentials.accessKey:
-cloud.aws.credentials.secretKey:
+cloud.aws.enabled: false
+cloud.aws credentials.accessKey: ENTER YOUR CODE
+cloud.aws.credentials.secretKey: ENTER YOUR CODE
 cloud.aws.region.auto: true
 cloud.aws.region.static: us-east-1

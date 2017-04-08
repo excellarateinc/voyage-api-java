@@ -31,6 +31,21 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: is_validated
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: verify_code_expires_on
+                  type: datetime
+                  constraints:
+                    nullable: true
+              - column:
+                  name: verify_code
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
                   name: created_by
                   type: nvarchar(255)
                   constraints:
@@ -96,6 +111,21 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: is_validated
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: verify_code_expires_on
+                  type: datetime
+                  constraints:
+                    nullable: true
+              - column:
+                  name: verify_code
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
                   name: created_by
                   type: nvarchar(255)
                   constraints:
@@ -137,6 +167,9 @@ databaseChangeLog:
                   name: phone_number
                   value: 1234567718
               - column:
+                  name: is_validated
+                  valueBoolean: false
+              - column:
                   name: created_by
                   value: super
               - column:
@@ -163,6 +196,9 @@ databaseChangeLog:
               - column:
                   name: phone_number
                   value: 1234567151
+              - column:
+                  name: is_validated
+                  valueBoolean: false
               - column:
                   name: created_by
                   value: super
@@ -191,6 +227,9 @@ databaseChangeLog:
                   name: phone_number
                   value: 1234567314
               - column:
+                  name: is_validated
+                  valueBoolean: false
+              - column:
                   name: created_by
                   value: super
               - column:
@@ -217,6 +256,9 @@ databaseChangeLog:
               - column:
                   name: phone_number
                   value: 1234567121
+              - column:
+                  name: is_validated
+                  valueBoolean: false
               - column:
                   name: created_by
                   value: super
@@ -245,6 +287,9 @@ databaseChangeLog:
                   name: phone_number
                   value: 1234567101
               - column:
+                  name: is_validated
+                  valueBoolean: false
+              - column:
                   name: created_by
                   value: super
               - column:
@@ -271,6 +316,9 @@ databaseChangeLog:
               - column:
                   name: phone_number
                   value: 1234567789
+              - column:
+                  name: is_validated
+                  valueBoolean: false
               - column:
                   name: created_by
                   value: super
@@ -299,6 +347,9 @@ databaseChangeLog:
                   name: phone_number
                   value: 1234567456
               - column:
+                  name: is_validated
+                  valueBoolean: false
+              - column:
                   name: created_by
                   value: super
               - column:
@@ -325,6 +376,9 @@ databaseChangeLog:
               - column:
                   name: phone_number
                   value: 1234567123
+              - column:
+                  name: is_validated
+                  valueBoolean: false
               - column:
                   name: created_by
                   value: super

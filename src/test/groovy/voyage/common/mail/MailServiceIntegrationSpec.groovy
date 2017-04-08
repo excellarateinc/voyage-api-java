@@ -80,7 +80,7 @@ class MailServiceIntegrationSpec extends AbstractIntegrationTest {
             mailMessage.to = 'testmsg@lssinc.com'
             mailMessage.from = 'testmsg@lssinc.com'
             mailMessage.subject = 'test subject'
-            mailMessage.template = 'account-verification.ftl'
+            mailMessage.template = 'welcome.ftl'
         when:
             mailService.send(mailMessage)
         then:

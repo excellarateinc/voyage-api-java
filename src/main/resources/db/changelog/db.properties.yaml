@@ -1,0 +1,45 @@
+databaseChangeLog:
+
+# ${now} property for seed data datetime values
+  - property:
+      name: now
+      value: sysdate
+      dbms: oracle
+  - property:
+      name: now
+      value: now()
+      dbms: mysql
+  - property:
+      name: now
+      value: now()
+      dbms: postgresql
+  - property:
+      name: now
+      value: getdate()
+      dbms: mssql
+  - property:
+      name: now
+      value: now()
+      dbms: h2
+
+# ${future} property for seed data datetime values
+  - property:
+      name: future
+      value: sysdate + 1
+      dbms: oracle
+  - property:
+      name: future
+      value: now() + INTERVAL 1 DAY
+      dbms: mysql
+  - property:
+      name: future
+      value: now() + INTERVAL 1 DAY
+      dbms: postgresql
+  - property:
+      name: future
+      value: DATEADD(DAY,1,GETDATE())
+      dbms: mssql
+  - property:
+      name: future
+      value: DATEADD('DAY', 1, NOW())
+      dbms: h2

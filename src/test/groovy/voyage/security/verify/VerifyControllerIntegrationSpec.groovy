@@ -7,7 +7,6 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import voyage.security.user.User
 import voyage.test.AbstractIntegrationTest
 
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -25,37 +24,41 @@ class VerifyControllerIntegrationSpec extends AbstractIntegrationTest {
         greenMailSMTP.stop()
     }
 
-    def '/api/v1/verify/methods GET - Anonymous access denied'() {
+    /*
+       Run the /verify POST test before the /verify/send because the /send will reset the 'code' with a new value. Since
+       the /verify process sends the code to a mobile number, there is no easy way to intercept that code value from an
+       integration test. 
+     */
+    def '/api/v1/verify POST - Standard User with permission "isAuthenticated()" access granted'() {
         given:
-            User user = new User(firstName:'Test3', lastName:'User', username:'username3', email:'test@test.com', password:'password')
+            String body = '{"code":"code"}'
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
-            HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
+            HttpEntity<String> httpEntity = new HttpEntity<String>(body, headers)
         when:
-            ResponseEntity<Iterable> responseEntity = GET('/api/v1/verify/methods', httpEntity, Iterable)
+            ResponseEntity responseEntity = POST('/api/v1/verify', httpEntity, String, superClient)
+        then:
+            responseEntity.statusCode.value() == 204
+            responseEntity.body == null
+    }
+    
+    def '/api/v1/verify POST - Anonymous access denied'() {
+        given:
+            String body = '{"code":"code"}'
+            HttpHeaders headers = new HttpHeaders()
+            headers.setContentType(MediaType.APPLICATION_JSON)
+            HttpEntity<String> httpEntity = new HttpEntity<String>(body, headers)
+        when:
+            ResponseEntity responseEntity = POST('/api/v1/verify', httpEntity, String)
         then:
             responseEntity.statusCode.value() == 401
-            responseEntity.body.size() == 1
-            responseEntity.body[0].error == '401_unauthorized'
-            responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
-    }
-
-    def '/api/v1/verify/methods GET - Standard User with permission "isAuthenticated()" access granted'() {
-        when:
-            ResponseEntity<Iterable> responseEntity = GET('/api/v1/verify/methods', Iterable, standardClient)
-        then:
-            responseEntity.statusCode.value() == 200
-            responseEntity.body.size() == 1
-            VerifyType."${responseEntity.body[0].verifyType}" == VerifyType.EMAIL
-            responseEntity.body[0].label
     }
 
     def '/api/v1/verify/send POST - Anonymous access denied'() {
         given:
-            VerifyMethod verifyMethod = new VerifyMethod(verifyType:VerifyType.EMAIL, value:'', label:'email')
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
-            HttpEntity<VerifyMethod> httpEntity = new HttpEntity<VerifyMethod>(verifyMethod, headers)
+            HttpEntity<String> httpEntity = new HttpEntity<String>(headers)
         when:
             ResponseEntity<String> responseEntity = POST('/api/v1/verify/send', httpEntity, String)
         then:
@@ -64,37 +67,11 @@ class VerifyControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/verify/send POST - Standard User with permission "isAuthenticated()" access granted'() {
         given:
-            VerifyMethod verifyMethod = new VerifyMethod(verifyType:VerifyType.EMAIL, value:'', label:'email')
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
-            HttpEntity<VerifyMethod> httpEntity = new HttpEntity<VerifyMethod>(verifyMethod, headers)
+            HttpEntity<String> httpEntity = new HttpEntity<String>(headers)
         when:
-            ResponseEntity responseEntity = POST('/api/v1/verify/send', httpEntity, String, superClient)
-        then:
-            responseEntity.statusCode.value() == 204
-            responseEntity.body == null
-    }
-
-    def '/api/v1/verify POST - Anonymous access denied'() {
-        given:
-            String code = 'code'
-            HttpHeaders headers = new HttpHeaders()
-            headers.setContentType(MediaType.APPLICATION_JSON)
-            HttpEntity<String> httpEntity = new HttpEntity<String>(code, headers)
-        when:
-            ResponseEntity<String> responseEntity = POST('/api/v1/verify', httpEntity, String)
-        then:
-            responseEntity.statusCode.value() == 401
-    }
-
-    def '/api/v1/verify POST - Standard User with permission "isAuthenticated()" access granted'() {
-        given:
-            String code = 'code'
-            HttpHeaders headers = new HttpHeaders()
-            headers.setContentType(MediaType.APPLICATION_JSON)
-            HttpEntity<String> httpEntity = new HttpEntity<String>(code, headers)
-        when:
-            ResponseEntity responseEntity = POST('/api/v1/verify', httpEntity, String, superClient)
+            ResponseEntity responseEntity = GET('/api/v1/verify/send', httpEntity, String, superClient)
         then:
             responseEntity.statusCode.value() == 204
             responseEntity.body == null
