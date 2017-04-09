@@ -170,3 +170,9 @@ task apidoc(type:NpmTask, dependsOn:'apidocInstall') {
 }
 processResources.dependsOn.add(apidoc)
 
+// ****************************************************************************
+// Pass environment variables to Spring BootRun task when running from Gradle
+// ****************************************************************************
+tasks.withType(org.springframework.boot.gradle.run.BootRunTask) {
+    bootRun.systemProperties = System.properties
+}
