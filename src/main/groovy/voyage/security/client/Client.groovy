@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull
 
 @Entity
 @Audited
-@EqualsAndHashCode(includes=['name','clientIdentifier'], callSuper=true)
+@EqualsAndHashCode(includes=['name', 'clientIdentifier'], callSuper=true)
 class Client extends AuditableEntity {
     /**
      * The client name
@@ -87,7 +87,7 @@ class Client extends AuditableEntity {
      * See the OAuth2 specs for more information on these types at http://oauth.com
      */
     @OneToMany(fetch=FetchType.EAGER, mappedBy='client')
-    @Where(clause = "is_deleted = 0")
+    @Where(clause = 'is_deleted = 0')
     Set<ClientGrant> clientGrants
 
     /**
@@ -96,7 +96,7 @@ class Client extends AuditableEntity {
      * Scope examples could be: Read Your Contacts, Scan Your Inbox, Send Email To Your Mother
      */
     @OneToMany(fetch=FetchType.EAGER, mappedBy='client')
-    @Where(clause = "is_deleted = 0")
+    @Where(clause = 'is_deleted = 0')
     Set<ClientScope> clientScopes
 
     /**
@@ -108,7 +108,7 @@ class Client extends AuditableEntity {
      * given URI will be used for the redirect process.
      */
     @OneToMany(fetch=FetchType.EAGER, mappedBy='client')
-    @Where(clause = "is_deleted = 0")
+    @Where(clause = 'is_deleted = 0')
     Set<ClientRedirect> clientRedirects
 
     /**
@@ -118,7 +118,7 @@ class Client extends AuditableEntity {
      * a public '*' response will be given.
      */
     @OneToMany(fetch=FetchType.EAGER, mappedBy='client')
-    @Where(clause = "is_deleted = 0")
+    @Where(clause = 'is_deleted = 0')
     Set<ClientOrigin> clientOrigins
 
     /**

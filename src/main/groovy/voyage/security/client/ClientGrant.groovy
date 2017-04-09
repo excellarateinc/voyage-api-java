@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne
 
 @Entity
 @Audited
-@EqualsAndHashCode(includes=['client','grantType'], callSuper=true)
+@EqualsAndHashCode(includes=['client', 'grantType'], callSuper=true)
 class ClientGrant extends AuditableEntity {
     @ManyToOne
     @JoinColumn(name='client_id')

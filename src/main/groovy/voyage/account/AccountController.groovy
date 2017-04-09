@@ -76,7 +76,7 @@ class AccountController {
     ResponseEntity register(@RequestBody User userIn) {
         accountService.register(userIn)
         HttpHeaders headers = new HttpHeaders()
-        headers.set(HttpHeaders.LOCATION, "/v1/account")
+        headers.set(HttpHeaders.LOCATION, '/v1/account')
         return new ResponseEntity(headers, HttpStatus.CREATED)
     }
 }

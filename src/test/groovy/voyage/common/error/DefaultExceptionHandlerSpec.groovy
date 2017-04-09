@@ -118,7 +118,8 @@ class DefaultExceptionHandlerSpec extends Specification {
             responseEntity.statusCodeValue == 500
             responseEntity.body.size() == 1
             responseEntity.body[0].error == '500_internal_server_error'
-            responseEntity.body[0].errorDescription == 'Unexpected error occurred. Contact technical support for further assistance should this error continue.'
+            responseEntity.body[0].errorDescription == 'Unexpected error occurred. Contact technical support for ' +
+                    'further assistance should this error continue.'
     }
 
     def 'handleError() processes a HttpServlet exception'() {

@@ -22,7 +22,7 @@ class VerifyServiceSpec extends Specification {
         user.phones = [
             new UserPhone(id:1, phoneType:PhoneType.HOME, phoneNumber:'123-123-1233', user:user),
             new UserPhone(id:2, phoneType:PhoneType.MOBILE, phoneNumber:'223-123-1233', user:user),
-            new UserPhone(id:3, phoneType:PhoneType.MOBILE, phoneNumber:'323-123-1233', user:user)
+            new UserPhone(id:3, phoneType:PhoneType.MOBILE, phoneNumber:'323-123-1233', user:user),
         ]
 
         cryptoService.hashEncode(_ as String) >> { it -> return it }
@@ -33,7 +33,7 @@ class VerifyServiceSpec extends Specification {
         setup:
             user.isVerifyRequired = false
             user.phones[2].verifyCode = 'code'
-            user.phones[2].verifyCodeExpiresOn = new Date()+1
+            user.phones[2].verifyCodeExpiresOn = new Date() + 1
             userService.currentUser >> user
         when:
             boolean isVerifyCurrentUser = verifyService.verifyCurrentUser('code')
@@ -45,7 +45,7 @@ class VerifyServiceSpec extends Specification {
         setup:
             user.isVerifyRequired = true
             user.phones[1].verifyCode = 'code'
-            user.phones[1].verifyCodeExpiresOn = new Date()-1
+            user.phones[1].verifyCodeExpiresOn = new Date() - 1
             userService.currentUser >> user
         when:
              verifyService.verifyCurrentUser('code')
@@ -56,7 +56,7 @@ class VerifyServiceSpec extends Specification {
     def 'verifyCurrentUser - validate InvalidVerificationCodeException' () {
         setup:
             user.isVerifyRequired = true
-            user.phones[1].verifyCodeExpiresOn = new Date()+1
+            user.phones[1].verifyCodeExpiresOn = new Date() + 1
             user.phones[1].verifyCode = 'code'
             userService.currentUser >> user
         when:
@@ -110,7 +110,7 @@ class VerifyServiceSpec extends Specification {
         setup:
             user.isVerifyRequired = false
             user.phones = [
-                new UserPhone(id:1, phoneType:PhoneType.HOME, phoneNumber:'123-123-1233', user:user)
+                new UserPhone(id:1, phoneType:PhoneType.HOME, phoneNumber:'123-123-1233', user:user),
             ]
             userService.currentUser >> user
         when:
@@ -130,7 +130,7 @@ class VerifyServiceSpec extends Specification {
                     new UserPhone(id:3, phoneType:PhoneType.MOBILE, phoneNumber:'323-123-1233', user:user),
                     new UserPhone(id:4, phoneType:PhoneType.MOBILE, phoneNumber:'423-123-1233', user:user),
                     new UserPhone(id:5, phoneType:PhoneType.MOBILE, phoneNumber:'523-123-1233', user:user),
-                    new UserPhone(id:6, phoneType:PhoneType.MOBILE, phoneNumber:'623-123-1233', user:user)
+                    new UserPhone(id:6, phoneType:PhoneType.MOBILE, phoneNumber:'623-123-1233', user:user),
             ]
             userService.currentUser >> user
         when:

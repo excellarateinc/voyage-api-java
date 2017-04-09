@@ -41,18 +41,16 @@ class AccountService {
         }
 
         if (userIn.phones) {
-            if (!newUser.phones) {
-                newUser.phones = []
-            }
+            newUser.phones = newUser.phones ?: []
             userIn.phones.each { phoneIn ->
                 newUser.phones.add(new UserPhone(
-                    id: phoneIn.id,
-                    phoneType: phoneIn.phoneType,
-                    phoneNumber: phoneIn.phoneNumber
+                    id:phoneIn.id,
+                    phoneType:phoneIn.phoneType,
+                    phoneNumber:phoneIn.phoneNumber,
                 ))
             }
         }
-        
+
         newUser = userService.saveDetached(newUser)
 
         // Send the welcome e-mail to the email address

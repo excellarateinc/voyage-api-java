@@ -133,18 +133,22 @@ class UserService {
         userIn.phones.each { phoneIn ->
             UserPhone userPhone = null
             if (phoneIn.id) {
-                userPhone = user.phones?.find { it.id == phoneIn.id && !it.isDeleted }
+                userPhone = user.phones?.find {
+                    it.id == phoneIn.id && !it.isDeleted
+                }
             }
             if (!userPhone) {
-                userPhone = user.phones?.find { it.phoneNumber == phoneIn.phoneNumber && !it.isDeleted }
+                userPhone = user.phones?.find {
+                    it.phoneNumber == phoneIn.phoneNumber && !it.isDeleted
+                }
             }
             if (!userPhone) {
                 userPhone = new UserPhone()
                 userPhone.user = user
-                if (!user.phones) {
-                    user.phones = [userPhone]
-                } else {
+                if (user.phones) {
                     user.phones.add(userPhone)
+                } else {
+                    user.phones = [userPhone]
                 }
             }
 

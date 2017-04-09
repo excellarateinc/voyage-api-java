@@ -10,7 +10,7 @@ class VerifyControllerSpec extends Specification {
     User modifiedUser
     VerifyService verifyService = Mock(VerifyService)
     VerifyController verifyController = new VerifyController(verifyService)
-    
+
     def setup() {
         user = new User(id:1, firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password')
         modifiedUser = new User(id:1, firstName:'firstName', lastName:'LastName', username:'username', email:'test@test.com', password:'password')
@@ -32,13 +32,13 @@ class VerifyControllerSpec extends Specification {
 
     def 'Test to validate verify method'() {
         when:
-            ResponseEntity response = verifyController.verify([code: 'code'])
+            ResponseEntity response = verifyController.verify([code:'code'])
         then:
             1 * verifyService.verifyCurrentUser('code')
             HttpStatus.NO_CONTENT == response.statusCode
 
         when:
-            verifyController.verify([code: 'code'])
+            verifyController.verify([code:'code'])
         then:
             1 * verifyService.verifyCurrentUser('code') >> { throw new Exception() }
             thrown(Exception)

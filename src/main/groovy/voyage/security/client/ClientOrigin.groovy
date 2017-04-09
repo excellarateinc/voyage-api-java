@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull
 
 @Entity
 @Audited
-@EqualsAndHashCode(includes=['client','originUrl'], callSuper=true)
+@EqualsAndHashCode(includes=['client', 'originUrl'], callSuper=true)
 class ClientOrigin extends AuditableEntity {
     @ManyToOne
     @JoinColumn(name='client_id')

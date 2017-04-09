@@ -12,7 +12,7 @@ import java.security.KeyPair
 
 @Service
 class CryptoService {
-    public static final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder()
+    public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder()
     private static final String ALGORITHM = 'RSA'
     private static final String ENCODING = 'UTF-8'
     private final Cipher cipher
@@ -40,13 +40,13 @@ class CryptoService {
         if (!plaintext) {
             return null
         }
-        return passwordEncoder.encode(plaintext)
+        return PASSWORD_ENCODER.encode(plaintext)
     }
 
     boolean hashMatches(String plaintext, String hashValue) {
         if (!plaintext || !hashValue) {
             return false
         }
-        return passwordEncoder.matches(plaintext, hashValue)
+        return PASSWORD_ENCODER.matches(plaintext, hashValue)
     }
 }

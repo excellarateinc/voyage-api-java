@@ -21,15 +21,15 @@ class AccountServiceSpec extends Specification {
     def 'register - applies the values and calls the userService'() {
         given:
             User userIn = new User(
-                    firstName: 'John',
-                    lastName: 'Doe',
-                    email: 'john@doe.com',
-                    username: 'jdoe',
-                    password: 'my-secure-password'
+                    firstName:'John',
+                    lastName:'Doe',
+                    email:'john@doe.com',
+                    username:'jdoe',
+                    password:'my-secure-password',
             )
             userIn.phones = [
-                    new UserPhone(phoneNumber:'111-111-1111', phoneType:PhoneType.MOBILE, user: userIn),
-                    new UserPhone(phoneNumber:'222-222-2222', phoneType:PhoneType.MOBILE, user: userIn)
+                    new UserPhone(phoneNumber:'111-111-1111', phoneType:PhoneType.MOBILE, user:userIn),
+                    new UserPhone(phoneNumber:'222-222-2222', phoneType:PhoneType.MOBILE, user:userIn),
             ]
 
         when:
@@ -64,10 +64,10 @@ class AccountServiceSpec extends Specification {
     def 'register - Welcome email is not sent if the user does not provide an email address'() {
         given:
             User userIn = new User(
-                    firstName: 'John',
-                    lastName: 'Doe',
-                    username: 'jdoe',
-                    password: 'my-secure-password'
+                    firstName:'John',
+                    lastName:'Doe',
+                    username:'jdoe',
+                    password:'my-secure-password',
             )
 
         when:

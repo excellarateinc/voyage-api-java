@@ -60,7 +60,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
             savedUser.phones[0].phoneType == PhoneType.MOBILE
             savedUser.phones[0].phoneNumber == '111-111-1111'
 
-            MimeMessage[] emails = greenMailSMTP.getReceivedMessages()
+            MimeMessage[] emails = greenMailSMTP.receivedMessages
             emails.size() == 1
             emails[0].allRecipients.size() == 1
     }
@@ -75,7 +75,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
 
         when:
             ResponseEntity<List> responseEntity = POST('/api/v1/account', httpEntity, List, standardClient)
-            
+
         then:
             responseEntity.statusCode.value() == 400
             responseEntity.body[0].error == '400_username_already_in_use'
@@ -145,7 +145,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
                 new UserPhone(phoneNumber:'333-333-3333', phoneType:PhoneType.MOBILE),
                 new UserPhone(phoneNumber:'444-444-4444', phoneType:PhoneType.MOBILE),
                 new UserPhone(phoneNumber:'555-555-5555', phoneType:PhoneType.MOBILE),
-                new UserPhone(phoneNumber:'666-666-6666', phoneType:PhoneType.MOBILE)
+                new UserPhone(phoneNumber:'666-666-6666', phoneType:PhoneType.MOBILE),
             ]
 
             HttpHeaders headers = new HttpHeaders()

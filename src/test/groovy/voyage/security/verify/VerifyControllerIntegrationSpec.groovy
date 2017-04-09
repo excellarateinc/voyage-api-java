@@ -27,7 +27,7 @@ class VerifyControllerIntegrationSpec extends AbstractIntegrationTest {
     /*
        Run the /verify POST test before the /verify/send because the /send will reset the 'code' with a new value. Since
        the /verify process sends the code to a mobile number, there is no easy way to intercept that code value from an
-       integration test. 
+       integration test.
      */
     def '/api/v1/verify POST - Standard User with permission "isAuthenticated()" access granted'() {
         given:
@@ -41,7 +41,7 @@ class VerifyControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.statusCode.value() == 204
             responseEntity.body == null
     }
-    
+
     def '/api/v1/verify POST - Anonymous access denied'() {
         given:
             String body = '{"code":"code"}'

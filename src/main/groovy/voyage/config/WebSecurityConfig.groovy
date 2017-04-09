@@ -40,7 +40,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .userDetailsService(permissionBasedUserDetailsService)
 
             // Override the default password encoder
-            .passwordEncoder(CryptoService.passwordEncoder)
+            .passwordEncoder(CryptoService.PASSWORD_ENCODER)
     }
 
     /**

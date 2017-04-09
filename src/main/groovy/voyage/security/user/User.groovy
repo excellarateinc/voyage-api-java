@@ -19,7 +19,7 @@ import javax.validation.constraints.NotNull
 
 @Entity
 @Audited
-@EqualsAndHashCode(includes=['firstName','lastName', 'username'], callSuper=true)
+@EqualsAndHashCode(includes=['firstName', 'lastName', 'username'], callSuper=true)
 class User extends AuditableEntity {
     @NotNull
     String firstName
@@ -59,6 +59,6 @@ class User extends AuditableEntity {
     Set<Role> roles
 
     @OneToMany(fetch=FetchType.EAGER, mappedBy='user', cascade=CascadeType.ALL)
-    @Where(clause = "is_deleted = 0")
+    @Where(clause = 'is_deleted = 0')
     Set<UserPhone> phones
 }

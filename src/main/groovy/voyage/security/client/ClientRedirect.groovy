@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull
 
 @Entity
 @Audited
-@EqualsAndHashCode(includes=['client','redirectUrl'], callSuper=true)
+@EqualsAndHashCode(includes=['client', 'redirectUrl'], callSuper=true)
 class ClientRedirect extends AuditableEntity {
     @ManyToOne
     @JoinColumn(name='client_id')

@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull
 
 @Entity
 @Audited
-@EqualsAndHashCode(includes=['name','description'], callSuper=true)
+@EqualsAndHashCode(includes=['name', 'description'], callSuper=true)
 class ClientScopeType extends AuditableEntity {
     @NotNull
     String name

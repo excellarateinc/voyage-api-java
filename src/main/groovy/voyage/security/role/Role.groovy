@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull
 
 @Entity
 @Audited
-@EqualsAndHashCode(includes=['name','authority'], callSuper=true)
+@EqualsAndHashCode(includes=['name', 'authority'], callSuper=true)
 class Role extends AuditableEntity {
     @NotNull
     String name

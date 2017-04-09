@@ -11,8 +11,10 @@ class UserServiceSpec extends Specification {
     UserService userService = new UserService(userRepository, cryptoService)
 
     def setup() {
-        user = new User(username:'username', firstName:'LSS', lastName:'India', password: 'PASSWORD', isVerifyRequired: false,
-                            isEnabled: false, isAccountExpired: false, isAccountLocked: false, isCredentialsExpired: false)
+        user = new User(
+                username:'username', firstName:'LSS', lastName:'India', password:'PASSWORD', isVerifyRequired:false,
+                isEnabled:false, isAccountExpired:false, isAccountLocked:false, isCredentialsExpired:false,
+        )
         user.phones = [new UserPhone(phoneNumber:'111-111-1111', phoneType:PhoneType.MOBILE)]
         modifiedUser = new User(username:'username', firstName:'LSS', lastName:'Inc')
     }
@@ -73,7 +75,7 @@ class UserServiceSpec extends Specification {
             user.id = 1
             user.phones[0].phoneType = PhoneType.HOME
             User existingUser = new User(id:1, firstName:'test', lastName:'test', username:'username', password:'password')
-            existingUser.phones = [new UserPhone(id: 1, phoneNumber:'222-222-2222', phoneType:PhoneType.MOBILE, isDeleted: false)]
+            existingUser.phones = [new UserPhone(id:1, phoneNumber:'222-222-2222', phoneType:PhoneType.MOBILE, isDeleted:false)]
         when:
             userService.saveDetached(user)
         then:
@@ -87,11 +89,11 @@ class UserServiceSpec extends Specification {
             user.id = 1
         when:
             User userIn = new User(
-                    id: 1,
-                    firstName: 'FIRST',
-                    lastName: 'LAST',
-                    username: 'USERNAME',
-                    isEnabled: true
+                    id:1,
+                    firstName:'FIRST',
+                    lastName:'LAST',
+                    username:'USERNAME',
+                    isEnabled:true,
             )
             User updatedUser = userService.saveDetached(userIn)
         then:
@@ -107,16 +109,16 @@ class UserServiceSpec extends Specification {
         given:
             user.id = 1
             User userIn = new User(
-                    id: 1,
-                    firstName: 'FIRST',
-                    lastName: 'LAST',
-                    username: 'USERNAME',
-                    password: 'NEW PASSWORD',
-                    isEnabled: true,
-                    isVerifyRequired: true,
-                    isAccountExpired: true,
-                    isAccountLocked: true,
-                    isCredentialsExpired: true
+                    id:1,
+                    firstName:'FIRST',
+                    lastName:'LAST',
+                    username:'USERNAME',
+                    password:'NEW PASSWORD',
+                    isEnabled:true,
+                    isVerifyRequired:true,
+                    isAccountExpired:true,
+                    isAccountLocked:true,
+                    isCredentialsExpired:true,
             )
         when:
             User updatedUser = userService.saveDetached(userIn)
@@ -140,11 +142,11 @@ class UserServiceSpec extends Specification {
         given:
             user.id = 1
             User userIn = new User(
-                    id: 1,
-                    firstName: 'FIRST',
-                    lastName: 'LAST',
-                    username: 'USERNAME',
-                    password: 'PASSWORD'
+                    id:1,
+                    firstName:'FIRST',
+                    lastName:'LAST',
+                    username:'USERNAME',
+                    password:'PASSWORD',
             )
         when:
             User updatedUser = userService.saveDetached(userIn)
@@ -168,18 +170,18 @@ class UserServiceSpec extends Specification {
         given:
             user.id = 1
             User userIn = new User(
-                    id: 1,
-                    firstName: 'FIRST',
-                    lastName: 'LAST',
-                    username: 'USERNAME',
-                    password: 'PASSWORD'
+                    id:1,
+                    firstName:'FIRST',
+                    lastName:'LAST',
+                    username:'USERNAME',
+                    password:'PASSWORD',
             )
             userIn.phones = []
-            userIn.phones.add(new UserPhone(phoneType: PhoneType.MOBILE, phoneNumber: '123-123-1233'))
-            userIn.phones.add(new UserPhone(phoneType: PhoneType.HOME, phoneNumber: '223-123-1233'))
-            userIn.phones.add(new UserPhone(phoneType: PhoneType.MOBILE, phoneNumber: '323-123-1233'))
-            userIn.phones.add(new UserPhone(phoneType: PhoneType.OFFICE, phoneNumber: '423-123-1233'))
-            userIn.phones.add(new UserPhone(phoneType: PhoneType.OTHER, phoneNumber: '523-123-1233'))
+            userIn.phones.add(new UserPhone(phoneType:PhoneType.MOBILE, phoneNumber:'123-123-1233'))
+            userIn.phones.add(new UserPhone(phoneType:PhoneType.HOME, phoneNumber:'223-123-1233'))
+            userIn.phones.add(new UserPhone(phoneType:PhoneType.MOBILE, phoneNumber:'323-123-1233'))
+            userIn.phones.add(new UserPhone(phoneType:PhoneType.OFFICE, phoneNumber:'423-123-1233'))
+            userIn.phones.add(new UserPhone(phoneType:PhoneType.OTHER, phoneNumber:'523-123-1233'))
         when:
             User updatedUser = userService.saveDetached(userIn)
         then:
@@ -208,19 +210,19 @@ class UserServiceSpec extends Specification {
         given:
             user.id = 1
             User userIn = new User(
-                    id: 1,
-                    firstName: 'FIRST',
-                    lastName: 'LAST',
-                    username: 'USERNAME',
-                    password: 'PASSWORD'
+                    id:1,
+                    firstName:'FIRST',
+                    lastName:'LAST',
+                    username:'USERNAME',
+                    password:'PASSWORD',
             )
             userIn.phones = []
-            userIn.phones.add(new UserPhone(phoneType: PhoneType.MOBILE, phoneNumber: '123-123-1233'))
-            userIn.phones.add(new UserPhone(phoneType: PhoneType.MOBILE, phoneNumber: '223-123-1233'))
-            userIn.phones.add(new UserPhone(phoneType: PhoneType.MOBILE, phoneNumber: '323-123-1233'))
-            userIn.phones.add(new UserPhone(phoneType: PhoneType.MOBILE, phoneNumber: '423-123-1233'))
-            userIn.phones.add(new UserPhone(phoneType: PhoneType.MOBILE, phoneNumber: '523-123-1233'))
-            userIn.phones.add(new UserPhone(phoneType: PhoneType.MOBILE, phoneNumber: '623-123-1233'))
+            userIn.phones.add(new UserPhone(phoneType:PhoneType.MOBILE, phoneNumber:'123-123-1233'))
+            userIn.phones.add(new UserPhone(phoneType:PhoneType.MOBILE, phoneNumber:'223-123-1233'))
+            userIn.phones.add(new UserPhone(phoneType:PhoneType.MOBILE, phoneNumber:'323-123-1233'))
+            userIn.phones.add(new UserPhone(phoneType:PhoneType.MOBILE, phoneNumber:'423-123-1233'))
+            userIn.phones.add(new UserPhone(phoneType:PhoneType.MOBILE, phoneNumber:'523-123-1233'))
+            userIn.phones.add(new UserPhone(phoneType:PhoneType.MOBILE, phoneNumber:'623-123-1233'))
         when:
            userService.saveDetached(userIn)
         then:
@@ -234,29 +236,29 @@ class UserServiceSpec extends Specification {
         given:
             user.id = 1
             user.phones = []
-            user.phones.add(new UserPhone(id: 1, phoneType: PhoneType.MOBILE, phoneNumber: '000-000-0000'))
-            user.phones.add(new UserPhone(id: 2, phoneType: PhoneType.MOBILE, phoneNumber: '111-111-1111'))
-            user.phones.add(new UserPhone(id: 3, phoneType: PhoneType.MOBILE, phoneNumber: '222-222-2222'))
+            user.phones.add(new UserPhone(id:1, phoneType:PhoneType.MOBILE, phoneNumber:'000-000-0000'))
+            user.phones.add(new UserPhone(id:2, phoneType:PhoneType.MOBILE, phoneNumber:'111-111-1111'))
+            user.phones.add(new UserPhone(id:3, phoneType:PhoneType.MOBILE, phoneNumber:'222-222-2222'))
 
             User userIn = new User(
-                    id: 1,
-                    firstName: 'FIRST',
-                    lastName: 'LAST',
-                    username: 'USERNAME',
-                    password: 'PASSWORD'
+                    id:1,
+                    firstName:'FIRST',
+                    lastName:'LAST',
+                    username:'USERNAME',
+                    password:'PASSWORD',
             )
             userIn.phones = []
-            userIn.phones.add(new UserPhone(id: 1, phoneType: PhoneType.HOME, phoneNumber: '000-000-0000'))
-            userIn.phones.add(new UserPhone(id: 2, phoneType: PhoneType.HOME, phoneNumber: '111-111-1111'))
-            userIn.phones.add(new UserPhone(id: 3, phoneType: PhoneType.HOME, phoneNumber: '222-222-2222'))
-            
+            userIn.phones.add(new UserPhone(id:1, phoneType:PhoneType.HOME, phoneNumber:'000-000-0000'))
+            userIn.phones.add(new UserPhone(id:2, phoneType:PhoneType.HOME, phoneNumber:'111-111-1111'))
+            userIn.phones.add(new UserPhone(id:3, phoneType:PhoneType.HOME, phoneNumber:'222-222-2222'))
+
         when:
             userService.saveDetached(userIn)
         then:
             userRepository.findOne(user.id) >> user
             0 * userRepository.save(user) >> user
             0 * cryptoService.hashEncode(_) // No password encoding
-        
+
             thrown(MobilePhoneRequiredException)
     }
 
@@ -264,21 +266,21 @@ class UserServiceSpec extends Specification {
         given:
             user.id = 1
             user.phones = []
-            user.phones.add(new UserPhone(id: 1, phoneType: PhoneType.MOBILE, phoneNumber: '000-000-0000'))
-            user.phones.add(new UserPhone(id: 2, phoneType: PhoneType.MOBILE, phoneNumber: '111-111-1111'))
-            user.phones.add(new UserPhone(id: 3, phoneType: PhoneType.MOBILE, phoneNumber: '222-222-2222'))
+            user.phones.add(new UserPhone(id:1, phoneType:PhoneType.MOBILE, phoneNumber:'000-000-0000'))
+            user.phones.add(new UserPhone(id:2, phoneType:PhoneType.MOBILE, phoneNumber:'111-111-1111'))
+            user.phones.add(new UserPhone(id:3, phoneType:PhoneType.MOBILE, phoneNumber:'222-222-2222'))
 
             User userIn = new User(
-                    id: 1,
-                    firstName: 'FIRST',
-                    lastName: 'LAST',
-                    username: 'USERNAME',
-                    password: 'PASSWORD'
+                    id:1,
+                    firstName:'FIRST',
+                    lastName:'LAST',
+                    username:'USERNAME',
+                    password:'PASSWORD',
             )
             userIn.phones = []
-            userIn.phones.add(new UserPhone(id: 2, phoneType: PhoneType.MOBILE, phoneNumber: '999-999-9999'))
-            userIn.phones.add(new UserPhone(phoneType: PhoneType.MOBILE, phoneNumber: '222-222-2222'))
-            userIn.phones.add(new UserPhone(phoneType: PhoneType.MOBILE, phoneNumber: '333-333-3333'))
+            userIn.phones.add(new UserPhone(id:2, phoneType:PhoneType.MOBILE, phoneNumber:'999-999-9999'))
+            userIn.phones.add(new UserPhone(phoneType:PhoneType.MOBILE, phoneNumber:'222-222-2222'))
+            userIn.phones.add(new UserPhone(phoneType:PhoneType.MOBILE, phoneNumber:'333-333-3333'))
 
         when:
             User savedUser = userService.saveDetached(userIn)
@@ -309,7 +311,6 @@ class UserServiceSpec extends Specification {
             savedUser.phones[3].phoneType == PhoneType.MOBILE
             !savedUser.phones[3].isDeleted
     }
-
 
     def 'save - applies the values and calls the userRepository with UsernameAlreadyInUseException' () {
         when:
