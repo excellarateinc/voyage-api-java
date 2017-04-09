@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
+import voyage.common.PhoneService
 import voyage.common.error.UnknownIdentifierException
 import voyage.security.crypto.CryptoService
 
@@ -19,11 +20,13 @@ import javax.validation.constraints.NotNull
 class UserService {
     private final UserRepository userRepository
     private final CryptoService cryptoService
+    private final PhoneService phoneService
 
     @Autowired
-    UserService(UserRepository userRepository, CryptoService cryptoService) {
+    UserService(UserRepository userRepository, CryptoService cryptoService, PhoneService phoneService) {
         this.userRepository = userRepository
         this.cryptoService = cryptoService
+        this.phoneService = phoneService
     }
 
     static String getCurrentUsername() {
@@ -119,7 +122,7 @@ class UserService {
         return matchingUser ? false : true
     }
 
-    private static void applyPhones(User user, User userIn) {
+    private void applyPhones(User user, User userIn) {
         if (!userIn?.phones) {
             return
         }
@@ -153,7 +156,7 @@ class UserService {
             }
 
             userPhone.phoneType = phoneIn.phoneType
-            userPhone.phoneNumber = phoneIn.phoneNumber
+            userPhone.phoneNumber = phoneService.toE164(phoneIn.phoneNumber)
         }
 
         Iterable<UserPhone> phonesToDelete = getPhonesToDelete(user.phones, userIn.phones)

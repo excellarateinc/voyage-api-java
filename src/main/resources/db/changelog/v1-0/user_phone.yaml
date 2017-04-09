@@ -165,7 +165,7 @@ databaseChangeLog:
                   value: MOBILE
               - column:
                   name: phone_number
-                  value: 1234567718
+                  value: +16518886021
               - column:
                   name: is_validated
                   valueBoolean: false
@@ -195,7 +195,7 @@ databaseChangeLog:
                   value: OFFICE
               - column:
                   name: phone_number
-                  value: 1234567151
+                  value: +16518886022
               - column:
                   name: is_validated
                   valueBoolean: false
@@ -225,7 +225,7 @@ databaseChangeLog:
                   value: HOME
               - column:
                   name: phone_number
-                  value: 1234567314
+                  value: +16518886023
               - column:
                   name: is_validated
                   valueBoolean: false
@@ -255,7 +255,7 @@ databaseChangeLog:
                   value: OTHER
               - column:
                   name: phone_number
-                  value: 1234567121
+                  value: +16518886024
               - column:
                   name: is_validated
                   valueBoolean: false
@@ -285,7 +285,7 @@ databaseChangeLog:
                   value: MOBILE
               - column:
                   name: phone_number
-                  value: 1234567101
+                  value: +16518886025
               - column:
                   name: is_validated
                   valueBoolean: false
@@ -315,7 +315,7 @@ databaseChangeLog:
                   value: OFFICE
               - column:
                   name: phone_number
-                  value: 1234567789
+                  value: +16518886027
               - column:
                   name: is_validated
                   valueBoolean: false
@@ -345,7 +345,7 @@ databaseChangeLog:
                   value: HOME
               - column:
                   name: phone_number
-                  value: 1234567456
+                  value: +16518886028
               - column:
                   name: is_validated
                   valueBoolean: false
@@ -375,7 +375,7 @@ databaseChangeLog:
                   value: OTHER
               - column:
                   name: phone_number
-                  value: 1234567123
+                  value: +16518886029
               - column:
                   name: is_validated
                   valueBoolean: false

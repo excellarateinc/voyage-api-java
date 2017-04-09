@@ -14,7 +14,7 @@ databaseChangeLog:
                   value: MOBILE
               - column:
                   name: phone_number
-                  value: 1234567718
+                  value: +16518886021
               - column:
                   name: is_validated
                   valueBoolean: false
@@ -50,7 +50,7 @@ databaseChangeLog:
                   value: OFFICE
               - column:
                   name: phone_number
-                  value: 1234567151
+                  value: +16518886022
               - column:
                   name: is_validated
                   valueBoolean: false

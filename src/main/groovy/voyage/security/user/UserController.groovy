@@ -41,7 +41,7 @@ class UserController {
      * @apiSuccess {String} users.firstName First name
      * @apiSuccess {String} users.lastName Last name
      * @apiSuccess {Object[]} users.phones User phone numbers
-     * @apiSuccess {String} users.phones.phoneNumber Phone number
+     * @apiSuccess {String} users.phones.phoneNumber Phone number in E.164 format (ie +16518886021 or +1-651-888-6021 as punctuation is stripped out)
      * @apiSuccess {String} users.phones.phoneType Phone type
      *
      * @apiSuccessExample Success-Response:
@@ -54,7 +54,7 @@ class UserController {
      *           "firstName": "Admin_First",
      *           "lastName": "Admin_Last",
      *           "phones": [
-     *              {"phoneNumber": "123-123-1233", "phoneType": "mobile"}
+     *              {"phoneNumber": "+16518886021", "phoneType": "mobile"}
      *           ]
      *       }
      *   ]

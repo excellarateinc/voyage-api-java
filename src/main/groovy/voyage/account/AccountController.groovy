@@ -42,7 +42,7 @@ class AccountController {
      * @apiParam {String} account.lastName Last name
      * @apiParam {String} account.password Password
      * @apiParam {Object[]} account.phones Account phone numbers
-     * @apiParam {String} account.phones.phoneNumber Phone number
+     * @apiParam {String} account.phones.phoneNumber Phone number in E.164 format (ie +16518886021 or +1-651-888-6021 as punctuation is stripped out)
      * @apiParam {String} account.phones.phoneType Phone type (mobile, office, home, other). NOTE: At least one mobile phone is required.
      *
      * @apiExample {json} Example body:
@@ -56,7 +56,7 @@ class AccountController {
      *     [
      *         {
      *             "phoneType": "mobile",
-     *             "phoneNumber" : "5555551212"
+     *             "phoneNumber" : "+6518886021"
      *         }
      *     ]
      * }
