@@ -114,6 +114,8 @@ security:
 cloud:
   aws:
     enabled: false
+    stack:
+      auto: false
     credentials:
       accessKey: ENTER YOUR CODE
       secretKey: ENTER YOUR CODE
