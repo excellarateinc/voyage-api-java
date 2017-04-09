@@ -158,14 +158,14 @@ class CorsIntegrationSpec extends AbstractIntegrationTest {
     def 'Super User POST request with Origin header to protected /api/v1/users returns valid CORS response headers'() {
         given:
             User user = new User(firstName:'TestCORS', lastName:'User', username:'CORS', email:'CORS@email.com', password:'password')
-            user.phones = [new UserPhone(phoneNumber:'111-111-1111', phoneType:PhoneType.MOBILE)]
+            user.phones = [new UserPhone(phoneNumber:'+1-651-888-6021', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setOrigin('http://localhost/')
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
 
         when:
-            ResponseEntity<User> responseEntity = POST('/api/v1/users', httpEntity, User, superClient)
+            ResponseEntity<String> responseEntity = POST('/api/v1/users', httpEntity, String, superClient)
 
         then:
             responseEntity.statusCode.value() == 201

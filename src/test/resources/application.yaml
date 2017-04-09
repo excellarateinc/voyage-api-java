@@ -3,13 +3,12 @@
 #######################################################################################################################
 app:
   name: Voyage
-  support-email: support@LighthouseSoftware.com
-  support-phone: 651-888-6021
-  support-website: http://LighthouseSoftware.com/support
   contact-support:
     email: support@LighthouseSoftware.com
     phone: 651-888-6021
     website: http://LighthouseSoftware.com/support
+
+  default-country: US
 
 #######################################################################################################################
 # Spring Configuration

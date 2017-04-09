@@ -86,7 +86,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
     def '/api/v1/users POST - Super User access granted'() {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'username1', email:'test@test.com', password:'password')
-            user.phones = [new UserPhone(phoneNumber:'111-111-1111', phoneType:PhoneType.MOBILE)]
+            user.phones = [new UserPhone(phoneNumber:'+1-651-888-6021', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -126,7 +126,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             roleService.addPermission(ROLE_STANDARD_ID, 'api.users.create')
 
             User user = new User(firstName:'Test2', lastName:'User', username:'username2', email:'test@test.com', password:'password')
-            user.phones = [new UserPhone(phoneNumber:'111-111-1111', phoneType:PhoneType.MOBILE)]
+            user.phones = [new UserPhone(phoneNumber:'+1-651-888-6021', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -233,7 +233,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             User user = new User(
                 firstName:'Test3', lastName:'User', username:'username4', email:'test@test.com', password:'password',
             )
-            user.phones = [new UserPhone(phoneNumber:'111-111-1111', phoneType:PhoneType.MOBILE)]
+            user.phones = [new UserPhone(phoneNumber:'+1-651-888-6021', phoneType:PhoneType.MOBILE)]
             user = userService.saveDetached(user)
 
             user.firstName = 'Test3-UPDATED'
@@ -277,7 +277,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             roleService.addPermission(ROLE_STANDARD_ID, 'api.users.update')
 
             User user = new User(firstName:'Test4', lastName:'User', username:'username6', email:'test@test.com', password:'password')
-            user.phones = [new UserPhone(phoneNumber:'111-111-1111', phoneType:PhoneType.MOBILE)]
+            user.phones = [new UserPhone(phoneNumber:'+1-651-888-6021', phoneType:PhoneType.MOBILE)]
             user = userService.saveDetached(user)
 
             user.firstName = 'Test4-UPDATED'
@@ -330,7 +330,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
     def '/api/v1/users/{id} DELETE - Super User access granted'() {
         given:
             User newUser = new User(firstName:'Test5', lastName:'User', username:'username8', email:'test@test.com', password:'password')
-            newUser.phones = [new UserPhone(phoneNumber:'111-111-1111', phoneType:PhoneType.MOBILE)]
+            newUser.phones = [new UserPhone(phoneNumber:'+1-651-888-6021', phoneType:PhoneType.MOBILE)]
             newUser = userService.saveDetached(newUser)
 
         when:
@@ -357,7 +357,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             roleService.addPermission(ROLE_STANDARD_ID, 'api.users.delete')
 
             User newUser = new User(firstName:'Test6', lastName:'User', username:'username9', email:'test@test.com', password:'password')
-            newUser.phones = [new UserPhone(phoneNumber:'111-111-1111', phoneType:PhoneType.MOBILE)]
+            newUser.phones = [new UserPhone(phoneNumber:'+1-651-888-6021', phoneType:PhoneType.MOBILE)]
             newUser = userService.saveDetached(newUser)
 
         when:

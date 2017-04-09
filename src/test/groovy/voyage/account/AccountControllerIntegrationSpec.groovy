@@ -38,7 +38,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
     def '/api/v1/account POST - Account create '() {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password')
-            user.phones = [new UserPhone(phoneNumber:'111-111-1111', phoneType:PhoneType.MOBILE)]
+            user.phones = [new UserPhone(phoneNumber:'+16124590457', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -58,7 +58,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
             savedUser.isVerifyRequired
             savedUser.isEnabled
             savedUser.phones[0].phoneType == PhoneType.MOBILE
-            savedUser.phones[0].phoneNumber == '111-111-1111'
+            savedUser.phones[0].phoneNumber == '+16124590457'
 
             MimeMessage[] emails = greenMailSMTP.receivedMessages
             emails.size() == 1
@@ -68,7 +68,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
     def '/api/v1/account POST - Account create fails with error due to username already in use'() {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password')
-            user.phones = [new UserPhone(phoneNumber:'111-111-1111', phoneType:PhoneType.MOBILE)]
+            user.phones = [new UserPhone(phoneNumber:'+1-111-111-1111', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -85,7 +85,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
     def '/api/v1/account POST - Account create fails with error due to missing required values'() {
         given:
             User user = new User()
-            user.phones = [new UserPhone(phoneNumber:'111-111-1111', phoneType:PhoneType.MOBILE)]
+            user.phones = [new UserPhone(phoneNumber:'+1-800-888-8888', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -106,7 +106,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
     def '/api/v1/account POST - Account create fails with error due to email format invalid'() {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'username4', email:'test@', password:'password')
-            user.phones = [new UserPhone(phoneNumber:'111-111-1111', phoneType:PhoneType.MOBILE)]
+            user.phones = [new UserPhone(phoneNumber:'+1-800-888-8888', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -140,12 +140,12 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'username2', email:'test@test.com', password:'password')
             user.phones = [
-                new UserPhone(phoneNumber:'111-111-1111', phoneType:PhoneType.MOBILE),
-                new UserPhone(phoneNumber:'222-222-2222', phoneType:PhoneType.MOBILE),
-                new UserPhone(phoneNumber:'333-333-3333', phoneType:PhoneType.MOBILE),
-                new UserPhone(phoneNumber:'444-444-4444', phoneType:PhoneType.MOBILE),
-                new UserPhone(phoneNumber:'555-555-5555', phoneType:PhoneType.MOBILE),
-                new UserPhone(phoneNumber:'666-666-6666', phoneType:PhoneType.MOBILE),
+                new UserPhone(phoneNumber:'+1205-111-1111', phoneType:PhoneType.MOBILE),
+                new UserPhone(phoneNumber:'+1222-222-2222', phoneType:PhoneType.MOBILE),
+                new UserPhone(phoneNumber:'+1333-333-3333', phoneType:PhoneType.MOBILE),
+                new UserPhone(phoneNumber:'+1444-444-4444', phoneType:PhoneType.MOBILE),
+                new UserPhone(phoneNumber:'+1555-555-5555', phoneType:PhoneType.MOBILE),
+                new UserPhone(phoneNumber:'+1666-666-6666', phoneType:PhoneType.MOBILE),
             ]
 
             HttpHeaders headers = new HttpHeaders()
