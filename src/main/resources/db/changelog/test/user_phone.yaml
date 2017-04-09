@@ -2,6 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: v1.0-test-user-phone-seed
       author: Laxman Bandi
+      context: test
       changes:
         - insert:
             tableName: user_phone
