@@ -29,25 +29,54 @@ class AccountController {
      * @apiName AccountCreate
      * @apiGroup Account
      *
+     * @apiDescription Creates a new user account. All parameters are required and at least 1 mobile phone must be added.
+     *
      * @apiPermission none
      *
      * @apiUse AuthHeader
      *
-     * @apiHeader (Response Headers) {String} location Location of the newly created resource
+     * @apiParam {Object} account Account
+     * @apiParam {String} account.userName Username of the user
+     * @apiParam {String} account.email Email
+     * @apiParam {String} account.firstName First name
+     * @apiParam {String} account.lastName Last name
+     * @apiParam {String} account.password Password
+     * @apiParam {Object[]} account.phones Account phone numbers
+     * @apiParam {String} account.phones.phoneNumber Phone number
+     * @apiParam {String} account.phones.phoneType Phone type (mobile, office, home, other). NOTE: At least one mobile phone is required.
      *
-     * @apiHeaderExample {json} Location-Example
+     * @apiExample {json} Example body:
      * {
-     *     "Location": "http://localhost:52431/api/v1/register/1"
+     *     "firstName": "FirstName",
+     *     "lastName": "LastName",
+     *     "username": "FirstName3@app.com",
+     *     "email": "FirstName3@app.com",
+     *     "password": "my-secure-password",
+     *     "phones":
+     *     [
+     *         {
+     *             "phoneType": "mobile",
+     *             "phoneNumber" : "5555551212"
+     *         }
+     *     ]
      * }
      *
-     * @apiUse UserRequestModel
-     * @apiUse UserSuccessModel
+     * @apiHeader (Response Headers) {String} location Location of the newly created resource
+     *
+     * @apiHeaderExample {json} New Account Location
+     * HTTP/1.1 201: Created
+     * {
+     *     "Location": "https://my-app/api/v1/account"
+     * }
+     *
+     * @apiUse UsernameAlreadyInUseError
+     * @apiUse MobilePhoneNumberRequiredError
      **/
-    @PostMapping('/register')
+    @PostMapping()
     ResponseEntity register(@RequestBody User userIn) {
-        User newUser = accountService.register(userIn)
+        accountService.register(userIn)
         HttpHeaders headers = new HttpHeaders()
-        headers.set(HttpHeaders.LOCATION, "/v1/account/${newUser.id}")
-        return new ResponseEntity(newUser, headers, HttpStatus.CREATED)
+        headers.set(HttpHeaders.LOCATION, '/v1/account')
+        return new ResponseEntity(headers, HttpStatus.CREATED)
     }
 }

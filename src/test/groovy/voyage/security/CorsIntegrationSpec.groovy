@@ -1,11 +1,13 @@
 package voyage.security
 
-import voyage.security.user.User
-import voyage.test.AbstractIntegrationTest
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import voyage.security.user.PhoneType
+import voyage.security.user.User
+import voyage.security.user.UserPhone
+import voyage.test.AbstractIntegrationTest
 
 class CorsIntegrationSpec extends AbstractIntegrationTest {
 
@@ -156,6 +158,7 @@ class CorsIntegrationSpec extends AbstractIntegrationTest {
     def 'Super User POST request with Origin header to protected /api/v1/users returns valid CORS response headers'() {
         given:
             User user = new User(firstName:'TestCORS', lastName:'User', username:'CORS', email:'CORS@email.com', password:'password')
+            user.phones = [new UserPhone(phoneNumber:'111-111-1111', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setOrigin('http://localhost/')
             headers.setContentType(MediaType.APPLICATION_JSON)

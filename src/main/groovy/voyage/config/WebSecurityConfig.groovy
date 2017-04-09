@@ -1,17 +1,15 @@
 package voyage.config
 
-import voyage.security.PermissionBasedUserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.crypto.password.PasswordEncoder
+import voyage.security.PermissionBasedUserDetailsService
+import voyage.security.crypto.CryptoService
 
 /**
  * General Spring Web Security configuration that defines a custom UserDetailsService for looking up and authenticating
@@ -34,11 +32,6 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private PermissionBasedUserDetailsService permissionBasedUserDetailsService
 
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder()
-    }
-
     @Autowired
     void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
@@ -47,7 +40,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .userDetailsService(permissionBasedUserDetailsService)
 
             // Override the default password encoder
-            .passwordEncoder(passwordEncoder())
+            .passwordEncoder(CryptoService.PASSWORD_ENCODER)
     }
 
     /**

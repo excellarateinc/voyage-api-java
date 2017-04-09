@@ -1,11 +1,14 @@
 package voyage.security.user
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import groovy.transform.EqualsAndHashCode
+import org.hibernate.annotations.Where
 import org.hibernate.envers.Audited
 import org.hibernate.validator.constraints.Email
 import voyage.common.AuditableEntity
 import voyage.security.role.Role
 
+import javax.persistence.CascadeType
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
@@ -16,6 +19,7 @@ import javax.validation.constraints.NotNull
 
 @Entity
 @Audited
+@EqualsAndHashCode(includes=['firstName', 'lastName', 'username'], callSuper=true)
 class User extends AuditableEntity {
     @NotNull
     String firstName
@@ -54,21 +58,7 @@ class User extends AuditableEntity {
     @JsonIgnore
     Set<Role> roles
 
-    @OneToMany(fetch=FetchType.EAGER, mappedBy='user')
+    @OneToMany(fetch=FetchType.EAGER, mappedBy='user', cascade=CascadeType.ALL)
+    @Where(clause = 'is_deleted = 0')
     Set<UserPhone> phones
-
-    @JsonIgnore
-    String verifyCode
-
-    @JsonIgnore
-    Date verifyCodeExpiresOn
-
-    @JsonIgnore
-    boolean isVerifyCodeExpired() {
-        return verifyCodeExpiresOn != null && verifyCodeExpiresOn < new Date()
-    }
-
-    String getMaskedEmail() {
-        return email?.replaceAll('(?<=.{2}).(?=.*@)', '*')
-    }
 }

@@ -1,6 +1,7 @@
 package voyage.security.user
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import groovy.transform.EqualsAndHashCode
 import org.hibernate.envers.Audited
 import voyage.common.AuditableEntity
 
@@ -13,23 +14,31 @@ import javax.validation.constraints.NotNull
 
 @Entity
 @Audited
+@EqualsAndHashCode(includes=['phoneNumber'], callSuper=true)
 class UserPhone extends AuditableEntity {
     @Enumerated(EnumType.STRING)
     PhoneType phoneType
 
     @NotNull
+    String phoneNumber
+
     @JsonIgnore
-    Boolean isDeleted = Boolean.FALSE
+    String verifyCode
 
     @NotNull
-    String phoneNumber
+    @JsonIgnore
+    Boolean isValidated = Boolean.FALSE
+
+    @JsonIgnore
+    Date verifyCodeExpiresOn
 
     @ManyToOne
     @JoinColumn(name='user_id')
     @JsonIgnore
     User user
 
-    String getMaskedPhoneNumber() {
-        return phoneNumber?.replaceAll('.(?=.{2})', '*')
+    @JsonIgnore
+    boolean isVerifyCodeExpired() {
+        return verifyCodeExpiresOn != null && verifyCodeExpiresOn < new Date()
     }
 }

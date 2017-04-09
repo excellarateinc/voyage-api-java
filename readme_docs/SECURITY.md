@@ -1211,8 +1211,8 @@ Possible Results:
 ##### AWS SMS Service Integration
 By default, Voyage API integrates with Amazon [AWS SNS](http://docs.aws.amazon.com/sns/latest/dg/SMSMessages.html) as the text message provider. In order for the API to faciliate SMS deliveries, an AWS account must be provided within the configuration of the API. See the [Deploy](#deploy) section for instructions on how to apply the AWS credentials. 
 
-##### UserVerificationServletFilter
-The UserVerificationServletFilter located at `/src/main/groovy/voyage/security/UserVerificationServletFilter.groovy` intercepts incoming requests by authenticated users and examines the User account to see if the `User.isVerifyRequired` is true. If the isVerifyRequired is true, then the request is immediately stopped and an error message is returned to the consumer notifying them that the user must complete the User Verification process. 
+##### VerificationServletFilter
+The VerificationServletFilter located at `/src/main/groovy/voyage/security/VerificationServletFilter.groovy` intercepts incoming requests by authenticated users and examines the User account to see if the `User.isVerifyRequired` is true. If the isVerifyRequired is true, then the request is immediately stopped and an error message is returned to the consumer notifying them that the user must complete the User Verification process. 
 
 #### References 
 * [What is Two Factor Authentication](https://www.securenvoy.com/two-factor-authentication/what-is-2fa.shtm)

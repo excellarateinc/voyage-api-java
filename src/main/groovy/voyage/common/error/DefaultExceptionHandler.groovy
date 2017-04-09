@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.web.ErrorController
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
+import org.springframework.web.HttpMediaTypeNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -22,7 +23,7 @@ import javax.validation.ConstraintViolationException
 @ControllerAdvice
 @RestController
 class DefaultExceptionHandler implements ErrorController {
-    private static final Logger LOG = LoggerFactory.getLogger(this.getClass())
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultExceptionHandler)
     private final ErrorAttributes errorAttributes
 
     String errorPath = '/error' // Overrides ErrorController.getErrorPath()
@@ -76,13 +77,22 @@ class DefaultExceptionHandler implements ErrorController {
         return new ResponseEntity([errorResponse], e.httpStatus)
     }
 
+    @ExceptionHandler
+    ResponseEntity<Iterable<ErrorResponse>> handle(HttpMediaTypeNotSupportedException ignore) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                error:'400_media_type_not_supported',
+                errorDescription:'Invalid media type for the HTTP request. Please use application/json.',
+        )
+        return new ResponseEntity([errorResponse], HttpStatus.BAD_REQUEST)
+    }
+
     @ExceptionHandler(value = Exception)
     ResponseEntity<Iterable<ErrorResponse>> handle(Exception e) {
         LOG.error('Unexpected error occurred', e)
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR
         ErrorResponse errorResponse = new ErrorResponse(
             error:ErrorUtils.getErrorCode(httpStatus.value()),
-            errorDescription:e.toString(),
+            errorDescription:'Unexpected error occurred. Contact technical support for further assistance should this error continue.',
         )
         return new ResponseEntity([errorResponse], httpStatus)
     }

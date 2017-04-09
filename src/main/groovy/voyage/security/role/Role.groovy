@@ -1,6 +1,7 @@
 package voyage.security.role
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import groovy.transform.EqualsAndHashCode
 import org.hibernate.envers.Audited
 import voyage.common.AuditableEntity
 import voyage.security.permission.Permission
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotNull
 
 @Entity
 @Audited
+@EqualsAndHashCode(includes=['name', 'authority'], callSuper=true)
 class Role extends AuditableEntity {
     @NotNull
     String name

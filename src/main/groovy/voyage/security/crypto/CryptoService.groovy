@@ -3,6 +3,7 @@ package voyage.security.crypto
 import org.apache.commons.codec.binary.Base64
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -11,20 +12,18 @@ import java.security.KeyPair
 
 @Service
 class CryptoService {
-    private final PasswordEncoder passwordEncoder
+    public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder()
     private static final String ALGORITHM = 'RSA'
     private static final String ENCODING = 'UTF-8'
     private final Cipher cipher
     private final KeyPair keyPair
 
     @Autowired
-    CryptoService(PasswordEncoder passwordEncoder,
-                  KeyStoreService keyStoreService,
+    CryptoService(KeyStoreService keyStoreService,
                   @Value('${security.crypto.private-key-name}') String privateKeyName,
                   @Value('${security.crypto.private-key-password}') String privateKeyPassword) {
         this.cipher = Cipher.getInstance(ALGORITHM)
         this.keyPair = keyStoreService.getRsaKeyPair(privateKeyName, privateKeyPassword.toCharArray())
-        this.passwordEncoder = passwordEncoder
     }
 
     String encrypt(String plaintext) {
@@ -41,13 +40,13 @@ class CryptoService {
         if (!plaintext) {
             return null
         }
-        return passwordEncoder.encode(plaintext)
+        return PASSWORD_ENCODER.encode(plaintext)
     }
 
     boolean hashMatches(String plaintext, String hashValue) {
         if (!plaintext || !hashValue) {
             return false
         }
-        return passwordEncoder.matches(plaintext, hashValue)
+        return PASSWORD_ENCODER.matches(plaintext, hashValue)
     }
 }

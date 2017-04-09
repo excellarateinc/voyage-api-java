@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/test/user.yaml
+  - include:
+      file: db/changelog/test/user_phone.yaml
