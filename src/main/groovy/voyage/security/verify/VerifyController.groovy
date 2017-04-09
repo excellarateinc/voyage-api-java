@@ -26,7 +26,8 @@ class VerifyController {
      * @apiName PostVerifySend
      * @apiGroup Verify
      *
-     * @apiDescription Sends a verification message to the user's mobile phone(s) on record.
+     * @apiDescription Sends a verification message to the given verification method specified in the body of this web
+     * service request.
      *
      * ~ ~ ~ ~ VERIFY WORKFLOW ~ ~ ~ ~
      *
