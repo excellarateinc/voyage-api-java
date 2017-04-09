@@ -1,15 +1,15 @@
 package voyage.security
 
-import voyage.security.permission.Permission
-import voyage.security.permission.PermissionService
-import voyage.security.user.User
-import voyage.security.user.UserService
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import voyage.security.permission.Permission
+import voyage.security.permission.PermissionService
+import voyage.security.user.User
+import voyage.security.user.UserService
 
 @Service
 @Transactional(readOnly = true)
@@ -26,7 +26,7 @@ class PermissionBasedUserDetailsService implements UserDetailsService {
     PermissionBasedUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.findByUsername(username)
         if (!user || !user.isEnabled) {
-            throw new UsernameNotFoundException("User ${username} was not found.")
+            throw new UsernameNotFoundException('Username was not found.')
         }
         return new PermissionBasedUserDetails(user, getAuthorities(user))
     }

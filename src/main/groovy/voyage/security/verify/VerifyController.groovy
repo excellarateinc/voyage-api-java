@@ -30,7 +30,7 @@ class VerifyController {
      * The 'verifyType' and 'value' response body attributes are to be used when invoking /v1/verify/send.
      *
      * ~ ~ ~ ~ VERIFY WORKFLOW ~ ~ ~ ~
-     * 
+     *
      * The user verification process is a multi-step workflow that is required when a user has been flagged as needing
      * to assert that they are truly in control of their account. A user might be flagged for verification for any
      * reason at any time. The consumer of this API must be prepared to handle a user verification error response
@@ -161,7 +161,7 @@ class VerifyController {
      * @apiGroup Verify
      *
      * @apiDescription Validates the given verification code for the currently logged in user and returns a success or
-     * failure message to the web service consumer. 
+     * failure message to the web service consumer.
      *
      * ~ ~ ~ ~ VERIFY WORKFLOW ~ ~ ~ ~
      *
