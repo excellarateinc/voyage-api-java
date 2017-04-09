@@ -111,8 +111,12 @@ security:
 #######################################################################################################################
 # AWS Configuration to send Emails and SMS
 #######################################################################################################################
-cloud.aws.enabled: false
-cloud.aws credentials.accessKey: ENTER YOUR CODE
-cloud.aws.credentials.secretKey: ENTER YOUR CODE
-cloud.aws.region.auto: true
-cloud.aws.region.static: us-east-1
+cloud:
+  aws:
+    enabled: false
+    credentials:
+      accessKey: ENTER YOUR CODE
+      secretKey: ENTER YOUR CODE
+    region:
+      auto: true
+      static: us-east-1
