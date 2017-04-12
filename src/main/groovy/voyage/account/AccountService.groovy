@@ -19,9 +19,6 @@ class AccountService {
     @Value('${app.name}')
     private String appName
 
-    @Value('${app.contact-support.email}')
-    private String appSupportEmail
-
     @Autowired
     AccountService(UserService userService, MailService mailService) {
         this.userService = userService
@@ -57,7 +54,6 @@ class AccountService {
         if (newUser.email) {
             MailMessage message = new MailMessage()
             message.to = newUser.email
-            message.model = ['appName':appName, 'appSupportEmail':appSupportEmail]
             message.subject = "Welcome to ${appName}"
             message.template = 'welcome.ftl'
             mailService.send(message)

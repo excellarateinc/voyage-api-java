@@ -1,7 +1,5 @@
 package voyage.security.verify
 
-import com.icegreen.greenmail.util.GreenMail
-import com.icegreen.greenmail.util.ServerSetup
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -11,18 +9,6 @@ import voyage.test.AbstractIntegrationTest
 
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 class VerifyControllerIntegrationSpec extends AbstractIntegrationTest {
-
-    private GreenMail greenMailSMTP
-
-    def setup() {
-        ServerSetup setup = new ServerSetup(3025, 'localhost', ServerSetup.PROTOCOL_SMTP)
-        greenMailSMTP = new GreenMail(setup)
-        greenMailSMTP.start()
-    }
-
-    def cleanup() {
-        greenMailSMTP.stop()
-    }
 
     /*
        Run the /verify POST test before the /verify/send because the /send will reset the 'code' with a new value. Since

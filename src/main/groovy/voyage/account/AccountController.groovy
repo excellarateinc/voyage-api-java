@@ -24,7 +24,7 @@ class AccountController {
     }
 
     /**
-     * @api {post} /v1/register Create account
+     * @api {post} /v1/account Create account
      * @apiVersion 1.0.0
      * @apiName AccountCreate
      * @apiGroup Account
@@ -55,7 +55,7 @@ class AccountController {
      *     "phones":
      *     [
      *         {
-     *             "phoneType": "mobile",
+     *             "phoneType": "MOBILE",
      *             "phoneNumber" : "+6518886021"
      *         }
      *     ]

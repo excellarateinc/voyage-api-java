@@ -15,7 +15,6 @@ class AccountServiceSpec extends Specification {
 
     def setup() {
         accountService.appName = 'Voyage'
-        accountService.appSupportEmail = 'test@test.com'
     }
 
     def 'register - applies the values and calls the userService'() {
@@ -43,8 +42,6 @@ class AccountServiceSpec extends Specification {
                 assert args[0].to == 'john@doe.com'
                 assert args[0].subject == 'Welcome to Voyage'
                 assert args[0].template == 'welcome.ftl'
-                assert args[0].model.appName == 'Voyage'
-                assert args[0].model.appSupportEmail == 'test@test.com'
             }
 
             savedUser.firstName == 'John'
