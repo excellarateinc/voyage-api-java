@@ -96,11 +96,11 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
         then:
             responseEntity.statusCode.value() == 400
             responseEntity.body.size() == 5
-            responseEntity.body.find { it.error == 'email.may_not_be_null' && it.errorDescription == 'may not be null' }
-            responseEntity.body.find { it.error == 'password.may_not_be_null' && it.errorDescription == 'may not be null' }
-            responseEntity.body.find { it.error == 'firstname.may_not_be_null' && it.errorDescription == 'may not be null' }
-            responseEntity.body.find { it.error == 'username.may_not_be_null' && it.errorDescription == 'may not be null' }
-            responseEntity.body.find { it.error == 'lastname.may_not_be_null' && it.errorDescription == 'may not be null' }
+            responseEntity.body.find { it.error == 'email.may_not_be_empty' && it.errorDescription == 'may not be empty' }
+            responseEntity.body.find { it.error == 'password.may_not_be_empty' && it.errorDescription == 'may not be empty' }
+            responseEntity.body.find { it.error == 'firstname.may_not_be_empty' && it.errorDescription == 'may not be empty' }
+            responseEntity.body.find { it.error == 'username.may_not_be_empty' && it.errorDescription == 'may not be empty' }
+            responseEntity.body.find { it.error == 'lastname.may_not_be_empty' && it.errorDescription == 'may not be empty' }
     }
 
     def '/api/v1/account POST - Account create fails with error due to email format invalid'() {

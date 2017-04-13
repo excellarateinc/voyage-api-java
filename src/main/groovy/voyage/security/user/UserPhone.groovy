@@ -21,7 +21,6 @@ class UserPhone extends AuditableEntity {
     PhoneType phoneType
 
     @NotBlank
-    @NotNull
     String phoneNumber
 
     @JsonIgnore

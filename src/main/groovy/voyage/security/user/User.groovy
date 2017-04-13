@@ -23,24 +23,19 @@ import javax.validation.constraints.NotNull
 @EqualsAndHashCode(includes=['firstName', 'lastName', 'username'], callSuper=true)
 class User extends AuditableEntity {
     @NotBlank
-    @NotNull
     String firstName
 
     @NotBlank
-    @NotNull
     String lastName
 
     @NotBlank
-    @NotNull
     String username
 
     @NotBlank
     @Email
-    @NotNull
     String email
 
     @NotBlank
-    @NotNull
     String password
 
     @NotNull
