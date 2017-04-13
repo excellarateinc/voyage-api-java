@@ -25,7 +25,7 @@ These are the core standards that our development team agrees to follow. All of 
   * Acting on your own excludes your team from decision making, which is a form of disrespect
   * Perfect code is a product of team collaboration and communication
 4. __Peer code reviews are required__
-  * For every 10 liines of code written, ~ 1 bug is introduced into the code base. 
+  * For every 10 lines of code written ~ 1 bug is introduced into the code base. 
   * Peer reviewed code has been found to significantly reduce bugs and missed requirements
   * Be thorough and respectful!
 5. __Build for today's needs, not what might be needed tomorrow__
