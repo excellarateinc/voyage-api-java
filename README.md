@@ -75,7 +75,7 @@ If you are extending this API to build a new app, then replace this section with
   - Tests executed during every build to ensure high quality code coverage
 * __Continuous Integration (CI)__
   - Jenkins CI jobs able to invoke Gradle and apiDoc commands to build, test, and package
-  - Jenkins jobs included with with API source
+  - Jenkins jobs included with API source
   - Supports other CI environments like Team Foundation Server (TFS)
 
 ### Developers
