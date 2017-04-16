@@ -1289,22 +1289,39 @@ An embedded application.yaml file has been created and stored within `/src/main/
 
 Two common methods used by the Voyage development team for overriding Spring properties are as follows. 
 
-1. application.yaml file stored securely on the server filesystem
-   - Copy the default application.yaml file
-   - Change the values to match the requirements for a given server environment
-   - Copy the environment specific file `uat-application.yaml` to the server environment in a secure location like `/etc/api-app/uat-application.yaml`
+1. Apache Tomcat + `application.yaml` external to the .WAR file/folder stored securely on the server filesystem
+   - Copy the `application.yaml` from `/src/main/resources/application.yaml` to a secure location within a server that will host Voyage API like `/etc/voyage-api/application.yaml` or `D:\voyage-api-config\application.yaml` 
+   - Change the values within the server `application.yaml` file to suit the needs of the particular server environment
    - Secure the file to be readable by the Apache Tomcat process and system administrators
-   - Add a Java System Property to the execution script of Apache Tomcat to notify the Spring Framework about the location of the uat-application.yaml file. The easiest way to do this is to add an environment variable named `CATALINA_OPTS` with the following contents:
-   ```
-   -DenvFile=/etc/api-app/uat-application.yaml
-   ```
+   - Create a .WAR specific Apache Tomcat context in `/conf/Catalina/localhost/[war-file-name-here].xml`
+   - In the [WAR-specific context file](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html), add an [<Environment>](https://tomcat.apache.org/tomcat-5.5-doc/config/context.html#Environment_Entries) property to override the location where Spring will look for the `application.yaml` file. 
+   - The [spring.config.location](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-application-property-files) property adds a filesystem location that Spring will inspect first for a file named `application.yaml`. 
+     ```
+     <?xml version='1.0' encoding='utf-8'?>
+     <Context>
+     
+     	<Environment 
+     		name="spring.config.location" 
+     		value="d:/Users/tmichalski/voyage-config/" 
+     		type="java.lang.String" 
+     		override="false"/>
+     
+     	<ResourceLink
+     		name="jdbc/voyage"
+     		global="jdbc/voyage"
+     		type="javax.sql.DataSource" />
+     	
+     </Context>
+     ```
    - Read a more detailed description of how to implement this tactic at [DEPLOY: App Build & Test](https://github.com/lssinc/voyage-api-java/blob/master/readme_docs/DEPLOY.md#4-apacht-tomcat-setup--override-parameters-by-environment). 
-2. OS Environment variable
-   - Useful for a dev or test lab environment
-   - Create an OS environment variable named `SPRING_APPLICATION_JSON` and include a JSON formatted string with application property overrides. 
-3. Apache Tomcat JNDI Environment Variables
-   - Useful for any environment where the API WAR file is being run within an Apache Tomcat container (as opposed to a local development environment)
-   - Update the Tomcat `/conf/context.xml` document with `<Environment>` attributes for individual properties to override. 
+2. Apache Tomcat Environment Properties
+   - Override individual Spring config or `application.yaml` properties within the WAR-specific Apache Tomcat context file 
+   - Update the Apache Tomcat [WAR-specific context file](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html) in `/conf/Catalina/localhost/[war-file-name-here].xml` 
+   - Add an [<Environment>](https://tomcat.apache.org/tomcat-5.5-doc/config/context.html#Environment_Entries) property for each Spring or application property to override 
+     ```
+     <Environment name="spring.mail.host" value="localhost" type="java.lang.String" override="false"/>
+     <Environment name="spring.mail.port" value="3025" type="java.lang.Integer" override="false"/>
+     ```
    - NOTE: When defining properties outside of a .yaml file, default to using normal .properties file notation. See the YAML section above for more details on the .properties file format. 
    - Read more about this method on the [Apache Tomcat docs website](https://tomcat.apache.org/tomcat-7.0-doc/jndi-resources-howto.html#context.xml_configuration)
 

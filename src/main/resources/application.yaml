@@ -49,19 +49,6 @@ spring:
     username: voyage
     password: voyage
     driver-class-name: com.mysql.jdbc.Driver
-    #initialSize: 10
-    #maxActive: 50
-    #maxIdle: 30
-    #maxWait: 100000
-    #removeAbandoned: true
-    #removeAbandonedTimeout: 60
-    #logAbandoned: true
-    #validationQuery: SELECT 1
-    #testOnBorrow: true
-    #testWhileIdle: true
-    #testOnReturn: true
-    #minEvictableIdleTimeMillis: 30000
-    #timeBetweenEvictionRunsMillis: 30000
 
   mail:
       host: localhost
