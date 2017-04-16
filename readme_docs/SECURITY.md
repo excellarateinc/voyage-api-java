@@ -1313,7 +1313,7 @@ Two common methods used by the Voyage development team for overriding Spring pro
      	
      </Context>
      ```
-   - Read a more detailed description of how to implement this tactic at [DEPLOY: App Build & Test](https://github.com/lssinc/voyage-api-java/blob/master/readme_docs/DEPLOY.md#4-apacht-tomcat-setup--override-parameters-by-environment). 
+   - Read a more detailed description of how to implement this tactic at [DEPLOY: App Build & Test](https://github.com/lssinc/voyage-api-java/blob/master/readme_docs/DEPLOY.md#4-apache-tomcat-setup--override-parameters-by-environment). 
 2. Apache Tomcat Environment Properties
    - Override individual Spring config or `application.yaml` properties within the WAR-specific Apache Tomcat context file 
    - Update the Apache Tomcat [WAR-specific context file](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html) in `/conf/Catalina/localhost/[war-file-name-here].xml` 

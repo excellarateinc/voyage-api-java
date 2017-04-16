@@ -154,17 +154,17 @@ Artifacts generated from `./gradlew war` are stored within `/voyage-api-java/bui
 
 The .war file generated from Gradle is compatible with J2EE Application Server containers like Apache Tomcat. The .war file will require configuration settings to be setup with the Java Application Server. See next step. 
 
-#### 4. Apacht Tomcat Setup > Override Parameters By Environment
-The base Voyage API WAR file has bundled into it a base set of parameters that are configured for a local development environment. When deploying to another environment, review the parameters and override as needed. 
+#### 4. Apache Tomcat Setup > Override Parameters By Environment
+The Voyage API WAR file has bundled into it a base set of parameters that are configured for a local development environment. When deploying to another environment, review the parameters and override as needed. 
 
 > NOTE: At the very least, change the database username/password and the default security settings!
 
-There are [a number of ways to override parameters](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html) within the application. The method discussed in this section for overriding parameters is to create an application.yaml file that is stored within /tomcat/conf and loaded as a System parameter on Tomcat startup. The only exception will be the JNDI DataSource configuraiton, which will be added to the server.xml to take advantage of Tomcat's database connection pooling. 
+There are [a number of ways to override parameters](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html) within the application. The method discussed in this section for overriding parameters is to create an application.yaml file that is securely stored on the host server. The only exception will be the JNDI DataSource configuraiton, which will be added to the server.xml to take advantage of Tomcat's database connection pooling. 
 
 #### JDBC Configuration
-Configure the JDBC connection pool within the server.xml and then make it available to the web apps in the context.xml. 
+Configure the JDBC connection pool within the server.xml. 
 
-conf/server.xml
+APACHE_TOMCAT_HOME/conf/server.xml
 ```
 <GlobalNamingResources>
    <Resource
@@ -188,7 +188,9 @@ conf/server.xml
 </GlobalNamingResources>
 ```
 
-conf/context.xml
+Create a context configuration file specifically for the API web app so that other web applications within the Apache Tomcat instance are not able to see the following context parameters. Within the /conf/Catalina/localhost folder, create a file with the same name as the WAR file, but with a .xml extension. For example, if the WAR file is `voyage.war` in the /webapps folder, then create a `voyage.xml` context file in /conf/Catalina/localhost.   
+
+APACHE_TOMCAT_HOME/conf/Catalina/localhost/voyage.xml
 ```
 <Context>
     <ResourceLink
@@ -196,11 +198,14 @@ conf/context.xml
                 global="jdbc/voyage"
                 type="javax.sql.DataSource" />
 </Context>
-
 ```
 
+Add the ResourceLink property to the context file to make the global JDBC connection pool created in the server.xml available to the web app associated with this context file.   
+
+> Read more about configuring Apache Tomcat web-app specific contexts on the [Tomcat Documentation site](https://tomcat.apache.org/tomcat-8.0-doc/config/context.html). 
+
 ##### Override application.yaml properties
-Override the properties defined within the application.yaml file that is bundled within the app for the server environment. Review the security configurations for the application within the [Security Configurations](SECURITY.md#security-configuration) section of the API [Security](SECURITY.md) documentation. 
+Override the properties defined within the `application.yaml` file that is bundled within the app to match the needs of the host server. Review the security configurations for the application within the [Security Configurations](SECURITY.md#security-configuration) section of the API [Security](SECURITY.md) documentation. 
 
 > NOTE: Be sure to update the default passwords for:
 > * Default users created in /src/main/resources/db.changelog/v1-0/user.yaml
@@ -209,9 +214,11 @@ Override the properties defined within the application.yaml file that is bundled
 > * Default password fro the 'jwt' public/private key
 > Thoroughly read through the [Security](SECURITY.md) documentation, specifically [Security Configurations](SECURITY.md#security-configuration)
 
-1. Create a new file `/conf/voyage-application.yaml`
-2. Copy the entire contents of the application.yaml file from the application into the `/conf/voyage-application.yaml`
-3. Override the properties in `/conf/voyage-application.yaml` to be environment specific
+1. Copy the contents of the `application.yaml` file from the app source code into a new file on the host server
+    - Example Linux: `/etc/voyage-api-config/application.yaml`
+    - Example Windows: `D:\voyage-api-config\application.yaml`
+2. Secure the host server so that only Apache Tomcat (and Super Users) can access the `/etc/voyage-api-config/application.yaml` file
+3. Override the properties in `/etc/voyage-api-config/application.yaml` to be specific to the host server
    - jpa.properties.hibernate.dialect - should match the database type being connected to. 
    - datasource.jndi-name - point to the JNDI name of the database resource defined in the Apache Tomcat /conf/server.xml (see prior section)
    - security.key-store.filename - change the filename to a locally defined public/private key keystore file
@@ -264,14 +271,30 @@ Override the properties defined within the application.yaml file that is bundled
              zQIDAQAB
              -----END PUBLIC KEY-----
       ```
-4. Update CATALINA_OPTS OS environment variable with a reference to the `voyage-application.yaml` file
-   - CATALINA_OPTS="-Denvfile=file:/usr/share/tomcat8/voyage-application.yaml"
-   - This will work on Windows or Linux. Search online for your respective OS if you are unsure about how to apply an OS environment variable to the server. 
+4. Update the Apache Tomcat web app specific context file to point to the location of the host server `application.yaml` file
+    - This context file should have been created in the [JDBC Configuration](#jdbc-configuration) section.
+    - Add an [<Environment>](https://tomcat.apache.org/tomcat-5.5-doc/config/context.html#Environment_Entries) property to override the [spring.config.location](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html#boot-features-external-config-application-property-files) value, which is the default location where Spring Framework will look for an application properties file. 
+    - Example: APACHE_TOMCAT_HOME/conf/Catalina/localhost/voyage.xml
+      ```
+      <Context>
+          <Environment 
+          		name="spring.config.location" 
+          		value="/etc/voyage-api-config/" 
+          		type="java.lang.String" 
+          		override="false"/>
+          		
+          <ResourceLink
+                  name="jdbc/voyage"
+                  global="jdbc/voyage"
+                  type="javax.sql.DataSource" />
+      </Context>
+      ```
 5. Restart Apache Tomcat to ensure the new settings are loaded
    - Look at the log files in /logs to verify that the database connected properly
+   - Ensure that Apache Tomcat has proper privileges to READ the file
 
 #### 4. Apache Tomcat 8.0 Deploy
-To deploy the WAR file into the Apache Tomcat container, perfom the following steps:
+To deploy the WAR file into the Apache Tomcat container, perform the following steps:
 1. Obtain a voyage-1.0.war file from a trusted source. 
 2. Make sure that the version number in the file or indicated from the WAR file source is the correct version for deployment. 
 3. Upload the voyage-1.0.war file to a temporary location on the deployment environment
