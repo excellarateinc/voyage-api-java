@@ -19,7 +19,7 @@ If you are extending this API to build a new app, then replace this section with
   - Lightweight JSON requests and responses
   - See our [Web Service Standards](readme_docs/STANDARDS-WEB-SERVICES.md)
 * __Public API Status Service__
-  - Web serbice that provides general status of the API to the public
+  - Web service that provides general status of the API to the public
   - Helpful endpiont for automated monitoring
 * __User Administration Services__
   - Full suite of user administration web services (list, get, create, update, delete)
@@ -75,7 +75,7 @@ If you are extending this API to build a new app, then replace this section with
   - Tests executed during every build to ensure high quality code coverage
 * __Continuous Integration (CI)__
   - Jenkins CI jobs able to invoke Gradle and apiDoc commands to build, test, and package
-  - Jenkins jobs included with with API source
+  - Jenkins jobs included with API source
   - Supports other CI environments like Team Foundation Server (TFS)
 
 ### Developers
