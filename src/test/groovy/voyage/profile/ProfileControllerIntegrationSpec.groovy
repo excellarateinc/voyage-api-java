@@ -95,7 +95,7 @@ class ProfileControllerIntegrationSpec extends AbstractIntegrationTest {
 
         then:
             responseEntity.statusCode.value() == 400
-            responseEntity.body.size() == 5
+            responseEntity.body.size() == 4
             responseEntity.body.find { it.error == 'password.may_not_be_empty' && it.errorDescription == 'may not be empty' }
             responseEntity.body.find { it.error == 'firstname.may_not_be_empty' && it.errorDescription == 'may not be empty' }
             responseEntity.body.find { it.error == 'username.may_not_be_empty' && it.errorDescription == 'may not be empty' }
