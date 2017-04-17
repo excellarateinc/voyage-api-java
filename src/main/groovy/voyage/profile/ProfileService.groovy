@@ -25,7 +25,7 @@ class ProfileService {
         this.mailService = mailService
     }
 
-    User create(User userIn) {
+    User save(User userIn) {
         User newUser = new User()
         newUser.with {
             firstName = userIn.firstName

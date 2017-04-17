@@ -18,19 +18,19 @@ class ProfileControllerSpec extends Specification {
         modifiedUser = new User(id:1, firstName:'firstName', lastName:'LastName', username:'username', email:'test@test.com', password:'password')
     }
 
-    def 'Test to validate create method'() {
+    def 'Test to validate save method'() {
         when:
-            ResponseEntity<User> response = profileController.create(user)
+            ResponseEntity<User> response = profileController.save(user)
         then:
-            1 * profileService.create(user) >> modifiedUser
+            1 * profileService.save(user) >> modifiedUser
             response != null
             HttpStatus.CREATED == response.statusCode
             '/v1/profile' == response.headers.location[0]
 
         when:
-            profileController.create(user)
+            profileController.save(user)
         then:
-            1 * profileService.create(user) >> { throw new Exception() }
+            1 * profileService.save(user) >> { throw new Exception() }
             thrown(Exception)
     }
 }

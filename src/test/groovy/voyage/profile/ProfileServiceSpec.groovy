@@ -17,7 +17,7 @@ class ProfileServiceSpec extends Specification {
         profileService.appName = 'Voyage'
     }
 
-    def 'register - applies the values and calls the userService'() {
+    def 'save - applies the values and calls the userService'() {
         given:
             User userIn = new User(
                     firstName:'John',
@@ -32,7 +32,7 @@ class ProfileServiceSpec extends Specification {
             ]
 
         when:
-            User savedUser = profileService.create(userIn)
+            User savedUser = profileService.save(userIn)
 
         then:
             1 * userService.saveDetached(*_) >> { args ->
@@ -58,7 +58,7 @@ class ProfileServiceSpec extends Specification {
             savedUser.phones[1].phoneType == PhoneType.MOBILE
     }
 
-    def 'register - Welcome email is not sent if the user does not provide an email address'() {
+    def 'save - Welcome email is not sent if the user does not provide an email address'() {
         given:
             User userIn = new User(
                     firstName:'John',
@@ -68,7 +68,7 @@ class ProfileServiceSpec extends Specification {
             )
 
         when:
-            User savedUser = profileService.create(userIn)
+            User savedUser = profileService.save(userIn)
 
         then:
             1 * userService.saveDetached(*_) >> { args ->

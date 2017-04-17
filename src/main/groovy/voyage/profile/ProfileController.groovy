@@ -73,8 +73,8 @@ class ProfileController {
      * @apiUse MobilePhoneNumberRequiredError
      **/
     @PostMapping()
-    ResponseEntity create(@RequestBody User userIn) {
-        profileService.create(userIn)
+    ResponseEntity save(@RequestBody User userIn) {
+        profileService.save(userIn)
         HttpHeaders headers = new HttpHeaders()
         headers.set(HttpHeaders.LOCATION, '/v1/profile')
         return new ResponseEntity(headers, HttpStatus.CREATED)
