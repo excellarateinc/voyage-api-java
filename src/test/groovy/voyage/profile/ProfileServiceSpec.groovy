@@ -1,4 +1,4 @@
-package voyage.account
+package voyage.profile
 
 import spock.lang.Specification
 import voyage.common.mail.MailService
@@ -7,14 +7,14 @@ import voyage.security.user.User
 import voyage.security.user.UserPhone
 import voyage.security.user.UserService
 
-class AccountServiceSpec extends Specification {
+class ProfileServiceSpec extends Specification {
     User user
     UserService userService = Mock()
     MailService mailService = Mock()
-    AccountService accountService = new AccountService(userService, mailService)
+    ProfileService profileService = new ProfileService(userService, mailService)
 
     def setup() {
-        accountService.appName = 'Voyage'
+        profileService.appName = 'Voyage'
     }
 
     def 'register - applies the values and calls the userService'() {
@@ -32,7 +32,7 @@ class AccountServiceSpec extends Specification {
             ]
 
         when:
-            User savedUser = accountService.register(userIn)
+            User savedUser = profileService.create(userIn)
 
         then:
             1 * userService.saveDetached(*_) >> { args ->
@@ -68,7 +68,7 @@ class AccountServiceSpec extends Specification {
             )
 
         when:
-            User savedUser = accountService.register(userIn)
+            User savedUser = profileService.create(userIn)
 
         then:
             1 * userService.saveDetached(*_) >> { args ->

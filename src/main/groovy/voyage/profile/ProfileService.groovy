@@ -1,4 +1,4 @@
-package voyage.account
+package voyage.profile
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -12,7 +12,7 @@ import voyage.security.user.UserService
 
 @Service
 @Validated
-class AccountService {
+class ProfileService {
     private final UserService userService
     private final MailService mailService
 
@@ -20,12 +20,12 @@ class AccountService {
     private String appName
 
     @Autowired
-    AccountService(UserService userService, MailService mailService) {
+    ProfileService(UserService userService, MailService mailService) {
         this.userService = userService
         this.mailService = mailService
     }
 
-    User register(User userIn) {
+    User create(User userIn) {
         User newUser = new User()
         newUser.with {
             firstName = userIn.firstName

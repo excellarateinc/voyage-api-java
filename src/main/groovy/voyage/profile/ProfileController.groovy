@@ -1,4 +1,4 @@
-package voyage.account
+package voyage.profile
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
@@ -12,38 +12,38 @@ import voyage.security.user.User
 import voyage.security.verify.VerifyService
 
 @RestController
-@RequestMapping(['/api/v1/account', '/api/v1.0/account'])
-class AccountController {
-    private final AccountService accountService
+@RequestMapping(['/api/v1/profile', '/api/v1.0/profile'])
+class ProfileController {
+    private final ProfileService profileService
     private final VerifyService userVerifyService
 
     @Autowired
-    AccountController(AccountService accountService, VerifyService userVerifyService) {
-        this.accountService = accountService
+    ProfileController(ProfileService profileService, VerifyService userVerifyService) {
+        this.profileService = profileService
         this.userVerifyService = userVerifyService
     }
 
     /**
-     * @api {post} /v1/account Create account
+     * @api {post} /v1/profile Create profile
      * @apiVersion 1.0.0
-     * @apiName AccountCreate
-     * @apiGroup Account
+     * @apiName ProfileCreate
+     * @apiGroup Profile
      *
-     * @apiDescription Creates a new user account. All parameters are required and at least 1 mobile phone must be added.
+     * @apiDescription Creates a new user profile. All parameters are required and at least 1 mobile phone must be added.
      *
      * @apiPermission none
      *
      * @apiUse AuthHeader
      *
-     * @apiParam {Object} account Account
-     * @apiParam {String} account.userName Username of the user
-     * @apiParam {String} account.email Email
-     * @apiParam {String} account.firstName First name
-     * @apiParam {String} account.lastName Last name
-     * @apiParam {String} account.password Password
-     * @apiParam {Object[]} account.phones Account phone numbers
-     * @apiParam {String} account.phones.phoneNumber Phone number in E.164 format (ie +16518886021 or +1-651-888-6021 as punctuation is stripped out)
-     * @apiParam {String} account.phones.phoneType Phone type (mobile, office, home, other). NOTE: At least one mobile phone is required.
+     * @apiParam {Object} profile Profile
+     * @apiParam {String} profile.userName Username of the user
+     * @apiParam {String} profile.email Email
+     * @apiParam {String} profile.firstName First name
+     * @apiParam {String} profile.lastName Last name
+     * @apiParam {String} profile.password Password
+     * @apiParam {Object[]} profile.phones Profile phone numbers
+     * @apiParam {String} profile.phones.phoneNumber Phone number in E.164 format (ie +16518886021 or +1-651-888-6021 as punctuation is stripped out)
+     * @apiParam {String} profile.phones.phoneType Phone type (mobile, office, home, other). NOTE: At least one mobile phone is required.
      *
      * @apiExample {json} Example body:
      * {
@@ -63,20 +63,20 @@ class AccountController {
      *
      * @apiHeader (Response Headers) {String} location Location of the newly created resource
      *
-     * @apiHeaderExample {json} New Account Location
+     * @apiHeaderExample {json} New Profile Location
      * HTTP/1.1 201: Created
      * {
-     *     "Location": "https://my-app/api/v1/account"
+     *     "Location": "https://my-app/api/v1/profile"
      * }
      *
      * @apiUse UsernameAlreadyInUseError
      * @apiUse MobilePhoneNumberRequiredError
      **/
     @PostMapping()
-    ResponseEntity register(@RequestBody User userIn) {
-        accountService.register(userIn)
+    ResponseEntity create(@RequestBody User userIn) {
+        profileService.create(userIn)
         HttpHeaders headers = new HttpHeaders()
-        headers.set(HttpHeaders.LOCATION, '/v1/account')
+        headers.set(HttpHeaders.LOCATION, '/v1/profile')
         return new ResponseEntity(headers, HttpStatus.CREATED)
     }
 }

@@ -86,7 +86,7 @@ server:
 security:
 
   ignored: /resources/**, /webjars/**, /docs, /docs/**
-  permitAll: /login, /api/status, /api/**/account
+  permitAll: /login, /api/status, /api/**/profile
 
   # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
   # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
@@ -122,7 +122,7 @@ security:
           -----END PUBLIC KEY-----
 
   user-verification:
-    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/account
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profile
     verify-code-expire-minutes: 30
 
   cors:

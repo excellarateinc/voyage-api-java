@@ -31,7 +31,6 @@ class User extends AuditableEntity {
     @NotBlank
     String username
 
-    @NotBlank
     @Email
     String email
 
