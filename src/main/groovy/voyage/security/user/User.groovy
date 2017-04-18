@@ -5,6 +5,7 @@ import groovy.transform.EqualsAndHashCode
 import org.hibernate.annotations.Where
 import org.hibernate.envers.Audited
 import org.hibernate.validator.constraints.Email
+import org.hibernate.validator.constraints.NotBlank
 import voyage.common.AuditableEntity
 import voyage.security.role.Role
 
@@ -21,20 +22,19 @@ import javax.validation.constraints.NotNull
 @Audited
 @EqualsAndHashCode(includes=['firstName', 'lastName', 'username'], callSuper=true)
 class User extends AuditableEntity {
-    @NotNull
+    @NotBlank
     String firstName
 
-    @NotNull
+    @NotBlank
     String lastName
 
-    @NotNull
+    @NotBlank
     String username
 
     @Email
-    @NotNull
     String email
 
-    @NotNull
+    @NotBlank
     String password
 
     @NotNull

@@ -1,4 +1,4 @@
-package voyage.account
+package voyage.profile
 
 import com.icegreen.greenmail.util.GreenMail
 import com.icegreen.greenmail.util.ServerSetup
@@ -16,7 +16,7 @@ import voyage.test.AbstractIntegrationTest
 
 import javax.mail.internet.MimeMessage
 
-class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
+class ProfileControllerIntegrationSpec extends AbstractIntegrationTest {
     private GreenMail greenMailSMTP
 
     @Autowired
@@ -35,7 +35,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
         greenMailSMTP.stop()
     }
 
-    def '/api/v1/account POST - Account create '() {
+    def '/api/v1/profile POST - Profile create '() {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password')
             user.phones = [new UserPhone(phoneNumber:'+16124590457', phoneType:PhoneType.MOBILE)]
@@ -44,7 +44,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
 
         when:
-            ResponseEntity responseEntity = POST('/api/v1/account', httpEntity, String, standardClient)
+            ResponseEntity responseEntity = POST('/api/v1/profile', httpEntity, String, standardClient)
             User savedUser = userService.findByUsername(user.username)
 
         then:
@@ -65,7 +65,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
             emails[0].allRecipients.size() == 1
     }
 
-    def '/api/v1/account POST - Account create fails with error due to username already in use'() {
+    def '/api/v1/profile POST - Profile create fails with error due to username already in use'() {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password')
             user.phones = [new UserPhone(phoneNumber:'+1-111-111-1111', phoneType:PhoneType.MOBILE)]
@@ -74,7 +74,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
 
         when:
-            ResponseEntity<List> responseEntity = POST('/api/v1/account', httpEntity, List, standardClient)
+            ResponseEntity<List> responseEntity = POST('/api/v1/profile', httpEntity, List, standardClient)
 
         then:
             responseEntity.statusCode.value() == 400
@@ -82,7 +82,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body[0].errorDescription == 'Username already in use by another user. Please choose a different username.'
     }
 
-    def '/api/v1/account POST - Account create fails with error due to missing required values'() {
+    def '/api/v1/profile POST - Profile create fails with error due to missing required values'() {
         given:
             User user = new User()
             user.phones = [new UserPhone(phoneNumber:'+1-800-888-8888', phoneType:PhoneType.MOBILE)]
@@ -91,19 +91,18 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
 
         when:
-            ResponseEntity<List> responseEntity = POST('/api/v1/account', httpEntity, List, standardClient)
+            ResponseEntity<List> responseEntity = POST('/api/v1/profile', httpEntity, List, standardClient)
 
         then:
             responseEntity.statusCode.value() == 400
-            responseEntity.body.size() == 5
-            responseEntity.body.find { it.error == 'email.may_not_be_null' && it.errorDescription == 'may not be null' }
-            responseEntity.body.find { it.error == 'password.may_not_be_null' && it.errorDescription == 'may not be null' }
-            responseEntity.body.find { it.error == 'firstname.may_not_be_null' && it.errorDescription == 'may not be null' }
-            responseEntity.body.find { it.error == 'username.may_not_be_null' && it.errorDescription == 'may not be null' }
-            responseEntity.body.find { it.error == 'lastname.may_not_be_null' && it.errorDescription == 'may not be null' }
+            responseEntity.body.size() == 4
+            responseEntity.body.find { it.error == 'password.may_not_be_empty' && it.errorDescription == 'may not be empty' }
+            responseEntity.body.find { it.error == 'firstname.may_not_be_empty' && it.errorDescription == 'may not be empty' }
+            responseEntity.body.find { it.error == 'username.may_not_be_empty' && it.errorDescription == 'may not be empty' }
+            responseEntity.body.find { it.error == 'lastname.may_not_be_empty' && it.errorDescription == 'may not be empty' }
     }
 
-    def '/api/v1/account POST - Account create fails with error due to email format invalid'() {
+    def '/api/v1/profile POST - Profile create fails with error due to email format invalid'() {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'username4', email:'test@', password:'password')
             user.phones = [new UserPhone(phoneNumber:'+1-800-888-8888', phoneType:PhoneType.MOBILE)]
@@ -112,7 +111,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
 
         when:
-            ResponseEntity<List> responseEntity = POST('/api/v1/account', httpEntity, List, standardClient)
+            ResponseEntity<List> responseEntity = POST('/api/v1/profile', httpEntity, List, standardClient)
 
         then:
             responseEntity.statusCode.value() == 400
@@ -120,7 +119,7 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body[0].errorDescription == 'not a well-formed email address'
     }
 
-    def '/api/v1/account POST - Account create fails with error due to missing mobile phone'() {
+    def '/api/v1/profile POST - Profile create fails with error due to missing mobile phone'() {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'username2', email:'test@test.com', password:'password')
             HttpHeaders headers = new HttpHeaders()
@@ -128,15 +127,15 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
 
         when:
-            ResponseEntity<List> responseEntity = POST('/api/v1/account', httpEntity, List, standardClient)
+            ResponseEntity<List> responseEntity = POST('/api/v1/profile', httpEntity, List, standardClient)
 
         then:
             responseEntity.statusCode.value() == 400
             responseEntity.body[0].error == '400_mobile_phone_required'
-            responseEntity.body[0].errorDescription == 'At least one mobile phone is required for a new account'
+            responseEntity.body[0].errorDescription == 'At least one mobile phone is required for a new profile'
     }
 
-    def '/api/v1/account POST - Account create fails with error due to > 5 phones'() {
+    def '/api/v1/profile POST - Profile create fails with error due to > 5 phones'() {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'username2', email:'test@test.com', password:'password')
             user.phones = [
@@ -153,11 +152,11 @@ class AccountControllerIntegrationSpec extends AbstractIntegrationTest {
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
 
         when:
-            ResponseEntity<List> responseEntity = POST('/api/v1/account', httpEntity, List, standardClient)
+            ResponseEntity<List> responseEntity = POST('/api/v1/profile', httpEntity, List, standardClient)
 
         then:
             responseEntity.statusCode.value() == 400
             responseEntity.body[0].error == '400_too_many_phones'
-            responseEntity.body[0].errorDescription == 'Too many phones have been added to the account. Maximum of 5.'
+            responseEntity.body[0].errorDescription == 'Too many phones have been added to the profile. Maximum of 5.'
     }
 }

@@ -3,6 +3,7 @@ package voyage.security.user
 import com.fasterxml.jackson.annotation.JsonIgnore
 import groovy.transform.EqualsAndHashCode
 import org.hibernate.envers.Audited
+import org.hibernate.validator.constraints.NotBlank
 import voyage.common.AuditableEntity
 
 import javax.persistence.Entity
@@ -19,7 +20,7 @@ class UserPhone extends AuditableEntity {
     @Enumerated(EnumType.STRING)
     PhoneType phoneType
 
-    @NotNull
+    @NotBlank
     String phoneNumber
 
     @JsonIgnore

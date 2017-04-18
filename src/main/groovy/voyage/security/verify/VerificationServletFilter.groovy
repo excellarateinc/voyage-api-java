@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest
 import java.security.Principal
 
 /**
- * Servlet filter that inspects the currently authenticated user to see if they are required to verify their account
+ * Servlet filter that inspects the currently authenticated user to see if they are required to verify their profile
  * before gaining access to any resources. This filter is very single focused to only checking the User.isVerifyRequired
  * property to see if it is true. If the User.isVerifyRequired parameter is true, then a UserVerificationRequiredException
  * is thrown that will then be caught and translated by this app into a properly formatted JSON response to the consumer.

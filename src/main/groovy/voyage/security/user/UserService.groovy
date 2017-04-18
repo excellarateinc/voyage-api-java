@@ -127,8 +127,8 @@ class UserService {
             return
         }
 
-        // Prevent an attacker from overloading the database will millions of phones. Used primarily for the account
-        // services that are exposed to anyone able to create and update an account
+        // Prevent an attacker from overloading the database will millions of phones. Used primarily for the profile
+        // services that are exposed to anyone able to create and update an profile
         if (userIn.phones.size() > 5) {
             throw new TooManyPhonesException()
         }

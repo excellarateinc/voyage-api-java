@@ -1,4 +1,4 @@
-package voyage.account
+package voyage.profile
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -12,23 +12,20 @@ import voyage.security.user.UserService
 
 @Service
 @Validated
-class AccountService {
+class ProfileService {
     private final UserService userService
     private final MailService mailService
 
     @Value('${app.name}')
     private String appName
 
-    @Value('${app.contact-support.email}')
-    private String appSupportEmail
-
     @Autowired
-    AccountService(UserService userService, MailService mailService) {
+    ProfileService(UserService userService, MailService mailService) {
         this.userService = userService
         this.mailService = mailService
     }
 
-    User register(User userIn) {
+    User save(User userIn) {
         User newUser = new User()
         newUser.with {
             firstName = userIn.firstName
@@ -57,7 +54,6 @@ class AccountService {
         if (newUser.email) {
             MailMessage message = new MailMessage()
             message.to = newUser.email
-            message.model = ['appName':appName, 'appSupportEmail':appSupportEmail]
             message.subject = "Welcome to ${appName}"
             message.template = 'welcome.ftl'
             mailService.send(message)

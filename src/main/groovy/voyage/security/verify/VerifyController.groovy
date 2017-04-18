@@ -31,7 +31,7 @@ class VerifyController {
      * ~ ~ ~ ~ VERIFY WORKFLOW ~ ~ ~ ~
      *
      * The user verification process is a two-step workflow that is required when a user has been flagged as needing
-     * to assert that they are truly in control of their account. A user might be flagged for verification for any
+     * to assert that they are truly in control of their profile. A user might be flagged for verification for any
      * reason at any time. The consumer of this API must be prepared to handle a user verification error response
      * (403 HTTP Status with errorCode 403_verify_user) for any API call made at any time.
      *
@@ -43,16 +43,16 @@ class VerifyController {
      * then the user can resume making their calls to the API. Until the user verification is completed, the user will
      * not be able to make any API calls other than the 'Verify' API web services.
      *
-     * 1) Consumer invokes an API (ie /account)
+     * 1) Consumer invokes an API (ie /profile)
      *    * API replies with a 403 HTTP Status
      *    * Response body includes an error code of 403_verify_user
      * 3) Consumer invokes POST /verify/send
-     *    * API delivers verification codes to the mobile phones associated with the user's account
+     *    * API delivers verification codes to the mobile phones associated with the user's profile
      *    * Response includes a success status code
      * 4) Consumer invokes POST /verify
      *    * API receives the verification code and validates the user
      *    * Response includes a success or failure status code with error message
-     * 5) Consumer invokes an API (ie /account)
+     * 5) Consumer invokes an API (ie /profile)
      *    * Resumes accessing the API
      *
      * @apiPermission authenticated
@@ -83,7 +83,7 @@ class VerifyController {
      * ~ ~ ~ ~ VERIFY WORKFLOW ~ ~ ~ ~
      *
      * The user verification process is a two-step workflow that is required when a user has been flagged as needing
-     * to assert that they are truly in control of their account. A user might be flagged for verification for any
+     * to assert that they are truly in control of their profile. A user might be flagged for verification for any
      * reason at any time. The consumer of this API must be prepared to handle a user verification error response
      * (403 HTTP Status with errorCode 403_verify_user) for any API call made at any time.
      *
@@ -95,16 +95,16 @@ class VerifyController {
      * then the user can resume making their calls to the API. Until the user verification is completed, the user will
      * not be able to make any API calls other than the 'Verify' API web services.
      *
-     * 1) Consumer invokes an API (ie /account)
+     * 1) Consumer invokes an API (ie /profile)
      *    * API replies with a 403 HTTP Status
      *    * Response body includes an error code of 403_verify_user
      * 3) Consumer invokes POST /verify/send
-     *    * API delivers verification codes to the mobile phones associated with the user's account
+     *    * API delivers verification codes to the mobile phones associated with the user's profile
      *    * Response includes a success status code
      * 4) Consumer invokes POST /verify
      *    * API receives the verification code and validates the user
      *    * Response includes a success or failure status code with error message
-     * 5) Consumer invokes an API (ie /account)
+     * 5) Consumer invokes an API (ie /profile)
      *    * Resumes accessing the API
      *
      * @apiPermission authenticated
