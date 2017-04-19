@@ -11,7 +11,7 @@ class WebResponseExceptionTranslatorSpec extends Specification {
 
     def 'translate RedirectMismatchException as a ResponseEntity'() {
         given:
-            RedirectMismatchException exception = new RedirectMismatchException('test msg')
+            RedirectMismatchException exception = Mock(RedirectMismatchException)
             WebResponseExceptionTranslator translator = new WebResponseExceptionTranslator()
 
         when:
