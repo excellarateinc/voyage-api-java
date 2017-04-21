@@ -111,6 +111,9 @@ security:
   user-verification:
     exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profile
     verify-code-expire-minutes: 30
+  password-verification:
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profile, /api/**/profile/password
+    password-reset-days: 90
 
   cors:
     access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent

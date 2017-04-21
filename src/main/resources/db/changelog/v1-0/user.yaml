@@ -90,6 +90,10 @@ databaseChangeLog:
                   type: bit(1)
                   constraints:
                     nullable: false
+              - column:
+                  name: password_created_date
+                  type: datetime
+
   - changeSet:
       id: v1.0-user-audit-table-create
       author: Voyage
@@ -188,6 +192,9 @@ databaseChangeLog:
                   type: bit(1)
                   constraints:
                     nullable: false
+              - column:
+                  name: password_created_date
+                  type: datetime
   - changeSet:
       id: v1.0-user-seed-users
       author: Voyage
@@ -240,6 +247,9 @@ databaseChangeLog:
               - column:
                   name: is_deleted
                   valueBoolean: false
+              - column:
+                  name: password_created_date
+                  type: datetime
         - insert:
             tableName: user
             columns:
@@ -288,3 +298,6 @@ databaseChangeLog:
               - column:
                   name: is_deleted
                   valueBoolean: false
+              - column:
+                  name: password_created_date
+                  type: datetime
