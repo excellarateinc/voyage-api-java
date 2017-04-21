@@ -61,4 +61,8 @@ class User extends AuditableEntity {
     @OneToMany(fetch=FetchType.EAGER, mappedBy='user', cascade=CascadeType.ALL)
     @Where(clause = 'is_deleted = 0')
     Set<UserPhone> phones
+
+    @JsonIgnore
+    Date passwordCreatedDate
+
 }
