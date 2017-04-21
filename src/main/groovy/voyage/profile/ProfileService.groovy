@@ -61,4 +61,5 @@ class ProfileService {
 
         return newUser
     }
+
 }

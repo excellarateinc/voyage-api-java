@@ -5,10 +5,13 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import voyage.security.user.ResetPassword
 import voyage.security.user.User
+import voyage.security.user.UserService
 import voyage.security.verify.VerifyService
 
 @RestController
@@ -16,11 +19,13 @@ import voyage.security.verify.VerifyService
 class ProfileController {
     private final ProfileService profileService
     private final VerifyService userVerifyService
+    private final UserService userService
 
     @Autowired
-    ProfileController(ProfileService profileService, VerifyService userVerifyService) {
+    ProfileController(ProfileService profileService, VerifyService userVerifyService,UserService userService) {
         this.profileService = profileService
         this.userVerifyService = userVerifyService
+        this.userService = userService
     }
 
     /**
@@ -40,7 +45,7 @@ class ProfileController {
      * @apiParam {String} profile.email Email
      * @apiParam {String} profile.firstName First name
      * @apiParam {String} profile.lastName Last name
-     * @apiParam {String} profile.password Password
+     * @apiParam {String} profile.password ResetPassword
      * @apiParam {Object[]} profile.phones Profile phone numbers
      * @apiParam {String} profile.phones.phoneNumber Phone number in E.164 format (ie +16518886021 or +1-651-888-6021 as punctuation is stripped out)
      * @apiParam {String} profile.phones.phoneType Phone type (mobile, office, home, other). NOTE: At least one mobile phone is required.
@@ -79,4 +84,31 @@ class ProfileController {
         headers.set(HttpHeaders.LOCATION, '/v1/profile')
         return new ResponseEntity(headers, HttpStatus.CREATED)
     }
+
+    /**
+     * @api {put} /v1/users/:userId Update a user
+     * @apiVersion 1.0.0
+     * @apiName UserUpdate
+     * @apiGroup User
+     *
+     * @apiPermission api.user.update
+     *
+     * @apiUse AuthHeader
+     *
+     * @apiUse UserRequestModel
+     * @apiUse UserSuccessModel
+     * @apiUse UnauthorizedError
+     * @apiUse UsernameAlreadyInUseError
+     **/
+    @PutMapping('/password')
+    ResponseEntity updatePassword(@RequestBody ResetPassword password) {
+        User currentUser = userService.getCurrentUser()
+        if(currentUser) {
+            userService.updatePassword(currentUser, password)
+        }
+        HttpHeaders headers = new HttpHeaders()
+        headers.set(HttpHeaders.LOCATION, '/v1/profile')
+        return new ResponseEntity(headers, HttpStatus.OK)
+    }
+
 }
