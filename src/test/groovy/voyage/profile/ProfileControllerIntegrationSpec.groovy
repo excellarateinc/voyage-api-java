@@ -9,6 +9,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import voyage.security.crypto.CryptoService
 import voyage.security.user.PhoneType
+import voyage.security.user.ResetPassword
 import voyage.security.user.User
 import voyage.security.user.UserPhone
 import voyage.security.user.UserService
@@ -37,7 +38,7 @@ class ProfileControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/profile POST - Profile create '() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'Abcd&1234')
             user.phones = [new UserPhone(phoneNumber:'+16124590457', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
@@ -53,7 +54,7 @@ class ProfileControllerIntegrationSpec extends AbstractIntegrationTest {
             savedUser.lastName == 'User'
             savedUser.username == 'username'
             savedUser.email == 'test@test.com'
-            cryptoService.hashMatches('password', savedUser.password)
+            cryptoService.hashMatches('Abcd&1234', savedUser.password)
             savedUser.phones.size() == 1
             savedUser.isVerifyRequired
             savedUser.isEnabled
@@ -104,7 +105,7 @@ class ProfileControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/profile POST - Profile create fails with error due to email format invalid'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username4', email:'test@', password:'password')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username4', email:'test@', password:'Abcd&1234')
             user.phones = [new UserPhone(phoneNumber:'+1-800-888-8888', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
@@ -121,7 +122,7 @@ class ProfileControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/profile POST - Profile create fails with error due to missing mobile phone'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username2', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username2', email:'test@test.com', password:'Abcd&1234')
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -137,7 +138,7 @@ class ProfileControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/profile POST - Profile create fails with error due to > 5 phones'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username2', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username2', email:'test@test.com', password:'Abcd&1234')
             user.phones = [
                 new UserPhone(phoneNumber:'+1205-111-1111', phoneType:PhoneType.MOBILE),
                 new UserPhone(phoneNumber:'+1222-222-2222', phoneType:PhoneType.MOBILE),
@@ -159,4 +160,59 @@ class ProfileControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body[0].error == '400_too_many_phones'
             responseEntity.body[0].errorDescription == 'Too many phones have been added to the profile. Maximum of 5.'
     }
+    def '/api/v1/profile/password PUT - Password update with correct old password and new and confirm password'() {
+        given:
+        ResetPassword password = new ResetPassword()
+        password.password = 'password'
+        password.newPassword = 'Efgh@5678'
+        password.confirmPassword = 'Efgh@5678'
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(MediaType.APPLICATION_JSON)
+        HttpEntity<ResetPassword> httpEntity = new HttpEntity<ResetPassword>(password, headers)
+
+        when:
+        ResponseEntity<List> responseEntity = PUT('/api/v1/profile/password', httpEntity, List, superClient)
+
+        then:
+        responseEntity.statusCode.value() == 200
+
+    }
+
+    def '/api/v1/profile/password PUT - Password update with Incorrect old password and new and confirm password'() {
+        given:
+        ResetPassword password = new ResetPassword()
+        password.password = 'password123'
+        password.newPassword = 'Efgh@5678'
+        password.confirmPassword = 'Efgh@5678'
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(MediaType.APPLICATION_JSON)
+        HttpEntity<ResetPassword> httpEntity = new HttpEntity<ResetPassword>(password, headers)
+
+        when:
+        ResponseEntity<List> responseEntity = PUT('/api/v1/profile/password', httpEntity, List, superClient)
+
+        then:
+        responseEntity.statusCode.value() == 400
+        responseEntity.body[0].error == '400_password_invalid'
+
+    }
+    def '/api/v1/profile/password PUT - Password update with correct old password and unmatched new and confirm password'() {
+        given:
+        ResetPassword password = new ResetPassword()
+        password.password = 'password'
+        password.newPassword = 'Efgh@5678'
+        password.confirmPassword = 'Efgh@5697'
+        HttpHeaders headers = new HttpHeaders()
+        headers.setContentType(MediaType.APPLICATION_JSON)
+        HttpEntity<ResetPassword> httpEntity = new HttpEntity<ResetPassword>(password, headers)
+
+        when:
+        ResponseEntity<List> responseEntity = PUT('/api/v1/profile/password', httpEntity, List, superClient)
+
+        then:
+        responseEntity.statusCode.value() == 400
+        responseEntity.body[0].error == '400_password_invalid'
+
+    }
+
 }
