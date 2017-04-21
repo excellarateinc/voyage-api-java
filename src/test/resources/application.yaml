@@ -93,8 +93,11 @@ security:
           -----END PUBLIC KEY-----
 
   user-verification:
-    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp
-    verify-code-expire-minutes: 30
+      exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profile
+      verify-code-expire-minutes: 30
+  password-verification:
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profile, /api/**/profile/password
+    password-reset-days: 90
 
   test:
     clients:
