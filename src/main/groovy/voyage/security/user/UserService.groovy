@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
+import voyage.common.InvalidPasswordException
+import voyage.common.PasswordValidationService
 import voyage.common.PhoneService
 import voyage.common.error.UnknownIdentifierException
 import voyage.security.crypto.CryptoService
@@ -21,12 +23,13 @@ class UserService {
     private final UserRepository userRepository
     private final CryptoService cryptoService
     private final PhoneService phoneService
-
+    private final PasswordValidationService passwordValidationService
     @Autowired
-    UserService(UserRepository userRepository, CryptoService cryptoService, PhoneService phoneService) {
+    UserService(UserRepository userRepository, CryptoService cryptoService, PhoneService phoneService,PasswordValidationService passwordValidationService) {
         this.userRepository = userRepository
         this.cryptoService = cryptoService
         this.phoneService = phoneService
+        this.passwordValidationService = passwordValidationService
     }
 
     static String getCurrentUsername() {
@@ -97,12 +100,16 @@ class UserService {
 
             // Default to true for new accounts
             isVerifyRequired = user.id ? userIn.isVerifyRequired : true
+            //Default to todays date
+           // user.passwordCreated = new Date()
         }
 
         if (userIn.password != user.password) {
-            user.password = cryptoService.hashEncode(userIn.password)
-        }
+            if(passwordValidationService.validate(userIn.password)) {
 
+                user.password = cryptoService.hashEncode(userIn.password)
+            }
+        }
         applyPhones(user, userIn)
 
         // Require at least one PhoneType.MOBILE phone
@@ -176,5 +183,20 @@ class UserService {
             }
         }
         return toDelete
+    }
+
+    User updatePassword(User currentUser, ResetPassword password){
+        //println(cryptoService.encrypt(password.password))
+        //println(currentUser.password)
+        if(password.newPassword == password.confirmPassword && cryptoService.hashMatches(password.password,currentUser.password) ){
+            currentUser.password = password.newPassword
+
+            saveDetached(currentUser)
+            return currentUser
+        }else{
+            throw new InvalidPasswordException()
+        }
+
+        return null
     }
 }
