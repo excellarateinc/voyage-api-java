@@ -23,7 +23,7 @@ Overview of the Security features and configurations that have been implemented 
   - [Encryption Public/Private Key Configuration](#encryption-publicprivate-key-configuration)
   - [JWT Public/Private Key Configuration](#jwt-publicprivate-key-configuration)
   - [Public Resources](#public-resources)
-  - User Verification
+  - [User Verification Configuration](#user-verification-configuration)
 * [Audit Logging](#audit-logging)
   - [Action Logs](#action-logs)
   - [Change Logs](#change-logs)
@@ -1530,7 +1530,7 @@ security:
   permitAll: /login, /api/hello
 ```
 
-### User Verification
+### User Verification Configuration
 
 #### Excluded Resources
 The user verification servlet filter can be configured to exclude API resources so that an authenticated user is still able to access a litmited set of resources. To modify the the exclusion list, update the comma delimited list of ant-path values within the `application.yaml` file in section `security.user-verification.exclude-resources`.
