@@ -80,6 +80,13 @@ class Client extends AuditableEntity {
     Integer refreshTokenValiditySeconds = 86400 // 24 hours
 
     /**
+     * Force all tokens for this client created on or before this date to be expired even if the original token has not
+     * yet expired.
+     */
+    @JsonIgnore
+    Date forceTokensExpiredDate
+
+    /**
      * The authentication "grant" types that this client is allowed to request.
      *
      * Grant types include: client_credentials, authorization_code, password, implicit
