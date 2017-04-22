@@ -4,13 +4,13 @@ Overview of the Security features and configurations that have been implemented 
 ## Table of Contents
 * [Secure Programming](#secure-programming)
 * [Security Features](#security-features)
-  - [Account Locking](#account-locking)
   - [Authentication: OAuth2 (default)](#authentication-oauth2-default)
   - [Authentication: Spring Security](#authentication-spring-security)
   - [Authorization: Permission Based](#authorization-permission-based)
   - [2-Factor Authentication](#2-factor-authentication)
   - [Cross Origin Resource Sharing (CORS)](#cross-origin-resource-sharing-cors)
   - [Cross Site Request Forgery (CSRF)](#cross-site-request-forgery-csrf)
+  - [Disable API Consumers (Users and Clients)](#disable-api-consumers-users-and-clients)
   - [OWASP Top 10](#owasp-top-10)
   - Password Attempts Tracking
   - Password Policy
@@ -466,6 +466,28 @@ NOTE: UserPasswordExpiredServletFilter will intercept this and force password re
 #### References
 * [Forgot Password Cheat Sheet](https://www.owasp.org/index.php/Forgot_Password_Cheat_Sheet)
 * [Choosing and Using Security Questions Cheat Sheet](https://www.owasp.org/index.php/Choosing_and_Using_Security_Questions_Cheat_Sheet)
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+
+### Disable API Consumers (Users and Clients)
+#### Overview
+In the [OAuth2 workflow](#authentication-oauth2-default), there can be up to 2 actors that are involved when authenticating with the API: Client, User. A server-to-server connection using the OAuth2 "client_credentials" authorization type will only authenticate the Client credentials provided. A user-to-server connection using the "implicit" authorization type will require a validated Client and will only authenticate the User using the credentials provided directly from the user. 
+
+In any given request, the API administrators might want to invalidate a Client or a User immediately. The following sections describe how each actor can be disabled to prevent access to the API. 
+
+#### Disable Clients
+Disabling a client record will reject any incoming API request associated with the client immediately when the client is disabled. When a client is disabled, a user cannot authenticate from the referring client because the client will be disabled. 
+
+To disable a Client, update the `client` table within the database and set the `client.is_enabled` to false.
+
+#### Disable Users
+Disablig a user record will reject any incoming API request associated with the user immediately when the user is disabled. 
+
+To disbale a User, update the `user` table within the database with any of the following attributes:
+* `user.is_enabled = false` - Disables the user account.
+* `user.is_account_expired = false` - Alternative way to disable the user account with a notice that the account has expired
+* `user.is_account_locked = false` - Alternative way to disable the user account with a notice that the account has been locked
 
 :arrow_up: [Back to Top](#table-of-contents)
 
