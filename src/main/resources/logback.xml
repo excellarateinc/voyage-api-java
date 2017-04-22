@@ -14,4 +14,17 @@
          set of JARs and the Tomcat JAR scanner doesn't have additional information about versions, etc.
     -->
     <logger name="org.apache.tomcat.util.scan.StandardJarScanner" level="ERROR"/>
+
+    <!--Configuration to log the passwords for super users with having default password-->
+    <appender name="PASSWORD_LOGGER_APPENDER" class="ch.qos.logback.core.FileAppender">
+        <file>passwords.log</file>
+        <append>true</append>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%m%n</Pattern>
+        </layout>
+    </appender>
+    <logger name="PASSWORD_LOGGER" level="info" additivity="false" >
+        <appender-ref ref="PASSWORD_LOGGER_APPENDER" />
+    </logger>
+
 </configuration>
