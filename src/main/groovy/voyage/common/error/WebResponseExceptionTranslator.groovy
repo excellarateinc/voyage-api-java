@@ -22,6 +22,7 @@ class WebResponseExceptionTranslator implements org.springframework.security.oau
                     .status(HttpStatus.BAD_REQUEST)
                     .header(CORS_ACCESS_CONTROL_ALLOW_ORIGIN, CORS_ACCESS_WILDCARD)
                     .body(new AppOAuth2Exception(HttpStatus.BAD_REQUEST, CLIENT_REDIRECT_URL_MISMATCH_MESSAGE))
+            
         } else if (e instanceof OAuth2Exception) {
             OAuth2Exception oAuth2Exception = (OAuth2Exception) e
             return ResponseEntity
