@@ -1530,6 +1530,45 @@ security:
   permitAll: /login, /api/hello
 ```
 
+### User Verification
+
+#### Excluded Resources
+The user verification servlet filter can be configured to exclude API resources so that an authenticated user is still able to access a litmited set of resources. To modify the the exclusion list, update the comma delimited list of ant-path values within the `application.yaml` file in section `security.user-verification.exclude-resources`.
+
+Example:
+```
+security:
+  user-verification:
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profile
+```
+
+By default, authentication resources are excluded by the verification filter so that a user is able to login even tho their account requires verification. These resources include:
+* /login
+* /oauth/**
+* /WEB-INF/jsp/**.jsp (this might need to be locked down more specifically if JSPs are used for more than just authentication)
+
+Of course, the verification endpoints are excluded so that end users are able to use the /verify services to verify their account. These resources include:
+* /api/**/verify
+* /api/**/verify/send
+
+Other endpoints that are excluded by default are CSS, JS, and image resources, as well as access to the authenticated user's profile. These resources include:
+* /resources/** (embedded css, js, and imagine)
+* /webjars/** (css, js libraries)
+* /docs/** (access to the apiDoc, which is public)
+* /api/**/profile
+
+#### Verify Code Expiration
+A "verify code" value is an API generated 6 digit code that is sent to a user's mobile device. Once the user receives the verify code, they are instructed to enter the code within the app. The verify code is only valid for a set period of time before it will expire. To configure the number of minutes before the verify code expired, update the `security.user-verification.verify-code-expire-minutes` within the `application.yaml` file. By default, the verify code will expire within 30 minutes.
+```
+security:
+  user-verification:
+    verify-code-expire-minutes: 30
+```
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+
+
 ## Audit Logging
 All enterprise level applications require audit logging of activities and data changes within each of their applications. Some business verticals legally require auditing, such as US banking regulations and US healthcare HIPAA law. While audit logging is required in many industries, every application should include audit logging as a rule because of the many benefits, such as: 
 * Monitoring user activity & volume with specificity
