@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component
 
 @Component
 class Bootstrap implements InitializingBean {
-
     private final BootstrapService bootstrapService
 
     @Autowired
