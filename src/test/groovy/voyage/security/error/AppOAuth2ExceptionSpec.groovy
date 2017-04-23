@@ -1,4 +1,4 @@
-package voyage.security
+package voyage.security.error
 
 import org.springframework.http.HttpStatus
 import spock.lang.Specification

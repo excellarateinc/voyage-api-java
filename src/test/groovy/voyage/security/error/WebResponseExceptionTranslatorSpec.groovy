@@ -1,4 +1,4 @@
-package voyage.common.error
+package voyage.security.error
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

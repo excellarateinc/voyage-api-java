@@ -1,4 +1,4 @@
-package voyage.security
+package voyage.security.error
 
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.SerializerProvider
