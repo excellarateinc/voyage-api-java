@@ -3,6 +3,7 @@ package voyage.security.user
 import spock.lang.Specification
 import voyage.common.PhoneService
 import voyage.security.crypto.CryptoService
+import voyage.security.role.Role
 
 class UserServiceSpec extends Specification {
     User user
@@ -349,5 +350,13 @@ class UserServiceSpec extends Specification {
         then:
             userRepository.findOne(_) >> user
             user.isDeleted
+    }
+
+    def 'get - calls the userRepository.findAllByRolesInList' () {
+        when:
+            Iterable<User> userList = userService.findAllByRolesInList([Role.SUPER])
+        then:
+            userRepository.findAllByRolesInList(_) >> [user]
+            1 == userList.size()
     }
 }
