@@ -67,6 +67,6 @@ class BootstrapService {
         CharacterRule digitRule = new CharacterRule(EnglishCharacterData.Digit, 1)
         CharacterRule specialCharacterRule = new CharacterRule(EnglishCharacterData.Special, 1)
 
-        return Arrays.asList(upperCaseRule, lowerCaseRule, digitRule, specialCharacterRule)
+        return [upperCaseRule, lowerCaseRule, digitRule, specialCharacterRule]
     }
 }
