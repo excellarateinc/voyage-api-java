@@ -10,7 +10,6 @@ import org.springframework.validation.annotation.Validated
 import voyage.common.PhoneService
 import voyage.common.error.UnknownIdentifierException
 import voyage.security.crypto.CryptoService
-import voyage.security.role.Role
 
 import javax.validation.Valid
 import javax.validation.constraints.NotNull

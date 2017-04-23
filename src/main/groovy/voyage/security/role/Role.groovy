@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull
 @EqualsAndHashCode(includes=['name', 'authority'], callSuper=true)
 class Role extends AuditableEntity {
 
-    static final String SUPER = "role.super"
+    static final String SUPER = 'role.super'
 
     @NotNull
     String name
