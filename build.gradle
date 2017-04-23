@@ -77,7 +77,6 @@ dependencies {
     compile group: 'com.googlecode.libphonenumber', name: 'libphonenumber', version: '8.4.0'
     compile group: 'org.passay', name: 'passay', version: '1.2.0'
 
-
     // Testing
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:"${springBootVersion}") {
         exclude(module: 'commons-logging')
