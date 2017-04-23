@@ -50,9 +50,9 @@ class BootstrapService {
                 Authentication authentication =
                         new UsernamePasswordAuthenticationToken(userDetails.username, userDetails.password, userDetails.authorities)
                 SecurityContextHolder.context.setAuthentication(authentication)
-                String password = generator.generatePassword(12, rules)
+                user.password = generator.generatePassword(12, rules)
                 userService.saveDetached(user)
-                superUsersInfo.append("User: ${user.username}, Password: ${password} \n")
+                superUsersInfo.append("User: ${user.username}, Password: ${user.password} \n")
             }
         }
         if (superUsersInfo.length() > 0 ) {
