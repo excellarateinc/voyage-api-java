@@ -6,7 +6,6 @@ import org.passay.PasswordGenerator
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.Profile
 import org.springframework.core.env.Environment
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -38,12 +37,12 @@ class BootstrapService {
     }
 
     void updateSuperUsersPassword() {
-        if (Arrays.asList(environment.getActiveProfiles()).contains("test")) {
+        if (Arrays.asList(environment.activeProfiles).contains('test')) {
             return //skip the change password in the test environment
         }
         Iterable<User> users = userService.findAllByRolesInList([Role.SUPER])
         StringBuilder superUsersInfo = new StringBuilder()
-        List<CharacterRule> passwordRules = passwordRules
+        List<CharacterRule> rules = passwordRules
         PasswordGenerator generator = new PasswordGenerator()
         users.each { user ->
             if (cryptoService.hashMatches('password', user.password)) {
@@ -51,7 +50,7 @@ class BootstrapService {
                 Authentication authentication =
                         new UsernamePasswordAuthenticationToken(userDetails.username, userDetails.password, userDetails.authorities)
                 SecurityContextHolder.context.setAuthentication(authentication)
-                String password = generator.generatePassword(12, passwordRules)
+                String password = generator.generatePassword(12, rules)
                 userService.saveDetached(user)
                 superUsersInfo.append("User: ${user.username}, Password: ${password} \n")
             }
