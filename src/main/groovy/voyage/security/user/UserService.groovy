@@ -94,6 +94,7 @@ class UserService {
             isAccountExpired = userIn.isAccountExpired
             isAccountLocked = userIn.isAccountLocked
             isCredentialsExpired = userIn.isCredentialsExpired
+            forceTokensExpiredDate = userIn.forceTokensExpiredDate
 
             // Default to true for new accounts
             isVerifyRequired = user.id ? userIn.isVerifyRequired : true

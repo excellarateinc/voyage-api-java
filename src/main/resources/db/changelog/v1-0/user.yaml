@@ -66,6 +66,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: force_tokens_expired_date
+                  type: datetime
+                  constraints:
+                    nullable: true
+              - column:
                   name: created_by
                   type: nvarchar(255)
                   constraints:
@@ -163,6 +168,11 @@ databaseChangeLog:
                   type: bit(1)
                   constraints:
                     nullable: false
+              - column:
+                  name: force_tokens_expired_date
+                  type: datetime
+                  constraints:
+                    nullable: true
               - column:
                   name: created_by
                   type: nvarchar(255)

@@ -5,6 +5,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
@@ -19,6 +20,7 @@ import javax.servlet.ServletException
 import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
 import java.security.Principal
 
 /**
@@ -52,10 +54,11 @@ class VerificationServletFilter implements Filter {
     @Override
     void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest)request
+        HttpServletResponse httpResponse = (HttpServletResponse)response
 
         if (isRequestFilterable(httpRequest)) {
             if (isUserVerificationRequired(httpRequest)) {
-                writeUserVerificationResponse(response)
+                writeUserVerificationResponse(httpResponse)
                 return
             }
 
@@ -109,7 +112,7 @@ class VerificationServletFilter implements Filter {
         return false
     }
 
-    private static void writeUserVerificationResponse(ServletResponse response) {
+    private static void writeUserVerificationResponse(HttpServletResponse response) {
         Map errorResponse = [
             error:'403_verify_user',
             errorDescription:'User verification is required',
@@ -117,6 +120,7 @@ class VerificationServletFilter implements Filter {
         JsonBuilder json = new JsonBuilder([errorResponse])
 
         response.contentType = 'application/json'
+        response.status = HttpStatus.FORBIDDEN.value()
         Writer responseWriter = response.writer
         json.writeTo(responseWriter)
         responseWriter.close()
