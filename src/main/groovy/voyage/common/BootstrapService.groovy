@@ -42,7 +42,7 @@ class BootstrapService {
         }
         Iterable<User> users = userService.findAllByRolesInList([Role.SUPER])
         StringBuilder superUsersInfo = new StringBuilder()
-        List<CharacterRule> rules = passwordRules
+        List<CharacterRule> rules = passwordStrengthRules
         PasswordGenerator generator = new PasswordGenerator()
         users.each { user ->
             if (cryptoService.hashMatches('password', user.password)) {
@@ -59,16 +59,14 @@ class BootstrapService {
             LOG.info('Restricted Users found with default password. Generating new passwords:')
             LOG.info(superUsersInfo.toString())
         }
-
     }
 
-    private static List<CharacterRule> getPasswordRules() {
-        List<CharacterRule> rules = Arrays.asList(
-            new CharacterRule(EnglishCharacterData.UpperCase, 1),
-            new CharacterRule(EnglishCharacterData.LowerCase, 1),
-            new CharacterRule(EnglishCharacterData.Digit, 1),
-            new CharacterRule(EnglishCharacterData.Special, 1)
-        )
-        return rules
+    private static List<CharacterRule> getPasswordStrengthRules() {
+        CharacterRule upperCaseRule = new CharacterRule(EnglishCharacterData.UpperCase, 1)
+        CharacterRule lowerCaseRule = new CharacterRule(EnglishCharacterData.LowerCase, 1)
+        CharacterRule digitRule = new CharacterRule(EnglishCharacterData.Digit, 1)
+        CharacterRule specialCharacterRule = new CharacterRule(EnglishCharacterData.Special, 1)
+
+        return Arrays.asList(upperCaseRule, lowerCaseRule, digitRule, specialCharacterRule)
     }
 }
