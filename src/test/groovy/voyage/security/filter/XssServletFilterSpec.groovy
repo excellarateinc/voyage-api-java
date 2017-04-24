@@ -1,6 +1,7 @@
-package voyage.security
+package voyage.security.filter
 
 import spock.lang.Specification
+import voyage.security.filter.XssServletFilter.XssRequestWrapper
 
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
@@ -9,12 +10,12 @@ import javax.servlet.http.HttpServletResponse
 class XssServletFilterSpec extends Specification {
     HttpServletRequest request
     HttpServletResponse response
-    XSSRequestWrapper xssRequestWrapper
+    XssRequestWrapper xssRequestWrapper
 
     def setup() {
         request = Mock(HttpServletRequest)
         response = Mock(HttpServletResponse)
-        xssRequestWrapper = new XSSRequestWrapper(request)
+        xssRequestWrapper = new XssServletFilter().getXssRequestWrapperInstance(request)
     }
 
     def 'filter wraps the incoming request with a XSSRequestWrapper'() {
@@ -27,7 +28,7 @@ class XssServletFilterSpec extends Specification {
 
         then:
             1 * filterChain.doFilter(*_) >> { args ->
-                assert args[0] instanceof XSSRequestWrapper
+                assert args[0] instanceof XssRequestWrapper
             }
     }
 

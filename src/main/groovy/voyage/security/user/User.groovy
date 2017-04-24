@@ -57,6 +57,13 @@ class User extends AuditableEntity {
     @JsonIgnore
     Boolean isVerifyRequired = Boolean.FALSE
 
+    /**
+     * Force all tokens for this client created on or before this date to be expired even if the original token has not
+     * yet expired.
+     */
+    @JsonIgnore
+    Date forceTokensExpiredDate
+
     @ManyToMany
     @JoinTable(name='user_role', joinColumns=@JoinColumn(name='user_id'), inverseJoinColumns=@JoinColumn(name='role_id'))
     @JsonIgnore

@@ -1,11 +1,11 @@
-package voyage.common.error
+package voyage.security.error
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception
+import org.springframework.security.oauth2.common.exceptions.RedirectMismatchException
 import org.springframework.stereotype.Component
-import voyage.security.AppOAuth2Exception
 
 @Component
 class WebResponseExceptionTranslator implements org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator {
@@ -14,7 +14,13 @@ class WebResponseExceptionTranslator implements org.springframework.security.oau
 
     @Override
     ResponseEntity<AppOAuth2Exception> translate(Exception e) throws Exception {
-        if (e instanceof OAuth2Exception) {
+        if (e instanceof RedirectMismatchException) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .header(CORS_ACCESS_CONTROL_ALLOW_ORIGIN, CORS_ACCESS_WILDCARD)
+                    .body(new OAuth2ClientRedirectException())
+
+        } else if (e instanceof OAuth2Exception) {
             OAuth2Exception oAuth2Exception = (OAuth2Exception) e
             return ResponseEntity
                     .status(oAuth2Exception.httpErrorCode)

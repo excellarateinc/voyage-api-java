@@ -1,4 +1,4 @@
-package voyage.security
+package voyage.security.error
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import org.springframework.http.HttpStatus

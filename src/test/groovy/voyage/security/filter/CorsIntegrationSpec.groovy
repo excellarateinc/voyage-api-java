@@ -1,4 +1,4 @@
-package voyage.security
+package voyage.security.filter
 
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
