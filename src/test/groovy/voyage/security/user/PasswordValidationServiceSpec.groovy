@@ -9,40 +9,35 @@ class PasswordValidationServiceSpec extends Specification {
         passwordValidationService.validate('password')
         then:
         InvalidPasswordException e = thrown()
-        e.message == 'The password did not meet the requirements'
-        e.errorCode == '400_password_invalid'
+        e.errorCode == '400_password_invalid_the password did not meet the requirements'
     }
     def 'basic number input for password'() {
         when:
         passwordValidationService.validate('12345678')
         then:
         InvalidPasswordException e = thrown()
-        e.message == 'The password did not meet the requirements'
-        e.errorCode == '400_password_invalid'
+        e.errorCode == '400_password_invalid_the password did not meet the requirements'
     }
     def 'string and number input for password'() {
         when:
         passwordValidationService.validate('Test1234')
         then:
         InvalidPasswordException e = thrown()
-        e.message == 'The password did not meet the requirements'
-        e.errorCode == '400_password_invalid'
+        e.errorCode == '400_password_invalid_the password did not meet the requirements'
     }
     def 'string  number and special char input for password without uppercase'() {
         when:
         passwordValidationService.validate('test@1234')
         then:
         InvalidPasswordException e = thrown()
-        e.message == 'The password did not meet the requirements'
-        e.errorCode == '400_password_invalid'
+        e.errorCode == '400_password_invalid_the password did not meet the requirements'
     }
     def 'string  number and special char input for password without digits'() {
         when:
         passwordValidationService.validate('Test@test')
         then:
         InvalidPasswordException e = thrown()
-        e.message == 'The password did not meet the requirements'
-        e.errorCode == '400_password_invalid'
+        e.errorCode == '400_password_invalid_the password did not meet the requirements'
     }
     def 'string  number and special char input for password with uppercase'() {
         when:
@@ -55,7 +50,6 @@ class PasswordValidationServiceSpec extends Specification {
         passwordValidationService.validate('Test&1234 ')
         then:
         InvalidPasswordException e = thrown()
-        e.message == 'The password did not meet the requirements'
-        e.errorCode == '400_password_invalid'
+        e.errorCode == '400_password_invalid_the password did not meet the requirements'
     }
 }

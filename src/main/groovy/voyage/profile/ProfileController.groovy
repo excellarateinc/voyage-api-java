@@ -22,10 +22,9 @@ class ProfileController {
     private final UserService userService
 
     @Autowired
-    ProfileController(ProfileService profileService, VerifyService userVerifyService,UserService userService) {
+    ProfileController(ProfileService profileService, VerifyService userVerifyService) {
         this.profileService = profileService
         this.userVerifyService = userVerifyService
-        this.userService = userService
     }
 
     /**
@@ -83,32 +82,6 @@ class ProfileController {
         HttpHeaders headers = new HttpHeaders()
         headers.set(HttpHeaders.LOCATION, '/v1/profile')
         return new ResponseEntity(headers, HttpStatus.CREATED)
-    }
-
-    /**
-     * @api {put} /v1/users/:userId Update a user
-     * @apiVersion 1.0.0
-     * @apiName UserUpdate
-     * @apiGroup User
-     *
-     * @apiPermission api.user.update
-     *
-     * @apiUse AuthHeader
-     *
-     * @apiUse UserRequestModel
-     * @apiUse UserSuccessModel
-     * @apiUse UnauthorizedError
-     * @apiUse UsernameAlreadyInUseError
-     **/
-    @PutMapping('/password')
-    ResponseEntity updatePassword(@RequestBody ResetPassword password) {
-        User currentUser = userService.getCurrentUser()
-        if(currentUser) {
-            userService.updatePassword(currentUser, password)
-        }
-        HttpHeaders headers = new HttpHeaders()
-        headers.set(HttpHeaders.LOCATION, '/v1/profile')
-        return new ResponseEntity(headers, HttpStatus.OK)
     }
 
 }

@@ -10,8 +10,7 @@ class InvalidPasswordExceptionSpec extends  Specification {
 
         then:
         ex.httpStatus == HttpStatus.BAD_REQUEST
-        ex.errorCode == '400_password_invalid'
-        ex.message == 'The password did not meet the requirements'
+        ex.errorCode == '400_password_invalid_the password did not meet the requirements'
     }
 
     def 'Override the exception message only affects the description'() {
@@ -20,8 +19,7 @@ class InvalidPasswordExceptionSpec extends  Specification {
 
         then:
         ex.httpStatus == HttpStatus.BAD_REQUEST
-        ex.errorCode == '400_password_invalid'
-        ex.message == 'TEST MESSAGE'
+        ex.errorCode == '400_password_invalid_test message'
     }
 
     def 'Override the exception message and extend the code'() {
