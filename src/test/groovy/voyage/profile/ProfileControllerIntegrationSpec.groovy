@@ -9,7 +9,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import voyage.security.crypto.CryptoService
 import voyage.security.user.PhoneType
-import voyage.security.user.ResetPassword
+
 import voyage.security.user.User
 import voyage.security.user.UserPhone
 import voyage.security.user.UserService
@@ -159,60 +159,6 @@ class ProfileControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.statusCode.value() == 400
             responseEntity.body[0].error == '400_too_many_phones'
             responseEntity.body[0].errorDescription == 'Too many phones have been added to the profile. Maximum of 5.'
-    }
-    def '/api/v1/profile/password PUT - Password update with correct old password and new and confirm password'() {
-        given:
-        ResetPassword password = new ResetPassword()
-        password.password = 'password'
-        password.newPassword = 'Efgh@5678'
-        password.confirmPassword = 'Efgh@5678'
-        HttpHeaders headers = new HttpHeaders()
-        headers.setContentType(MediaType.APPLICATION_JSON)
-        HttpEntity<ResetPassword> httpEntity = new HttpEntity<ResetPassword>(password, headers)
-
-        when:
-        ResponseEntity<List> responseEntity = PUT('/api/v1/profile/password', httpEntity, List, superClient)
-
-        then:
-        responseEntity.statusCode.value() == 200
-
-    }
-
-    def '/api/v1/profile/password PUT - Password update with Incorrect old password and new and confirm password'() {
-        given:
-        ResetPassword password = new ResetPassword()
-        password.password = 'password123'
-        password.newPassword = 'Efgh@5678'
-        password.confirmPassword = 'Efgh@5678'
-        HttpHeaders headers = new HttpHeaders()
-        headers.setContentType(MediaType.APPLICATION_JSON)
-        HttpEntity<ResetPassword> httpEntity = new HttpEntity<ResetPassword>(password, headers)
-
-        when:
-        ResponseEntity<List> responseEntity = PUT('/api/v1/profile/password', httpEntity, List, superClient)
-
-        then:
-        responseEntity.statusCode.value() == 400
-        responseEntity.body[0].error == '400_password_invalid'
-
-    }
-    def '/api/v1/profile/password PUT - Password update with correct old password and unmatched new and confirm password'() {
-        given:
-        ResetPassword password = new ResetPassword()
-        password.password = 'password'
-        password.newPassword = 'Efgh@5678'
-        password.confirmPassword = 'Efgh@5697'
-        HttpHeaders headers = new HttpHeaders()
-        headers.setContentType(MediaType.APPLICATION_JSON)
-        HttpEntity<ResetPassword> httpEntity = new HttpEntity<ResetPassword>(password, headers)
-
-        when:
-        ResponseEntity<List> responseEntity = PUT('/api/v1/profile/password', httpEntity, List, superClient)
-
-        then:
-        responseEntity.statusCode.value() == 400
-        responseEntity.body[0].error == '400_password_invalid'
-
     }
 
 }

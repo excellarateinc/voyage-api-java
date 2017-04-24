@@ -9,13 +9,17 @@ import org.hibernate.validator.constraints.NotBlank
 import voyage.common.AuditableEntity
 import voyage.security.role.Role
 
+import javax.persistence.Basic
 import javax.persistence.CascadeType
+import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.JoinColumn
 import javax.persistence.JoinTable
 import javax.persistence.ManyToMany
 import javax.persistence.OneToMany
+import javax.persistence.Temporal
+import javax.persistence.TemporalType
 import javax.validation.constraints.NotNull
 
 @Entity
@@ -63,6 +67,9 @@ class User extends AuditableEntity {
     Set<UserPhone> phones
 
     @JsonIgnore
+    @Basic(optional = false)
+    @Column(name = 'passwordCreatedDate')
+    @Temporal(TemporalType.TIMESTAMP)
     Date passwordCreatedDate
 
 }

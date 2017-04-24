@@ -21,17 +21,16 @@ import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import java.security.Principal
 
-/**
- * Created by user on 4/20/2017.
- */
 @Component
-class PasswordExpiryVerificationFilter implements Filter{
+class PasswordExpiryVerificationFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(PasswordExpiryVerificationFilter)
     private final UserService userService
     @Value('${security.password-verification.password-reset-days}')
     private int passwordResetDays
+    @Value('${security.user-verification.exclude-resources}')
+    private String[] userResourcePathExclusions
     @Value('${security.password-verification.exclude-resources}')
-    private String[] resourcePathExclusions
+    private String[] passwordResourcePathExclusions
     @Override
     void init(FilterConfig filterConfig) throws ServletException {
 
@@ -49,8 +48,6 @@ class PasswordExpiryVerificationFilter implements Filter{
                 return
             }
         } else {
-            println("USER VERIFICATION FILTER: Request path ${getRequestPath(httpRequest)} is excluded from this filter. " +
-                    'Skipping user verification.')
         LOG.debug("USER VERIFICATION FILTER: Request path ${getRequestPath(httpRequest)} is excluded from this filter. " +
                 'Skipping user verification.')
         }
@@ -85,7 +82,8 @@ class PasswordExpiryVerificationFilter implements Filter{
                     LOG.debug('USER PASSWORD VERIFICATION FILTER: Authenticated principal is not a recognized object. Skipping user verification.')
                 }
             } else {
-                LOG.debug('USER PASSWORD VERIFICATION FILTER: Authenticated user is not a recognized Authorization object. Skipping user verification.')
+                LOG.debug('USER PASSWORD VERIFICATION FILTER: Authenticated user is not a recognized Authorization object.' +
+                        ' Skipping user verification.')
             }
         } else {
             LOG.debug('USER PASSWORD VERIFICATION FILTER: User is not authenticated. Skipping user verification.')
@@ -109,9 +107,12 @@ class PasswordExpiryVerificationFilter implements Filter{
         String path = getRequestPath(request)
         AntPathMatcher antPathMatcher = new AntPathMatcher()
 
-        for (String antPattern : resourcePathExclusions) {
-            println("1."+antPattern)
-            println("2."+path)
+        for (String antPattern : userResourcePathExclusions) {
+            if (antPathMatcher.match(antPattern, path)) {
+                return false
+            }
+        }
+        for (String antPattern : passwordResourcePathExclusions) {
             if (antPathMatcher.match(antPattern, path)) {
                 return false
             }
@@ -125,9 +126,28 @@ class PasswordExpiryVerificationFilter implements Filter{
         }
         return url
     }
-    private boolean isPasswordExpired(User user){
-        return  passwordResetDays!= 0 | ((new Date() - user.passwordCreatedDate  ) > passwordResetDays ) ? true :false
+    private boolean isPasswordExpired(User user) {
+        Date passwordCreatedDate = user.passwordCreatedDate ? user.passwordCreatedDate : new Date()
+        long diffInDays = getDaysDifference(passwordCreatedDate, new Date())
+        if (passwordResetDays == 0) {
+            return false
+        }
+        return  diffInDays > passwordResetDays
     }
+
+    private long getDaysDifference(Date oldDate, Date newDate) {
+            int hoursOfDay = 24
+            int minutes = 60
+            Calendar calendar1 = Calendar.instance
+            Calendar calendar2 = Calendar.instance
+            calendar1.setTime(oldDate)
+            calendar1.setTime(newDate)
+            long milliSecondForDate1 = calendar1.timeInMillis
+            long milliSecondForDate2 = calendar2.timeInMillis
+            long diffInMillis = milliSecondForDate2 - milliSecondForDate1
+            long diffInDays = diffInMillis / (hoursOfDay * minutes * minutes * 1000)
+            return diffInDays
+        }
     @Override
     void destroy() {
 

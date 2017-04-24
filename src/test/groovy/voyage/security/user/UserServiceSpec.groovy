@@ -1,7 +1,6 @@
 package voyage.security.user
 
 import spock.lang.Specification
-import voyage.common.PasswordValidationService
 import voyage.common.PhoneService
 import voyage.security.crypto.CryptoService
 
@@ -13,12 +12,12 @@ class UserServiceSpec extends Specification {
     PhoneService phoneService = new PhoneService()
     PasswordValidationService passwordValidationService = new PasswordValidationService()
 
-    UserService userService = new UserService(userRepository, cryptoService, phoneService,passwordValidationService)
+    UserService userService = new UserService(userRepository, cryptoService, phoneService, passwordValidationService)
 
     def setup() {
         phoneService.defaultCountry = 'US'
         user = new User(
-                username:'username', firstName:'LSS', lastName:'India', password:'Abcd&1234', isVerifyRequired:false,
+                username:'username', firstName:'LSS', lastName:'India', password:'Test&1234', isVerifyRequired:false,
                 isEnabled:false, isAccountExpired:false, isAccountLocked:false, isCredentialsExpired:false,
         )
         user.phones = [new UserPhone(phoneNumber:'+16518886020', phoneType:PhoneType.MOBILE)]
@@ -45,7 +44,7 @@ class UserServiceSpec extends Specification {
             savedUser.username == 'username'
             savedUser.firstName == 'LSS'
             savedUser.lastName == 'India'
-            savedUser.password == 'Abcd&1234'
+            savedUser.password == 'Test&1234'
             savedUser.isVerifyRequired
             !savedUser.isEnabled
             !savedUser.isAccountExpired
@@ -80,7 +79,7 @@ class UserServiceSpec extends Specification {
         given:
             user.id = 1
             user.phones[0].phoneType = PhoneType.HOME
-            User existingUser = new User(id:1, firstName:'test', lastName:'test', username:'username', password:'Abcd&1234')
+            User existingUser = new User(id:1, firstName:'test', lastName:'test', username:'username', password:'Test&1234')
             existingUser.phones = [new UserPhone(id:1, phoneNumber:'+16518886019', phoneType:PhoneType.MOBILE, isDeleted:false)]
         when:
             userService.saveDetached(user)
@@ -98,9 +97,9 @@ class UserServiceSpec extends Specification {
                     id:1,
                     firstName:'FIRST',
                     lastName:'LAST',
-                    username:'Abcd&1234',
+                    username:'Test&1234',
                     isEnabled:true,
-                    password: 'Abcd&1234'
+                    password:'Test&1234',
             )
             User updatedUser = userService.saveDetached(userIn)
         then:
@@ -109,7 +108,7 @@ class UserServiceSpec extends Specification {
             updatedUser.isEnabled
             updatedUser.firstName == 'FIRST'
             updatedUser.lastName == 'LAST'
-            updatedUser.username == 'Abcd&1234'
+            updatedUser.username == 'Test&1234'
     }
 
     def 'save - fetches an existing user if an ID is given and updates select fields'() {
@@ -120,7 +119,7 @@ class UserServiceSpec extends Specification {
                     firstName:'FIRST',
                     lastName:'LAST',
                     username:'USERNAME',
-                    password:'Abcd&1234',
+                    password:'Test&1234',
                     isEnabled:true,
                     isVerifyRequired:true,
                     isAccountExpired:true,
@@ -132,12 +131,12 @@ class UserServiceSpec extends Specification {
         then:
             userRepository.findOne(user.id) >> user
             userRepository.save(user) >> user
-            cryptoService.hashEncode(userIn.password) >> 'Abcd&1234'
+            cryptoService.hashEncode(userIn.password) >> 'Test&1234'
 
             updatedUser.firstName == 'FIRST'
             updatedUser.lastName == 'LAST'
             updatedUser.username == 'USERNAME'
-            updatedUser.password == 'Abcd&1234'
+            updatedUser.password == 'Test&1234'
             updatedUser.isEnabled
             updatedUser.isVerifyRequired
             updatedUser.isAccountExpired
@@ -153,7 +152,7 @@ class UserServiceSpec extends Specification {
                     firstName:'FIRST',
                     lastName:'LAST',
                     username:'USERNAME',
-                    password:'Abcd&1234',
+                    password:'Test&1234',
             )
         when:
             User updatedUser = userService.saveDetached(userIn)
@@ -165,7 +164,7 @@ class UserServiceSpec extends Specification {
             updatedUser.firstName == 'FIRST'
             updatedUser.lastName == 'LAST'
             updatedUser.username == 'USERNAME'
-            updatedUser.password == 'Abcd&1234'
+            updatedUser.password == 'Test&1234'
             updatedUser.isEnabled
             !updatedUser.isVerifyRequired
             !updatedUser.isAccountExpired
@@ -181,7 +180,7 @@ class UserServiceSpec extends Specification {
                     firstName:'FIRST',
                     lastName:'LAST',
                     username:'USERNAME',
-                    password:'Abcd&1234',
+                    password:'Test&1234',
             )
             userIn.phones = []
             userIn.phones.add(new UserPhone(phoneType:PhoneType.MOBILE, phoneNumber:'+1-651-888-6021'))
@@ -221,7 +220,7 @@ class UserServiceSpec extends Specification {
                     firstName:'FIRST',
                     lastName:'LAST',
                     username:'USERNAME',
-                    password:'Abcd&1234',
+                    password:'Test&1234',
             )
             userIn.phones = []
             userIn.phones.add(new UserPhone(phoneType:PhoneType.MOBILE, phoneNumber:'123-123-1233'))
@@ -252,7 +251,7 @@ class UserServiceSpec extends Specification {
                     firstName:'FIRST',
                     lastName:'LAST',
                     username:'USERNAME',
-                    password:'Abcd&1234',
+                    password:'Test&1234',
             )
             userIn.phones = []
             userIn.phones.add(new UserPhone(id:1, phoneType:PhoneType.HOME, phoneNumber:'+16518886021'))
@@ -282,7 +281,7 @@ class UserServiceSpec extends Specification {
                     firstName:'FIRST',
                     lastName:'LAST',
                     username:'USERNAME',
-                    password:'Abcd&1234',
+                    password:'Test&1234',
             )
             userIn.phones = []
             userIn.phones.add(new UserPhone(id:2, phoneType:PhoneType.MOBILE, phoneNumber:'+16128886111'))
@@ -355,52 +354,47 @@ class UserServiceSpec extends Specification {
             user.isDeleted
     }
 
-    def 'update password - updating password with correct old password and new and confirm passwords'() {
+    def 'update password - updating password with new password should compare passwords and saving user object'() {
         given:
-            ResetPassword password = new ResetPassword()
-            password.password = 'Abcd&1234'
-            password.newPassword = 'Efgh@5678'
-            password.confirmPassword = 'Efgh@5678'
+           user.password = 'Efgh@5678'
         when:
-            userService.updatePassword(user,password)
+            userService.saveDetached(user)
         then:
-            cryptoService.encrypt('Abcd&1234' ) >> 'Abcd&1234'
+            cryptoService.encrypt('Test&1234' ) >> 'Test&1234'
             1 * cryptoService.hashEncode('Efgh@5678')
             1 * userRepository.findByUsername('username')
             1 * userRepository.save(user)
 
     }
 
-    def 'update password - updating password with Incorrect old password and new and confirm passwords'() {
+    def 'update password - updating password with same old password should not compare passwords '() {
         given:
-            ResetPassword password = new ResetPassword()
-            password.password = 'Abcd&4567'
-            password.newPassword = 'Efgh@5678'
-            password.confirmPassword = 'Efgh@5678'
+        user.password = 'Test&1234'
 
         when:
-        userService.updatePassword(user,password)
+        userService.saveDetached(user)
 
         then:
-        cryptoService.encrypt('Abcd&4567' ) >> 'Abcd&4567'
+        cryptoService.encrypt('Test&1234' ) >> 'Test&1234'
         0 * cryptoService.hashEncode('Efgh@5678')
-        0 * userRepository.findByUsername('username')
-        0 * userRepository.save(user)
+        1 * userRepository.findByUsername('username')
+        1 * userRepository.save(user)
 
     }
-    def 'update password - updating password with correct old password and unmatched new and confirm passwords'() {
+    def 'update password - updating password with null/blank value should give error'() {
         given:
-            ResetPassword password = new ResetPassword()
-            password.password = 'Abcd&1234'
-            password.newPassword = 'Efgh@5678'
-            password.confirmPassword = 'Efgh@5697'
+        user.password = ''
         when:
-            userService.updatePassword(user,password)
+            userService.saveDetached(user)
         then:
-        cryptoService.encrypt('Abcd&1234' ) >> 'Abcd&1234'
-        0 * cryptoService.hashEncode('Efgh@5678')
-        0 * userRepository.findByUsername('username')
-        0 * userRepository.save(user)
-
+        thrown(InvalidPasswordException)
+    }
+    def 'update password - updating password with unsatisfied string combinations  should give error'() {
+        given:
+        user.password = 'password'
+        when:
+        userService.saveDetached(user)
+        then:
+        thrown(InvalidPasswordException)
     }
 }

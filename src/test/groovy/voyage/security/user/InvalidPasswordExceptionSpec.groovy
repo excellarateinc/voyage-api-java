@@ -1,12 +1,8 @@
-package voyage.common
+package voyage.security.user
 
 import org.springframework.http.HttpStatus
 import spock.lang.Specification
-import voyage.common.error.AppException
 
-/**
- * Created by user on 4/19/2017.
- */
 class InvalidPasswordExceptionSpec extends  Specification {
     def 'default exception creates a 400 Bad Request exception'() {
         when:
@@ -15,7 +11,7 @@ class InvalidPasswordExceptionSpec extends  Specification {
         then:
         ex.httpStatus == HttpStatus.BAD_REQUEST
         ex.errorCode == '400_password_invalid'
-        ex.message == 'The password did not met the requirements'
+        ex.message == 'The password did not meet the requirements'
     }
 
     def 'Override the exception message only affects the description'() {
