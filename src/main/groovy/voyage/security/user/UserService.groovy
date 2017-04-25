@@ -66,6 +66,10 @@ class UserService {
         return user
     }
 
+    Iterable<User> findAllByRolesInList(@NotNull List<String> roles) {
+        return userRepository.findAllByRolesInList(roles)
+    }
+
     Iterable<User> listAll() {
         return userRepository.findAll()
     }
