@@ -9,7 +9,6 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import voyage.security.crypto.CryptoService
 import voyage.security.user.PhoneType
-
 import voyage.security.user.User
 import voyage.security.user.UserPhone
 import voyage.security.user.UserService
@@ -160,5 +159,4 @@ class ProfileControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body[0].error == '400_too_many_phones'
             responseEntity.body[0].errorDescription == 'Too many phones have been added to the profile. Maximum of 5.'
     }
-
 }
