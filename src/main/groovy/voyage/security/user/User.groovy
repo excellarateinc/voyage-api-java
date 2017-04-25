@@ -71,5 +71,4 @@ class User extends AuditableEntity {
 
     @JsonIgnore
     Date passwordCreatedDate
-
 }

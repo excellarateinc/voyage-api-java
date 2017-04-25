@@ -3,9 +3,6 @@ package voyage.security.user
 import org.springframework.http.HttpStatus
 import voyage.common.error.AppException
 
-/**
- * Created by user on 4/19/2017.
- */
 class InvalidPasswordException extends AppException {
     private static final HTTP_STATUS  = HttpStatus.BAD_REQUEST
     private static final String DEFAULT_MESSAGE = 'The password did not meet the requirements'

@@ -22,6 +22,7 @@ class UserService {
     private final CryptoService cryptoService
     private final PhoneService phoneService
     private final PasswordValidationService passwordValidationService
+
     @Autowired
     UserService(UserRepository userRepository, CryptoService cryptoService, PhoneService phoneService,
                 PasswordValidationService passwordValidationService) {
@@ -35,7 +36,7 @@ class UserService {
         String username = null
         Authentication authenticationToken = SecurityContextHolder.context.authentication
         if (authenticationToken?.principal instanceof UserDetails) {
-            username = ((UserDetails)authenticationToken.principal).username
+            username = ((UserDetails) authenticationToken.principal).username
         } else if (authenticationToken?.principal instanceof String) {
             username = authenticationToken.principal
         }
@@ -100,7 +101,6 @@ class UserService {
 
             // Default to true for new accounts
             isVerifyRequired = user.id ? userIn.isVerifyRequired : true
-
         }
 
         if (userIn.password != user.password) {
@@ -183,5 +183,4 @@ class UserService {
         }
         return toDelete
     }
-
 }
