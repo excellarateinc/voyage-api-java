@@ -21,6 +21,9 @@ import voyage.security.user.UserService
 @Service
 class BootstrapService {
     private static final Logger LOG = LoggerFactory.getLogger(BootstrapService)
+    private static final String ENVIRONMENT_TEST = 'test'
+    private static final String DEFAULT_PASSWORD = 'password'
+    private static final int PASSWORD_LENGTH = 12
 
     private final UserService userService
     private final CryptoService cryptoService
@@ -36,8 +39,11 @@ class BootstrapService {
         this.environment = environment
     }
 
+    /**
+     * Generates a new password for super users using the default password in other than test environment
+     */
     void updateSuperUsersPassword() {
-        if (Arrays.asList(environment.activeProfiles).contains('test')) {
+        if (Arrays.asList(environment.activeProfiles).contains(ENVIRONMENT_TEST)) {
             return //skip the change password in the test environment
         }
         Iterable<User> users = userService.findAllByRolesInList([Role.SUPER])
@@ -45,12 +51,12 @@ class BootstrapService {
         List<CharacterRule> rules = passwordStrengthRules
         PasswordGenerator generator = new PasswordGenerator()
         users.each { user ->
-            if (cryptoService.hashMatches('password', user.password)) {
+            if (cryptoService.hashMatches(DEFAULT_PASSWORD, user.password)) {
                 UserDetails userDetails = permissionBasedUserDetailsService.loadUserByUsername(user.username)
                 Authentication authentication =
                         new UsernamePasswordAuthenticationToken(userDetails.username, userDetails.password, userDetails.authorities)
                 SecurityContextHolder.context.setAuthentication(authentication)
-                user.password = generator.generatePassword(12, rules)
+                user.password = generator.generatePassword(PASSWORD_LENGTH, rules)
                 userService.saveDetached(user)
                 superUsersInfo.append("User: ${user.username}, Password: ${user.password} \n")
             }
