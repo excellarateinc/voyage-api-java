@@ -127,27 +127,13 @@ class PasswordExpiryVerificationFilter implements Filter {
         return url
     }
     private boolean isPasswordExpired(User user) {
-        Date passwordCreatedDate = user.passwordCreatedDate ? user.passwordCreatedDate : new Date()
-        long diffInDays = getDaysDifference(passwordCreatedDate, new Date())
+        Integer diffInDays = new Date() - user.passwordCreatedDate
         if (passwordResetDays == 0) {
             return false
         }
         return  diffInDays > passwordResetDays
     }
 
-    private long getDaysDifference(Date oldDate, Date newDate) {
-            int hoursOfDay = 24
-            int minutes = 60
-            Calendar calendar1 = Calendar.instance
-            Calendar calendar2 = Calendar.instance
-            calendar1.setTime(oldDate)
-            calendar1.setTime(newDate)
-            long milliSecondForDate1 = calendar1.timeInMillis
-            long milliSecondForDate2 = calendar2.timeInMillis
-            long diffInMillis = milliSecondForDate2 - milliSecondForDate1
-            long diffInDays = diffInMillis / (hoursOfDay * minutes * minutes * 1000)
-            return diffInDays
-        }
     @Override
     void destroy() {
 

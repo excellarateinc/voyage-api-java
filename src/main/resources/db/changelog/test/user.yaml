@@ -54,7 +54,7 @@ databaseChangeLog:
                   value: "2013-03-19 16:57:04"
               - column:
                   name: password_created_date
-                  value: "2017-04-20 00:00:00"
+                  value: ${now}
 
 
         - insert:
@@ -107,4 +107,4 @@ databaseChangeLog:
                   value: "2013-03-19 16:57:04"
               - column:
                   name: password_created_date
-                  value: "2017-04-20 00:00:00"
+                  value: ${now}

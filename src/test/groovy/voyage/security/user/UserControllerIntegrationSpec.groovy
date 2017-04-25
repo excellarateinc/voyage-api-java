@@ -378,30 +378,4 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body[0].error == '404_unknown_identifier'
             responseEntity.body[0].errorDescription == 'Unknown record identifier provided'
     }
-    def '/api/v1/users POST - Super User password update'() {
-        given:
-        User user = new User(
-                firstName:'Test3', lastName:'User', username:'username4', email:'test@test.com', password:'Test@4567',
-        )
-        user.phones = [new UserPhone(phoneNumber:'+1-651-888-6021', phoneType:PhoneType.MOBILE)]
-
-        user.firstName = 'Test3-UPDATED'
-
-        HttpHeaders headers = new HttpHeaders()
-        headers.setContentType(MediaType.APPLICATION_JSON)
-        HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
-
-        when:
-        ResponseEntity<User> responseEntity = POST('/api/v1/users', httpEntity, User, superClient)
-
-        then:
-        responseEntity.statusCode.value() == 201
-        responseEntity.body.id
-        responseEntity.body.firstName == 'Test3-UPDATED'
-        responseEntity.body.lastName == 'User'
-        responseEntity.body.username == 'username4'
-        responseEntity.body.email == 'test@test.com'
-        cryptoService.hashMatches('Test@4567', responseEntity.body.password)
-    }
-
 }

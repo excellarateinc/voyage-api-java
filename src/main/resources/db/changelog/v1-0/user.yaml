@@ -259,7 +259,7 @@ databaseChangeLog:
                   valueBoolean: false
               - column:
                   name: password_created_date
-                  type: datetime
+                  valueDate: ${now}
         - insert:
             tableName: user
             columns:
@@ -310,4 +310,4 @@ databaseChangeLog:
                   valueBoolean: false
               - column:
                   name: password_created_date
-                  type: datetime
+                  valueDate: ${now}

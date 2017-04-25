@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 import voyage.security.user.User
-import voyage.security.user.UserService
 import voyage.security.verify.VerifyService
 
 @RestController
@@ -18,7 +17,6 @@ import voyage.security.verify.VerifyService
 class ProfileController {
     private final ProfileService profileService
     private final VerifyService userVerifyService
-    private final UserService userService
 
     @Autowired
     ProfileController(ProfileService profileService, VerifyService userVerifyService) {

@@ -100,8 +100,7 @@ class UserService {
 
             // Default to true for new accounts
             isVerifyRequired = user.id ? userIn.isVerifyRequired : true
-            //Default to todays date
-           // user.passwordCreated = new Date()
+
         }
 
         if (userIn.password != user.password) {
