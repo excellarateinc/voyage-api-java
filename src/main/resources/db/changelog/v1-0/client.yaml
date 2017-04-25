@@ -54,6 +54,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: force_tokens_expired_date
+                  type: datetime
+                  constraints:
+                    nullable: true
+              - column:
                   name: is_enabled
                   type: bit(1)
                   constraints:
@@ -145,6 +150,11 @@ databaseChangeLog:
                   type: int
                   constraints:
                     nullable: false
+              - column:
+                  name: force_tokens_expired_date
+                  type: datetime
+                  constraints:
+                    nullable: true
               - column:
                   name: is_enabled
                   type: bit(1)

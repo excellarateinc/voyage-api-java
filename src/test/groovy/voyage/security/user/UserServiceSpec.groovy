@@ -107,6 +107,7 @@ class UserServiceSpec extends Specification {
             updatedUser.firstName == 'FIRST'
             updatedUser.lastName == 'LAST'
             updatedUser.username == 'USERNAME'
+            !updatedUser.forceTokensExpiredDate
     }
 
     def 'save - fetches an existing user if an ID is given and updates select fields'() {
@@ -123,6 +124,7 @@ class UserServiceSpec extends Specification {
                     isAccountExpired:true,
                     isAccountLocked:true,
                     isCredentialsExpired:true,
+                    forceTokensExpiredDate:new Date(),
             )
         when:
             User updatedUser = userService.saveDetached(userIn)
@@ -140,6 +142,7 @@ class UserServiceSpec extends Specification {
             updatedUser.isAccountExpired
             updatedUser.isAccountLocked
             updatedUser.isCredentialsExpired
+            updatedUser.forceTokensExpiredDate == userIn.forceTokensExpiredDate
     }
 
     def 'save - updating user with no password change does not re-encode the password'() {

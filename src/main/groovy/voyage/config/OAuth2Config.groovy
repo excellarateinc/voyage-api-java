@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken
+import org.springframework.security.oauth2.common.OAuth2AccessToken
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer
@@ -15,14 +17,16 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer
+import org.springframework.security.oauth2.provider.OAuth2Authentication
 import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler
 import org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.access.AccessDeniedHandler
-import voyage.common.error.WebResponseExceptionTranslator
 import voyage.security.PermissionBasedClientDetailsService
 import voyage.security.crypto.KeyStoreService
+import voyage.security.error.WebResponseExceptionTranslator
+
 import java.security.KeyPair
 
 @Configuration
@@ -56,7 +60,7 @@ class OAuth2Config {
         @Bean
         JwtAccessTokenConverter accessTokenConverter() {
             KeyPair keyPair = keyStoreService.getRsaKeyPair(privateKeyName, privateKeyPassword.toCharArray())
-            JwtAccessTokenConverter converter = new JwtAccessTokenConverter()
+            JwtAccessTokenConverter converter = new TimestampJwtAccessTokenConverter()
             converter.keyPair = keyPair
             return converter
         }
@@ -83,6 +87,19 @@ class OAuth2Config {
         @Override
         void configure(ClientDetailsServiceConfigurer clients) throws Exception {
             clients.withClientDetails(permissionBasedClientDetailsService)
+        }
+
+        class TimestampJwtAccessTokenConverter extends JwtAccessTokenConverter {
+            @Override
+            OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
+                DefaultOAuth2AccessToken token = (DefaultOAuth2AccessToken)accessToken
+                if (!token.additionalInformation) {
+                    Map<String, Object> additionalInfo = [:]
+                    token.setAdditionalInformation(additionalInfo)
+                }
+                token.additionalInformation.put('created', Calendar.instance.timeInMillis)
+                return super.enhance(accessToken, authentication)
+            }
         }
     }
 

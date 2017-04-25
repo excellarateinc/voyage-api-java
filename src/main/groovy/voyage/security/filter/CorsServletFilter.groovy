@@ -1,4 +1,4 @@
-package voyage.security
+package voyage.security.filter
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

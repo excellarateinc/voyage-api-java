@@ -976,6 +976,13 @@ HTTP Status: 404 Not Found
 ]
 ```
 
+#### Packages - Where Should Exceptions Live? 
+This API follows a [package by feature](DEVELOPMENT-RECIPES.md#folder-by-feature) organization structure, which means that all files relating to a feature should be bundled together within the feature folder/package. For example, a UsernameAlreadyExistsException that is thrown by the voyage.user.UserService class, should be created within the voyage.user package or a sub-package like voyage.user.error if there are a number of exceptions that are cluttering the main package. 
+
+> NOTE: Do not place Exception classes that are specific to a feature into a _common_ package or some other unrelated package. Follow the [package by feature](DEVELOPMENT-RECIPES.md#folder-by-feature) organization structure strictly and only have a class exist in a _common_ package if it is truly used by multiple features and is general enough to live outside of the feature. 
+
+:arrow_up: [Back to Top](#table-of-contents)
+
 
 
 ## Build & Deploy
