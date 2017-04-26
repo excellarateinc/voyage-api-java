@@ -24,7 +24,7 @@ class WeakPasswordException extends AppException {
 
     @Override
     String getErrorCode() {
-        String code = HTTP_STATUS.value() + '_password_invalid'
+        String code = HTTP_STATUS.value() + '_week_password'
         if (codeExtension) {
             code = code + '_' + codeExtension.toLowerCase()
         }

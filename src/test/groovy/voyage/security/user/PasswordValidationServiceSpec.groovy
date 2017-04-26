@@ -10,7 +10,8 @@ class PasswordValidationServiceSpec extends Specification {
 
         then:
             WeakPasswordException e = thrown()
-            e.errorCode == '400_password_invalid_the password did not meet the requirements'
+            e.errorCode == '400_week_password_the password did not meet the requirements.' +
+                    'password should contain 1 upper case character, 1 lower case character, 1 special character and should not have any whitespace.'
     }
 
     def 'basic number input for password'() {
@@ -19,7 +20,8 @@ class PasswordValidationServiceSpec extends Specification {
 
         then:
             WeakPasswordException e = thrown()
-            e.errorCode == '400_password_invalid_the password did not meet the requirements'
+            e.errorCode == '400_week_password_the password did not meet the requirements.' +
+                    'password should contain 1 upper case character, 1 lower case character, 1 special character and should not have any whitespace.'
     }
 
     def 'string and number input for password'() {
@@ -28,7 +30,8 @@ class PasswordValidationServiceSpec extends Specification {
 
         then:
             WeakPasswordException e = thrown()
-            e.errorCode == '400_password_invalid_the password did not meet the requirements'
+            e.errorCode == '400_week_password_the password did not meet the requirements.' +
+                    'password should contain 1 upper case character, 1 lower case character, 1 special character and should not have any whitespace.'
     }
 
     def 'string  number and special char input for password without uppercase'() {
@@ -37,7 +40,8 @@ class PasswordValidationServiceSpec extends Specification {
 
         then:
             WeakPasswordException e = thrown()
-            e.errorCode == '400_password_invalid_the password did not meet the requirements'
+            e.errorCode == '400_week_password_the password did not meet the requirements.' +
+                    'password should contain 1 upper case character, 1 lower case character, 1 special character and should not have any whitespace.'
     }
 
     def 'string  number and special char input for password without digits'() {
@@ -46,7 +50,8 @@ class PasswordValidationServiceSpec extends Specification {
 
         then:
             WeakPasswordException e = thrown()
-            e.errorCode == '400_password_invalid_the password did not meet the requirements'
+            e.errorCode == '400_week_password_the password did not meet the requirements.' +
+                    'password should contain 1 upper case character, 1 lower case character, 1 special character and should not have any whitespace.'
     }
 
     def 'string  number and special char input for password with uppercase'() {
@@ -63,6 +68,7 @@ class PasswordValidationServiceSpec extends Specification {
 
         then:
             WeakPasswordException e = thrown()
-            e.errorCode == '400_password_invalid_the password did not meet the requirements'
+            e.errorCode == '400_week_password_the password did not meet the requirements.' +
+                    'password should contain 1 upper case character, 1 lower case character, 1 special character and should not have any whitespace.'
     }
 }

@@ -32,8 +32,6 @@ class PasswordValidationService {
         if (!result.valid) {
             throw new WeakPasswordException()
         }
-
         return true
     }
-
 }

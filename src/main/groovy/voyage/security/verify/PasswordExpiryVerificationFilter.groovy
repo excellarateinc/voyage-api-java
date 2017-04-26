@@ -26,12 +26,16 @@ import voyage.security.user.UserService
 @Order(2)
 class PasswordExpiryVerificationFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(PasswordExpiryVerificationFilter)
+
     @Value('${security.password-verification.password-reset-days}')
     private int passwordResetDays
+
     @Value('${security.user-verification.exclude-resources}')
     private String[] userResourcePathExclusions
+
     @Value('${security.password-verification.exclude-resources}')
     private String[] passwordResourcePathExclusions
+
     private final UserService userService
 
     @Override
@@ -55,7 +59,6 @@ class PasswordExpiryVerificationFilter implements Filter {
             LOG.debug("PASSWORD EXPIRY VERIFICATION FILTER: Request path ${getRequestPath(httpRequest)} is excluded from this filter. " +
                     'Skipping user verification.')
         }
-
         chain.doFilter(request, response)
     }
     private boolean isUserCredentialsExpired(HttpServletRequest httpRequest) {

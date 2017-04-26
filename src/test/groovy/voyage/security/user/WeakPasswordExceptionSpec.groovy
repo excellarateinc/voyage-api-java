@@ -10,7 +10,8 @@ class WeakPasswordExceptionSpec extends  Specification {
 
         then:
             ex.httpStatus == HttpStatus.BAD_REQUEST
-            ex.errorCode == '400_password_invalid_the password did not meet the requirements'
+            ex.errorCode == '400_week_password_the password did not meet the requirements.' +
+                    'password should contain 1 upper case character, 1 lower case character, 1 special character and should not have any whitespace.'
     }
 
     def 'Override the exception message only affects the description'() {
@@ -19,7 +20,7 @@ class WeakPasswordExceptionSpec extends  Specification {
 
         then:
             ex.httpStatus == HttpStatus.BAD_REQUEST
-            ex.errorCode == '400_password_invalid_test message'
+            ex.errorCode == '400_week_password_test message'
     }
 
     def 'Override the exception message and extend the code'() {
@@ -28,7 +29,7 @@ class WeakPasswordExceptionSpec extends  Specification {
 
         then:
             ex.httpStatus == HttpStatus.BAD_REQUEST
-            ex.errorCode == '400_password_invalid_ext'
+            ex.errorCode == '400_week_password_ext'
             ex.message == 'TEST MESSAGE'
     }
 }
