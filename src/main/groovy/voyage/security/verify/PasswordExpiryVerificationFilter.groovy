@@ -52,7 +52,7 @@ class PasswordExpiryVerificationFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest)request
         if (isRequestFilterable(httpRequest)) {
             if (isUserCredentialsExpired(httpRequest)) {
-                writeUserVerificationResponse(response)
+                writePasswordVerificationResponse(response)
                 return
             }
         } else {
@@ -98,13 +98,12 @@ class PasswordExpiryVerificationFilter implements Filter {
         return false
     }
 
-    private static void writeUserVerificationResponse(ServletResponse response) {
+    private static void writePasswordVerificationResponse(ServletResponse response) {
         Map errorResponse = [
                 error:'403_password_expired',
                 errorDescription:'Password is expired. Please change the password to access the application',
         ]
         JsonBuilder json = new JsonBuilder([errorResponse])
-
         response.contentType = 'application/json'
         Writer responseWriter = response.writer
         json.writeTo(responseWriter)
@@ -115,7 +114,6 @@ class PasswordExpiryVerificationFilter implements Filter {
     private boolean isRequestFilterable(HttpServletRequest request) {
         String path = getRequestPath(request)
         AntPathMatcher antPathMatcher = new AntPathMatcher()
-
         for (String antPattern : userResourcePathExclusions) {
             if (antPathMatcher.match(antPattern, path)) {
                 return false

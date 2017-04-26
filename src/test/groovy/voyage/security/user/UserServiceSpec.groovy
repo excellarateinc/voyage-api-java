@@ -368,7 +368,6 @@ class UserServiceSpec extends Specification {
             1 * cryptoService.hashEncode('Efgh@5678')
             1 * userRepository.findByUsername('username')
             1 * userRepository.save(user)
-
     }
 
     def 'update password - updating password with same old password should not compare passwords '() {
@@ -383,9 +382,8 @@ class UserServiceSpec extends Specification {
             0 * cryptoService.hashEncode('Efgh@5678')
             1 * userRepository.findByUsername('username')
             1 * userRepository.save(user)
-
     }
-    
+
     def 'update password - updating password with null/blank value should give error'() {
         given:
             user.password = ''
