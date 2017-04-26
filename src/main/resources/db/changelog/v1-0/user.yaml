@@ -98,7 +98,6 @@ databaseChangeLog:
               - column:
                   name: password_created_date
                   type: datetime
-
   - changeSet:
       id: v1.0-user-audit-table-create
       author: Voyage

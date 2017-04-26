@@ -53,9 +53,9 @@ class PasswordExpiryVerificationFilter implements Filter {
             }
         } else {
             LOG.debug("PASSWORD EXPIRY VERIFICATION FILTER: Request path ${getRequestPath(httpRequest)} is excluded from this filter. " +
-                'Skipping user verification.')
+                    'Skipping user verification.')
         }
-        
+
         chain.doFilter(request, response)
     }
     private boolean isUserCredentialsExpired(HttpServletRequest httpRequest) {
@@ -81,7 +81,8 @@ class PasswordExpiryVerificationFilter implements Filter {
                         LOG.debug('PASSWORD EXPIRY VERIFICATION FILTER: User was not found in the database. Skipping password expiry verification.')
                     }
                 } else {
-                    LOG.debug('PASSWORD EXPIRY VERIFICATION FILTER: Authenticated principal is not a recognized object. Skipping password expiry verification.')
+                    LOG.debug('PASSWORD EXPIRY VERIFICATION FILTER: Authenticated principal is not a recognized object. ' +
+                            'Skipping password expiry verification.')
                 }
             } else {
                 LOG.debug('PASSWORD EXPIRY VERIFICATION FILTER: Authenticated user is not a recognized Authorization object.' +
@@ -92,6 +93,7 @@ class PasswordExpiryVerificationFilter implements Filter {
         }
         return false
     }
+
     private static void writeUserVerificationResponse(ServletResponse response) {
         Map errorResponse = [
                 error:'403_password_expired',
@@ -105,6 +107,7 @@ class PasswordExpiryVerificationFilter implements Filter {
         responseWriter.close()
         responseWriter.flush()
     }
+
     private boolean isRequestFilterable(HttpServletRequest request) {
         String path = getRequestPath(request)
         AntPathMatcher antPathMatcher = new AntPathMatcher()
@@ -121,6 +124,7 @@ class PasswordExpiryVerificationFilter implements Filter {
         }
         return true
     }
+
     private static String getRequestPath(HttpServletRequest request) {
         String url = request.servletPath
         if (request.pathInfo) {
@@ -128,6 +132,7 @@ class PasswordExpiryVerificationFilter implements Filter {
         }
         return url
     }
+
     private boolean isPasswordExpired(User user) {
         Integer diffInDays = new Date() - user.passwordCreatedDate
         if (passwordResetDays == 0) {
@@ -140,4 +145,5 @@ class PasswordExpiryVerificationFilter implements Filter {
     void destroy() {
 
     }
+
 }

@@ -11,7 +11,6 @@ class UserServiceSpec extends Specification {
     CryptoService cryptoService = Mock()
     PhoneService phoneService = new PhoneService()
     PasswordValidationService passwordValidationService = new PasswordValidationService()
-
     UserService userService = new UserService(userRepository, cryptoService, phoneService, passwordValidationService)
 
     def setup() {
@@ -360,8 +359,10 @@ class UserServiceSpec extends Specification {
     def 'update password - updating password with new password should compare passwords and saving user object'() {
         given:
            user.password = 'Efgh@5678'
+
         when:
             userService.saveDetached(user)
+
         then:
             cryptoService.encrypt('Test&1234' ) >> 'Test&1234'
             1 * cryptoService.hashEncode('Efgh@5678')
@@ -372,32 +373,36 @@ class UserServiceSpec extends Specification {
 
     def 'update password - updating password with same old password should not compare passwords '() {
         given:
-        user.password = 'Test&1234'
+            user.password = 'Test&1234'
 
         when:
-        userService.saveDetached(user)
+            userService.saveDetached(user)
 
         then:
-        cryptoService.encrypt('Test&1234' ) >> 'Test&1234'
-        0 * cryptoService.hashEncode('Efgh@5678')
-        1 * userRepository.findByUsername('username')
-        1 * userRepository.save(user)
+            cryptoService.encrypt('Test&1234' ) >> 'Test&1234'
+            0 * cryptoService.hashEncode('Efgh@5678')
+            1 * userRepository.findByUsername('username')
+            1 * userRepository.save(user)
 
     }
     def 'update password - updating password with null/blank value should give error'() {
         given:
-        user.password = ''
+            user.password = ''
+
         when:
             userService.saveDetached(user)
+
         then:
-        thrown(WeakPasswordException)
+            thrown(WeakPasswordException)
     }
     def 'update password - updating password with unsatisfied string combinations  should give error'() {
         given:
-        user.password = 'password'
+            user.password = 'password'
+
         when:
-        userService.saveDetached(user)
+            userService.saveDetached(user)
+
         then:
-        thrown(WeakPasswordException)
+            thrown(WeakPasswordException)
     }
 }

@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import java.security.Principal
 
-
 class PasswordExpiryVerificationFilterSpec extends Specification {
     PasswordExpiryVerificationFilter filter
     UserService userService
@@ -91,10 +90,11 @@ class PasswordExpiryVerificationFilterSpec extends Specification {
             1 * request.userPrincipal >> userPrincipal
             2 * userPrincipal.principal >> userDetails
             1 * userDetails.username >> 'test'
-            1 * userService.findByUsername('test') >> new User(isCredentialsExpired:true, passwordCreatedDate : new Date() )
-            1 * request.getPathInfo()
+            1 * userService.findByUsername('test') >> new User(isCredentialsExpired:true, passwordCreatedDate:new Date() )
+            1 * request.pathInfo
             1 * response.writer >> responseWriter
-            1 * responseWriter.append('[{"error":"403_password_expired","errorDescription":"Password is expired. Please change the password to access the application"}]')
+            1 * responseWriter.append('[{"error":"403_password_expired",' +
+                    '"errorDescription":"Password is expired. Please change the password to access the application"}]')
             1 * responseWriter.close()
             1 * responseWriter.flush()
             0 * filterChain.doFilter(request, response)
@@ -113,12 +113,12 @@ class PasswordExpiryVerificationFilterSpec extends Specification {
             1 * request.userPrincipal >> userPrincipal
             2 * userPrincipal.principal >> userDetails
             1 * userDetails.username >> 'test'
-            1 * userService.findByUsername('test') >> new User(isCredentialsExpired:false, passwordCreatedDate : new Date() )
-            1 * request.getPathInfo()
+            1 * userService.findByUsername('test') >> new User(isCredentialsExpired:false, passwordCreatedDate:new Date() )
+            1 * request.pathInfo
             1 * filterChain.doFilter(request, response)
     }
 
-    def 'Request is filterable, has Authentication user token, but credentials are not expired but date of password creation is more than expiration days'() {
+    def 'Logged in user credentials are not expired but date of password creation is more than expiration days'() {
         given:
             Authentication userPrincipal = Mock(Authentication)
             UserDetails userDetails = Mock(UserDetails)
@@ -132,16 +132,17 @@ class PasswordExpiryVerificationFilterSpec extends Specification {
             1 * request.userPrincipal >> userPrincipal
             2 * userPrincipal.principal >> userDetails
             1 * userDetails.username >> 'test'
-            1 * userService.findByUsername('test') >> new User(isCredentialsExpired:false, passwordCreatedDate : new Date() -100 )
-            1 * request.getPathInfo()
+            1 * userService.findByUsername('test') >> new User(isCredentialsExpired:false, passwordCreatedDate:new Date() - 100 )
+            1 * request.pathInfo
             1 * response.writer >> responseWriter
-            1 * responseWriter.append('[{"error":"403_password_expired","errorDescription":"Password is expired. Please change the password to access the application"}]')
+            1 * responseWriter.append('[{"error":"403_password_expired",' +
+                    '"errorDescription":"Password is expired. Please change the password to access the application"}]')
             1 * responseWriter.close()
             1 * responseWriter.flush()
             0 * filterChain.doFilter(request, response)
     }
 
-    def 'Request is filterable, has Authentication user token, but credentials are not expired and date of password creation is more than expiration days but passwordResetDays is 0'() {
+    def 'Logged in user credentials are not expired and date of password creation is more than expiration days but passwordResetDays is 0'() {
         given:
             Authentication userPrincipal = Mock(Authentication)
             UserDetails userDetails = Mock(UserDetails)
@@ -155,10 +156,9 @@ class PasswordExpiryVerificationFilterSpec extends Specification {
             1 * request.userPrincipal >> userPrincipal
             2 * userPrincipal.principal >> userDetails
             1 * userDetails.username >> 'test'
-            1 * userService.findByUsername('test') >> new User(isCredentialsExpired:false, passwordCreatedDate : new Date() -100 )
-            1 * request.getPathInfo()
+            1 * userService.findByUsername('test') >> new User(isCredentialsExpired:false, passwordCreatedDate:new Date() - 100 )
+            1 * request.pathInfo
             1 * filterChain.doFilter(request, response)
     }
-
 
 }

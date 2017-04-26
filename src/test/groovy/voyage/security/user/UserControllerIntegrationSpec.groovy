@@ -85,7 +85,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/users POST - Super User access granted'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username1', email:'test@test.com', password:'Nokia@5610')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username1', email:'test@test.com', password:'Test@1234')
             user.phones = [new UserPhone(phoneNumber:'+1-651-888-6021', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
@@ -101,7 +101,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body.lastName == 'User'
             responseEntity.body.username == 'username1'
             responseEntity.body.email == 'test@test.com'
-            cryptoService.hashMatches('Nokia@5610', responseEntity.body.password)
+            cryptoService.hashMatches('Test@1234', responseEntity.body.password)
     }
 
     def '/api/v1/users POST - Standard User access denied'() {

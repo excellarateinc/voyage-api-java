@@ -55,8 +55,6 @@ databaseChangeLog:
               - column:
                   name: password_created_date
                   value: ${now}
-
-
         - insert:
             tableName: user
             columns:

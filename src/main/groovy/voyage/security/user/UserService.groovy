@@ -36,7 +36,7 @@ class UserService {
         String username = null
         Authentication authenticationToken = SecurityContextHolder.context.authentication
         if (authenticationToken?.principal instanceof UserDetails) {
-            username = ((UserDetails) authenticationToken.principal).username
+            username = ((UserDetails)authenticationToken.principal).username
         } else if (authenticationToken?.principal instanceof String) {
             username = authenticationToken.principal
         }
@@ -109,6 +109,7 @@ class UserService {
                 user.passwordCreatedDate = new Date()
             }
         }
+
         applyPhones(user, userIn)
 
         // Require at least one PhoneType.MOBILE phone

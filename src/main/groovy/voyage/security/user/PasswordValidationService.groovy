@@ -11,12 +11,13 @@ import org.springframework.stereotype.Service
 
 @Service
 class PasswordValidationService {
-    private final int MAX_LENGTH = 30
-    private final int MIN_LENGTH = 8
-    private final int MIN_LOWERCASE_CHARS = 1
-    private final int MIN_UPPERCASE_CHARS = 1
-    private final int MIN_SPL_CHARS = 1
-    private final int MIN_DIGITS = 1
+    private static final int MAX_LENGTH = 30
+    private static final int MIN_LENGTH = 8
+    private static final int MIN_LOWERCASE_CHARS = 1
+    private static final int MIN_UPPERCASE_CHARS = 1
+    private static final int MIN_SPL_CHARS = 1
+    private static final int MIN_DIGITS = 1
+
     boolean validate(String password) {
         CharacterRule upperCaseCharacterRule =  new CharacterRule(EnglishCharacterData.UpperCase, MIN_UPPERCASE_CHARS)
         CharacterRule lowerCaseCharacterRule =  new CharacterRule(EnglishCharacterData.LowerCase, MIN_LOWERCASE_CHARS)
@@ -31,8 +32,8 @@ class PasswordValidationService {
         if (!result.valid) {
             throw new WeakPasswordException()
         }
-        return true
 
+        return true
     }
 
 }
