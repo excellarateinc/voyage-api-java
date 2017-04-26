@@ -96,7 +96,7 @@ security:
       exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profile
       verify-code-expire-minutes: 30
   password-verification:
-    exclude-resources: /api/**/users
+    exclude-resources: /api/**/users, /api/**/verify, /api/**/verify/send
     password-reset-days: 90
 
   test:

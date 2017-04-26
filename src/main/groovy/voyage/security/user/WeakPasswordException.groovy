@@ -3,20 +3,20 @@ package voyage.security.user
 import org.springframework.http.HttpStatus
 import voyage.common.error.AppException
 
-class InvalidPasswordException extends AppException {
+class WeakPasswordException extends AppException {
     private static final HTTP_STATUS  = HttpStatus.BAD_REQUEST
-    private static final String DEFAULT_MESSAGE = 'The password did not meet the requirements'
+    private static final String DEFAULT_MESSAGE = 'The password did not meet the requirements.Password should contain 1 Upper case Character, 1 Lower Case Character, 1 Special Character and should not have any whitespace.'
     private final String codeExtension
 
-    InvalidPasswordException() {
+    WeakPasswordException() {
         this(HTTP_STATUS, DEFAULT_MESSAGE)
     }
 
-    InvalidPasswordException(String message) {
+    WeakPasswordException(String message) {
         this(HTTP_STATUS, message)
     }
 
-    InvalidPasswordException(String message, String codeExtension) {
+    WeakPasswordException(String message, String codeExtension) {
         super(HTTP_STATUS, message)
         this.codeExtension = codeExtension
     }

@@ -3,10 +3,10 @@ package voyage.security.user
 import org.springframework.http.HttpStatus
 import spock.lang.Specification
 
-class InvalidPasswordExceptionSpec extends  Specification {
+class WeakPasswordExceptionSpec extends  Specification {
     def 'default exception creates a 400 Bad Request exception'() {
         when:
-        InvalidPasswordException ex = new InvalidPasswordException()
+        WeakPasswordException ex = new WeakPasswordException()
 
         then:
         ex.httpStatus == HttpStatus.BAD_REQUEST
@@ -15,7 +15,7 @@ class InvalidPasswordExceptionSpec extends  Specification {
 
     def 'Override the exception message only affects the description'() {
         when:
-        InvalidPasswordException ex = new InvalidPasswordException('TEST MESSAGE')
+        WeakPasswordException ex = new WeakPasswordException('TEST MESSAGE')
 
         then:
         ex.httpStatus == HttpStatus.BAD_REQUEST
@@ -24,7 +24,7 @@ class InvalidPasswordExceptionSpec extends  Specification {
 
     def 'Override the exception message and extend the code'() {
         when:
-        InvalidPasswordException ex = new InvalidPasswordException('TEST MESSAGE', 'EXT')
+        WeakPasswordException ex = new WeakPasswordException('TEST MESSAGE', 'EXT')
 
         then:
         ex.httpStatus == HttpStatus.BAD_REQUEST

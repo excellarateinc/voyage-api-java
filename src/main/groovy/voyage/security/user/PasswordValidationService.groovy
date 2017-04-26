@@ -11,27 +11,28 @@ import org.springframework.stereotype.Service
 
 @Service
 class PasswordValidationService {
-    private final int maxLength = 30
-    private final int minLength = 8
-    private final int minimumLowerCaseChars = 1
-    private final int minimumUpperCaseChars = 1
-    private final int minimumSpecialChars = 1
-    private final int minimumDigits = 1
+    private final int MAX_LENGTH = 30
+    private final int MIN_LENGTH = 8
+    private final int MIN_LOWERCASE_CHARS = 1
+    private final int MIN_UPPERCASE_CHARS = 1
+    private final int MIN_SPL_CHARS = 1
+    private final int MIN_DIGITS = 1
     boolean validate(String password) {
-        CharacterRule upperCaseCharacterRule =  new CharacterRule(EnglishCharacterData.UpperCase, minimumUpperCaseChars)
-        CharacterRule lowerCaseCharacterRule =  new CharacterRule(EnglishCharacterData.LowerCase, minimumLowerCaseChars)
-        CharacterRule numericCharacterRule =  new CharacterRule(EnglishCharacterData.Digit, minimumDigits)
-        CharacterRule specialCharacterRule =    new CharacterRule(EnglishCharacterData.Special, minimumSpecialChars)
-        LengthRule lengthRule = new LengthRule(minLength, maxLength)
+        CharacterRule upperCaseCharacterRule =  new CharacterRule(EnglishCharacterData.UpperCase, MIN_UPPERCASE_CHARS)
+        CharacterRule lowerCaseCharacterRule =  new CharacterRule(EnglishCharacterData.LowerCase, MIN_LOWERCASE_CHARS)
+        CharacterRule numericCharacterRule =  new CharacterRule(EnglishCharacterData.Digit, MIN_DIGITS)
+        CharacterRule specialCharacterRule =    new CharacterRule(EnglishCharacterData.Special, MIN_SPL_CHARS)
+        LengthRule lengthRule = new LengthRule(MIN_LENGTH, MAX_LENGTH)
         WhitespaceRule whitespaceRule = new WhitespaceRule()
 
         PasswordValidator policy = new PasswordValidator(Arrays.asList(lengthRule, upperCaseCharacterRule, lowerCaseCharacterRule,
                 numericCharacterRule, specialCharacterRule, whitespaceRule))
         RuleResult result = policy.validate(new PasswordData(password))
-        if (result.isValid()) {
-            return true
+        if (!result.valid) {
+            throw new WeakPasswordException()
         }
-        throw new InvalidPasswordException('The password did not meet the requirements')
+        return true
+
     }
 
 }

@@ -5,13 +5,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.annotation.Order
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 import org.springframework.util.AntPathMatcher
-import voyage.security.user.User
-import voyage.security.user.UserService
-
 import javax.servlet.Filter
 import javax.servlet.FilterChain
 import javax.servlet.FilterConfig
@@ -21,24 +19,30 @@ import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import java.security.Principal
 
+import voyage.security.user.User
+import voyage.security.user.UserService
+
 @Component
+@Order(2)
 class PasswordExpiryVerificationFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(PasswordExpiryVerificationFilter)
-    private final UserService userService
     @Value('${security.password-verification.password-reset-days}')
     private int passwordResetDays
     @Value('${security.user-verification.exclude-resources}')
     private String[] userResourcePathExclusions
     @Value('${security.password-verification.exclude-resources}')
     private String[] passwordResourcePathExclusions
+    private final UserService userService
+
     @Override
     void init(FilterConfig filterConfig) throws ServletException {
-
     }
+
     @Autowired
     PasswordExpiryVerificationFilter(UserService userService) {
         this.userService = userService
     }
+
     @Override
     void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest)request
@@ -48,11 +52,10 @@ class PasswordExpiryVerificationFilter implements Filter {
                 return
             }
         } else {
-        LOG.debug("USER VERIFICATION FILTER: Request path ${getRequestPath(httpRequest)} is excluded from this filter. " +
+            LOG.debug("PASSWORD EXPIRY VERIFICATION FILTER: Request path ${getRequestPath(httpRequest)} is excluded from this filter. " +
                 'Skipping user verification.')
         }
-
-        // Passed or skipped verification check. Pass control to the next servlet filter.
+        
         chain.doFilter(request, response)
     }
     private boolean isUserCredentialsExpired(HttpServletRequest httpRequest) {
@@ -70,30 +73,29 @@ class PasswordExpiryVerificationFilter implements Filter {
                 if (username) {
                     User user = userService.findByUsername(username)
                     if (user) {
-
                         if (user.isCredentialsExpired || isPasswordExpired(user)) {
-                            LOG.info('USER PASSWORD VERIFICATION FILTER: User password expired. Returning error response.')
+                            LOG.info('PASSWORD EXPIRY VERIFICATION FILTER: User password expired. Returning error response.')
                             return true
                         }
                     } else {
-                        LOG.debug('USER PASSWORD VERIFICATION FILTER: User was not found in the database. Skipping user verification.')
+                        LOG.debug('PASSWORD EXPIRY VERIFICATION FILTER: User was not found in the database. Skipping password expiry verification.')
                     }
                 } else {
-                    LOG.debug('USER PASSWORD VERIFICATION FILTER: Authenticated principal is not a recognized object. Skipping user verification.')
+                    LOG.debug('PASSWORD EXPIRY VERIFICATION FILTER: Authenticated principal is not a recognized object. Skipping password expiry verification.')
                 }
             } else {
-                LOG.debug('USER PASSWORD VERIFICATION FILTER: Authenticated user is not a recognized Authorization object.' +
-                        ' Skipping user verification.')
+                LOG.debug('PASSWORD EXPIRY VERIFICATION FILTER: Authenticated user is not a recognized Authorization object.' +
+                        ' Skipping password expiry verification.')
             }
         } else {
-            LOG.debug('USER PASSWORD VERIFICATION FILTER: User is not authenticated. Skipping user verification.')
+            LOG.debug('PASSWORD EXPIRY VERIFICATION FILTER: User is not authenticated. Skipping password expiry verification.')
         }
         return false
     }
     private static void writeUserVerificationResponse(ServletResponse response) {
         Map errorResponse = [
                 error:'403_password_expired',
-                errorDescription:'User password change is required',
+                errorDescription:'Password is expired. Please change the password to access the application',
         ]
         JsonBuilder json = new JsonBuilder([errorResponse])
 

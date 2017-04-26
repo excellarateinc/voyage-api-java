@@ -390,7 +390,7 @@ class UserServiceSpec extends Specification {
         when:
             userService.saveDetached(user)
         then:
-        thrown(InvalidPasswordException)
+        thrown(WeakPasswordException)
     }
     def 'update password - updating password with unsatisfied string combinations  should give error'() {
         given:
@@ -398,6 +398,6 @@ class UserServiceSpec extends Specification {
         when:
         userService.saveDetached(user)
         then:
-        thrown(InvalidPasswordException)
+        thrown(WeakPasswordException)
     }
 }
