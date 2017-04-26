@@ -385,6 +385,7 @@ class UserServiceSpec extends Specification {
             1 * userRepository.save(user)
 
     }
+    
     def 'update password - updating password with null/blank value should give error'() {
         given:
             user.password = ''
@@ -395,6 +396,7 @@ class UserServiceSpec extends Specification {
         then:
             thrown(WeakPasswordException)
     }
+
     def 'update password - updating password with unsatisfied string combinations  should give error'() {
         given:
             user.password = 'password'

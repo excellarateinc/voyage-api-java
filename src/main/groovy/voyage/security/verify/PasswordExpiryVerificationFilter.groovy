@@ -61,6 +61,7 @@ class PasswordExpiryVerificationFilter implements Filter {
         }
         chain.doFilter(request, response)
     }
+
     private boolean isUserCredentialsExpired(HttpServletRequest httpRequest) {
         Principal authenticatedUser = httpRequest.userPrincipal
         if (authenticatedUser) {
@@ -148,5 +149,4 @@ class PasswordExpiryVerificationFilter implements Filter {
     void destroy() {
 
     }
-
 }

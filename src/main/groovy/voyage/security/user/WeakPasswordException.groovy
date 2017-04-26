@@ -30,5 +30,4 @@ class WeakPasswordException extends AppException {
         }
         return code
     }
-
 }

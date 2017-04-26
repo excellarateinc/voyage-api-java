@@ -160,5 +160,4 @@ class PasswordExpiryVerificationFilterSpec extends Specification {
             1 * request.pathInfo
             1 * filterChain.doFilter(request, response)
     }
-
 }
