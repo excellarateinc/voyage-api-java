@@ -56,8 +56,8 @@ class PasswordExpiryVerificationFilter implements Filter {
                 return
             }
         } else {
-            LOG.debug("PASSWORD EXPIRY VERIFICATION FILTER: Request path ${getRequestPath(httpRequest)} is excluded from this filter. " +
-                    'Skipping user verification.')
+            LOG.debug("PASSWORD EXPIRY VERIFICATION FILTER: Request path ${getRequestPath(httpRequest)} is excluded from " +
+                    'this filter. Skipping password expiry verification.')
         }
         chain.doFilter(request, response)
     }

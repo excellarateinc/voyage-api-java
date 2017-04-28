@@ -6,8 +6,8 @@ import voyage.common.error.ErrorUtils
 
 class WeakPasswordException extends AppException {
     private static final HTTP_STATUS  = HttpStatus.BAD_REQUEST
-    private static final String DEFAULT_MESSAGE = 'The password did not meet the requirements.Password should contain 1 Upper case Character, ' +
-            '1 Lower Case Character, 1 Special Character and should not contain any whitespace.'
+    private static final String DEFAULT_MESSAGE = 'The password did not meet the requirements. Password should contain 1 upper case character, ' +
+            '1 lower case character, 1 special character and should not contain any whitespace.'
 
     WeakPasswordException() {
         super(HTTP_STATUS, DEFAULT_MESSAGE)
@@ -19,6 +19,6 @@ class WeakPasswordException extends AppException {
 
     @Override
     String getErrorCode() {
-        ErrorUtils.getErrorCode(HTTP_STATUS.value(), 'week_password')
+        ErrorUtils.getErrorCode(HTTP_STATUS.value(), 'weak_password')
     }
 }

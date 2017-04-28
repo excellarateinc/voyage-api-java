@@ -11,7 +11,7 @@ class PasswordValidationServiceSpec extends Specification {
 
         then:
             WeakPasswordException e = thrown()
-            e.errorCode == '400_week_password'
+            e.errorCode == '400_weak_password'
     }
 
     def 'basic number input for password'() {
@@ -20,7 +20,7 @@ class PasswordValidationServiceSpec extends Specification {
 
         then:
             WeakPasswordException e = thrown()
-            e.errorCode == '400_week_password'
+            e.errorCode == '400_weak_password'
     }
 
     def 'string and number input for password'() {
@@ -29,7 +29,7 @@ class PasswordValidationServiceSpec extends Specification {
 
         then:
             WeakPasswordException e = thrown()
-            e.errorCode == '400_week_password'
+            e.errorCode == '400_weak_password'
     }
 
     def 'string  number and special char input for password without uppercase'() {
@@ -38,7 +38,7 @@ class PasswordValidationServiceSpec extends Specification {
 
         then:
             WeakPasswordException e = thrown()
-            e.errorCode == '400_week_password'
+            e.errorCode == '400_weak_password'
     }
 
     def 'string  number and special char input for password without digits'() {
@@ -47,7 +47,7 @@ class PasswordValidationServiceSpec extends Specification {
 
         then:
             WeakPasswordException e = thrown()
-            e.errorCode == '400_week_password'
+            e.errorCode == '400_weak_password'
     }
 
     def 'string  number and special char input for password with uppercase'() {
@@ -64,8 +64,8 @@ class PasswordValidationServiceSpec extends Specification {
 
         then:
             WeakPasswordException e = thrown()
-            e.errorCode == '400_week_password'
-            e.message == 'The password did not meet the requirements.Password should contain 1 Upper case Character, ' +
-                    '1 Lower Case Character, 1 Special Character and should not contain any whitespace.'
+            e.errorCode == '400_weak_password'
+            e.message == 'The password did not meet the requirements. Password should contain 1 upper case character, ' +
+                    '1 lower case character, 1 special character and should not contain any whitespace.'
     }
 }
