@@ -52,6 +52,9 @@ databaseChangeLog:
               - column:
                   name: last_modified_date
                   value: "2013-03-19 16:57:04"
+              - column:
+                  name: password_created_date
+                  value: ${now}
         - insert:
             tableName: user
             columns:
@@ -100,3 +103,6 @@ databaseChangeLog:
               - column:
                   name: last_modified_date
                   value: "2013-03-19 16:57:04"
+              - column:
+                  name: password_created_date
+                  value: ${now}

@@ -85,7 +85,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/users POST - Super User access granted'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username1', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username1', email:'test@test.com', password:'Test@1234')
             user.phones = [new UserPhone(phoneNumber:'+1-651-888-6021', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
@@ -101,7 +101,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body.lastName == 'User'
             responseEntity.body.username == 'username1'
             responseEntity.body.email == 'test@test.com'
-            cryptoService.hashMatches('password', responseEntity.body.password)
+            cryptoService.hashMatches('Test@1234', responseEntity.body.password)
     }
 
     def '/api/v1/users POST - Standard User access denied'() {
@@ -125,7 +125,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.users.create')
 
-            User user = new User(firstName:'Test2', lastName:'User', username:'username2', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test2', lastName:'User', username:'username2', email:'test@test.com', password:'Test@1234')
             user.phones = [new UserPhone(phoneNumber:'+1-651-888-6021', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
@@ -231,7 +231,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
     def '/api/v1/users/{id} PUT - Super User access granted'() {
         given:
             User user = new User(
-                firstName:'Test3', lastName:'User', username:'username4', email:'test@test.com', password:'password',
+                firstName:'Test3', lastName:'User', username:'username4', email:'test@test.com', password:'Test@1234',
             )
             user.phones = [new UserPhone(phoneNumber:'+1-651-888-6021', phoneType:PhoneType.MOBILE)]
             user = userService.saveDetached(user)
@@ -252,12 +252,12 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body.lastName == 'User'
             responseEntity.body.username == 'username4'
             responseEntity.body.email == 'test@test.com'
-            cryptoService.hashMatches('password', responseEntity.body.password)
+            cryptoService.hashMatches('Test@1234', responseEntity.body.password)
     }
 
     def '/api/v1/users/{id} PUT - Standard User access denied'() {
         given:
-            User user = new User(firstName:'Test4', lastName:'User', username:'username5', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test4', lastName:'User', username:'username5', email:'test@test.com', password:'Test@1234')
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -276,7 +276,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.users.update')
 
-            User user = new User(firstName:'Test4', lastName:'User', username:'username6', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test4', lastName:'User', username:'username6', email:'test@test.com', password:'Test@1234')
             user.phones = [new UserPhone(phoneNumber:'+1-651-888-6021', phoneType:PhoneType.MOBILE)]
             user = userService.saveDetached(user)
 
@@ -296,7 +296,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
             responseEntity.body.lastName == 'User'
             responseEntity.body.username == 'username6'
             responseEntity.body.email == 'test@test.com'
-            cryptoService.hashMatches('password', responseEntity.body.password)
+            cryptoService.hashMatches('Test@1234', responseEntity.body.password)
     }
 
     def '/api/v1/users/{id} PUT - Invalid ID returns a 404 Not Found response'() {
@@ -329,7 +329,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/users/{id} DELETE - Super User access granted'() {
         given:
-            User newUser = new User(firstName:'Test5', lastName:'User', username:'username8', email:'test@test.com', password:'password')
+            User newUser = new User(firstName:'Test5', lastName:'User', username:'username8', email:'test@test.com', password:'Test@1234')
             newUser.phones = [new UserPhone(phoneNumber:'+1-651-888-6021', phoneType:PhoneType.MOBILE)]
             newUser = userService.saveDetached(newUser)
 
@@ -356,7 +356,7 @@ class UserControllerIntegrationSpec extends AbstractIntegrationTest {
         given:
             roleService.addPermission(ROLE_STANDARD_ID, 'api.users.delete')
 
-            User newUser = new User(firstName:'Test6', lastName:'User', username:'username9', email:'test@test.com', password:'password')
+            User newUser = new User(firstName:'Test6', lastName:'User', username:'username9', email:'test@test.com', password:'Test@1234')
             newUser.phones = [new UserPhone(phoneNumber:'+1-651-888-6021', phoneType:PhoneType.MOBILE)]
             newUser = userService.saveDetached(newUser)
 

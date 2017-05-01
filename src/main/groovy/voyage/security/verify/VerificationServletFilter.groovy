@@ -5,6 +5,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
@@ -34,6 +35,7 @@ import java.security.Principal
  * Spring Security to manage.
  */
 @Component
+@Order(1)
 class VerificationServletFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(VerificationServletFilter)
     private final UserService userService

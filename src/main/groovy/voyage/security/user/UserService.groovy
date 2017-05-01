@@ -21,12 +21,15 @@ class UserService {
     private final UserRepository userRepository
     private final CryptoService cryptoService
     private final PhoneService phoneService
+    private final PasswordValidationService passwordValidationService
 
     @Autowired
-    UserService(UserRepository userRepository, CryptoService cryptoService, PhoneService phoneService) {
+    UserService(UserRepository userRepository, CryptoService cryptoService, PhoneService phoneService,
+                PasswordValidationService passwordValidationService) {
         this.userRepository = userRepository
         this.cryptoService = cryptoService
         this.phoneService = phoneService
+        this.passwordValidationService = passwordValidationService
     }
 
     static String getCurrentUsername() {
@@ -101,7 +104,11 @@ class UserService {
         }
 
         if (userIn.password != user.password) {
+            if (!passwordValidationService.validate(userIn.password)) {
+                throw new WeakPasswordException()
+            }
             user.password = cryptoService.hashEncode(userIn.password)
+            user.passwordCreatedDate = new Date()
         }
 
         applyPhones(user, userIn)
