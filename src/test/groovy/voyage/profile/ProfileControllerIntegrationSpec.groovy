@@ -37,7 +37,7 @@ class ProfileControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/profile POST - Profile create '() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'Abcd&1234')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'Test&1234')
             user.phones = [new UserPhone(phoneNumber:'+16124590457', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
@@ -53,7 +53,7 @@ class ProfileControllerIntegrationSpec extends AbstractIntegrationTest {
             savedUser.lastName == 'User'
             savedUser.username == 'username'
             savedUser.email == 'test@test.com'
-            cryptoService.hashMatches('Abcd&1234', savedUser.password)
+            cryptoService.hashMatches('Test&1234', savedUser.password)
             savedUser.phones.size() == 1
             savedUser.isVerifyRequired
             savedUser.isEnabled
@@ -104,7 +104,7 @@ class ProfileControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/profile POST - Profile create fails with error due to email format invalid'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username4', email:'test@', password:'Abcd&1234')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username4', email:'test@', password:'Test&1234')
             user.phones = [new UserPhone(phoneNumber:'+1-800-888-8888', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
@@ -121,7 +121,7 @@ class ProfileControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/profile POST - Profile create fails with error due to missing mobile phone'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username2', email:'test@test.com', password:'Abcd&1234')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username2', email:'test@test.com', password:'Test&1234')
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -137,7 +137,7 @@ class ProfileControllerIntegrationSpec extends AbstractIntegrationTest {
 
     def '/api/v1/profile POST - Profile create fails with error due to > 5 phones'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username2', email:'test@test.com', password:'Abcd&1234')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username2', email:'test@test.com', password:'Test&1234')
             user.phones = [
                 new UserPhone(phoneNumber:'+1205-111-1111', phoneType:PhoneType.MOBILE),
                 new UserPhone(phoneNumber:'+1222-222-2222', phoneType:PhoneType.MOBILE),

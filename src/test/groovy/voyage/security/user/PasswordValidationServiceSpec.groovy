@@ -65,7 +65,7 @@ class PasswordValidationServiceSpec extends Specification {
         then:
             WeakPasswordException e = thrown()
             e.errorCode == '400_weak_password'
-            e.message == 'Password should contain 1 uppercase character, ' +
-                    '1 lowercase character, 1 special character and should not contain any whitespace.'
+            e.message == 'Password should contain 1 uppercase, ' +
+                    '1 lowercase, 1 special character and should not contain any whitespace.'
     }
 }
