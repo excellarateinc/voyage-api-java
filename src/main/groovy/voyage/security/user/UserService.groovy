@@ -104,10 +104,11 @@ class UserService {
         }
 
         if (userIn.password != user.password) {
-            if (passwordValidationService.validate(userIn.password)) {
-                user.password = cryptoService.hashEncode(userIn.password)
-                user.passwordCreatedDate = new Date()
+            if (!passwordValidationService.validate(userIn.password)) {
+                throw new WeakPasswordException()
             }
+            user.password = cryptoService.hashEncode(userIn.password)
+            user.passwordCreatedDate = new Date()
         }
 
         applyPhones(user, userIn)
