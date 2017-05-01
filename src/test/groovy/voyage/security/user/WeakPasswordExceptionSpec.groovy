@@ -10,7 +10,7 @@ class WeakPasswordExceptionSpec extends  Specification {
 
         then:
             ex.httpStatus == HttpStatus.BAD_REQUEST
-            ex.errorCode == '400_week_password'
+            ex.errorCode == '400_weak_password'
     }
 
     def 'Override the exception message only affects the description'() {
@@ -19,7 +19,7 @@ class WeakPasswordExceptionSpec extends  Specification {
 
         then:
             ex.httpStatus == HttpStatus.BAD_REQUEST
-            ex.errorCode == '400_week_password'
+            ex.errorCode == '400_weak_password'
             ex.message == 'TEST MESSAGE'
     }
 }
