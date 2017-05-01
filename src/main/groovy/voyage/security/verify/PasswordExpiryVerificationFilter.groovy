@@ -64,36 +64,36 @@ class PasswordExpiryVerificationFilter implements Filter {
 
     private boolean isUserCredentialsExpired(HttpServletRequest httpRequest) {
         Principal authenticatedUser = httpRequest.userPrincipal
-        if (authenticatedUser) {
-            if (authenticatedUser instanceof Authentication) {
-                String username
-                Authentication authenticationToken = (Authentication)authenticatedUser
-                if (authenticationToken.principal instanceof UserDetails) {
-                    username = ((UserDetails)authenticationToken.principal).username
+        if (!authenticatedUser) {
+            LOG.debug('PASSWORD EXPIRY VERIFICATION FILTER: User is not authenticated. Skipping password expiry verification.')
+            return false
+        }
+        if (authenticatedUser instanceof Authentication) {
+            String username
+            Authentication authenticationToken = (Authentication)authenticatedUser
+            if (authenticationToken.principal instanceof UserDetails) {
+                username = ((UserDetails)authenticationToken.principal).username
 
-                } else if (authenticationToken.principal instanceof String) {
-                    username = authenticationToken.principal
-                }
-                if (username) {
-                    User user = userService.findByUsername(username)
-                    if (user) {
-                        if (user.isCredentialsExpired || isPasswordExpired(user)) {
-                            LOG.info('PASSWORD EXPIRY VERIFICATION FILTER: User password expired. Returning error response.')
-                            return true
-                        }
-                    } else {
-                        LOG.debug('PASSWORD EXPIRY VERIFICATION FILTER: User was not found in the database. Skipping password expiry verification.')
+            } else if (authenticationToken.principal instanceof String) {
+                username = authenticationToken.principal
+            }
+            if (username) {
+                User user = userService.findByUsername(username)
+                if (user) {
+                    if (user.isCredentialsExpired || isPasswordExpired(user)) {
+                        LOG.info('PASSWORD EXPIRY VERIFICATION FILTER: User password expired. Returning error response.')
+                        return true
                     }
                 } else {
-                    LOG.debug('PASSWORD EXPIRY VERIFICATION FILTER: Authenticated principal is not a recognized object. ' +
-                            'Skipping password expiry verification.')
+                    LOG.debug('PASSWORD EXPIRY VERIFICATION FILTER: User was not found in the database. Skipping password expiry verification.')
                 }
             } else {
-                LOG.debug('PASSWORD EXPIRY VERIFICATION FILTER: Authenticated user is not a recognized Authorization object.' +
-                        ' Skipping password expiry verification.')
+                LOG.debug('PASSWORD EXPIRY VERIFICATION FILTER: Authenticated principal is not a recognized object. ' +
+                        'Skipping password expiry verification.')
             }
         } else {
-            LOG.debug('PASSWORD EXPIRY VERIFICATION FILTER: User is not authenticated. Skipping password expiry verification.')
+            LOG.debug('PASSWORD EXPIRY VERIFICATION FILTER: Authenticated user is not a recognized Authorization object.' +
+                    ' Skipping password expiry verification.')
         }
         return false
     }
