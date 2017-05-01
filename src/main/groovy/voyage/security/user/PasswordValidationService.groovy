@@ -11,27 +11,22 @@ import org.springframework.stereotype.Service
 
 @Service
 class PasswordValidationService {
-    private static final int MAX_LENGTH = 30
-    private static final int MIN_LENGTH = 8
-    private static final int MIN_LOWERCASE_CHARS = 1
-    private static final int MIN_UPPERCASE_CHARS = 1
-    private static final int MIN_SPL_CHARS = 1
-    private static final int MIN_DIGITS = 1
-
     boolean validate(String password) {
-        CharacterRule upperCaseCharacterRule =  new CharacterRule(EnglishCharacterData.UpperCase, MIN_UPPERCASE_CHARS)
-        CharacterRule lowerCaseCharacterRule =  new CharacterRule(EnglishCharacterData.LowerCase, MIN_LOWERCASE_CHARS)
-        CharacterRule numericCharacterRule =  new CharacterRule(EnglishCharacterData.Digit, MIN_DIGITS)
-        CharacterRule specialCharacterRule =    new CharacterRule(EnglishCharacterData.Special, MIN_SPL_CHARS)
-        LengthRule lengthRule = new LengthRule(MIN_LENGTH, MAX_LENGTH)
-        WhitespaceRule whitespaceRule = new WhitespaceRule()
-
-        PasswordValidator policy = new PasswordValidator(Arrays.asList(lengthRule, upperCaseCharacterRule, lowerCaseCharacterRule,
-                numericCharacterRule, specialCharacterRule, whitespaceRule))
+        PasswordValidator policy = new PasswordValidator(passwordPolicyRules)
         RuleResult result = policy.validate(new PasswordData(password))
         if (!result.valid) {
             throw new WeakPasswordException()
         }
         return true
+    }
+
+    private static List<CharacterRule> getPasswordPolicyRules() {
+        CharacterRule upperCaseCharacterRule =  new CharacterRule(EnglishCharacterData.UpperCase, 1)
+        CharacterRule lowerCaseCharacterRule =  new CharacterRule(EnglishCharacterData.LowerCase, 1)
+        CharacterRule numericCharacterRule =  new CharacterRule(EnglishCharacterData.Digit, 1)
+        CharacterRule specialCharacterRule =    new CharacterRule(EnglishCharacterData.Special, 1)
+        LengthRule lengthRule = new LengthRule(8, 30)
+        WhitespaceRule whitespaceRule = new WhitespaceRule()
+        [upperCaseCharacterRule, lowerCaseCharacterRule, numericCharacterRule, specialCharacterRule, lengthRule, whitespaceRule]
     }
 }
