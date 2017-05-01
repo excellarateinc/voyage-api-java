@@ -13,11 +13,11 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import java.security.Principal
 
-class InvalidateOAuthTokensServletFilterSpec extends Specification {
+class InvalidateOAuthTokensFilterSpec extends Specification {
     HttpServletRequest request
     HttpServletResponse response
     FilterChain filterChain
-    InvalidateOAuthTokensServletFilter filter
+    InvalidateOAuthTokensFilter filter
     UserService userService
     ClientService clientService
 
@@ -58,7 +58,7 @@ class InvalidateOAuthTokensServletFilterSpec extends Specification {
         tokenCreatedCal = Calendar.instance
         tokenCreatedCal.setTimeInMillis(1492834197345) // Value stored in the tokenWithCreated token
 
-        filter = new InvalidateOAuthTokensServletFilter(clientService, userService)
+        filter = new InvalidateOAuthTokensFilter(clientService, userService)
     }
 
     def 'filter skips the request if no authenticated user is found'() {

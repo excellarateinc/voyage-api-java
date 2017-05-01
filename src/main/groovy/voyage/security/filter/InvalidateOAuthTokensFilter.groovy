@@ -30,14 +30,14 @@ import java.security.Principal
  * message in these cases.
  */
 @Component
-class InvalidateOAuthTokensServletFilter extends OncePerRequestFilter  {
-    private static final Logger LOG = LoggerFactory.getLogger(InvalidateOAuthTokensServletFilter)
+class InvalidateOAuthTokensFilter extends OncePerRequestFilter  {
+    private static final Logger LOG = LoggerFactory.getLogger(InvalidateOAuthTokensFilter)
     private final JsonParser objectMapper = JsonParserFactory.create()
     private final ClientService clientService
     private final UserService userService
 
     @Autowired
-    InvalidateOAuthTokensServletFilter(ClientService clientService, UserService userService) {
+    InvalidateOAuthTokensFilter(ClientService clientService, UserService userService) {
         this.clientService = clientService
         this.userService = userService
     }

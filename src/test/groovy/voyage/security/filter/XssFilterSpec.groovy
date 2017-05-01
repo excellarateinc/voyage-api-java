@@ -1,13 +1,13 @@
 package voyage.security.filter
 
 import spock.lang.Specification
-import voyage.security.filter.XssServletFilter.XssRequestWrapper
+import voyage.security.filter.XssFilter.XssRequestWrapper
 
 import javax.servlet.FilterChain
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-class XssServletFilterSpec extends Specification {
+class XssFilterSpec extends Specification {
     HttpServletRequest request
     HttpServletResponse response
     XssRequestWrapper xssRequestWrapper
@@ -15,12 +15,12 @@ class XssServletFilterSpec extends Specification {
     def setup() {
         request = Mock(HttpServletRequest)
         response = Mock(HttpServletResponse)
-        xssRequestWrapper = new XssServletFilter().getXssRequestWrapperInstance(request)
+        xssRequestWrapper = new XssFilter().getXssRequestWrapperInstance(request)
     }
 
     def 'filter wraps the incoming request with a XSSRequestWrapper'() {
         given:
-            XssServletFilter filter = new XssServletFilter()
+            XssFilter filter = new XssFilter()
             FilterChain filterChain = Mock(FilterChain)
 
         when:

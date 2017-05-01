@@ -23,8 +23,8 @@ import java.util.regex.Pattern
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-class XssServletFilter extends OncePerRequestFilter {
-    private static final Logger LOG = LoggerFactory.getLogger(XssServletFilter)
+class XssFilter extends OncePerRequestFilter {
+    private static final Logger LOG = LoggerFactory.getLogger(XssFilter)
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)

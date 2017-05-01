@@ -34,8 +34,8 @@ import javax.servlet.http.HttpServletResponse
  *       class or replacing it with a different implementation.
  */
 @Component
-class CorsServletFilter extends OncePerRequestFilter {
-    private static final Logger LOG = LoggerFactory.getLogger(CorsServletFilter)
+class CorsFilter extends OncePerRequestFilter {
+    private static final Logger LOG = LoggerFactory.getLogger(CorsFilter)
     private static final String HEADER_ORIGIN = 'Origin'
     private static final String HEADER_VARY = 'Vary'
     private static final String HEADER_ACCESS_ALLOW_HEADERS = 'Access-Control-Allow-Headers'
@@ -50,7 +50,7 @@ class CorsServletFilter extends OncePerRequestFilter {
     String accessControlAllowHeaders
 
     @Autowired
-    CorsServletFilter(ClientService clientService) {
+    CorsFilter(ClientService clientService) {
         this.clientService = clientService
     }
 

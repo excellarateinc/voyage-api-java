@@ -20,7 +20,7 @@ import voyage.security.user.User
 import voyage.security.user.UserService
 import voyage.test.AbstractIntegrationTest
 
-class InvalidateOAuthTokensServletFilterIntegrationSpec extends AbstractIntegrationTest {
+class InvalidateOAuthTokensFilterIntegrationSpec extends AbstractIntegrationTest {
     @Autowired
     private ClientService clientService
 

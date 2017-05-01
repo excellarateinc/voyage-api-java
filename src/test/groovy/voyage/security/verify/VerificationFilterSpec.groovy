@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import java.security.Principal
 
-class VerificationServletFilterSpec extends Specification {
-    VerificationServletFilter filter
+class VerificationFilterSpec extends Specification {
+    VerificationFilter filter
     UserService userService
     String[] resourcePathExclusions
     HttpServletRequest request
@@ -22,7 +22,7 @@ class VerificationServletFilterSpec extends Specification {
     void setup() {
         userService = Mock(UserService)
         resourcePathExclusions = ['/test/**', '/test2']
-        filter = new VerificationServletFilter(userService)
+        filter = new VerificationFilter(userService)
         filter.resourcePathExclusions = resourcePathExclusions
 
         request = Mock(HttpServletRequest)
