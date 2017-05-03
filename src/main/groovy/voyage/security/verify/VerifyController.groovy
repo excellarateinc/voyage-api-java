@@ -106,7 +106,7 @@ class VerifyController {
      *    * Response includes a success or failure status code with error message
      * 5) Consumer invokes an API (ie /profile)
      *    * Resumes accessing the API
-     *N
+     *
      * @apiPermission authenticated
      *
      * @apiUse AuthHeader

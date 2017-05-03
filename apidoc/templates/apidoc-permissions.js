@@ -52,7 +52,7 @@
 /**
  * @apiDefine PermissionSuccessModel
  *
- *  @apiSuccess {Object} permission Permission
+ * @apiSuccess {Object} permission Permission
  * @apiSuccess {String} permission.id Permission ID
  * @apiSuccess {String} permission.name name of the permission
  * @apiSuccess {String} permission.description Description
