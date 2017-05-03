@@ -58,3 +58,67 @@
  *      "errorDescription": "Authorization has been denied for this request."
  *  }
  */
+
+// ------------------------------------------------------------------------------------------
+// Record Not Found
+// ------------------------------------------------------------------------------------------
+/**
+ *  @apiDefine UnknownIdentifierError
+ *
+ *  @apiError UnknownIdentifierException The Object with ID not found in records
+ *
+ *  @apiErrorExample Error-Response
+ *  HTTP/1.1 400: Bad Request
+ *  {
+ *      "error": "400_unknown_identifier",
+ *      "errorDescription": "Unknown record identifier provided"
+ *  }
+ */
+
+// ------------------------------------------------------------------------------------------
+// Record Not Found
+// ------------------------------------------------------------------------------------------
+/**
+ *  @apiDefine ImmutableRecordError
+ *
+ *  @apiError ImmutableRecordException The requested record is immutable
+ *
+ *  @apiErrorExample Error-Response
+ *  HTTP/1.1 400: Bad Request
+ *  {
+ *      "error": "400_immutable_record",
+ *      "errorDescription": "The requested record is immutable. No changes to this record are allowed."
+ *  }
+ */
+
+// ------------------------------------------------------------------------------------------
+// Invalid Verification Phone Number
+// ------------------------------------------------------------------------------------------
+/**
+ *  @apiDefine InvalidVerificationPhoneNumberError
+ *
+ *  @apiError InvalidVerificationPhoneNumberException The verification phone number is invalid.
+ *
+ *  @apiErrorExample Error-Response
+ *  HTTP/1.1 400: Bad Request
+ *  {
+ *      "error": "400_verify_phone_invalid",
+ *      "errorDescription": "The verification phone number is invalid."
+ *  }
+ */
+
+// ------------------------------------------------------------------------------------------
+// Code Verification
+// ------------------------------------------------------------------------------------------
+/**
+ *  @apiDefine VerifyCodeExpiredError
+ *
+ *  @apiError VerifyCodeExpiredException The verification code provided has expired.
+ *
+ *  @apiErrorExample Error-Response
+ *  HTTP/1.1 400: Bad Request
+ *  {
+ *      "error": "400_verify_code_expired",
+ *      "errorDescription": "The verification code provided has expired."
+ *  }
+ */

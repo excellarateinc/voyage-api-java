@@ -13,4 +13,9 @@ class ImmutableRecordException extends AppException {
     ImmutableRecordException(String message) {
         super(HTTP_STATUS, message)
     }
+
+    @Override
+    String getErrorCode() {
+        return HTTP_STATUS.value() + '_immutable_record'
+    }
 }

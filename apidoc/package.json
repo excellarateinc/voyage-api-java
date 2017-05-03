@@ -3,7 +3,7 @@
   "name": "voyage-api",
   "private": true,
   "dependencies": {
-    "apidoc": ">0.15.0"
+    "apidoc": ">0.17.4"
   },
   "scripts": {
     "apidoc": "apidoc -o ../src/main/webapp/docs -i ../ -f \"/src/main/groovy/.*\\.groovy$\" -f \"/apidoc/templates.*\\.js$\" "
