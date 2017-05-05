@@ -22,8 +22,8 @@
  *   [
  *       {
  *           "id": "f9d69894-7908-4606-918e-410dca8c3238",
- *           "name": "Super User",
- *           "description": "permission.write"
+ *           "name": "api.users.list",
+ *           "description": "users GET web service endpoint to return a full list of users"
  *       }
  *   ]
  * }
@@ -41,8 +41,8 @@
  *
  * @apiExample {json} Example body:
  * {
- *     "name": "Super User",
- *     "description": "permission.write",
+ *           "name": "api.users.list",
+ *           "description": "users GET web service endpoint to return a full list of users"
  * }
  */
 
@@ -60,7 +60,7 @@
  * @apiSuccessExample Success-Response:
  * {
  *     "id": "f9d69894-7908-4606-918e-410dca8c3238",
- *     "name": "Super User",
- *     "description": "permission.write",
+ *      "name": "api.users.list",
+ *      "description": "users GET web service endpoint to return a full list of users"
  * }
  */

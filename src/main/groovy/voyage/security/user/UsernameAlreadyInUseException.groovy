@@ -2,6 +2,7 @@ package voyage.security.user
 
 import org.springframework.http.HttpStatus
 import voyage.common.error.AppException
+import voyage.common.error.ErrorUtils
 
 /**
  * For use within the service layer to inform the caller that the given Username is already being used within the
@@ -25,6 +26,6 @@ class UsernameAlreadyInUseException extends AppException {
 
     @Override
     String getErrorCode() {
-        return HTTP_STATUS.value() + '_username_already_in_use'
+        ErrorUtils.getErrorCode(httpStatus.value(), 'username_already_in_use')
     }
 }

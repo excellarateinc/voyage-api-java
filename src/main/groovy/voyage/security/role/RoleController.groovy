@@ -54,7 +54,7 @@ class RoleController {
      * @apiName RoleCreate
      * @apiGroup Role
      *
-     * @apiDescription Create a new role and add it the existing list
+     * @apiDescription Create a new role and add it to the existing list
      *
      * @apiPermission api.roles.create
      *

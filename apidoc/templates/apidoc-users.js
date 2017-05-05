@@ -32,8 +32,11 @@
  *           "firstName": "Admin_First",
  *           "lastName": "Admin_Last",
  *           "phones": [
- *              {"phoneNumber": "+16518886021", "phoneType": "mobile"}
- *           ]
+ *              {
+ *               "phoneNumber": "+16518886021",
+ *              "phoneType": "MOBILE"
+ *              }
+ *                  ]
  *       }
  *   ]
  */
@@ -46,12 +49,12 @@
  *
  * @apiParam {Object} user User
  * @apiParam {String} user.userName Username of the user
- * @apiParam {String} user.email Email
+ * @apiParam {String} user.email Email (optional)
  * @apiParam {String} user.firstName First name
  * @apiParam {String} user.lastName Last name
  * @apiParam {Object[]} user.phones User phone numbers
- * @apiParam {String} user.phones.phoneNumber Phone number
- * @apiParam {String} user.phones.phoneType Phone type (mobile, office, home, other)
+ * @apiParam {String} user.phones.phoneNumber Phone number in E.164 format (ie +16518886021 or +1-651-888-6021 as punctuation is stripped out)
+ * @apiParam {String} user.phones.phoneType Phone type (MOBILE, OFFICE, HOME, OTHER) NOTE: At least one mobile phone is required.
  *
  * @apiExample {json} Example body:
  * {
@@ -63,7 +66,7 @@
  *     "phones":
  *     [
  *         {
- *             "phoneType": "mobile",
+ *             "phoneType": "MOBILE",
  *             "phoneNumber" : "5555551212",
  *
  *         }
@@ -100,7 +103,7 @@
  *             "id": 3,
  *             "userId": "f9d69894-7908-4606-918e-410dca8c3238",
  *             "phoneNumber": "5555551212",
- *             "phoneType": "mobile"
+ *             "phoneType": "MOBILE"
  *         }
  *     ]
  * }
@@ -139,7 +142,7 @@
  */
 
 // ------------------------------------------------------------------------------------------
-// Too Many Phones Error
+// Exceeds Maximum Number of Phones Error
 // ------------------------------------------------------------------------------------------
 /**
  *  @apiDefine TooManyPhonesError

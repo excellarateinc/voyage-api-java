@@ -49,6 +49,7 @@ class ProfileController {
      * @apiUse MobilePhoneNumberRequiredError
      * @apiUse TooManyPhonesError
      * @apiUse PhoneNumberInvalidError
+     * @apiUse MailSendError
      **/
     @PostMapping()
     ResponseEntity save(@RequestBody User userIn) {

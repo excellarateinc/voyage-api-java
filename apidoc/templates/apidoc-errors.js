@@ -76,7 +76,7 @@
  */
 
 // ------------------------------------------------------------------------------------------
-// Record Not Found
+// Immutable Record
 // ------------------------------------------------------------------------------------------
 /**
  *  @apiDefine ImmutableRecordError
@@ -86,7 +86,7 @@
  *  @apiErrorExample Error-Response
  *  HTTP/1.1 400: Bad Request
  *  {
- *      "error": "400_immutable_record",
+ *      "error": "400_bad_request",
  *      "errorDescription": "The requested record is immutable. No changes to this record are allowed."
  *  }
  */
@@ -120,5 +120,21 @@
  *  {
  *      "error": "400_verify_code_expired",
  *      "errorDescription": "The verification code provided has expired."
+ *  }
+ */
+
+// ------------------------------------------------------------------------------------------
+// Mail Sending Failure
+// ------------------------------------------------------------------------------------------
+/**
+ *  @apiDefine MailSendError
+ *
+ *  @apiError MailSendException Failure sending email.
+ *
+ *  @apiErrorExample Error-Response
+ *  HTTP/1.1 400: Bad Request
+ *  {
+ *      "error": "400__email_sending_failed",
+ *      "errorDescription": "Failure sending email"
  *  }
  */

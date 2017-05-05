@@ -16,6 +16,6 @@ class ImmutableRecordException extends AppException {
 
     @Override
     String getErrorCode() {
-        return HTTP_STATUS.value() + '_immutable_record'
+        ErrorUtils.getErrorCode(httpStatus.value(), 'bad_request')
     }
 }
