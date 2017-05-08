@@ -67,6 +67,12 @@ class Client extends AuditableEntity {
     Boolean isEnabled = Boolean.TRUE
 
     /**
+     * Flag that indicates if the client account is locked, usually due to too many failed login attempts
+     */
+    @NotNull
+    Boolean isAccountLocked = Boolean.FALSE
+
+    /**
      * The number of seconds before the access token for the client is expired.
      */
     @NotNull
@@ -85,6 +91,12 @@ class Client extends AuditableEntity {
      */
     @JsonIgnore
     Date forceTokensExpiredDate
+
+    /**
+     * The number of failed login attempts since the last successful login
+     */
+    @JsonIgnore
+    Integer failedLoginAttempts
 
     /**
      * The authentication "grant" types that this client is allowed to request.

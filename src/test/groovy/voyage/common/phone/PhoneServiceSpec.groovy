@@ -1,4 +1,4 @@
-package voyage.common
+package voyage.common.phone
 
 import spock.lang.Specification
 

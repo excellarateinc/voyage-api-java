@@ -54,12 +54,22 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: failed_login_attempts
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
                   name: force_tokens_expired_date
                   type: datetime
                   constraints:
                     nullable: true
               - column:
                   name: is_enabled
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_account_locked
                   type: bit(1)
                   constraints:
                     nullable: false
@@ -151,12 +161,22 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: failed_login_attempts
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
                   name: force_tokens_expired_date
                   type: datetime
                   constraints:
                     nullable: true
               - column:
                   name: is_enabled
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_account_locked
                   type: bit(1)
                   constraints:
                     nullable: false
@@ -220,6 +240,9 @@ databaseChangeLog:
                   name: is_enabled
                   valueBoolean: true
               - column:
+                  name: is_account_locked
+                  valueBoolean: false
+              - column:
                   name: created_by
                   value: super
               - column:
@@ -264,6 +287,9 @@ databaseChangeLog:
               - column:
                   name: is_enabled
                   valueBoolean: true
+              - column:
+                  name: is_account_locked
+                  valueBoolean: false
               - column:
                   name: created_by
                   value: super

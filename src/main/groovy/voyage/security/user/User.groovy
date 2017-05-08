@@ -53,6 +53,9 @@ class User extends AuditableEntity {
     @JsonIgnore
     Boolean isVerifyRequired = Boolean.FALSE
 
+    @JsonIgnore
+    Integer failedLoginAttempts
+
     /**
      * Force all tokens for this client created on or before this date to be expired even if the original token has not
      * yet expired.

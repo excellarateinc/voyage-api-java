@@ -1,9 +1,5 @@
 package voyage.security
 
-import voyage.security.client.Client
-import voyage.security.client.ClientService
-import voyage.security.permission.Permission
-import voyage.security.permission.PermissionService
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.oauth2.provider.ClientDetails
@@ -11,6 +7,10 @@ import org.springframework.security.oauth2.provider.ClientDetailsService
 import org.springframework.security.oauth2.provider.ClientRegistrationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import voyage.security.client.Client
+import voyage.security.client.ClientService
+import voyage.security.permission.Permission
+import voyage.security.permission.PermissionService
 
 @Service
 @Transactional(readOnly = true)
@@ -27,7 +27,9 @@ class PermissionBasedClientDetailsService implements ClientDetailsService {
     ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
         Client client = clientService.findByClientIdentifier(clientId)
         if (!client || !client.isEnabled) {
-            throw new ClientRegistrationException("Client ${clientId} was not found.")
+            throw new ClientRegistrationException("No client was found for the given username and password")
+        } else if (client.isAccountLocked) {
+            throw new ClientRegistrationException("The client account is locked")
         }
         return new PermissionBasedClientDetails(client, getAuthorities(client))
     }

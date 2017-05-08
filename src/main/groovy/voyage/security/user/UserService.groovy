@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
-import voyage.common.PhoneService
 import voyage.common.error.UnknownIdentifierException
+import voyage.common.phone.PhoneService
 import voyage.security.crypto.CryptoService
 
 import javax.validation.Valid
@@ -95,6 +95,7 @@ class UserService {
             isAccountLocked = userIn.isAccountLocked
             isCredentialsExpired = userIn.isCredentialsExpired
             forceTokensExpiredDate = userIn.forceTokensExpiredDate
+            failedLoginAttempts = userIn.failedLoginAttempts
 
             // Default to true for new accounts
             isVerifyRequired = user.id ? userIn.isVerifyRequired : true

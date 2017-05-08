@@ -33,9 +33,7 @@ class ActionLog {
 
     String httpStatus
 
-    String authType
-
-    String principal
+    String username
 
     @ManyToOne
     @JoinColumn(name='user_id')
@@ -50,6 +48,8 @@ class ActionLog {
     String requestHeaders
 
     String requestBody
+
+    String responseHeaders
 
     String responseBody
 

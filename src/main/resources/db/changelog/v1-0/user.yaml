@@ -66,6 +66,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: failed_login_attempts
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
                   name: force_tokens_expired_date
                   type: datetime
                   constraints:
@@ -168,6 +173,11 @@ databaseChangeLog:
                   type: bit(1)
                   constraints:
                     nullable: false
+              - column:
+                  name: failed_login_attempts
+                  type: int
+                  constraints:
+                    nullable: true
               - column:
                   name: force_tokens_expired_date
                   type: datetime
