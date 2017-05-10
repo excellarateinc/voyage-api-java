@@ -39,12 +39,7 @@ databaseChangeLog:
                   constraints:
                     nullable: true
               - column:
-                  name: auth_type
-                  type: nvarchar(50)
-                  constraints:
-                    nullable: true
-              - column:
-                  name: principal
+                  name: username
                   type: nvarchar(255)
                   constraints:
                     nullable: true
@@ -74,6 +69,11 @@ databaseChangeLog:
                     nullable: true
               - column:
                   name: request_body
+                  type: text
+                  constraints:
+                    nullable: true
+              - column:
+                  name: response_headers
                   type: text
                   constraints:
                     nullable: true

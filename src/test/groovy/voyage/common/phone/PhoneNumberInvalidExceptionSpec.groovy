@@ -1,4 +1,4 @@
-package voyage.common
+package voyage.common.phone
 
 import org.springframework.http.HttpStatus
 import spock.lang.Specification

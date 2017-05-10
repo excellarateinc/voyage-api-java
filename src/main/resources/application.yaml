@@ -40,15 +40,18 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+
+#  datasource:
+#    url: jdbc:h2:mem:voyage
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
 
   datasource:
-    url: jdbc:h2:mem:voyage
-    username: sa
-    password: 
-    driver-class-name: org.h2.Driver
+    url: jdbc:mysql://localhost:3306/voyage?useSSL=false
+    username: voyage
+    password: voyage
+    driver-class-name: com.mysql.jdbc.Driver
 
   mail:
       host: localhost
@@ -108,12 +111,35 @@ security:
           zQIDAQAB
           -----END PUBLIC KEY-----
 
+  http-audit-log:
+    exclude-resources: /resources/**, /webjars/**, /docs/**
+    form-username-fields: username
+    mask-fields: password, client-secret, authorization
+    store-request-body: true
+    store-response-body: true
+
   user-verification:
     exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profile
     verify-code-expire-minutes: 30
 
   cors:
     access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
+
+  brute-force-attack:
+    sleep-after-failure:
+      enabled: true
+      http-status-failure-list: 401, 403, 404
+      min-sleep-seconds: 3
+      max-sleep-seconds: 8
+
+    client-lock-basic-auth-filter:
+      enabled: true
+      resources: /oauth/**
+      max-login-attempts: 5
+
+    user-lock-event-listener:
+      enabled: true
+      max-login-attempts: 5
 
 #######################################################################################################################
 # AWS Configuration to send Emails and SMS

@@ -34,15 +34,15 @@ import java.security.Principal
  * Spring Security to manage.
  */
 @Component
-class VerificationServletFilter implements Filter {
-    private static final Logger LOG = LoggerFactory.getLogger(VerificationServletFilter)
+class VerificationFilter implements Filter {
+    private static final Logger LOG = LoggerFactory.getLogger(VerificationFilter)
     private final UserService userService
 
     @Value('${security.user-verification.exclude-resources}')
     private String[] resourcePathExclusions
 
     @Autowired
-    VerificationServletFilter(UserService userService) {
+    VerificationFilter(UserService userService) {
         this.userService = userService
     }
 

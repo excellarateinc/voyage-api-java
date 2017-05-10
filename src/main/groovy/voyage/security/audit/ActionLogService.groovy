@@ -30,17 +30,17 @@ class ActionLogService {
         if (actionLog.id) {
             ActionLog existingActionLog = get(actionLog.id)
             existingActionLog.with {
-                authType = actionLog.authType
                 clientIpAddress = actionLog.clientIpAddress
                 clientProtocol = actionLog.clientProtocol
                 durationMs = actionLog.durationMs
                 httpMethod = actionLog.httpMethod
                 httpStatus = actionLog.httpStatus
-                principal = actionLog.principal
+                username = actionLog.username
                 client = actionLog.client
                 user = actionLog.user
                 requestHeaders = actionLog.requestHeaders
                 requestBody = actionLog.requestBody
+                responseHeaders = actionLog.responseHeaders
                 responseBody = actionLog.responseBody
                 url = actionLog.url
                 lastModifiedDate = new Date()

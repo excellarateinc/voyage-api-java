@@ -9,7 +9,7 @@ import voyage.security.user.User
 import voyage.security.user.UserPhone
 import voyage.test.AbstractIntegrationTest
 
-class CorsIntegrationSpec extends AbstractIntegrationTest {
+class CorsFilterIntegrationSpec extends AbstractIntegrationTest {
 
     def 'Anonymous GET request with Origin header to public /api/status returns public CORS response headers'() {
         given:
