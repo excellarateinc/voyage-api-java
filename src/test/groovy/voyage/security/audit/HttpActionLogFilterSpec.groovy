@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse
 import java.nio.charset.StandardCharsets
 
 class HttpActionLogFilterSpec extends Specification {
+    private static final String CHARSET = 'UTF-8'
     HttpActionLogFilter filter
     ActionLogService actionLogService
     UserService userService
@@ -34,69 +35,72 @@ class HttpActionLogFilterSpec extends Specification {
         currentClient = Mock(Client)
 
         filter = new HttpActionLogFilter(actionLogService, userService, clientService)
+        filter.maskFields = ['password']
+        filter.formUsernameFields = ['username']
+        filter.excludeResourcePaths = []
     }
 
     def 'filterRequestBody with FORM content type with invalid content'() {
         given:
             String body = 'This is not typical form information!'
         when:
-            String filteredBody = filter.filterRequestBody('application/x-www-form-urlencoded', body)
+            String filteredBody = filter.filterRequestBody('application/x-www-form-urlencoded', body, CHARSET)
         then:
-           body == filteredBody
+           filteredBody == body
     }
 
     def 'filterRequestBody with FORM content type and no masked fields'() {
         given:
             String body = 'test=value2&test2&test3=value3'
         when:
-            String filteredBody = filter.filterRequestBody('application/x-www-form-urlencoded', body)
+            String filteredBody = filter.filterRequestBody('application/x-www-form-urlencoded', body, CHARSET)
         then:
-            body == filteredBody
+            filteredBody == body
     }
 
     def 'filterRequestBody with FORM content type property masks fields'() {
         given:
            String body = 'password=value2&test2=value2&test3=value3'
         when:
-            String filteredBody = filter.filterRequestBody('application/x-www-form-urlencoded', body)
+            String filteredBody = filter.filterRequestBody('application/x-www-form-urlencoded', body, CHARSET)
         then:
-            'password=*********&test2=value2&test3=value3' == filteredBody
+            filteredBody == 'password=*********&test2=value2&test3=value3'
     }
 
     def 'filterRequestBody with JSON content type and invalid content'() {
         given:
             String body = '} This is not { JSON'
         when:
-            String filteredBody = filter.filterRequestBody('application/json', body)
+            String filteredBody = filter.filterRequestBody('application/json', body, CHARSET)
         then:
-           body == filteredBody
+           filteredBody == body
     }
 
     def 'filterRequestBody with JSON content type and no masked fields'() {
         given:
             String body = '{"test1":{"sub1":"sub-value1"},"test2":"value2","test3":"value3"}'
         when:
-            String filteredBody = filter.filterRequestBody('application/json', body)
+            String filteredBody = filter.filterRequestBody('application/json', body, CHARSET)
         then:
-            body == filteredBody
+            filteredBody == body
     }
 
     def 'filterRequestBody with JSON content type and masked fields'() {
         given:
             String body = '{"test1":{"password":"sub-value1"},"test2":"value2","test3":"value3"}'
         when:
-            String filteredBody = filter.filterRequestBody('application/json', body)
+            String filteredBody = filter.filterRequestBody('application/json', body, CHARSET)
         then:
-            '{"test1":{"password":"*********"},"test2":"value2","test3":"value3"}' == filteredBody
+            filteredBody == '{"test1":{"password":"*********"},"test2":"value2","test3":"value3"}'
     }
 
     def 'filterRequestBody with UNKNOWN content type returns content unchanged'() {
         given:
             String body = 'This is some random content'
         when:
-            String filteredBody = filter.filterRequestBody('UNKNOWN', body)
+            String filteredBody = filter.filterRequestBody('UNKNOWN', body, CHARSET)
         then:
-            body == filteredBody
+            filteredBody == body
     }
 
     def 'lookupBasicAuthUsername with no Authorization header'() {
@@ -111,7 +115,7 @@ class HttpActionLogFilterSpec extends Specification {
         when:
             String username = filter.lookupBasicAuthUsername(request)
         then:
-            request.getHeader('Authorization') >> "SOMETHING"
+            request.getHeader('Authorization') >> 'SOMETHING'
             !username
     }
 
@@ -208,7 +212,7 @@ class HttpActionLogFilterSpec extends Specification {
         when:
             String headers = filter.getHeaders(response)
         then:
-            response.getHeaderNames() >> ['key1', 'key2']
+            response.headerNames >> ['key1', 'key2']
             response.getHeader('key1') >> 'value1'
             response.getHeader('key2') >> 'value2'
 
@@ -319,7 +323,7 @@ class HttpActionLogFilterSpec extends Specification {
             filter.formUsernameFields = ['username']
         when:
             String userPrincipal = filter.getUserPrincipal(request)
-        then:         
+        then:
             request.getParameter('username') >> 'client-super'
             'client-super' == userPrincipal
     }
@@ -358,7 +362,7 @@ class HttpActionLogFilterSpec extends Specification {
             1 * request.requestURL >> new StringBuffer('http://test.request.url/api')
             2 * request.queryString >> 'param1=valueA'
 
-            1 * request.headerNames >> Collections.enumeration(['test1','test2'])
+            1 * request.headerNames >> Collections.enumeration(['test1', 'test2'])
             1 * request.getHeader('test1') >> 'value1'
             1 * request.getHeader('test2') >> 'value2'
 
@@ -368,7 +372,7 @@ class HttpActionLogFilterSpec extends Specification {
             1 * request.getAttribute('HTTP_ACTION_LOG_USER_PRINCIPAL') >> 'test-user'
 
             1 * response.status >> 200
-            1 * response.headerNames >> ['test3','test4']
+            1 * response.headerNames >> ['test3', 'test4']
             1 * response.getHeader('test3') >> 'value3'
             1 * response.getHeader('test4') >> 'value4'
             1 * request.contentLength >> requestBodyBytes.size()

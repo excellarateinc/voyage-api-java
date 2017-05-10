@@ -11,24 +11,25 @@ import javax.servlet.FilterChain
 import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import java.security.SecureRandom
 
 @Component
 @Order(-10001)
 class SleepAfterFailureFilter extends OncePerRequestFilter {
-    protected static Logger LOG = LoggerFactory.getLogger(SleepAfterFailureFilter)
+    private static final Logger LOG = LoggerFactory.getLogger(SleepAfterFailureFilter)
 
     @Value('${security.brute-force-attack.sleep-after-failure.enabled}')
     private boolean isEnabled
 
     @Value('${security.brute-force-attack.sleep-after-failure.http-status-failure-list}')
-    private int[] httpStatusList = [401, 403, 404]
+    private int[] httpStatusList
 
     @Value('${security.brute-force-attack.sleep-after-failure.min-sleep-seconds}')
-    private int minSleepSeconds = 3
+    private int minSleepSeconds
 
     @Value('${security.brute-force-attack.sleep-after-failure.max-sleep-seconds}')
-    private int maxSleepSeconds = 8
-    
+    private int maxSleepSeconds
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -54,7 +55,7 @@ class SleepAfterFailureFilter extends OncePerRequestFilter {
                 LOG.debug("${response.status} is a match in the list ${httpStatusList}")
             }
 
-            Random random = new Random()
+            SecureRandom random = new SecureRandom()
             int sleepSeconds = random.nextInt(maxSleepSeconds)
             if (sleepSeconds < minSleepSeconds) {
                 sleepSeconds = minSleepSeconds

@@ -47,7 +47,7 @@ class JsonUtilSpec extends Specification {
         given:
             String jsonText = '{"test1":{"sub1":"sub-value1"},"test2":{"sub2":{"sub-sub2":"value2"}},' +
                     '"test3":[{"sub3":{"sub-sub3":"value3"}},{"sub4":{"sub-sub4":"value4"}}]}'
-            String[] keyMatches = ['sub1','sub-sub2','sub-sub3','sub-sub4']
+            String[] keyMatches = ['sub1', 'sub-sub2', 'sub-sub3', 'sub-sub4']
         when:
            String jsonResponse = JsonUtil.replaceAll(jsonText, keyMatches, '**')
         then:

@@ -32,17 +32,17 @@ import javax.servlet.http.HttpServletResponse
  */
 @Component
 class ClientResetBasicAuthFilter extends BasicAuthFilter {
-    private ClientService clientService
+    private final ClientService clientService
 
     @Value('${security.brute-force-attack.client-lock-basic-auth-filter.enabled}')
     private boolean isEnabled
 
     @Value('${security.brute-force-attack.client-lock-basic-auth-filter.resources}')
-    private String[] resourcePaths = ['/**']
-    
+    private String[] resourcePaths
+
     ClientResetBasicAuthFilter(ClientService clientService) {
         this.clientService = clientService
-        this.LOG = LoggerFactory.getLogger(ClientResetBasicAuthFilter)
+        this.log = LoggerFactory.getLogger(ClientResetBasicAuthFilter)
     }
 
     @Override
@@ -56,13 +56,13 @@ class ClientResetBasicAuthFilter extends BasicAuthFilter {
                     resetFailedLoginAttempts(authentication, username)
                     request.session.setAttribute(IS_AUTHENTICATED, true)
                 } else if (!username) {
-                    LOG.debug('No username parameters were found. Skipping.')
+                    log.debug('No username parameters were found. Skipping.')
                 } else if (!authentication.isAuthenticated()) {
-                    LOG.debug('User is not authenticated. Skipping.')
+                    log.debug('User is not authenticated. Skipping.')
                 }
             }
         } else {
-            LOG.debug('ClientResetBasicAuthFilter is DISABLED. Skipping.')
+            log.debug('ClientResetBasicAuthFilter is DISABLED. Skipping.')
         }
 
         filterChain.doFilter(request, response)
@@ -75,19 +75,19 @@ class ClientResetBasicAuthFilter extends BasicAuthFilter {
                 Client client = clientService.findByClientIdentifier(username)
                 if (client) {
                     if (client.failedLoginAttempts > 0) {
-                        if (LOG.debugEnabled) {
-                            LOG.debug("Resetting client ${client.clientIdentifier} failed login attempts to 0.")
+                        if (log.debugEnabled) {
+                            log.debug("Resetting client ${client.clientIdentifier} failed login attempts to 0.")
                         }
                         client.failedLoginAttempts = 0
                         clientService.save(client)
-                    } else if (LOG.debugEnabled) {
-                        LOG.debug("Client ${client.clientIdentifier} has no failed login attempts. Skipping update.")
+                    } else if (log.debugEnabled) {
+                        log.debug("Client ${client.clientIdentifier} has no failed login attempts. Skipping update.")
                     }
-                } else if (LOG.debugEnabled) {
-                    LOG.debug("Could not find Client record for username ${username}. Skipping")
+                } else if (log.debugEnabled) {
+                    log.debug("Could not find Client record for username ${username}. Skipping")
                 }
-            } else if (LOG.debugEnabled) {
-                LOG.debug("Basic auth username (${username} didn't match Authentication username (${authenticatedUsername}). Skipping.")
+            } else if (log.debugEnabled) {
+                log.debug("Basic auth username (${username} didn't match Authentication username (${authenticatedUsername}). Skipping.")
             }
         }
     }

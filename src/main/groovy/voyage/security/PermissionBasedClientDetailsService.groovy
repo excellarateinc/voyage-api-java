@@ -27,9 +27,9 @@ class PermissionBasedClientDetailsService implements ClientDetailsService {
     ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
         Client client = clientService.findByClientIdentifier(clientId)
         if (!client || !client.isEnabled) {
-            throw new ClientRegistrationException("No client was found for the given username and password")
+            throw new ClientRegistrationException('No client was found for the given username and password')
         } else if (client.isAccountLocked) {
-            throw new ClientRegistrationException("The client account is locked")
+            throw new ClientRegistrationException('The client account is locked')
         }
         return new PermissionBasedClientDetails(client, getAuthorities(client))
     }

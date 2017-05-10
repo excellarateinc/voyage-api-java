@@ -67,7 +67,7 @@ class ClientResetBasicAuthFilterSpec extends Specification {
             SecurityContextHolder.context = securityContext
             Authentication authentication = Mock(Authentication)
             User user = new User('client-super', 'password', [])
-            
+
             Client client = new Client()
             client.failedLoginAttempts = 4
 

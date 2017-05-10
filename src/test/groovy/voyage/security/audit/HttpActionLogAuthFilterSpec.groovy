@@ -16,7 +16,7 @@ class HttpActionLogAuthFilterSpec extends Specification {
         given:
             User user = new User()
             Client client = new Client()
-        
+
             UserService userService = Mock(UserService)
             ClientService clientService = Mock(ClientService)
 

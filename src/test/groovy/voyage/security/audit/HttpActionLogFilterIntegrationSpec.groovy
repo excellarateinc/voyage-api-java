@@ -44,9 +44,9 @@ class HttpActionLogFilterIntegrationSpec extends AbstractIntegrationTest {
             actionLog.clientProtocol == 'HTTP/1.1'
             actionLog.httpMethod == 'GET'
             actionLog.httpStatus == '200'
-            actionLog.username == null
-            actionLog.client == null
-            actionLog.user == null
+            !actionLog.username
+            !actionLog.client
+            !actionLog.user
             actionLog.durationMs
             actionLog.requestHeaders ==~ /.*test-header:test-value.*/
             actionLog.requestBody == ''
@@ -63,7 +63,7 @@ class HttpActionLogFilterIntegrationSpec extends AbstractIntegrationTest {
             headers.setContentType(MediaType.APPLICATION_JSON)
             headers.add('test-header', 'test-value')
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
-            
+
         when:
             Iterable<ActionLog> actionLogsBefore = actionLogRepository.findAll()
             ResponseEntity<String> responseEntity = POST('/api/v1/users', httpEntity, String)
@@ -81,15 +81,15 @@ class HttpActionLogFilterIntegrationSpec extends AbstractIntegrationTest {
             actionLog.clientProtocol == 'HTTP/1.1'
             actionLog.httpMethod == 'POST'
             actionLog.httpStatus == '401'
-            actionLog.username == null
-            actionLog.client == null
-            actionLog.user == null
+            !actionLog.username
+            !actionLog.client
+            !actionLog.user
             actionLog.durationMs
             actionLog.requestHeaders ==~ /.*test-header:test-value.*/
             actionLog.requestBody == ''
             actionLog.responseHeaders
-            actionLog.responseBody == '[{"error":"401_unauthorized","errorDescription":"401 Unauthorized. Full authentication is required to access ' +
-                    'this resource"}]'
+            actionLog.responseBody == '[{"error":"401_unauthorized","errorDescription":"401 Unauthorized. ' +
+                    'Full authentication is required to access this resource"}]'
             actionLog.createdDate
             actionLog.lastModifiedDate
     }
@@ -110,7 +110,7 @@ class HttpActionLogFilterIntegrationSpec extends AbstractIntegrationTest {
             CloseableHttpResponse response = httpClient.execute(httpPost)
 
         then:
-            response.getStatusLine().statusCode == 302
+            response.statusLine.statusCode == 302
             Iterable<ActionLog> actionLogsAfter = actionLogRepository.findAll()
 
             Iterable<ActionLog> diff = getNewActionLogs(actionLogsBefore, actionLogsAfter)
@@ -123,8 +123,8 @@ class HttpActionLogFilterIntegrationSpec extends AbstractIntegrationTest {
             actionLog.httpMethod == 'POST'
             actionLog.httpStatus == '302'
             actionLog.username == 'super'
-            actionLog.client == null
-            actionLog.user == null
+            !actionLog.client
+            !actionLog.user
             actionLog.durationMs
             actionLog.requestHeaders
             actionLog.requestBody == 'username=super&password=*********'

@@ -64,7 +64,7 @@ class UserLockEventListenerSpec extends Specification {
                     new BadCredentialsException('test')
             )
 
-            User user = new User(username: 'test', isEnabled: false, isAccountLocked: false, isAccountExpired: false, isCredentialsExpired: false)
+            User user = new User(username:'test', isEnabled:false, isAccountLocked:false, isAccountExpired:false, isCredentialsExpired:false)
 
         when:
            listener.authenticationFailed(event)
@@ -84,7 +84,7 @@ class UserLockEventListenerSpec extends Specification {
                 new BadCredentialsException('test')
         )
 
-        User user = new User(username: 'test', isEnabled: true, isAccountLocked: true, isAccountExpired: false, isCredentialsExpired: false)
+        User user = new User(username:'test', isEnabled:true, isAccountLocked:true, isAccountExpired:false, isCredentialsExpired:false)
 
         when:
         listener.authenticationFailed(event)
@@ -104,7 +104,7 @@ class UserLockEventListenerSpec extends Specification {
                     new BadCredentialsException('test')
             )
 
-            User user = new User(username: 'test', isEnabled: true, isAccountLocked: false, isAccountExpired: true, isCredentialsExpired: false)
+            User user = new User(username:'test', isEnabled:true, isAccountLocked:false, isAccountExpired:true, isCredentialsExpired:false)
 
         when:
            listener.authenticationFailed(event)
@@ -124,7 +124,7 @@ class UserLockEventListenerSpec extends Specification {
                     new BadCredentialsException('test')
             )
 
-            User user = new User(username: 'test', isEnabled: true, isAccountLocked: false, isAccountExpired: false, isCredentialsExpired: true)
+            User user = new User(username:'test', isEnabled:true, isAccountLocked:false, isAccountExpired:false, isCredentialsExpired:true)
 
         when:
             listener.authenticationFailed(event)
@@ -138,13 +138,14 @@ class UserLockEventListenerSpec extends Specification {
     def 'authenticationFailed finds the active user and increments the failed login attempts'() {
         given:
             listener.isEnabled = true
+            listener.maxLoginAttempts = 5
             AuthenticationException
             AuthenticationFailureBadCredentialsEvent event = new AuthenticationFailureBadCredentialsEvent(
                     authentication,
                     new BadCredentialsException('test')
             )
 
-            User user = new User(username: 'test', failedLoginAttempts: 0)
+            User user = new User(username:'test', failedLoginAttempts:0, isAccountLocked:false)
 
         when:
             listener.authenticationFailed(event)
@@ -161,13 +162,14 @@ class UserLockEventListenerSpec extends Specification {
     def 'authenticationFailed finds the active user and locks the user account'() {
         given:
             listener.isEnabled = true
+            listener.maxLoginAttempts = 5
             AuthenticationException
             AuthenticationFailureBadCredentialsEvent event = new AuthenticationFailureBadCredentialsEvent(
                     authentication,
                     new BadCredentialsException('test')
             )
 
-            User user = new User(username: 'test', failedLoginAttempts: 4)
+            User user = new User(username:'test', failedLoginAttempts:4)
 
         when:
            listener.authenticationFailed(event)
@@ -211,7 +213,7 @@ class UserLockEventListenerSpec extends Specification {
         given:
             listener.isEnabled = true
             AuthenticationSuccessEvent event = new AuthenticationSuccessEvent(authentication)
-            User user = new User(username: 'test', failedLoginAttempts: null)
+            User user = new User(username:'test', failedLoginAttempts:null)
 
         when:
             listener.authenticationSuccess(event)
@@ -226,7 +228,7 @@ class UserLockEventListenerSpec extends Specification {
         given:
             listener.isEnabled = true
             AuthenticationSuccessEvent event = new AuthenticationSuccessEvent(authentication)
-            User user = new User(username: 'test', failedLoginAttempts: 0)
+            User user = new User(username:'test', failedLoginAttempts:0)
 
         when:
            listener.authenticationSuccess(event)
@@ -241,7 +243,7 @@ class UserLockEventListenerSpec extends Specification {
         given:
             listener.isEnabled = true
             AuthenticationSuccessEvent event = new AuthenticationSuccessEvent(authentication)
-            User user = new User(username: 'test', failedLoginAttempts: 3)
+            User user = new User(username:'test', failedLoginAttempts:3)
 
         when:
            listener.authenticationSuccess(event)

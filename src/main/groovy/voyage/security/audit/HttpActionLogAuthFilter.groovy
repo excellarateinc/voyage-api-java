@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse
  * HttpActionLogFilter. The HttpActionLogFilter is ordered at the beginning of the filter chain and before
  * the Spring Security filters, which means that the request and session are cleared of authentication information before
  * the response gets back to the HttpActionLogFilter. The HttpActionLogFilter needs the authentication information, so
- * this filter provides the information necessary to log the authenticated users. 
+ * this filter provides the information necessary to log the authenticated users.
  */
 @Component
 class HttpActionLogAuthFilter extends OncePerRequestFilter {

@@ -20,6 +20,7 @@ class SleepAfterFailureFilterSpec extends Specification {
     def setup() {
         filter = new SleepAfterFailureFilter()
         filter.isEnabled = true
+        filter.httpStatusList = [401, 403, 404]
         filter.minSleepSeconds = minSleepMillis / 1000
         filter.maxSleepSeconds = maxSleepMillis / 1000
 

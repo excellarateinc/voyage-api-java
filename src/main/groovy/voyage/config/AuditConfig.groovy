@@ -21,7 +21,7 @@ class AuditConfig {
         String getCurrentAuditor() {
             Authentication authentication = SecurityContextHolder.context.authentication
             if (authentication == null || !authentication.isAuthenticated()) {
-                return "SYSTEM"
+                return 'SYSTEM'
             }
             if (authentication.principal instanceof User) {
                 return ((User)authentication.principal).username

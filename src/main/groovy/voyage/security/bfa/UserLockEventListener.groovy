@@ -16,13 +16,13 @@ import voyage.security.user.UserService
 @Component
 class UserLockEventListener {
     private static final Logger LOG = LoggerFactory.getLogger(UserLockEventListener)
-    private UserService userService
+    private final UserService userService
 
     @Value('${security.brute-force-attack.user-lock-event-listener.enabled}')
     private boolean isEnabled
-    
+
     @Value('${security.brute-force-attack.user-lock-event-listener.max-login-attempts}')
-    private int maxLoginAttempts = 5
+    private int maxLoginAttempts
 
     UserLockEventListener(UserService userService) {
         this.userService = userService
@@ -59,10 +59,10 @@ class UserLockEventListener {
     @EventListener
     void authenticationFailed(AbstractAuthenticationFailureEvent event) {
         if (!isEnabled) {
-            LOG.debug('UserLockEventListener is DISABLED. Skipping.')
+            LOG.debug('UserLockEventListener is DISABLED. Skipping. ')
             return
         }
-        
+
         LOG.debug('User authentication failed')
         if (event.source instanceof UsernamePasswordAuthenticationToken) {
             String username = ((UsernamePasswordAuthenticationToken)event.source).principal
@@ -83,7 +83,8 @@ class UserLockEventListener {
 
                 if (user.failedLoginAttempts >= maxLoginAttempts) {
                     if (LOG.debugEnabled) {
-                        LOG.debug("User ${username} has hit their max failed login attempts of ${maxLoginAttempts}. Locking user account with ID=${user.id}.")
+                        LOG.debug("User ${username} has hit their max failed login attempts of ${maxLoginAttempts}. " +
+                                "Locking user account with ID=${user.id}.")
                     }
                     user.isAccountLocked = true
                 }

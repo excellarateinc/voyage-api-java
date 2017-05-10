@@ -31,20 +31,20 @@ import javax.servlet.http.HttpServletResponse
 @Component
 @Order(-10000)
 class ClientLockBasicAuthFilter extends BasicAuthFilter {
-    private ClientService clientService
+    private final ClientService clientService
 
     @Value('${security.brute-force-attack.client-lock-basic-auth-filter.enabled}')
     private boolean isEnabled
 
     @Value('${security.brute-force-attack.client-lock-basic-auth-filter.resources}')
-    private String[] resourcePaths = ['/**']
+    private String[] resourcePaths
 
     @Value('${security.brute-force-attack.client-lock-basic-auth-filter.max-login-attempts}')
-    private int maxLoginAttempts = 5
+    private int maxLoginAttempts
 
     ClientLockBasicAuthFilter(ClientService clientService) {
         this.clientService = clientService
-        this.LOG = LoggerFactory.getLogger(ClientLockBasicAuthFilter)
+        this.log = LoggerFactory.getLogger(ClientLockBasicAuthFilter)
     }
 
     @Override
@@ -60,7 +60,7 @@ class ClientLockBasicAuthFilter extends BasicAuthFilter {
                 request.getSession(true).setAttribute(IS_AUTHENTICATED, false)
             }
         } else {
-            LOG.debug('ClientLockBasicAuthFilter is DISABLED. Skipping.')
+            log.debug('ClientLockBasicAuthFilter is DISABLED. Skipping.')
         }
 
         filterChain.doFilter(request, response)
@@ -71,9 +71,9 @@ class ClientLockBasicAuthFilter extends BasicAuthFilter {
             if (username && !isAuthenticated) {
                 incrementFailedLoginAttempts(username)
             } else if (!username) {
-                LOG.debug('No username parameters were found. Skipping.')
+                log.debug('No username parameters were found. Skipping.')
             } else if (isAuthenticated) {
-                LOG.debug('User is authenticated. Skipping.')
+                log.debug('User is authenticated. Skipping.')
             }
         }
     }
@@ -81,8 +81,8 @@ class ClientLockBasicAuthFilter extends BasicAuthFilter {
     private void incrementFailedLoginAttempts(String username) {
         Client client = clientService.findByClientIdentifier(username)
         if (client && client.isEnabled && !client.isAccountLocked) {
-            if (LOG.debugEnabled) {
-                LOG.debug('Found Client record in the database for username: ' + username)
+            if (log.debugEnabled) {
+                log.debug('Found Client record in the database for username: ' + username)
             }
 
             if (!client.failedLoginAttempts) {
@@ -90,26 +90,27 @@ class ClientLockBasicAuthFilter extends BasicAuthFilter {
             }
 
             client.failedLoginAttempts = client.failedLoginAttempts + 1
-            if (LOG.debugEnabled) {
-                LOG.debug("Client ${username} has ${client.failedLoginAttempts} failed login attempts.")
+            if (log.debugEnabled) {
+                log.debug("Client ${username} has ${client.failedLoginAttempts} failed login attempts.")
             }
 
             if (client.failedLoginAttempts >= maxLoginAttempts) {
-                if (LOG.debugEnabled) {
-                    LOG.debug("Client ${username} has hit their max failed login attempts of ${maxLoginAttempts}. Locking Client with ID=${client.id}.")
+                if (log.debugEnabled) {
+                    log.debug("Client ${username} has hit their max failed login attempts of ${maxLoginAttempts}. " +
+                            "Locking Client with ID=${client.id}.")
                 }
                 client.isAccountLocked = true
             }
 
             clientService.save(client)
 
-        } else if (LOG.debugEnabled) {
+        } else if (log.debugEnabled) {
             if (!client) {
-                LOG.debug('No Client record found in the database for username: ' + username)
+                log.debug('No Client record found in the database for username: ' + username)
             } else if (!client.isEnabled) {
-                LOG.debug('The Client record is disabled for username: ' + username)
+                log.debug('The Client record is disabled for username: ' + username)
             } else if (client.isAccountLocked) {
-                LOG.debug('The Client record is locked for username: ' + username)
+                log.debug('The Client record is locked for username: ' + username)
             }
         }
     }
