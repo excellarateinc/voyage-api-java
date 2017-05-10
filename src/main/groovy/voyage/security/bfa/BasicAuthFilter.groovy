@@ -61,7 +61,7 @@ abstract class BasicAuthFilter extends OncePerRequestFilter {
         return username
     }
 
-    protected boolean isRequestFilterable(HttpServletRequest request, resourcePaths) {
+    protected boolean isRequestFilterable(HttpServletRequest request, String[] resourcePaths) {
         String path = getRequestPath(request)
         AntPathMatcher antPathMatcher = new AntPathMatcher()
         for (String antPattern : resourcePaths) {

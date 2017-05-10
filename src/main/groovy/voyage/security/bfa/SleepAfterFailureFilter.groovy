@@ -49,7 +49,7 @@ class SleepAfterFailureFilter extends OncePerRequestFilter {
             LOG.debug("Found HTTP Status: ${response.status}")
         }
 
-        if (httpStatusList.contains(response.getStatus())) {
+        if (httpStatusList.contains(response.status)) {
             if (LOG.debugEnabled) {
                 LOG.debug("${response.status} is a match in the list ${httpStatusList}")
             }

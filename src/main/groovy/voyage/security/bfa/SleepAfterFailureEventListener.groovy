@@ -24,6 +24,7 @@ class SleepAfterFailureEventListener {
     void authenticationFailed(AbstractAuthenticationFailureEvent event) {
         if (!isEnabled) {
             LOG.debug('SleepAfterFailureEventListener is DISABLED. Skipping.')
+            return
         }
         LOG.debug('User authentication failed. Sleeping the thread to slow down brute force attacks')
 

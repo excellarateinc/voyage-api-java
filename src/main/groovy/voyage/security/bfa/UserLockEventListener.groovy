@@ -30,6 +30,11 @@ class UserLockEventListener {
 
     @EventListener
     void authenticationSuccess(AuthenticationSuccessEvent event) {
+        if (!isEnabled) {
+            LOG.debug('UserLockEventListener is DISABLED. Skipping.')
+            return
+        }
+
         LOG.debug('User authentication successful')
         Authentication authentication = event.authentication
         if (authentication.principal instanceof PermissionBasedUserDetails) {
@@ -53,6 +58,11 @@ class UserLockEventListener {
 
     @EventListener
     void authenticationFailed(AbstractAuthenticationFailureEvent event) {
+        if (!isEnabled) {
+            LOG.debug('UserLockEventListener is DISABLED. Skipping.')
+            return
+        }
+        
         LOG.debug('User authentication failed')
         if (event.source instanceof UsernamePasswordAuthenticationToken) {
             String username = ((UsernamePasswordAuthenticationToken)event.source).principal

@@ -38,11 +38,8 @@ class ClientResetBasicAuthFilter extends BasicAuthFilter {
     private boolean isEnabled
 
     @Value('${security.brute-force-attack.client-lock-basic-auth-filter.resources}')
-    private String[] resourcePaths = '/**'
-
-    @Value('${security.brute-force-attack.client-lock-basic-auth-filter.max-login-attempts}')
-    private int maxLoginAttempts = 5
-
+    private String[] resourcePaths = ['/**']
+    
     ClientResetBasicAuthFilter(ClientService clientService) {
         this.clientService = clientService
         this.LOG = LoggerFactory.getLogger(ClientResetBasicAuthFilter)
