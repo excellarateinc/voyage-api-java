@@ -134,7 +134,23 @@
  *  @apiErrorExample Error-Response
  *  HTTP/1.1 400: Bad Request
  *  {
- *      "error": "400__email_sending_failed",
+ *      "error": "400_email_sending_failed",
  *      "errorDescription": "Failure sending email"
+ *  }
+ */
+
+// ------------------------------------------------------------------------------------------
+// SMS Sending Failure
+// ------------------------------------------------------------------------------------------
+/**
+ *  @apiDefine SMSSendError
+ *
+ *  @apiError SmsSendException Failure sending SMS.
+ *
+ *  @apiErrorExample Error-Response
+ *  HTTP/1.1 400: Bad Request
+ *  {
+ *      "error": "400_sms_sending_failed",
+ *      "errorDescription": "Failure sending text message. Please contact support."
  *  }
  */
