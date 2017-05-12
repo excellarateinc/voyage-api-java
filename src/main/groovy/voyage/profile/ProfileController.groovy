@@ -53,42 +53,21 @@ class ProfileController {
      *
      * @apiUse AuthHeader
      *
-     * @apiParam {Object} profile Profile
-     * @apiParam {String} profile.userName Username of the user
-     * @apiParam {String} profile.email Email
-     * @apiParam {String} profile.firstName First name
-     * @apiParam {String} profile.lastName Last name
-     * @apiParam {String} profile.password Password
-     * @apiParam {Object[]} profile.phones Profile phone numbers
-     * @apiParam {String} profile.phones.phoneNumber Phone number in E.164 format (ie +16518886021 or +1-651-888-6021 as punctuation is stripped out)
-     * @apiParam {String} profile.phones.phoneType Phone type (mobile, office, home, other). NOTE: At least one mobile phone is required.
-     *
-     * @apiExample {json} Example body:
-     * {
-     *     "firstName": "FirstName",
-     *     "lastName": "LastName",
-     *     "username": "FirstName3@app.com",
-     *     "email": "FirstName3@app.com",
-     *     "password": "my-secure-password",
-     *     "phones":
-     *     [
-     *         {
-     *             "phoneType": "MOBILE",
-     *             "phoneNumber" : "+6518886021"
-     *         }
-     *     ]
-     * }
-     *
      * @apiHeader (Response Headers) {String} location Location of the newly created resource
      *
      * @apiHeaderExample {json} New Profile Location
      * HTTP/1.1 201: Created
      * {
-     *     "Location": "https://my-app/api/v1/profile"
+     *     "Location": "https://my-app/api/v1/profile/1"
      * }
      *
+     * @apiUse ProfileRequestModel
+     * @apiUse ProfileSuccessModel
      * @apiUse UsernameAlreadyInUseError
      * @apiUse MobilePhoneNumberRequiredError
+     * @apiUse TooManyPhonesError
+     * @apiUse PhoneNumberInvalidError
+     * @apiUse MailSendError
      **/
     @PostMapping()
     ResponseEntity save(@RequestBody User userIn) {

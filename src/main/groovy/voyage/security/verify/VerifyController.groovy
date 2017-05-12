@@ -81,6 +81,8 @@ class VerifyController {
      *   HTTP/1.1 204 NO CONTENT
      *
      * @apiUse UnauthorizedError
+     * @apiUse InvalidVerificationPhoneNumberError
+     * @apiUse SMSSendError
      **/
     @PreAuthorize('isAuthenticated()')
     @GetMapping('/send')
@@ -140,6 +142,8 @@ class VerifyController {
      *   HTTP/1.1 204 NO CONTENT
      *
      * @apiUse UnauthorizedError
+     * @apiUse InvalidVerificationPhoneNumberError
+     * @apiUse VerifyCodeExpiredError
      **/
     @PreAuthorize('isAuthenticated()')
     @PostMapping

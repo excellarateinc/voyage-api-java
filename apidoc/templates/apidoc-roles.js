@@ -25,34 +25,42 @@
 // ------------------------------------------------------------------------------------------
 
 // ------------------------------------------------------------------------------------------
+// Roles List Model
+// ------------------------------------------------------------------------------------------
+/**
+ * @apiDefine RoleListModel
+ *
+ * @apiSuccess {Object[]} roles List of roles
+ * @apiSuccess {String} roles.id Role ID
+ * @apiSuccess {String} roles.name name of the role
+ * @apiSuccess {String} roles.authority Description
+ *
+ * @apiSuccessExample Success-Response:
+ * {
+ *   HTTP/1.1 200 OK
+ *   [
+ *       {
+ *           "id": "f9d69894-7908-4606-918e-410dca8c3238",
+ *           "name": "Super User",
+ *           "authority": "roles.super_user"
+ *       }
+ *   ]
+ * }
+ */
+// ------------------------------------------------------------------------------------------
 // Role Request Model
 // ------------------------------------------------------------------------------------------
 /**
  * @apiDefine RoleRequestModel
  *
- * @apiParam {Object} user User
- * @apiParam {String} user.userName Username of the user
- * @apiParam {String} user.email Email
- * @apiParam {String} user.firstName First name
- * @apiParam {String} user.lastName Last name
- * @apiParam {Object[]} user.phones User phone numbers
- * @apiParam {String} user.phones.phoneNumber Phone number
- * @apiParam {String} user.phones.phoneType Phone type
+ * @apiParam {Object} role Role
+ * @apiParam {String} role.name Role name
+ * @apiParam {String} role.authority Role description
  *
  * @apiExample {json} Example body:
  * {
- *     "firstName": "FirstName",
- *     "lastName": "LastName",
- *     "username": "FirstName3@app.com",
- *     "email": "FirstName3@app.com",
- *     "phones":
- *     [
- *         {
- *             "phoneType": "mobile",
- *             "phoneNumber" : "5555551212"
- *         }
- *     ],
- *     "isActive": true
+ *     "name": "Super User",
+ *     "authority": "roles.super_user"
  * }
  */
 
@@ -62,31 +70,15 @@
 /**
  * @apiDefine RoleSuccessModel
  *
- * @apiSuccess {Object} user User
- * @apiSuccess {String} user.id User ID
- * @apiSuccess {String} user.userName Username of the user
- * @apiSuccess {String} user.email Email
- * @apiSuccess {String} user.firstName First name
- * @apiSuccess {String} user.lastName Last name
- * @apiSuccess {Object[]} user.phones User phone numbers
- * @apiSuccess {String} user.phones.phoneNumber Phone number
- * @apiSuccess {String} user.phones.phoneType Phone type
+ * @apiSuccess {Object} role Role
+ * @apiSuccess {String} roles.id Role ID
+ * @apiSuccess {String} roles.name name of the role
+ * @apiSuccess {String} roles.authority Description
+ *
  * @apiSuccessExample Success-Response:
  * {
  *     "id": "f9d69894-7908-4606-918e-410dca8c3238",
- *     "firstName": "FirstName",
- *     "lastName": "LastName",
- *     "username": "FirstName3@app.com",
- *     "email": "FirstName3@app.com",
- *     "phones":
- *     [
- *         {
- *             "id": 3,
- *             "userId": "f9d69894-7908-4606-918e-410dca8c3238",
- *             "phoneNumber": "5555551212",
- *             "phoneType": "Mobile"
- *         }
- *     ],
- *     "isActive": true
+ *     "name": "Super User",
+ *     "authority": "roles.super_user"
  * }
  */
