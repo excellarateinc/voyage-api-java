@@ -29,7 +29,6 @@ import javax.validation.ConstraintViolation
 import javax.validation.ConstraintViolationException
 import javax.validation.Path
 
-
 class GlobalExceptionHandlerSpec extends Specification {
     def 'handle() ConstraintViolationException returns an Bad Request error'() {
         given:
