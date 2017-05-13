@@ -21,7 +21,6 @@ package voyage.security.permission
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
-import voyage.common.error.ImmutableRecordException
 import voyage.common.error.UnknownIdentifierException
 
 import javax.validation.Valid
