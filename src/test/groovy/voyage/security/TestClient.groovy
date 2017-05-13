@@ -16,26 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package voyage.test
+package voyage.security
 
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.GrantedAuthority
-
-class TestAuthentication implements Authentication {
-    Collection<? extends GrantedAuthority> authorities = []
-    Object credentials
-    Object details
-    String principal = 'test'
-    private boolean authenticated = true
-    String name = 'test'
-
-    @Override
-    boolean isAuthenticated() {
-        return authenticated
-    }
-
-    @Override
-    void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-        this.authenticated = isAuthenticated
-    }
+interface TestClient {
+    String getClientId()
+    String getClientSecret()
 }

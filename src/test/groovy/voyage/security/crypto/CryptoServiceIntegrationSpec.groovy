@@ -19,9 +19,9 @@
 package voyage.security.crypto
 
 import org.springframework.beans.factory.annotation.Autowired
-import voyage.test.AbstractIntegrationTest
+import voyage.security.AuthenticatedIntegrationTest
 
-class CryptoServiceIntegrationSpec extends AbstractIntegrationTest {
+class CryptoServiceIntegrationSpec extends AuthenticatedIntegrationTest {
     @Autowired
     CryptoService cryptoService
 

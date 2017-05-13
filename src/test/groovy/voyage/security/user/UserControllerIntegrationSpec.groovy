@@ -23,11 +23,11 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import voyage.security.AuthenticatedIntegrationTest
 import voyage.security.crypto.CryptoService
 import voyage.security.role.RoleService
-import voyage.test.AbstractIntegrationTest
 
-class UserControllerIntegrationSpec extends AbstractIntegrationTest {
+class UserControllerIntegrationSpec extends AuthenticatedIntegrationTest {
     private static final Long ROLE_STANDARD_ID = 2
 
     @Autowired

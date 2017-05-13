@@ -16,33 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package voyage.security.crypto
+package voyage.security
 
-import org.springframework.beans.factory.annotation.Autowired
-import voyage.security.AuthenticatedIntegrationTest
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 
-import java.security.KeyPair
+@Component
+class StandardClient implements TestClient {
+    @Value('${security.test.clients.standard-client.client-id}')
+    String clientId
 
-class KeyStoreServiceIntegrationSpec extends AuthenticatedIntegrationTest {
-    @Autowired
-    KeyStoreService keyStoreService
-
-    def 'getRsaKeyPair returns a KeyPair from the keystore'() {
-        when:
-            KeyPair keyPair = keyStoreService.getRsaKeyPair('asymmetric', 'changeme'.toCharArray())
-
-        then:
-            keyPair.public
-            keyPair.private
-    }
-
-    def 'KeyStoreService throws exception when the keystore cannot be loaded'() {
-        when:
-            KeyStoreService service = new KeyStoreService('keystore.jks', 'wrong-password')
-
-        then:
-            !service
-            IOException ex = thrown()
-            ex != null
-    }
+    @Value('${security.test.clients.standard-client.client-secret}')
+    String clientSecret
 }

@@ -25,16 +25,16 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import voyage.security.AuthenticatedIntegrationTest
 import voyage.security.crypto.CryptoService
 import voyage.security.user.PhoneType
 import voyage.security.user.User
 import voyage.security.user.UserPhone
 import voyage.security.user.UserService
-import voyage.test.AbstractIntegrationTest
 
 import javax.mail.internet.MimeMessage
 
-class ProfileControllerIntegrationSpec extends AbstractIntegrationTest {
+class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
     private GreenMail greenMailSMTP
 
     @Autowired

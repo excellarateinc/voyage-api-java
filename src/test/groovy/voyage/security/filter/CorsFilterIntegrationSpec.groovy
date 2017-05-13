@@ -22,12 +22,12 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import voyage.security.AuthenticatedIntegrationTest
 import voyage.security.user.PhoneType
 import voyage.security.user.User
 import voyage.security.user.UserPhone
-import voyage.test.AbstractIntegrationTest
 
-class CorsFilterIntegrationSpec extends AbstractIntegrationTest {
+class CorsFilterIntegrationSpec extends AuthenticatedIntegrationTest {
 
     def 'Anonymous GET request with Origin header to public /api/status returns public CORS response headers'() {
         given:

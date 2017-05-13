@@ -16,33 +16,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package voyage.security.crypto
+package voyage.security
 
-import org.springframework.beans.factory.annotation.Autowired
-import voyage.security.AuthenticatedIntegrationTest
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.GrantedAuthority
 
-import java.security.KeyPair
+class TestAuthentication implements Authentication {
+    Collection<? extends GrantedAuthority> authorities = []
+    Object credentials
+    Object details
+    String principal = 'test'
+    private boolean authenticated = true
+    String name = 'test'
 
-class KeyStoreServiceIntegrationSpec extends AuthenticatedIntegrationTest {
-    @Autowired
-    KeyStoreService keyStoreService
-
-    def 'getRsaKeyPair returns a KeyPair from the keystore'() {
-        when:
-            KeyPair keyPair = keyStoreService.getRsaKeyPair('asymmetric', 'changeme'.toCharArray())
-
-        then:
-            keyPair.public
-            keyPair.private
+    @Override
+    boolean isAuthenticated() {
+        return authenticated
     }
 
-    def 'KeyStoreService throws exception when the keystore cannot be loaded'() {
-        when:
-            KeyStoreService service = new KeyStoreService('keystore.jks', 'wrong-password')
-
-        then:
-            !service
-            IOException ex = thrown()
-            ex != null
+    @Override
+    void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
+        this.authenticated = isAuthenticated
     }
 }

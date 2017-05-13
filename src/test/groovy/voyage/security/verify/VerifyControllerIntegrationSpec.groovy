@@ -23,10 +23,10 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import voyage.test.AbstractIntegrationTest
+import voyage.security.AuthenticatedIntegrationTest
 
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
-class VerifyControllerIntegrationSpec extends AbstractIntegrationTest {
+class VerifyControllerIntegrationSpec extends AuthenticatedIntegrationTest {
 
     /*
        Run the /verify POST test before the /verify/send because the /send will reset the 'code' with a new value. Since

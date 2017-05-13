@@ -32,13 +32,13 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
+import voyage.security.AuthenticatedIntegrationTest
 import voyage.security.client.Client
 import voyage.security.client.ClientService
 import voyage.security.user.User
 import voyage.security.user.UserService
-import voyage.test.AbstractIntegrationTest
 
-class InvalidateOAuthTokensFilterIntegrationSpec extends AbstractIntegrationTest {
+class InvalidateOAuthTokensFilterIntegrationSpec extends AuthenticatedIntegrationTest {
     @Autowired
     private ClientService clientService
 

@@ -30,12 +30,12 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import voyage.security.AuthenticatedIntegrationTest
 import voyage.security.user.PhoneType
 import voyage.security.user.User
 import voyage.security.user.UserPhone
-import voyage.test.AbstractIntegrationTest
 
-class HttpActionLogFilterIntegrationSpec extends AbstractIntegrationTest {
+class HttpActionLogFilterIntegrationSpec extends AuthenticatedIntegrationTest {
     @Autowired
     ActionLogRepository actionLogRepository
 

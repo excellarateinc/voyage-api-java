@@ -22,11 +22,11 @@ import com.icegreen.greenmail.util.GreenMail
 import com.icegreen.greenmail.util.GreenMailUtil
 import com.icegreen.greenmail.util.ServerSetup
 import org.springframework.beans.factory.annotation.Autowired
-import voyage.test.AbstractIntegrationTest
+import voyage.security.AuthenticatedIntegrationTest
 
 import javax.mail.Message
 
-class MailServiceIntegrationSpec extends AbstractIntegrationTest {
+class MailServiceIntegrationSpec extends AuthenticatedIntegrationTest {
 
     @Autowired
     MailService mailService

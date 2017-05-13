@@ -22,9 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import voyage.security.permission.Permission
 import voyage.security.permission.PermissionService
-import voyage.test.AbstractIntegrationTest
 
-class SecurityIntegrationSpec extends AbstractIntegrationTest {
+class SecurityIntegrationSpec extends AuthenticatedIntegrationTest {
     private static final Long SUPER_USER_ID = 1L
 
     @Autowired

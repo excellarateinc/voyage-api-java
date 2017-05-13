@@ -35,14 +35,13 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.ResponseEntity
 import voyage.security.client.Client
 import voyage.security.client.ClientService
-import voyage.test.AbstractIntegrationTest
 
 /**
  * Exercise the OAuth2 implicit workflow that assumes the client cannot keep the client_secret secure, like in a
  * Javascript web app or mobile app (hybrid or native). This method is the most commonly used authentication method
  * within this app.
  */
-class OAuth2ImplicitIntegrationSpec extends AbstractIntegrationTest {
+class OAuth2ImplicitIntegrationSpec extends AuthenticatedIntegrationTest {
 
     @Autowired
     ClientService clientService

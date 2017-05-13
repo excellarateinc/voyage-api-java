@@ -24,10 +24,10 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import voyage.core.error.UnknownIdentifierException
+import voyage.security.AuthenticatedIntegrationTest
 import voyage.security.role.RoleService
-import voyage.test.AbstractIntegrationTest
 
-class PermissionControllerIntegrationSpec extends AbstractIntegrationTest {
+class PermissionControllerIntegrationSpec extends AuthenticatedIntegrationTest {
     private static final Long ROLE_STANDARD_ID = 2
 
     @Autowired

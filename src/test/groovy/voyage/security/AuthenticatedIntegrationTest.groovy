@@ -16,33 +16,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package voyage.test
+package voyage.security
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.context.embedded.LocalServerPort
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.stereotype.Component
 import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
-import spock.lang.Specification
+import voyage.core.AbstractIntegrationTest
 
-@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
-class AbstractIntegrationTest extends Specification {
-
-    @Autowired
-    protected TestRestTemplate restTemplate
-
-    @LocalServerPort
-    protected int httpPort
-
+class AuthenticatedIntegrationTest extends AbstractIntegrationTest {
     @Autowired
     protected SuperClient superClient
 
@@ -100,7 +87,7 @@ class AbstractIntegrationTest extends Specification {
         return restTemplate.exchange(uri, HttpMethod.OPTIONS, httpEntity, responseType, Collections.EMPTY_MAP)
     }
 
-    private <T> HttpEntity authorize(TestClient testClient, HttpEntity<T> httpEntity = null) {
+    protected <T> HttpEntity authorize(TestClient testClient, HttpEntity<T> httpEntity = null) {
         HttpHeaders httpHeaders = new HttpHeaders()
         if (httpEntity) {
             // HttpEntity locks existing headers, so convert the unmodifiable set to a modifiable set.
@@ -138,7 +125,7 @@ class AbstractIntegrationTest extends Specification {
         return responseEntity.body.access_token
     }
 
-    private static HttpHeaders enableWrite(HttpHeaders httpHeaders) {
+    protected static HttpHeaders enableWrite(HttpHeaders httpHeaders) {
         Set readOnlyHeaders = httpHeaders.entrySet()
         HttpHeaders writableHeaders = new HttpHeaders()
         for (Map.Entry<String, List<String>> entry : readOnlyHeaders) {
@@ -146,27 +133,4 @@ class AbstractIntegrationTest extends Specification {
         }
         return writableHeaders
     }
-}
-
-interface TestClient {
-    String getClientId()
-    String getClientSecret()
-}
-
-@Component
-class SuperClient implements TestClient {
-    @Value('${security.test.clients.super-client.client-id}')
-    String clientId
-
-    @Value('${security.test.clients.super-client.client-secret}')
-    String clientSecret
-}
-
-@Component
-class StandardClient implements TestClient {
-    @Value('${security.test.clients.standard-client.client-id}')
-    String clientId
-
-    @Value('${security.test.clients.standard-client.client-secret}')
-    String clientSecret
 }

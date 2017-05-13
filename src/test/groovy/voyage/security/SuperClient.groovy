@@ -16,11 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package voyage.test
+package voyage.security
 
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.context.SecurityContext
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 
-class TestSecurityContext implements SecurityContext {
-    Authentication authentication = new TestAuthentication()
+@Component
+class SuperClient implements TestClient {
+    @Value('${security.test.clients.super-client.client-id}')
+    String clientId
+
+    @Value('${security.test.clients.super-client.client-secret}')
+    String clientSecret
 }

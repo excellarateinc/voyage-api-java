@@ -23,9 +23,9 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import voyage.test.AbstractIntegrationTest
+import voyage.security.AuthenticatedIntegrationTest
 
-class RoleControllerIntegrationSpec extends AbstractIntegrationTest {
+class RoleControllerIntegrationSpec extends AuthenticatedIntegrationTest {
     private static final Long ROLE_STANDARD_ID = 2
 
     @Autowired
