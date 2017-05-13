@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import groovy.transform.EqualsAndHashCode
 import org.hibernate.annotations.Where
 import org.hibernate.envers.Audited
-import voyage.core.AuditableEntity
+import voyage.security.audit.AuditableEntity
 import voyage.security.role.Role
 
 import javax.persistence.Entity

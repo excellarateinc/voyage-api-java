@@ -20,7 +20,7 @@ package voyage.security.client
 
 import groovy.transform.EqualsAndHashCode
 import org.hibernate.envers.Audited
-import voyage.core.AuditableEntity
+import voyage.security.audit.AuditableEntity
 
 import javax.persistence.Entity
 import javax.persistence.EnumType

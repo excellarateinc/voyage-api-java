@@ -21,7 +21,7 @@ package voyage.security.role
 import com.fasterxml.jackson.annotation.JsonIgnore
 import groovy.transform.EqualsAndHashCode
 import org.hibernate.envers.Audited
-import voyage.core.AuditableEntity
+import voyage.security.audit.AuditableEntity
 import voyage.security.permission.Permission
 
 import javax.persistence.Entity
