@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
 import voyage.common.error.UnknownIdentifierException
-import voyage.common.phone.PhoneService
 import voyage.security.crypto.CryptoService
 
 import javax.validation.Valid

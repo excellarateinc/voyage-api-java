@@ -19,7 +19,6 @@
 package voyage.security.user
 
 import spock.lang.Specification
-import voyage.common.phone.PhoneService
 import voyage.security.crypto.CryptoService
 
 class UserServiceSpec extends Specification {

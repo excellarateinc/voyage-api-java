@@ -16,35 +16,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package voyage.common.phone
+package voyage.security.permission
 
 import org.springframework.http.HttpStatus
 import voyage.common.error.AppException
 
-class PhoneNumberInvalidException extends AppException {
+class ImmutableRecordException extends AppException {
     private static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST
-    private static final String DEFAULT_MESSAGE = 'The phone number provided is not recognized.'
-    private final String codeExtension
+    private static final String DEFAULT_MESSAGE = 'The requested record is immutable. No changes to this record are allowed.'
 
-    PhoneNumberInvalidException() {
+    ImmutableRecordException() {
         this(DEFAULT_MESSAGE)
     }
 
-    PhoneNumberInvalidException(String message) {
-        this(message, '')
-    }
-
-    PhoneNumberInvalidException(String message, String codeExtension) {
+    ImmutableRecordException(String message) {
         super(HTTP_STATUS, message)
-        this.codeExtension = codeExtension
-    }
-
-    @Override
-    String getErrorCode() {
-        String code = HTTP_STATUS.value() + '_phone_invalid'
-        if (codeExtension) {
-            code = code + '_' + codeExtension.toLowerCase()
-        }
-        return code
     }
 }

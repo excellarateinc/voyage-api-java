@@ -16,40 +16,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package voyage.common.phone
+package voyage.security.permission
 
 import org.springframework.http.HttpStatus
 import spock.lang.Specification
+import voyage.common.error.AppException
+import voyage.security.user.UsernameAlreadyInUseException
 
-class PhoneNumberInvalidExceptionSpec extends Specification {
+class ImmutableRecordExceptionSpec extends Specification {
 
     def 'default exception creates a 400 Bad Request exception'() {
         when:
-            PhoneNumberInvalidException ex = new PhoneNumberInvalidException()
+            AppException ex = new UsernameAlreadyInUseException()
 
         then:
             ex.httpStatus == HttpStatus.BAD_REQUEST
-            ex.errorCode == '400_phone_invalid'
-            ex.message == 'The phone number provided is not recognized.'
+            ex.errorCode == '400_username_already_in_use'
+            ex.message == 'Username already in use by another user. Please choose a different username.'
     }
 
     def 'Override the exception message only affects the description'() {
         when:
-            PhoneNumberInvalidException ex = new PhoneNumberInvalidException('TEST MESSAGE')
+            AppException ex = new UsernameAlreadyInUseException('TEST MESSAGE')
 
         then:
             ex.httpStatus == HttpStatus.BAD_REQUEST
-            ex.errorCode == '400_phone_invalid'
-            ex.message == 'TEST MESSAGE'
-    }
-
-    def 'Override the exception message and extend the code'() {
-        when:
-            PhoneNumberInvalidException ex = new PhoneNumberInvalidException('TEST MESSAGE', 'EXT')
-
-        then:
-            ex.httpStatus == HttpStatus.BAD_REQUEST
-            ex.errorCode == '400_phone_invalid_ext'
+            ex.errorCode == '400_username_already_in_use'
             ex.message == 'TEST MESSAGE'
     }
 }
