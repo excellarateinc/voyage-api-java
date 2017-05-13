@@ -19,7 +19,7 @@
 package voyage.security.user
 
 import org.springframework.http.HttpStatus
-import voyage.common.error.AppException
+import voyage.core.error.AppException
 
 /**
  * For use within the service layer to inform the caller that too many Phones have been added to the profile.

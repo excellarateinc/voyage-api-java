@@ -20,7 +20,7 @@ package voyage.security.error
 
 import org.springframework.http.HttpStatus
 import spock.lang.Specification
-import voyage.common.error.AppException
+import voyage.core.error.AppException
 
 class AppOAuth2ExceptionSpec extends Specification {
 

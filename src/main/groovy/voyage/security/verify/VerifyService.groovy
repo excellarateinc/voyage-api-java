@@ -23,8 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
-import voyage.common.sms.AwsSmsService
-import voyage.common.sms.SmsMessage
+import voyage.core.sms.AwsSmsService
+import voyage.core.sms.SmsMessage
 import voyage.security.crypto.CryptoService
 import voyage.security.user.PhoneType
 import voyage.security.user.User

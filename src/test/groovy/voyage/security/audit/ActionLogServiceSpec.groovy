@@ -19,7 +19,7 @@
 package voyage.security.audit
 
 import spock.lang.Specification
-import voyage.common.error.UnknownIdentifierException
+import voyage.core.error.UnknownIdentifierException
 
 class ActionLogServiceSpec extends Specification {
     ActionLog actionLog

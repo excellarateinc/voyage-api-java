@@ -19,7 +19,7 @@
 package voyage.security.verify
 
 import spock.lang.Specification
-import voyage.common.sms.AwsSmsService
+import voyage.core.sms.AwsSmsService
 import voyage.security.crypto.CryptoService
 import voyage.security.user.PhoneType
 import voyage.security.user.User

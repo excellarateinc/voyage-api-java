@@ -19,7 +19,7 @@
 package voyage.security.user
 
 import org.springframework.http.HttpStatus
-import voyage.common.error.AppException
+import voyage.core.error.AppException
 
 class PhoneNumberInvalidException extends AppException {
     private static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST

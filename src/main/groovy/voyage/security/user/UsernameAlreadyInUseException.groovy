@@ -19,7 +19,7 @@
 package voyage.security.user
 
 import org.springframework.http.HttpStatus
-import voyage.common.error.AppException
+import voyage.core.error.AppException
 
 /**
  * For use within the service layer to inform the caller that the given Username is already being used within the

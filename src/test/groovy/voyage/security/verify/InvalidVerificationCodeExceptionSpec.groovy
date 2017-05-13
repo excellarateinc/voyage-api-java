@@ -20,7 +20,7 @@ package voyage.security.verify
 
 import org.springframework.http.HttpStatus
 import spock.lang.Specification
-import voyage.common.error.AppException
+import voyage.core.error.AppException
 
 class InvalidVerificationCodeExceptionSpec extends Specification {
 

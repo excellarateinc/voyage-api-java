@@ -22,8 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.validation.annotation.Validated
-import voyage.common.mail.MailMessage
-import voyage.common.mail.MailService
+import voyage.core.mail.MailMessage
+import voyage.core.mail.MailService
 import voyage.security.user.User
 import voyage.security.user.UserPhone
 import voyage.security.user.UserService

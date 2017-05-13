@@ -21,7 +21,7 @@ package voyage.security.error
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
-import voyage.common.error.ErrorUtils
+import voyage.core.error.ErrorUtils
 
 /**
  * Overrides the default OAuth2Exception JSON serializer with the standard error object format for this app.

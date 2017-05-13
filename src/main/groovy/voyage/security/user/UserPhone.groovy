@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import groovy.transform.EqualsAndHashCode
 import org.hibernate.envers.Audited
 import org.hibernate.validator.constraints.NotBlank
-import voyage.common.AuditableEntity
+import voyage.core.AuditableEntity
 
 import javax.persistence.Entity
 import javax.persistence.EnumType

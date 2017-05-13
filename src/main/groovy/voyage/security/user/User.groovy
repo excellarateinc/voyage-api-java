@@ -24,7 +24,7 @@ import org.hibernate.annotations.Where
 import org.hibernate.envers.Audited
 import org.hibernate.validator.constraints.Email
 import org.hibernate.validator.constraints.NotBlank
-import voyage.common.AuditableEntity
+import voyage.core.AuditableEntity
 import voyage.security.role.Role
 
 import javax.persistence.CascadeType

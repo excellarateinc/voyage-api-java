@@ -19,8 +19,8 @@
 package voyage.security.verify
 
 import org.springframework.http.HttpStatus
-import voyage.common.error.AppException
-import voyage.common.error.ErrorUtils
+import voyage.core.error.AppException
+import voyage.core.error.ErrorUtils
 
 class VerifyCodeExpiredException extends AppException {
     private static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST

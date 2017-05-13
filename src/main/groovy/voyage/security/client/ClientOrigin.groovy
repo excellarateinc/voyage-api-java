@@ -20,7 +20,7 @@ package voyage.security.client
 
 import groovy.transform.EqualsAndHashCode
 import org.hibernate.envers.Audited
-import voyage.common.AuditableEntity
+import voyage.core.AuditableEntity
 
 import javax.persistence.Entity
 import javax.persistence.JoinColumn

@@ -26,8 +26,8 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import voyage.common.error.ErrorResponse
-import voyage.common.error.ErrorUtils
+import voyage.core.error.ErrorResponse
+import voyage.core.error.ErrorUtils
 
 @ControllerAdvice
 @Order(2)

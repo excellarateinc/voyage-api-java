@@ -21,7 +21,7 @@ package voyage.security.error
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.AccessDeniedException
 import spock.lang.Specification
-import voyage.common.error.ErrorResponse
+import voyage.core.error.ErrorResponse
 
 class SecurityExceptionHandlerSpec extends Specification {
     def 'handle() AccessDeniedException returns an Unauthorized error'() {

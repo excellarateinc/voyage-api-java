@@ -25,7 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
-import voyage.common.error.UnknownIdentifierException
+import voyage.core.error.UnknownIdentifierException
 import voyage.security.crypto.CryptoService
 
 import javax.validation.Valid

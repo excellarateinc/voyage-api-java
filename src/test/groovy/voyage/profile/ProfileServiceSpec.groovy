@@ -19,7 +19,7 @@
 package voyage.profile
 
 import spock.lang.Specification
-import voyage.common.mail.MailService
+import voyage.core.mail.MailService
 import voyage.security.user.PhoneType
 import voyage.security.user.User
 import voyage.security.user.UserPhone

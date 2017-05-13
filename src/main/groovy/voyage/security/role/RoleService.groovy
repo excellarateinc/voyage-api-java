@@ -21,7 +21,7 @@ package voyage.security.role
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
-import voyage.common.error.UnknownIdentifierException
+import voyage.core.error.UnknownIdentifierException
 import voyage.security.permission.Permission
 import voyage.security.permission.PermissionService
 

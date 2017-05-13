@@ -23,7 +23,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import voyage.common.error.UnknownIdentifierException
+import voyage.core.error.UnknownIdentifierException
 import voyage.security.role.RoleService
 import voyage.test.AbstractIntegrationTest
 
