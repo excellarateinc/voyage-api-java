@@ -16,30 +16,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package voyage.common.error
+package voyage.security.error
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.AccessDeniedException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import voyage.common.error.ErrorResponse
+import voyage.common.error.ErrorUtils
 
 @ControllerAdvice
-@Order(Ordered.LOWEST_PRECEDENCE)
-class DefaultExceptionHandler {
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultExceptionHandler)
+@Order(2)
+class SecurityExceptionHandler {
+    private static final Logger LOG = LoggerFactory.getLogger(SecurityExceptionHandler)
 
-    @ExceptionHandler(value = Exception)
-    ResponseEntity<Iterable<ErrorResponse>> handle(Exception e) {
-        LOG.error('Unexpected error occurred', e)
-        HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR
+    @ExceptionHandler
+    ResponseEntity<Iterable<ErrorResponse>> handle(AccessDeniedException ex) {
+        if (LOG.debugEnabled) {
+            LOG.debug('Access denied', ex)
+        }
         ErrorResponse errorResponse = new ErrorResponse(
-                error:ErrorUtils.getErrorCode(httpStatus.value()),
-                errorDescription:'Unexpected error occurred. Contact technical support for further assistance should this error continue.',
+            error:ErrorUtils.getErrorCode(HttpStatus.UNAUTHORIZED.value()),
+            errorDescription:'401 Unauthorized. Access Denied',
         )
-        return new ResponseEntity([errorResponse], httpStatus)
+        return new ResponseEntity([errorResponse], HttpStatus.UNAUTHORIZED)
     }
 }

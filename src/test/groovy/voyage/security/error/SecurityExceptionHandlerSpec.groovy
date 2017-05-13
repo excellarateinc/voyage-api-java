@@ -16,25 +16,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package voyage.common.error
+package voyage.security.error
 
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.AccessDeniedException
 import spock.lang.Specification
+import voyage.common.error.ErrorResponse
 
-class DefaultExceptionHandlerSpec extends Specification {
-    def 'handle() Exception returns a 500 Internal Server error'() {
-        given:
-            DefaultExceptionHandler handler = new DefaultExceptionHandler()
-            Exception exception = new Exception('Default message')
-
+class SecurityExceptionHandlerSpec extends Specification {
+    def 'handle() AccessDeniedException returns an Unauthorized error'() {
         when:
-            ResponseEntity<Iterable<ErrorResponse>> responseEntity = handler.handle(exception)
+        SecurityExceptionHandler handler = new SecurityExceptionHandler()
+        ResponseEntity<Iterable<ErrorResponse>> responseEntity = handler.handle(new AccessDeniedException('test'))
 
         then:
-            responseEntity.statusCodeValue == 500
-            responseEntity.body.size() == 1
-            responseEntity.body[0].error == '500_internal_server_error'
-            responseEntity.body[0].errorDescription == 'Unexpected error occurred. Contact technical support for ' +
-                    'further assistance should this error continue.'
+        responseEntity.statusCodeValue == 401
+        responseEntity.body.size() == 1
+        responseEntity.body[0].error == '401_unauthorized'
+        responseEntity.body[0].errorDescription == '401 Unauthorized. Access Denied'
     }
 }
