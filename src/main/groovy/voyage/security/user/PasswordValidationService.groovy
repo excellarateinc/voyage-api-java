@@ -21,10 +21,10 @@ class PasswordValidationService {
     }
 
     private static List<CharacterRule> getPasswordPolicyRules() {
-        CharacterRule upperCaseCharacterRule =  new CharacterRule(EnglishCharacterData.UpperCase, 1)
-        CharacterRule lowerCaseCharacterRule =  new CharacterRule(EnglishCharacterData.LowerCase, 1)
-        CharacterRule numericCharacterRule =  new CharacterRule(EnglishCharacterData.Digit, 1)
-        CharacterRule specialCharacterRule =    new CharacterRule(EnglishCharacterData.Special, 1)
+        CharacterRule upperCaseCharacterRule = new CharacterRule(EnglishCharacterData.UpperCase, 1)
+        CharacterRule lowerCaseCharacterRule = new CharacterRule(EnglishCharacterData.LowerCase, 1)
+        CharacterRule numericCharacterRule = new CharacterRule(EnglishCharacterData.Digit, 1)
+        CharacterRule specialCharacterRule = new CharacterRule(EnglishCharacterData.Special, 1)
         LengthRule lengthRule = new LengthRule(8, 30)
         WhitespaceRule whitespaceRule = new WhitespaceRule()
         [upperCaseCharacterRule, lowerCaseCharacterRule, numericCharacterRule, specialCharacterRule, lengthRule, whitespaceRule]
