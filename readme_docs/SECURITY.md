@@ -52,7 +52,7 @@ All programmers working on this app should at least read through the reference m
 #### Overview
 OAuth2 is configured within this API to use JWT to generate tokens. By design, JWT embeds user information within the token so that the resource API can use the data to pre-load the session with an authenticated user. One of these bits of information is a token expiration date that is added to the token based on the client's max token validity time period `Client.accessTokenValiditySeconds`. The OAuth2 resource server will examine the JWT expiration date embedded within the token and reject the request if the token has exceeded the expiration date. 
 
-One downside of JWT and the default Spring Security OAuth2 resource API is that neighter one support expiring the token before the expiration date is effective. If there is a security event that requires issued tokens to be expired for a given User or Client, then without an explicit way to invalidate JWT tokens the system could remain vulnerable to attack until the tokens naturally expired. 
+One downside of JWT and the default Spring Security OAuth2 resource API is that neither one support expiring the token before the expiration date is effective. If there is a security event that requires issued tokens to be expired for a given User or Client, then without an explicit way to invalidate JWT tokens the system could remain vulnerable to attack until the tokens naturally expired. 
 
 This API implements the ability to invalidate Client or User tokens that have not reached their JWT expiration date. 
 
