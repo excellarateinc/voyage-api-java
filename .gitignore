@@ -23,3 +23,15 @@ src/main/webapp/docs
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+#gradle ignores
+bin
+
+#eclipse development ignores
+.classpath
+.jsdtscope
+.project
+.settings
+
+#added application-local.yaml for developers to define their unique develop properties
+src/main/resources/application-local.yaml

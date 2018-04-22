@@ -110,7 +110,7 @@ class XssFilter extends OncePerRequestFilter {
             return stripXSS(value)
         }
 
-        private static String stripXSS(String value) {
+        private String stripXSS(String value) {
             if (value) {
                 // Avoid encoded attacks by parsing the value using ESAPI
                 String encodedValue = ESAPI.encoder().canonicalize(value)
