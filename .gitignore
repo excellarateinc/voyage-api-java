@@ -13,6 +13,7 @@ out/
 
 # Locally generated files
 *.log
+*.iml
 
 # apiDocs
 apidoc/node_modules

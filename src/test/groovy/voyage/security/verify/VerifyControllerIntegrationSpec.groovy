@@ -18,15 +18,21 @@
  */
 package voyage.security.verify
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import voyage.security.AuthenticatedIntegrationTest
+import voyage.security.user.User
+import voyage.security.user.UserService
 
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 class VerifyControllerIntegrationSpec extends AuthenticatedIntegrationTest {
+
+    @Autowired
+    UserService userService
 
     /*
        Run the /verify POST test before the /verify/send because the /send will reset the 'code' with a new value. Since
@@ -44,6 +50,10 @@ class VerifyControllerIntegrationSpec extends AuthenticatedIntegrationTest {
         then:
             responseEntity.statusCode.value() == 204
             responseEntity.body == null
+        cleanup:
+            User superClientReset = userService.findByUsername('client-super')
+            superClientReset.isVerifyRequired = false
+            userService.saveDetached(superClientReset)
     }
 
     def '/api/v1/verify POST - Anonymous access denied'() {
@@ -79,5 +89,9 @@ class VerifyControllerIntegrationSpec extends AuthenticatedIntegrationTest {
         then:
             responseEntity.statusCode.value() == 204
             responseEntity.body == null
+        cleanup:
+            User superClientReset = userService.findByUsername('client-super')
+            superClientReset.isVerifyRequired = false
+            userService.saveDetached(superClientReset)
     }
 }

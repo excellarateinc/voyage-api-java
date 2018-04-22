@@ -122,7 +122,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
 
     def '/api/v1/profile POST - Profile create fails with error due to email format invalid'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username4', email:'test@', password:'password')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username44', email:'test@', password:'password')
             user.phones = [new UserPhone(phoneNumber:'+1-800-888-8888', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
@@ -139,7 +139,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
 
     def '/api/v1/profile POST - Profile create fails with error due to missing mobile phone'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username2', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username22', email:'test@test.com', password:'password')
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -155,7 +155,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
 
     def '/api/v1/profile POST - Profile create fails with error due to > 5 phones'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username2', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username21', email:'test@test.com', password:'password')
             user.phones = [
                 new UserPhone(phoneNumber:'+1205-111-1111', phoneType:PhoneType.MOBILE),
                 new UserPhone(phoneNumber:'+1222-222-2222', phoneType:PhoneType.MOBILE),

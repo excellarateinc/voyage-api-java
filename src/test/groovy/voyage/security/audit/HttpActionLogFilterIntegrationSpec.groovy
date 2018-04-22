@@ -246,10 +246,10 @@ class HttpActionLogFilterIntegrationSpec extends AuthenticatedIntegrationTest {
             actionLog2.user.id == 3
             actionLog2.durationMs
             actionLog2.requestHeaders ==~ /.*authorization:.*/
-            actionLog2.requestBody == '{"email":"test@test.com","firstName":"Test1","id":null,"isAccountExpired":false,' +
-                    '"isAccountLocked":false,"isCredentialsExpired":false,"isEnabled":true,"lastName":"User",' +
-                    '"password":"*********","phones":[{"id":null,"phoneNumber":"+1-651-888-6021","phoneType":"MOBILE"}],' +
-                    '"username":"username99"}'
+            actionLog2.requestBody == '{"id":null,"firstName":"Test1","lastName":"User","username":"username99",' +
+                    '"email":"test@test.com","password":"*********","isEnabled":true,"isAccountExpired":false,' +
+                    '"isAccountLocked":false,"isCredentialsExpired":false,' +
+                    '"phones":[{"id":null,"phoneType":"MOBILE","phoneNumber":"+1-651-888-6021"}]}'
             actionLog2.responseHeaders ==~ /.*Location:.*/
             actionLog2.responseBody ==~ /.*"username":"username99".*/
             actionLog2.createdDate
