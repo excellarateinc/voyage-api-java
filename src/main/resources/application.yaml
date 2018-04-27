@@ -123,12 +123,15 @@ security:
     verify-code-expire-minutes: 30
 
   cors:
+    enabled: true
+    access-control-allow-origins: http://localhost:3000
     access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
+    access-control-allow-methods: GET, PUT, POST, PATCH, DELETE, OPTIONS
 
   brute-force-attack:
     sleep-after-failure:
       enabled: true
-      http-status-failure-list: 401, 403, 404
+      http-status-failure-list: 400, 401, 403, 404
       min-sleep-seconds: 3
       max-sleep-seconds: 8
 

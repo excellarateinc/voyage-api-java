@@ -20,6 +20,7 @@ package voyage.security.filter
 
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import voyage.security.AuthenticatedIntegrationTest
@@ -69,6 +70,23 @@ class CorsFilterIntegrationSpec extends AuthenticatedIntegrationTest {
 
         when:
             ResponseEntity<String> responseEntity = OPTIONS('/api/status', httpEntity, String)
+
+        then:
+            responseEntity.statusCode.value() == 200
+            !responseEntity.headers.getFirst('Vary')
+            responseEntity.headers.getFirst('Access-Control-Allow-Origin') == '*'
+            !responseEntity.headers.getFirst('Access-Control-Allow-Credentials')
+    }
+
+    def 'Anonymous OPTIONS request with Origin header to public /oauth/token returns valid CORS response headers'() {
+        given:
+            HttpHeaders headers = new HttpHeaders()
+            headers.setOrigin('http://test.com/')
+            headers.setAccessControlRequestMethod(HttpMethod.POST)
+            HttpEntity<String> httpEntity = new HttpEntity<String>(headers)
+
+        when:
+            ResponseEntity<String> responseEntity = OPTIONS('/oauth/token', httpEntity, String)
 
         then:
             responseEntity.statusCode.value() == 200

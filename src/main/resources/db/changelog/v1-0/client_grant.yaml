@@ -146,6 +146,30 @@ databaseChangeLog:
                   valueNumeric: 1
               - column:
                   name: grant_type
+                  value: PASSWORD
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: client_grant
+            columns:
+              - column:
+                  name: client_id
+                  valueNumeric: 1
+              - column:
+                  name: grant_type
                   value: REFRESH_TOKEN
               - column:
                   name: created_by

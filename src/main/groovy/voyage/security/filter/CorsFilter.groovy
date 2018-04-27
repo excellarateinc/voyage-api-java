@@ -20,13 +20,12 @@ package voyage.security.filter
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
+import org.springframework.web.cors.CorsUtils
 import org.springframework.web.filter.OncePerRequestFilter
-import voyage.security.client.Client
-import voyage.security.client.ClientOrigin
-import voyage.security.client.ClientService
 
 import javax.servlet.FilterChain
 import javax.servlet.ServletException
@@ -52,32 +51,34 @@ import javax.servlet.http.HttpServletResponse
  *       class or replacing it with a different implementation.
  */
 @Component
+@Order(-10000000)
+@ConditionalOnProperty(name = "security.cors.enabled", havingValue = "true")
 class CorsFilter extends OncePerRequestFilter {
     private static final Logger LOG = LoggerFactory.getLogger(CorsFilter)
     private static final String HEADER_ORIGIN = 'Origin'
     private static final String HEADER_VARY = 'Vary'
     private static final String HEADER_ACCESS_ALLOW_HEADERS = 'Access-Control-Allow-Headers'
+    private static final String HEADER_ACCESS_ALLOW_METHODS = 'Access-Control-Allow-Methods'
     private static final String HEADER_ACCESS_CONTROL_ALLOW_ORIGIN = 'Access-Control-Allow-Origin'
     private static final String HEADER_ACCESS_CONTROL_ALLOW_CREDENTIALS = 'Access-Control-Allow-Credentials'
     private static final String HEADER_ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE = 'true'
     private static final String HEADER_CORS_WILDCARD_VALUE = '*'
 
-    private final ClientService clientService
-
+    @Value('${security.cors.access-control-allow-origins}')
+    String[] accessControlAllowOrigins
     @Value('${security.cors.access-control-allow-headers}')
     String accessControlAllowHeaders
-
-    @Autowired
-    CorsFilter(ClientService clientService) {
-        this.clientService = clientService
-    }
+    @Value('${security.cors.access-control-allow-methods}')
+    String accessControlAllowMethods
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        if (isRequestFilterable(request, response)) {
-            applyOriginResponseHeaders(request, response)
-
+        if (CorsUtils.isCorsRequest(request)) {
+            boolean applied = applyOriginResponseHeaders(request, response)
+            if (!applied || CorsUtils.isPreFlightRequest(request)) {
+                return
+            }
         } else {
             LOG.debug('CORS FILTER: Skipping CORS filtering for this request')
         }
@@ -86,19 +87,24 @@ class CorsFilter extends OncePerRequestFilter {
         chain.doFilter(request, response)
     }
 
-    private void applyOriginResponseHeaders(HttpServletRequest request, HttpServletResponse response) {
-        Client client = clientService.currentClient
-        if (client && client.clientOrigins) {
-            String requestOrigin = request.getHeader(HEADER_ORIGIN)
-            ClientOrigin clientOriginMatch = client.clientOrigins.find { clientOrigin ->
-                cleanUri(clientOrigin.originUri) == cleanUri(requestOrigin)
+    private boolean applyOriginResponseHeaders(HttpServletRequest request, HttpServletResponse response) {
+        String requestOrigin = request.getHeader(HEADER_ORIGIN)
+        if (requestOrigin && isNotWildCardOrigin()) {
+
+            String originMatch = accessControlAllowOrigins.find { clientOrigin ->
+                cleanUri(clientOrigin) == cleanUri(requestOrigin)
             }
-            if (clientOriginMatch) {
-                writeRestrictedResponseHeaders(response, clientOriginMatch.originUri)
-                return
+            if (originMatch) {
+                writeRestrictedResponseHeaders(response, originMatch)
+                return true
             }
         }
         writePublicResponseHeaders(response)
+        return true
+    }
+
+    private boolean isNotWildCardOrigin() {
+        return !HEADER_CORS_WILDCARD_VALUE.equals(accessControlAllowOrigins.first())
     }
 
     private void writeRestrictedResponseHeaders(HttpServletResponse response, String origin) {
@@ -106,18 +112,20 @@ class CorsFilter extends OncePerRequestFilter {
         response.addHeader(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN, origin)
         response.addHeader(HEADER_ACCESS_CONTROL_ALLOW_CREDENTIALS, HEADER_ACCESS_CONTROL_ALLOW_CREDENTIALS_VALUE)
         response.addHeader(HEADER_ACCESS_ALLOW_HEADERS, accessControlAllowHeaders)
+        response.addHeader(HEADER_ACCESS_ALLOW_METHODS, accessControlAllowMethods)
     }
 
     private void writePublicResponseHeaders(HttpServletResponse response) {
         response.addHeader(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN, HEADER_CORS_WILDCARD_VALUE)
         response.addHeader(HEADER_ACCESS_ALLOW_HEADERS, accessControlAllowHeaders)
+        response.addHeader(HEADER_ACCESS_ALLOW_METHODS, accessControlAllowMethods)
     }
 
     private static boolean isRequestFilterable(HttpServletRequest request, HttpServletResponse response) {
         String originRequestHeader = request.getHeader(HEADER_ORIGIN)
         if (originRequestHeader) {
             if (!response.getHeader(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)) {
-                 return true
+                return true
             }
         }
         return false

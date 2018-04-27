@@ -149,16 +149,6 @@ class Client extends AuditableEntity {
     Set<ClientRedirect> clientRedirects
 
     /**
-     * A list of approved HTTP Request Origin URIs for this client. Any HTTP request that has an Origin request header
-     * will be validated against the current authenticated client's Origin list. If the given Origin matches an Origin
-     * in the client's origin list, then the proper HTTP response headers will be returned. If no origin matches, then
-     * a public '*' response will be given.
-     */
-    @OneToMany(fetch=FetchType.EAGER, mappedBy='client')
-    @Where(clause = 'is_deleted = 0')
-    Set<ClientOrigin> clientOrigins
-
-    /**
      * The roles that the client has been granted for accessing resources within the app
      */
     @ManyToMany
