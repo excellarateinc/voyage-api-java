@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(['/api/v1/verify', '/api/v1.0/verify'])
+@RequestMapping(['/api/v1/verify'])
 class VerifyController {
     private final VerifyService verifyService
 

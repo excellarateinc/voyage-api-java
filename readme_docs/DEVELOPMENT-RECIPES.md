@@ -320,7 +320,7 @@ For example, a simple CRUD user management controller looks like the following (
 
 ```
 @RestController
-@RequestMapping(['/api/v1/users', '/api/v1.0/users'])
+@RequestMapping(['/api/v1/users'])
 class UserController {
     private final UserService userService
 
@@ -461,7 +461,7 @@ Secure SpringMVC Controller methods using the [@PreAuthorize Spring Security Ann
 
 ```
 @RestController
-@RequestMapping(['/api/v1/users', '/api/v1.0/users'])
+@RequestMapping(['/api/v1/users'])
 class UserController {
     private final UserService userService
 

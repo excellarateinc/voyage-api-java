@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken
 import org.springframework.security.oauth2.common.OAuth2AccessToken
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer
@@ -146,7 +147,10 @@ class OAuth2Config {
         @Override
         void configure(HttpSecurity http) throws Exception {
             http
-
+            // Stateless rest calls
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.NEVER)
+                    .and()
                 // Limit this Config to only handle /api requests. This will also disable authentication filters on
                 // /api requests and enable the OAuth2 token filter as the only means of stateless authentication.
                 .requestMatchers()

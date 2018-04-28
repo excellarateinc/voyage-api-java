@@ -42,7 +42,7 @@ The following blog article does a good job summarizing the issue and includes a 
 
 ```
 @RestController
-@RequestMapping(['/api/v1/users', '/api/v1.0/users'])
+@RequestMapping(['/api/v1/users'])
 class UserController {
     private final UserService userService
     private final OtherService otherService
@@ -60,7 +60,7 @@ class UserController {
 ### DON'T DO
 ```
 @RestController
-@RequestMapping(['/api/v1/users', '/api/v1.0/users'])
+@RequestMapping(['/api/v1/users'])
 class UserController {
     @Autowired
     private UserService userService

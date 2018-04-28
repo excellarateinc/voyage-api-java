@@ -26,6 +26,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.http.SessionCreationPolicy
 import voyage.security.PermissionBasedUserDetailsService
 import voyage.security.crypto.CryptoService
 
@@ -54,11 +55,11 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth
 
-            // Register the custom Permission Based User Details Service
-            .userDetailsService(permissionBasedUserDetailsService)
+        // Register the custom Permission Based User Details Service
+                .userDetailsService(permissionBasedUserDetailsService)
 
-            // Override the default password encoder
-            .passwordEncoder(CryptoService.PASSWORD_ENCODER)
+        // Override the default password encoder
+                .passwordEncoder(CryptoService.PASSWORD_ENCODER)
     }
 
     /**
@@ -71,34 +72,38 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+        // Stateless rest calls
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.NEVER)
+                .and()
 
-            // Allow any user to access 'login' and web 'resources' like CSS/JS
-            .authorizeRequests()
+        // Allow any user to access 'login' and web 'resources' like CSS/JS
+                .authorizeRequests()
                 .antMatchers(permitAllUrls).permitAll()
                 .and()
 
-            // Enforce every request to be authenticated
-            .authorizeRequests()
+        // Enforce every request to be authenticated
+                .authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
 
-            // Enable Form Login for users.
-            .formLogin()
+        // Enable Form Login for users.
+                .formLogin()
                 .loginPage(LOGIN_PATH).permitAll()
                 .and()
 
-            // Enable Basic Auth login for users and clients. This is primarily for client login directly to the
-            // /oauth/token service.
-            .httpBasic().and()
+        // Enable Basic Auth login for users and clients. This is primarily for client login directly to the
+        // /oauth/token service.
+                .httpBasic().and()
 
-            // Disable CSRF due to this app being an API using JWT bearer token and not session based for resources.
-            .csrf().disable()
+        // Disable CSRF due to this app being an API using JWT bearer token and not session based for resources.
+                .csrf().disable()
     }
 
     @Override
     void configure(WebSecurity web) throws Exception {
         web
-            .ignoring()
-            .antMatchers(ignoredUrls)
+                .ignoring()
+                .antMatchers(ignoredUrls)
     }
 }

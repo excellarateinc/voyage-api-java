@@ -18,6 +18,7 @@
  */
 package voyage.core.error
 
+import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.web.ErrorAttributes
 import org.springframework.boot.autoconfigure.web.ErrorController
@@ -31,6 +32,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @RestController
+@Api(value='Errors', description = 'Errors')
 class GlobalExceptionController implements ErrorController {
     private final ErrorAttributes errorAttributes
     private final GlobalExceptionHandler globalExceptionHandler
