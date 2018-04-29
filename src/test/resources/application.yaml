@@ -113,7 +113,10 @@ security:
           client-secret: secret
 
   cors:
+    enabled: true
+    access-control-allow-origins: http://localhost
     access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
+    access-control-allow-methods: GET, PUT, POST, PATCH, DELETE, OPTIONS
 
   brute-force-attack:
     sleep-after-failure:

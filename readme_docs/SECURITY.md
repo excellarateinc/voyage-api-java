@@ -400,8 +400,7 @@ When the server application enables `Access-Control-Allow-Credentials: true`, th
 
 #### Custom CORS Filter for Voyage
 Voyage API provides it's own implementation of the CORS filter at `/src/main/groovy/voyage/security/CorsServletFilter`. Features of this custom CORS filter are:
-* Integrated with the OAuth 'client' invoking the request
-* if the 'client' requesting access to the API is authenticated, then the given Origin on the request is matched to the Client Origins in the database (client_origin table)
+* enabled
   - if a match is found, then return the value _in the database_ as the value for `Access-Control-Allow-Origin` header response
   - if no match is found, then default to being permissive and return a public wildcard `Access-Control-Allow-Origin: *`
 * if the request is anonymous (client not logged in)
@@ -1290,33 +1289,61 @@ The VerificationServletFilter located at `/src/main/groovy/voyage/security/Verif
 ### CORS Configuration
 
 #### Source Code
-The CORS filter logic is located in `/src/main/groovy/voyage/security/CorsServletFilter`. The filter is fairly basic with the only configurable variable being the "Access-Control-Allow-Headers".
+The CORS filter logic is located in `/src/main/groovy/voyage/security/CorsServletFilter`. 
+The filter is fairly basic, but allows for the following CORS http headers to be adjusted by configuration properties.
+ * Vary
+ * Access-Control-Allow-Origin
+ * Access-Control-Allow-Headers
+ * Access-Control-Allow-Methods
 
-#### Access-Control-Allow-Headers
-When a browser app makes a request to the API, a CORS OPTION request will be made to the API to get parameters on what the API server allows for the CORS interaction. The stock responses are one of the following:
+#### CORS Responses
+When a browser app makes a request to the API, a CORS OPTION request will be made to the API to get parameters on what the API server allows for the CORS interaction. 
+The stock responses are one of the following:
 
-Anonymous Access Request
+CORS Response when `security.cors.access-control-allow-origins: "*"`
 ```
 Headers:
    Access-Control-Allow-Origin: *
    Access-Control-Allow-Headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
+   Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, OPTIONS
 ```
 
-Authenticated User Request
+CORS Response when `security.cors.access-control-allow-origins: https://example.com, http://example.com`
 ```
 Headers:
    Vary: Origin
-   Access-Control-Allow-Origin: [origin for the client from the database]
+   Access-Control-Allow-Origin: [origin that matches request Orgin header that is found in configuration property security.cors.access-control-allow-origins]
    Access-Control-Allow-Credentials: true
    Access-Control-Allow-Headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
+   Access-Control-Allow-Methods: GET, PUT, POST, PATCH, DELETE, OPTIONS
 ```
 
 ##### Configure Access-Control-Allow-Headers
-In /src/main/resources/application.yaml, update the security.cors.access-control-allow-headers section with the appropriate headers that should be supported by the API.
+In /src/main/resources/application.yaml, update the the following section with the appropriate headers that should be supported by the API.
+
+###### CORS Enabled allowing all (wildcard) origins
 ```
 security:
   cors:
+    enabled: true
+    access-control-allow-origins: "*"
     access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
+    access-control-allow-methods: GET, PUT, POST, PATCH, DELETE, OPTIONS
+```
+###### CORS Enabled allowing spcific origins
+```
+security:
+  cors:
+    enabled: true
+    access-control-allow-origins: https://example.com, http://example.com
+    access-control-allow-headers: Accept, Authorization, Content-Type, Cookie, Origin, User-Agent
+    access-control-allow-methods: GET, PUT, POST, PATCH, DELETE, OPTIONS
+```
+###### CORS Disabled (You will provide your own CORS security configuration)
+```
+security:
+  cors:
+    enabled: false
 ```
 
 :arrow_up: [Back to Top](#table-of-contents)
