@@ -18,6 +18,9 @@
  */
 package voyage.status
 
+import io.swagger.annotations.ApiOperation
+import io.swagger.annotations.ApiResponse
+import io.swagger.annotations.ApiResponses
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -25,36 +28,15 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(['/api/status'])
+@RequestMapping(value = ['/api/status'], produces = 'application/json')
 class StatusController {
 
-    /**
-     * @api {get} /status Status
-     * @apiVersion 1.0.0
-     * @apiName Status
-     * @apiGroup Status
-     *
-     * @apiPermission none
-     *
-     * @apiSuccess {String} status
-     * @apiSuccess {String} datetime
-     *
-     * @apiSuccessExample Success-Response:
-     *   HTTP/1.1 200 OK
-     *   [
-     *       {
-     *           "status": "alive",
-     *           "datetime": "2016-12-23 17:55:55 UTC",
-     *       }
-     *   ]
-     **/
+    @ApiOperation(value = "Get the status of server")
+    @ApiResponses(value = [
+            @ApiResponse(code = 200, message = "Successfully retrieved status of server")])
     @GetMapping
-    ResponseEntity list() {
-        Map<String, String> response = [status:'alive', datetime:currentDate]
+    ResponseEntity<StatusResponse> get() {
+        StatusResponse response = new StatusResponse([status: 'alive', datetime: new Date()])
         return new ResponseEntity(response, HttpStatus.OK)
-    }
-
-    private static String getCurrentDate() {
-        new Date().format("yyyy-MM-dd'T'HH:mm:ssXXX")
     }
 }

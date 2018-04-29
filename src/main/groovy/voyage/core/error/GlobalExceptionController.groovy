@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @RestController
-@Api(value='Errors', description = 'Errors')
+@Api(value = 'Errors', description = 'Errors')
 class GlobalExceptionController implements ErrorController {
     private final ErrorAttributes errorAttributes
     private final GlobalExceptionHandler globalExceptionHandler
@@ -45,21 +45,21 @@ class GlobalExceptionController implements ErrorController {
         this.globalExceptionHandler = globalExceptionHandler
     }
 
-    @RequestMapping(value = '/error')
+    @RequestMapping(value = '/error', produces = 'application/json')
     ResponseEntity<Iterable<ErrorResponse>> handleError(HttpServletRequest request, HttpServletResponse response) {
         // Handle AppExceptions by the definition embedded in the exception
-        Exception exception = (Exception)request.getAttribute('javax.servlet.error.exception')
+        Exception exception = (Exception) request.getAttribute('javax.servlet.error.exception')
         if (exception instanceof AppException) {
-            return globalExceptionHandler.handle((AppException)exception)
+            return globalExceptionHandler.handle((AppException) exception)
         }
 
         // Handle unknown exceptions based on the error details given
         Map errorMap = getErrorAttributes(request, false)
-        String errorCode = ErrorUtils.getErrorCode((int)errorMap.status)
+        String errorCode = ErrorUtils.getErrorCode((int) errorMap.status)
         String errorMessage = "${errorMap.status} ${errorMap.error}. ${errorMap.message}"
         ErrorResponse errorResponse = new ErrorResponse(
-            error:errorCode,
-            errorDescription:errorMessage,
+                error: errorCode,
+                errorDescription: errorMessage,
         )
         return new ResponseEntity([errorResponse], HttpStatus.valueOf(response.status))
     }
