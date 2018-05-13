@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2018 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -19,6 +19,7 @@
 package voyage.security.user
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
@@ -27,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
 import voyage.core.error.UnknownIdentifierException
 import voyage.security.crypto.CryptoService
+import voyage.security.role.RoleService
 
 import javax.validation.Valid
 import javax.validation.constraints.NotNull
@@ -38,12 +40,17 @@ class UserService {
     private final UserRepository userRepository
     private final CryptoService cryptoService
     private final PhoneService phoneService
+    private final RoleService roleService
+
+    @Value('${security.user-roles.default-authority}')
+    private String defaultUserRoleAuthority
 
     @Autowired
-    UserService(UserRepository userRepository, CryptoService cryptoService, PhoneService phoneService) {
+    UserService(UserRepository userRepository, CryptoService cryptoService, PhoneService phoneService, RoleService roleService) {
         this.userRepository = userRepository
         this.cryptoService = cryptoService
         this.phoneService = phoneService
+        this.roleService = roleService
     }
 
     static String getCurrentUsername() {
@@ -116,6 +123,12 @@ class UserService {
 
             // Default to true for new accounts
             isVerifyRequired = user.id ? userIn.isVerifyRequired : true
+
+            if (!user.roles) {
+                user.roles = [
+                    roleService.findByAuthority(defaultUserRoleAuthority)
+                ]
+            }
         }
 
         if (userIn.password != user.password) {

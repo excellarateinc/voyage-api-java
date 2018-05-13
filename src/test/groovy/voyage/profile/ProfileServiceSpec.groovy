@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2018 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -50,7 +50,7 @@ class ProfileServiceSpec extends Specification {
             ]
 
         when:
-            User savedUser = profileService.save(userIn)
+            User savedUser = profileService.register(userIn)
 
         then:
             1 * userService.saveDetached(*_) >> { args ->
@@ -86,7 +86,7 @@ class ProfileServiceSpec extends Specification {
             )
 
         when:
-            User savedUser = profileService.save(userIn)
+            User savedUser = profileService.register(userIn)
 
         then:
             1 * userService.saveDetached(*_) >> { args ->

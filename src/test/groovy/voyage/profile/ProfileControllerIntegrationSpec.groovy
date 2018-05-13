@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2018 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -53,7 +53,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
         greenMailSMTP.stop()
     }
 
-    def '/api/v1/profile POST - Profile create '() {
+    def '/api/v1/profiles/register POST - Profile create'() {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password')
             user.phones = [new UserPhone(phoneNumber:'+16124590457', phoneType:PhoneType.MOBILE)]
@@ -62,7 +62,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
 
         when:
-            ResponseEntity responseEntity = POST('/api/v1/profile', httpEntity, String, standardClient)
+            ResponseEntity responseEntity = POST('/api/v1/profiles/register', httpEntity, String, standardClient)
             User savedUser = userService.findByUsername(user.username)
 
         then:
@@ -83,7 +83,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
             emails[0].allRecipients.size() == 1
     }
 
-    def '/api/v1/profile POST - Profile create fails with error due to username already in use'() {
+    def '/api/v1/profiles/register POST - Profile create fails with error due to username already in use'() {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password')
             user.phones = [new UserPhone(phoneNumber:'+1-111-111-1111', phoneType:PhoneType.MOBILE)]
@@ -92,7 +92,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
 
         when:
-            ResponseEntity<List> responseEntity = POST('/api/v1/profile', httpEntity, List, standardClient)
+            ResponseEntity<List> responseEntity = POST('/api/v1/profiles/register', httpEntity, List, standardClient)
 
         then:
             responseEntity.statusCode.value() == 400
@@ -100,7 +100,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
             responseEntity.body[0].errorDescription == 'Username already in use by another user. Please choose a different username.'
     }
 
-    def '/api/v1/profile POST - Profile create fails with error due to missing required values'() {
+    def '/api/v1/profiles/register POST - Profile create fails with error due to missing required values'() {
         given:
             User user = new User()
             user.phones = [new UserPhone(phoneNumber:'+1-800-888-8888', phoneType:PhoneType.MOBILE)]
@@ -109,7 +109,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
 
         when:
-            ResponseEntity<List> responseEntity = POST('/api/v1/profile', httpEntity, List, standardClient)
+            ResponseEntity<List> responseEntity = POST('/api/v1/profiles/register', httpEntity, List, standardClient)
 
         then:
             responseEntity.statusCode.value() == 400
@@ -120,7 +120,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
             responseEntity.body.find { it.error == 'lastname.may_not_be_empty' && it.errorDescription == 'may not be empty' }
     }
 
-    def '/api/v1/profile POST - Profile create fails with error due to email format invalid'() {
+    def '/api/v1/profiles/register POST - Profile create fails with error due to email format invalid'() {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'username44', email:'test@', password:'password')
             user.phones = [new UserPhone(phoneNumber:'+1-800-888-8888', phoneType:PhoneType.MOBILE)]
@@ -129,7 +129,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
 
         when:
-            ResponseEntity<List> responseEntity = POST('/api/v1/profile', httpEntity, List, standardClient)
+            ResponseEntity<List> responseEntity = POST('/api/v1/profiles/register', httpEntity, List, standardClient)
 
         then:
             responseEntity.statusCode.value() == 400
@@ -137,7 +137,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
             responseEntity.body[0].errorDescription == 'not a well-formed email address'
     }
 
-    def '/api/v1/profile POST - Profile create fails with error due to missing mobile phone'() {
+    def '/api/v1/profiles/register POST - Profile create fails with error due to missing mobile phone'() {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'username22', email:'test@test.com', password:'password')
             HttpHeaders headers = new HttpHeaders()
@@ -145,7 +145,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
 
         when:
-            ResponseEntity<List> responseEntity = POST('/api/v1/profile', httpEntity, List, standardClient)
+            ResponseEntity<List> responseEntity = POST('/api/v1/profiles/register', httpEntity, List, standardClient)
 
         then:
             responseEntity.statusCode.value() == 400
@@ -153,7 +153,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
             responseEntity.body[0].errorDescription == 'At least one mobile phone is required for a new profile'
     }
 
-    def '/api/v1/profile POST - Profile create fails with error due to > 5 phones'() {
+    def '/api/v1/profiles/register POST - Profile create fails with error due to > 5 phones'() {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'username21', email:'test@test.com', password:'password')
             user.phones = [
@@ -170,11 +170,76 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
 
         when:
-            ResponseEntity<List> responseEntity = POST('/api/v1/profile', httpEntity, List, standardClient)
+            ResponseEntity<List> responseEntity = POST('/api/v1/profiles/register', httpEntity, List, standardClient)
 
         then:
             responseEntity.statusCode.value() == 400
             responseEntity.body[0].error == '400_too_many_phones'
             responseEntity.body[0].errorDescription == 'Too many phones have been added to the profile. Maximum of 5.'
+    }
+
+    def '/api/v1/profiles/register POST - Profile create succeeds with mixed case phone type'() {
+        given:
+            String body = '{"firstName":"Tom", "lastName":"Jones", "username":"tjones", "email":"test@test.com", "password":"password", ' +
+                '"phones":[{"phoneType":"MobilE", "phoneNumber":"+16124590457"}]}'
+
+            HttpHeaders headers = new HttpHeaders()
+            headers.setContentType(MediaType.APPLICATION_JSON)
+            HttpEntity<String> httpEntity = new HttpEntity<String>(body, headers)
+
+        when:
+            ResponseEntity<List> responseEntity = POST('/api/v1/profiles/register', httpEntity, List, standardClient)
+
+        then:
+            responseEntity.statusCode.value() == 201
+    }
+
+    def '/api/v1/profiles/register POST - Profile create succeeds with an invalid phone type'() {
+        given:
+           String body = '{"firstName":"Tom", "lastName":"Jones", "username":"tjones123", "email":"tjones123@test.com", "password":"password", ' +
+                '"phones":[{"phoneType":"BLAH", "phoneNumber":"+16124590457"}, {"phoneType":"mobile", "phoneNumber":"+16514590457"}]}'
+
+            HttpHeaders headers = new HttpHeaders()
+            headers.setContentType(MediaType.APPLICATION_JSON)
+            HttpEntity<String> httpEntity = new HttpEntity<String>(body, headers)
+
+        when:
+            ResponseEntity<List> responseEntity = POST('/api/v1/profiles/register', httpEntity, List, standardClient)
+
+        then:
+            responseEntity.statusCode.value() == 201
+    }
+
+    def '/api/v1/profiles/me GET - Returns the user profile of the current Super user'() {
+        when:
+           ResponseEntity<User> responseEntity = GET('/api/v1/profiles/me', User, superClient)
+
+        then:
+            responseEntity.statusCode.value() == 200
+            responseEntity.body.firstName == 'Super Client'
+            responseEntity.body.lastName == 'User Client'
+            responseEntity.body.username == 'client-super'
+    }
+
+    def '/api/v1/profiles/me GET - Returns the user profile of the current Standard user'() {
+        when:
+            ResponseEntity<User> responseEntity = GET('/api/v1/profiles/me', User, standardClient)
+
+        then:
+            responseEntity.statusCode.value() == 200
+            responseEntity.body.firstName == 'Standard'
+            responseEntity.body.lastName == 'User'
+            responseEntity.body.username == 'client-standard'
+    }
+
+    def '/api/v1/profiles/me GET - Access denied for Anonymous'() {
+        when:
+           ResponseEntity<Iterable> responseEntity = GET('/api/v1/profiles/me', Iterable)
+
+        then:
+            responseEntity.statusCode.value() == 401
+            responseEntity.body.size() == 1
+            responseEntity.body[0].error == '401_unauthorized'
+            responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
     }
 }

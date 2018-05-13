@@ -132,7 +132,7 @@ class VerificationFilter implements Filter {
 
     private static void writeUserVerificationResponse(HttpServletResponse response) {
         Map errorResponse = [
-            error:'403_verify_user',
+            error:'401_verify_user',
             errorDescription:'User verification is required',
         ]
         JsonBuilder json = new JsonBuilder([errorResponse])

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2018 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -22,23 +22,28 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import voyage.security.user.User
+import voyage.security.user.UserService
 import voyage.security.verify.VerifyService
 
 @RestController
-@RequestMapping(['/api/v1/profile', '/api/v1.0/profile'])
+@RequestMapping(['/api/v1/profiles', '/api/v1.0/profiles'])
 class ProfileController {
     private final ProfileService profileService
     private final VerifyService userVerifyService
+    private final UserService userService
 
     @Autowired
-    ProfileController(ProfileService profileService, VerifyService userVerifyService) {
+    ProfileController(ProfileService profileService, VerifyService userVerifyService, UserService userService) {
         this.profileService = profileService
         this.userVerifyService = userVerifyService
+        this.userService = userService
     }
 
     /**
@@ -90,11 +95,18 @@ class ProfileController {
      * @apiUse UsernameAlreadyInUseError
      * @apiUse MobilePhoneNumberRequiredError
      **/
-    @PostMapping()
-    ResponseEntity save(@RequestBody User userIn) {
-        profileService.save(userIn)
+    @PostMapping('/register')
+    ResponseEntity register(@RequestBody User userIn) {
+        profileService.register(userIn)
         HttpHeaders headers = new HttpHeaders()
-        headers.set(HttpHeaders.LOCATION, '/v1/profile')
+        headers.set(HttpHeaders.LOCATION, '/v1/profiles/me')
         return new ResponseEntity(headers, HttpStatus.CREATED)
+    }
+
+    @GetMapping('/me')
+    @PreAuthorize("hasAuthority('api.profiles.me')")
+    ResponseEntity myProfile() {
+        User user = userService.getCurrentUser()
+        return new ResponseEntity(user, HttpStatus.OK)
     }
 }
