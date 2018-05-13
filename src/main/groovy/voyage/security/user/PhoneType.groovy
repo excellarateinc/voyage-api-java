@@ -19,19 +19,25 @@
 package voyage.security.user
 
 import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonValue
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 
-@JsonSerialize(using = PhoneTypeSerializer)
 enum PhoneType {
     MOBILE('Mobile'),
     OFFICE('Office'),
     HOME('Home'),
     OTHER('Other')
 
+
     final String code
 
     PhoneType(String code) {
         this.code = code
+    }
+
+    @JsonValue
+    String toString() {
+        return code
     }
 
     @JsonCreator
