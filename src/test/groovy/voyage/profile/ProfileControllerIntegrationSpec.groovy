@@ -21,6 +21,7 @@ package voyage.profile
 import com.icegreen.greenmail.util.GreenMail
 import com.icegreen.greenmail.util.ServerSetup
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -43,8 +44,14 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
     @Autowired
     private CryptoService cryptoService
 
+    @Value('${spring.mail.host}')
+    private String mailServerHost
+
+    @Value('${spring.mail.port}')
+    private int mailServerPort
+
     def setup() {
-        ServerSetup setup = new ServerSetup(3025, 'localhost', ServerSetup.PROTOCOL_SMTP)
+        ServerSetup setup = new ServerSetup(mailServerPort, mailServerHost, ServerSetup.PROTOCOL_SMTP)
         greenMailSMTP = new GreenMail(setup)
         greenMailSMTP.start()
     }

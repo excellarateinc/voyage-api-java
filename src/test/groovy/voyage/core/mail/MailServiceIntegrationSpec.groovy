@@ -22,6 +22,7 @@ import com.icegreen.greenmail.util.GreenMail
 import com.icegreen.greenmail.util.GreenMailUtil
 import com.icegreen.greenmail.util.ServerSetup
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import voyage.security.AuthenticatedIntegrationTest
 
 import javax.mail.Message
@@ -31,11 +32,17 @@ class MailServiceIntegrationSpec extends AuthenticatedIntegrationTest {
     @Autowired
     MailService mailService
 
+    @Value('${spring.mail.host}')
+    private String mailServerHost
+
+    @Value('${spring.mail.port}')
+    private int mailServerPort
+
     private GreenMail greenMailSMTP
 
     def 'test sendMail method' () {
         setup:
-            ServerSetup setup = new ServerSetup(3025, 'localhost', ServerSetup.PROTOCOL_SMTP)
+            ServerSetup setup = new ServerSetup(mailServerPort, mailServerHost, ServerSetup.PROTOCOL_SMTP)
             greenMailSMTP = new GreenMail(setup)
             greenMailSMTP.start()
             MailMessage mailMessage = new MailMessage()

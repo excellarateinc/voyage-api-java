@@ -61,6 +61,7 @@ Download and install the following required software for development:
 * [MySQL Workbench](https://dev.mysql.com/downloads/workbench/) or [Sequel Pro Mac OSX](https://www.sequelpro.com)
 * [IntelliJ](https://www.jetbrains.com/idea/)
   * Plugin: [Spock Framework Enhancements](https://plugins.jetbrains.com/plugin/7114-spock-framework-enhancements)
+* [MailSlurper](http://mailslurper.com)
 
 ### Instructions
 1. Download source via IntelliJ VCS
@@ -73,7 +74,7 @@ Download and install the following required software for development:
    - Use the default path provided or change it to your desired path
    - Click "Clone" to create a local git repo with the GitHub repo as a source
 
-![IntelliJ clone repo](./images/DEVELOPMENT_cloneRepository.JPG)
+   ![IntelliJ clone repo](./images/DEVELOPMENT_cloneRepository.JPG)
 
 2. Create the database
    - Use MySQL Workbench to connect to your locally running instance of MySQL
@@ -113,6 +114,22 @@ Username: super
 Password: password
 ```
 
+4. Start MailSlurper
+   - Follow the configuration instructions to run MailSlurper locally 
+     * http://mailslurper.com/#docs
+     * Change the "wwwPort" to 8081
+     * Change the "smptPort" to 3025 (or whatever is defined in application.yml spring.mail.host and spring.mail.port)
+     * Save config file
+   - Start MailSlurper
+     * Go to a command prompt
+     * Navigate to the MailSlurper folder (where you saved it on your computer)
+     * Run the 'mailslurper' command for you OS distro (ie Mac OSX './mailslurper')
+   - Go to the Mailslurper web console at http://localhost:8081
+     * As email is delivered by the Voyage API, the messages will appear within the web console
+     * Read the MailSlurper documentation for configuration options, etc...
+   
+   ![MailSlurper Web Console](./images/DEVELOPMENT_mailslurper.png)
+   
 :arrow_up: [Back to Top](#table-of-contents)
 
 ## Run App Locally
