@@ -533,3 +533,34 @@ databaseChangeLog:
               - column:
                   name: is_deleted
                   valueBoolean: false
+  - changeSet:
+      id: v1.0-permission-seed-profiles-api
+      author: Voyage
+      changes:
+        - insert:
+            tableName: permission
+            columns:
+              - column:
+                  name: name
+                  value: api.profiles.me
+              - column:
+                  name: description
+                  value: /profiles/me GET web service endpoint to return the user profile of the current user
+              - column:
+                  name: is_immutable
+                  valueBoolean: true
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

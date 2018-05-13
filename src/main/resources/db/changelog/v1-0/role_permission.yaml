@@ -60,3 +60,9 @@ databaseChangeLog:
       changes:
         - sql:
             sql: insert into role_permission select 1, id from permission
+  - changeSet:
+        id: v1.0-role-permission-seed-standard-user
+        author: Voyage
+        changes:
+          - sql:
+              sql: insert into role_permission select 2, id from permission where name = 'api.profiles.me'

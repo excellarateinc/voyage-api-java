@@ -1258,7 +1258,7 @@ A secure web service endpoint that requires the user in need of verification to 
 Post Body: 
 ```
 {
-   code: 53432
+   code: 534321
 }
 ```
 

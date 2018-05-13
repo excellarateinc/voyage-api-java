@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2018 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -43,7 +43,7 @@ class ProfileService {
         this.mailService = mailService
     }
 
-    User save(User userIn) {
+    User register(User userIn) {
         User newUser = new User()
         newUser.with {
             firstName = userIn.firstName

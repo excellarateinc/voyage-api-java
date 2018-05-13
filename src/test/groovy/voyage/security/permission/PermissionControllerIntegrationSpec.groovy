@@ -52,7 +52,7 @@ class PermissionControllerIntegrationSpec extends AuthenticatedIntegrationTest {
 
         then:
             responseEntity.statusCode.value() == 200
-            responseEntity.body.size() == 15
+            responseEntity.body.size() == 16
             responseEntity.body[0].id == 1L
             responseEntity.body[0].name == 'api.users.list'
             responseEntity.body[0].description == '/users GET web service endpoint to return a full list of users'
@@ -78,7 +78,7 @@ class PermissionControllerIntegrationSpec extends AuthenticatedIntegrationTest {
 
         then:
             responseEntity.statusCode.value() == 200
-            responseEntity.body.size() == 15
+            responseEntity.body.size() == 16
             responseEntity.body[0].id == 1L
             responseEntity.body[0].name == 'api.users.list'
             responseEntity.body[0].description == '/users GET web service endpoint to return a full list of users'
@@ -106,7 +106,7 @@ class PermissionControllerIntegrationSpec extends AuthenticatedIntegrationTest {
 
         then:
             responseEntity.statusCode.value() == 201
-            responseEntity.headers.getFirst('location') == '/api/v1/permissions/16'
+            responseEntity.headers.getFirst('location') == '/api/v1/permissions/17'
             responseEntity.body.id
             responseEntity.body.name == 'Permission-Name-1'
             responseEntity.body.description == 'test permission 1'
@@ -146,7 +146,7 @@ class PermissionControllerIntegrationSpec extends AuthenticatedIntegrationTest {
 
         then:
             responseEntity.statusCode.value() == 201
-            responseEntity.headers.getFirst('location') == '/api/v1/permissions/17'
+            responseEntity.headers.getFirst('location') == '/api/v1/permissions/18'
             responseEntity.body.id
             responseEntity.body.name == 'Permission-Name-3'
             responseEntity.body.description == 'test permission 3'
