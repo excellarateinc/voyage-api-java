@@ -1198,7 +1198,7 @@ This particular security vulnerability might not be applicable to an API given t
 
 ### User Verification
 #### Overview 
-User Verification is a feature that will essentially block user access to the API until they have gone through a verification process. The verification process can be triggered at any time for any reason. The primary uses for the User Verification feature is to validate the user's identity after account registration or password recovery process. 
+User Verification is a feature that will essentially block user access to the API until they have gone through a verification process. The verification process can be triggered at any time for any reason. The primary uses for the User Verification is multi-factor authentication to validate the user's identity after account registration or password recovery process. 
 
 #### SMS Verification
 The only method of User Verification currently implemented is a code delivered to the user via SMS text message. When the user account is created, a mobile phone is required in order to receive SMS messages for the completion of the user verification process. 
