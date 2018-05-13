@@ -20,14 +20,12 @@ package voyage.security.user
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonValue
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
 
 enum PhoneType {
     MOBILE('Mobile'),
     OFFICE('Office'),
     HOME('Home'),
     OTHER('Other')
-
 
     final String code
 

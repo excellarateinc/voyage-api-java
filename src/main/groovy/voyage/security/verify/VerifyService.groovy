@@ -93,15 +93,14 @@ class VerifyService {
 
         // Limit the number of phones that can receive a verification code to 5. This prevents an attacker from overloading
         // the list of phone numbers for a user and spamming an infinite number of phones with security codes.
-        int count = (mobilePhones.size() > 5 ? 5 : mobilePhones.size())
-        for (int i=0; i < count; i++) {
-            sendVerifyCodeToPhoneNumber(mobilePhones[i])
+        mobilePhones.take(5).each { mobilePhone ->
+            sendVerifyCodeToPhoneNumber(mobilePhone)
         }
 
         userService.saveDetached(user)
     }
 
-    private sendVerifyCodeToPhoneNumber(@NotNull UserPhone mobilePhone) {
+    private void sendVerifyCodeToPhoneNumber(@NotNull UserPhone mobilePhone) {
         String verifyCode = SecurityCode.userVerifyCode
         mobilePhone.verifyCode = cryptoService.hashEncode(verifyCode)
         use(TimeCategory) {

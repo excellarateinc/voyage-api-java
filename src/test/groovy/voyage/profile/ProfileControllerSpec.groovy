@@ -52,7 +52,7 @@ class ProfileControllerSpec extends Specification {
         when:
            ResponseEntity<User> response = profileController.myProfile()
         then:
-            1 * userService.getCurrentUser() >> modifiedUser
+            1 * userService.currentUser >> modifiedUser
             response != null
             HttpStatus.OK == response.statusCode
             'username' == response.body.username

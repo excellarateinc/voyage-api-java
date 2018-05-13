@@ -42,6 +42,6 @@ class UnknownIdentifierException extends AppException {
 
     @Override
     String getErrorCode() {
-        return HTTP_STATUS.value() + '_unknown_identifier'
+        return ErrorUtils.getErrorCode(httpStatus.value(), 'unknown_identifier')
     }
 }
