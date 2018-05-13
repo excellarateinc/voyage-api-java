@@ -165,8 +165,8 @@ class HttpActionLogFilter extends OncePerRequestFilter {
 
         // Check the request parameters for a username if form authentication failed
         if (!userPrincipal) {
-            for (int i; i < formUsernameFields.size(); i++) {
-                userPrincipal = request.getParameter(formUsernameFields[i])
+            for (formUsernameField in formUsernameFields) {
+                userPrincipal = request.getParameter(formUsernameField)
                 if (userPrincipal) {
                     break
                 }

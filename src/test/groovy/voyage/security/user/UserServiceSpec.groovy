@@ -73,7 +73,7 @@ class UserServiceSpec extends Specification {
 
     def 'save - creates new User and sets a default security role'() {
         given:
-            roleService.findByAuthority(_) >> { return new Role(authority: 'test')}
+            roleService.findByAuthority(_) >> { return new Role(authority:'test') }
         when:
             User savedUser = userService.saveDetached(user)
         then:

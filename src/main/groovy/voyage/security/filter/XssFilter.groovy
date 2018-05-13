@@ -89,13 +89,12 @@ class XssFilter extends OncePerRequestFilter {
                 return []
             }
 
-            int count = values.length
-            String[] encodedValues = new String[count]
-            for (int i = 0; i < count; i++) {
-                encodedValues[i] = stripXSS(values[i])
+            List<String> encoded = []
+            values.each { value ->
+                encoded.add(stripXSS(value))
             }
 
-            return encodedValues
+            return encoded as String[]
         }
 
         @Override

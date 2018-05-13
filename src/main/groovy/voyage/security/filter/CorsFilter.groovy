@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletResponse
  */
 @Component
 @Order(-10000000)
-@ConditionalOnProperty(name = "security.cors.enabled", havingValue = "true")
+@ConditionalOnProperty(name = 'security.cors.enabled', havingValue = 'true')
 class CorsFilter extends OncePerRequestFilter {
     private static final Logger LOG = LoggerFactory.getLogger(CorsFilter)
     private static final String HEADER_ORIGIN = 'Origin'
@@ -104,7 +104,7 @@ class CorsFilter extends OncePerRequestFilter {
     }
 
     private boolean isNotWildCardOrigin() {
-        return !HEADER_CORS_WILDCARD_VALUE.equals(accessControlAllowOrigins.first())
+        return HEADER_CORS_WILDCARD_VALUE != accessControlAllowOrigins.first()
     }
 
     private void writeRestrictedResponseHeaders(HttpServletResponse response, String origin) {
@@ -119,16 +119,6 @@ class CorsFilter extends OncePerRequestFilter {
         response.addHeader(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN, HEADER_CORS_WILDCARD_VALUE)
         response.addHeader(HEADER_ACCESS_ALLOW_HEADERS, accessControlAllowHeaders)
         response.addHeader(HEADER_ACCESS_ALLOW_METHODS, accessControlAllowMethods)
-    }
-
-    private static boolean isRequestFilterable(HttpServletRequest request, HttpServletResponse response) {
-        String originRequestHeader = request.getHeader(HEADER_ORIGIN)
-        if (originRequestHeader) {
-            if (!response.getHeader(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)) {
-                return true
-            }
-        }
-        return false
     }
 
     private static String cleanUri(String uriIn) {

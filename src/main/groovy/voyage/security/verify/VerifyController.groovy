@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2018 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -81,6 +81,8 @@ class VerifyController {
      *   HTTP/1.1 204 NO CONTENT
      *
      * @apiUse UnauthorizedError
+     * @apiUse InvalidVerificationPhoneNumberError
+     * @apiUse SMSSendError
      **/
     @PreAuthorize('isAuthenticated()')
     @GetMapping('/send')
@@ -140,6 +142,8 @@ class VerifyController {
      *   HTTP/1.1 204 NO CONTENT
      *
      * @apiUse UnauthorizedError
+     * @apiUse InvalidVerificationPhoneNumberError
+     * @apiUse VerifyCodeExpiredError
      **/
     @PreAuthorize('isAuthenticated()')
     @PostMapping
