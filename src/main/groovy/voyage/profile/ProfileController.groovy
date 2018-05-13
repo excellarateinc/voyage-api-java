@@ -85,7 +85,7 @@ class ProfileController {
     @GetMapping('/me')
     @PreAuthorize("hasAuthority('api.profiles.me')")
     ResponseEntity myProfile() {
-        User user = userService.getCurrentUser()
+        User user = userService.currentUser
         return new ResponseEntity(user, HttpStatus.OK)
     }
 }

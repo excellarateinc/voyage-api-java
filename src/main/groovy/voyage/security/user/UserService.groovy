@@ -126,7 +126,7 @@ class UserService {
 
             if (!user.roles) {
                 user.roles = [
-                    roleService.findByAuthority(defaultUserRoleAuthority)
+                    roleService.findByAuthority(defaultUserRoleAuthority),
                 ]
             }
         }
