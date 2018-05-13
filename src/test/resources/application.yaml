@@ -59,6 +59,9 @@ security:
   ignored: /resources/**, /webjars/**
   permitAll: /login, /api/status
 
+  user-roles:
+    default-authority: role.standard_user
+
   # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
   # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
   key-store:

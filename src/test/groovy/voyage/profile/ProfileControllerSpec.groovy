@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2018 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -36,19 +36,13 @@ class ProfileControllerSpec extends Specification {
         modifiedUser = new User(id:1, firstName:'firstName', lastName:'LastName', username:'username', email:'test@test.com', password:'password')
     }
 
-    def 'Test to validate save method'() {
+    def '/profiles/register saves successfully'() {
         when:
-            ResponseEntity<User> response = profileController.save(user)
+            ResponseEntity<User> response = profileController.register(user)
         then:
-            1 * profileService.save(user) >> modifiedUser
+            1 * profileService.register(user) >> modifiedUser
             response != null
             HttpStatus.CREATED == response.statusCode
-            '/v1/profile' == response.headers.location[0]
-
-        when:
-            profileController.save(user)
-        then:
-            1 * profileService.save(user) >> { throw new Exception() }
-            thrown(Exception)
+            '/v1/profiles/me' == response.headers.location[0]
     }
 }

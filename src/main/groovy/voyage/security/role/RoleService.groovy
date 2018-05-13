@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2018 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -68,6 +68,10 @@ class RoleService {
             return roleRepository.save(existingRole)
         }
         return roleRepository.save(role)
+    }
+
+    Role findByAuthority(String authority) {
+        return roleRepository.findByAuthority(authority)
     }
 
     /**

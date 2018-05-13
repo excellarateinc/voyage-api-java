@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2018 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -30,7 +30,7 @@ import voyage.security.user.User
 import voyage.security.verify.VerifyService
 
 @RestController
-@RequestMapping(['/api/v1/profile', '/api/v1.0/profile'])
+@RequestMapping(['/api/v1/profiles', '/api/v1.0/profiles'])
 class ProfileController {
     private final ProfileService profileService
     private final VerifyService userVerifyService
@@ -90,11 +90,11 @@ class ProfileController {
      * @apiUse UsernameAlreadyInUseError
      * @apiUse MobilePhoneNumberRequiredError
      **/
-    @PostMapping()
-    ResponseEntity save(@RequestBody User userIn) {
-        profileService.save(userIn)
+    @PostMapping('/register')
+    ResponseEntity register(@RequestBody User userIn) {
+        profileService.register(userIn)
         HttpHeaders headers = new HttpHeaders()
-        headers.set(HttpHeaders.LOCATION, '/v1/profile')
+        headers.set(HttpHeaders.LOCATION, '/v1/profiles/me')
         return new ResponseEntity(headers, HttpStatus.CREATED)
     }
 }

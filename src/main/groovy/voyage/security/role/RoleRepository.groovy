@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2018 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -28,4 +28,7 @@ interface RoleRepository extends CrudRepository<Role, Long> {
 
     @Query('FROM Role r WHERE r.isDeleted = false')
     Iterable<Role> findAll()
+
+    @Query('FROM Role r WHERE authority = ?1 AND r.isDeleted = false')
+    Role findByAuthority(String authority)
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2018 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -82,5 +82,14 @@ class RoleServiceSpec extends Specification {
             'Super User' == savedRole.name
             'ROLE_SUPER' == savedRole.authority
             !savedRole.isDeleted
+    }
+
+    def 'findByAuthority - passes the request to the roleRepository'() {
+        setup:
+            roleRepository.findByAuthority('anything') >> role
+        when:
+            Role savedRole = roleService.findByAuthority('anything')
+        then:
+            savedRole == role
     }
 }
