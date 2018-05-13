@@ -125,7 +125,7 @@ class VerificationFilterSpec extends Specification {
             1 * userDetails.username >> 'test'
             1 * userService.findByUsername('test') >> new User(isVerifyRequired:true)
             1 * response.writer >> responseWriter
-            1 * responseWriter.append('[{"error":"403_verify_user","errorDescription":"User verification is required"}]')
+            1 * responseWriter.append('[{"error":"401_verify_user","errorDescription":"User verification is required"}]')
             1 * responseWriter.close()
             1 * responseWriter.flush()
             0 * filterChain.doFilter(request, response)
@@ -145,7 +145,7 @@ class VerificationFilterSpec extends Specification {
             3 * userPrincipal.principal >> 'test'
             1 * userService.findByUsername('test') >> new User(isVerifyRequired:true)
             1 * response.writer >> responseWriter
-            1 * responseWriter.append('[{"error":"403_verify_user","errorDescription":"User verification is required"}]')
+            1 * responseWriter.append('[{"error":"401_verify_user","errorDescription":"User verification is required"}]')
             1 * responseWriter.close()
             1 * responseWriter.flush()
             0 * filterChain.doFilter(request, response)
