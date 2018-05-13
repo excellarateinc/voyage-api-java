@@ -18,6 +18,8 @@
  */
 package voyage.security.user
 
+import com.fasterxml.jackson.annotation.JsonCreator
+
 enum PhoneType {
     MOBILE('mobile'),
     OFFICE('office'),
@@ -32,5 +34,14 @@ enum PhoneType {
 
     String toString() {
         return code
+    }
+
+    @JsonCreator
+    static PhoneType fromValue(String phoneTypeText) {
+        try {
+            return valueOf(phoneTypeText?.toUpperCase())
+        } catch (IllegalArgumentException ignored) {
+            return OTHER
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2018 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -20,6 +20,8 @@ package voyage.security.user
 
 import spock.lang.Specification
 import voyage.security.crypto.CryptoService
+import voyage.security.role.Role
+import voyage.security.role.RoleService
 
 class UserServiceSpec extends Specification {
     User user
@@ -27,7 +29,8 @@ class UserServiceSpec extends Specification {
     UserRepository userRepository = Mock()
     CryptoService cryptoService = Mock()
     PhoneService phoneService = new PhoneService()
-    UserService userService = new UserService(userRepository, cryptoService, phoneService)
+    RoleService roleService = Mock()
+    UserService userService = new UserService(userRepository, cryptoService, phoneService, roleService)
 
     def setup() {
         phoneService.defaultCountry = 'US'
@@ -66,6 +69,22 @@ class UserServiceSpec extends Specification {
             !savedUser.isAccountLocked
             !savedUser.isCredentialsExpired
             !savedUser.isDeleted
+    }
+
+    def 'save - creates new User and sets a default security role'() {
+        given:
+            roleService.findByAuthority(_) >> { return new Role(authority: 'test')}
+        when:
+            User savedUser = userService.saveDetached(user)
+        then:
+            userRepository.save(*_) >> { args ->
+                return args[0] // return back the given user object
+            }
+            cryptoService.hashEncode(user.password) >> user.password
+
+            savedUser.username == 'username'
+            1 == savedUser.roles.size()
+            'test' == savedUser.roles[0].authority
     }
 
     def 'save - throws a Mobile Phone Required error because no phones are given'() {
