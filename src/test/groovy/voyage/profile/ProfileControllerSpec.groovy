@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
 import voyage.security.user.User
+import voyage.security.user.UserService
 import voyage.security.verify.VerifyService
 
 class ProfileControllerSpec extends Specification {
@@ -29,7 +30,8 @@ class ProfileControllerSpec extends Specification {
     User modifiedUser
     ProfileService profileService = Mock(ProfileService)
     VerifyService userVerifyService = Mock(VerifyService)
-    ProfileController profileController = new ProfileController(profileService, userVerifyService)
+    UserService userService = Mock(UserService)
+    ProfileController profileController = new ProfileController(profileService, userVerifyService, userService)
 
     def setup() {
         user = new User(id:1, firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password')
@@ -44,5 +46,15 @@ class ProfileControllerSpec extends Specification {
             response != null
             HttpStatus.CREATED == response.statusCode
             '/v1/profiles/me' == response.headers.location[0]
+    }
+
+    def '/profiles/me returns the current user record successfully'() {
+        when:
+           ResponseEntity<User> response = profileController.myProfile()
+        then:
+            1 * userService.getCurrentUser() >> modifiedUser
+            response != null
+            HttpStatus.OK == response.statusCode
+            'username' == response.body.username
     }
 }

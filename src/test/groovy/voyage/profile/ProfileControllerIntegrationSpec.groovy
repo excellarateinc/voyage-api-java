@@ -209,4 +209,37 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
         then:
             responseEntity.statusCode.value() == 201
     }
+
+    def '/api/v1/profiles/me GET - Returns the user profile of the current Super user'() {
+        when:
+           ResponseEntity<User> responseEntity = GET('/api/v1/profiles/me', User, superClient)
+
+        then:
+            responseEntity.statusCode.value() == 200
+            responseEntity.body.firstName == 'Super Client'
+            responseEntity.body.lastName == 'User Client'
+            responseEntity.body.username == 'client-super'
+    }
+
+    def '/api/v1/profiles/me GET - Returns the user profile of the current Standard user'() {
+        when:
+            ResponseEntity<User> responseEntity = GET('/api/v1/profiles/me', User, standardClient)
+
+        then:
+            responseEntity.statusCode.value() == 200
+            responseEntity.body.firstName == 'Standard'
+            responseEntity.body.lastName == 'User'
+            responseEntity.body.username == 'client-standard'
+    }
+
+    def '/api/v1/profiles/me GET - Access denied for Anonymous'() {
+        when:
+           ResponseEntity<Iterable> responseEntity = GET('/api/v1/profiles/me', Iterable)
+
+        then:
+            responseEntity.statusCode.value() == 401
+            responseEntity.body.size() == 1
+            responseEntity.body[0].error == '401_unauthorized'
+            responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
+    }
 }
