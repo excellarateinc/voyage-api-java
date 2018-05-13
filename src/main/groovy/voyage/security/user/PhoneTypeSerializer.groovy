@@ -25,11 +25,7 @@ import voyage.core.error.ErrorUtils
 import voyage.security.error.AppOAuth2Exception
 
 /**
- * Overrides the default OAuth2Exception JSON serializer with the standard error object format for this app.
- * This is used by the Spring Security OAuth2 Authorization & Resource servlet filters.
- *
- * NOTE: Spring MVC Controllers & DefaultExceptionHandler processes occur after all of the authentication is complete,
- * which is why we need a special process to handle exceptions for the OAuth2 Authorization & Resource servers.
+ * Jackson json serializer for PhoneType to return <code>code</code> property.
  */
 class PhoneTypeSerializer extends StdSerializer<PhoneType> {
     PhoneTypeSerializer() {
