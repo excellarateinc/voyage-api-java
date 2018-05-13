@@ -20,6 +20,7 @@ package voyage.security.user
 
 import org.springframework.http.HttpStatus
 import voyage.core.error.AppException
+import voyage.core.error.ErrorUtils
 
 /**
  * For use within the service layer to inform the caller that a Mobile Phone is required for a new profile.
@@ -43,6 +44,6 @@ class MobilePhoneRequiredException extends AppException {
 
     @Override
     String getErrorCode() {
-        return HTTP_STATUS.value() + '_mobile_phone_required'
+        return ErrorUtils.getErrorCode(httpStatus.value(), 'mobile_phone_required')
     }
 }

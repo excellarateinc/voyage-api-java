@@ -52,7 +52,7 @@ All programmers working on this app should at least read through the reference m
 #### Overview
 OAuth2 is configured within this API to use JWT to generate tokens. By design, JWT embeds user information within the token so that the resource API can use the data to pre-load the session with an authenticated user. One of these bits of information is a token expiration date that is added to the token based on the client's max token validity time period `Client.accessTokenValiditySeconds`. The OAuth2 resource server will examine the JWT expiration date embedded within the token and reject the request if the token has exceeded the expiration date. 
 
-One down side of JWT and the default Spring Security OAuth2 resource API is that neither one support expiring the token before the expiration date is effective. If there is a security event that requires issued tokens to be expired for a given User or Client, then without an explicit way to invalidate JWT tokens the system could remain vulnerable to attack until the tokens naturally expired. 
+One downside of JWT and the default Spring Security OAuth2 resource API is that neighter one support expiring the token before the expiration date is effective. If there is a security event that requires issued tokens to be expired for a given User or Client, then without an explicit way to invalidate JWT tokens the system could remain vulnerable to attack until the tokens naturally expired. 
 
 This API implements the ability to invalidate Client or User tokens that have not reached their JWT expiration date. 
 
@@ -1269,8 +1269,7 @@ Possible Results:
 #### Technical Notes
 
 ##### AWS SMS Service Integration
-By default, Voyage API integrates with Amazon [AWS SNS](http://docs.aws.amazon.com/sns/latest/dg/SMSMessages.html) as the text message provider. In order for the API 
-to facilitate SMS deliveries, an AWS account must be provided within the configuration of the API. See the [Deploy](DEPLOY) section for instructions on how to apply the AWS credentials. 
+By default, Voyage API integrates with Amazon [AWS SNS](http://docs.aws.amazon.com/sns/latest/dg/SMSMessages.html) as the text message provider. In order for the API to faciliate SMS deliveries, an AWS account must be provided within the configuration of the API. See the [Deploy](#deploy) section for instructions on how to apply the AWS credentials. 
 
 ##### VerificationServletFilter
 The VerificationServletFilter located at `/src/main/groovy/voyage/security/VerificationServletFilter.groovy` intercepts incoming requests by authenticated users and examines the User account to see if the `User.isVerifyRequired` is true. If the isVerifyRequired is true, then the request is immediately stopped and an error message is returned to the consumer notifying them that the user must complete the User Verification process. 
