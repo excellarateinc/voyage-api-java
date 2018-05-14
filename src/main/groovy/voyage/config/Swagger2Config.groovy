@@ -32,6 +32,7 @@ class Swagger2Config {
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
+                .ignoredParameterTypes(groovy.lang.MetaClass.class)//needed so that groovy resource files have property 'metadata' ignored
                 .groupName('voyage')
                 .select()
 
