@@ -55,6 +55,9 @@ class User extends AuditableEntity {
     @NotBlank
     String password
 
+    @JsonIgnore
+    Date passwordCreatedDate
+
     @NotNull
     Boolean isEnabled = Boolean.TRUE
 
