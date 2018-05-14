@@ -40,7 +40,6 @@ class PasswordPolicyConfig {
                 new CharacterRule(EnglishCharacterData.LowerCase, 1),
                 new CharacterRule(EnglishCharacterData.Digit, 1),
                 new CharacterRule(EnglishCharacterData.Special, 1),
-                new LengthRule(8, 100),
-                new WhitespaceRule()]
+                new LengthRule(8, 100)]
     }
 }
