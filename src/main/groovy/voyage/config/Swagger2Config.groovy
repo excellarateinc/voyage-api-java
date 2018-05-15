@@ -79,7 +79,7 @@ class Swagger2Config {
                 .version("1.0.0")
                 .license("Apache License Version 2.0")
                 .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0\"")
-                .contact(new Contact("Tim Michalski", "https://lighthousesoftware.com/contact.html", "contact@lighthousesoftware.com"))
+                .contact(new Contact("Lighthouse Software", "http://LighthouseSoftware.com", "contact@LighthouseSoftware.com"))
                 .build();
     }
 
