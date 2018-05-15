@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2018 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -76,7 +76,7 @@ class HttpActionLogFilterIntegrationSpec extends AuthenticatedIntegrationTest {
 
     def 'Anonymous POST failure'() {
         given:
-            User user = new User(firstName:'TestCORS', lastName:'User', username:'CORS', email:'CORS@email.com', password:'password')
+            User user = new User(firstName:'TestCORS', lastName:'User', username:'CORS', email:'CORS@email.com', password:'Test@1234')
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             headers.add('test-header', 'test-value')
@@ -203,7 +203,7 @@ class HttpActionLogFilterIntegrationSpec extends AuthenticatedIntegrationTest {
 
     def 'Super User POST success'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username99', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username99', email:'test@test.com', password:'Test@1234!')
             user.phones = [new UserPhone(phoneNumber:'+1-651-888-6021', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
