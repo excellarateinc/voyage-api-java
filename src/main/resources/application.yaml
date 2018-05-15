@@ -41,17 +41,17 @@ spring:
     hibernate:
       ddl-auto: none
 
-#  datasource:
-#    url: jdbc:h2:mem:voyage
-#    username: sa
-#    password:
-#    driver-class-name: org.h2.Driver
-
   datasource:
-    url: jdbc:mysql://localhost:3306/voyage?useSSL=false
-    username: voyage
-    password: voyage
-    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:h2:mem:voyage
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/voyage?useSSL=false
+#    username: voyage
+#    password: voyage
+#    driver-class-name: com.mysql.jdbc.Driver
 
   mail:
       host: localhost
