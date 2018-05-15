@@ -125,6 +125,10 @@ security:
     exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profiles/register
     verify-code-expire-minutes: 30
 
+  password-verification:
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profiles/register
+    password-reset-days: 90
+
   cors:
     enabled: true
     access-control-allow-origins: http://localhost:3000
