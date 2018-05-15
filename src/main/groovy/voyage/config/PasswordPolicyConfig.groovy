@@ -23,7 +23,6 @@ import org.passay.EnglishCharacterData
 import org.passay.LengthRule
 import org.passay.PasswordValidator
 import org.passay.Rule
-import org.passay.WhitespaceRule
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
