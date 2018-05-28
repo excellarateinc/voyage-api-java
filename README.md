@@ -3,6 +3,15 @@ A foundational set of web services that implement industry standard guidelines, 
 
 If you are extending this API to build a new app, then replace this section with a detailed overview of the new app. Include as much or as little detail as necessary to convey to the developers what this project is about. Often times less is more. 
 
+## Topics
+* [Five Minute Test](#5-minute-test)
+* [Features](#features)
+* [Security](readme_docs/SECURITY.md)
+* [Development](readme_docs/DEVELOPMENT.md)
+* [Development Recipes](readme_docs/DEVELOPMENT-RECIPES.md)
+* [Testing](readme_docs/STANDARDS-TESTING.md)
+* [Deploy](readme_docs/DEPLOY.md)
+
 ## 5 Minute Test
 Run the Voyage API and execute a JSON API request within 5 minutes
 
@@ -58,14 +67,6 @@ Run the Voyage API and execute a JSON API request within 5 minutes
    * http://localhost:8080/api/docs  
 
 7. Read [Developer Documentation](readme_docs/DEVELOPMENT.md) for more detailed instructions
-
-## Topics
-* [Features](#features)
-* [Security](readme_docs/SECURITY.md)
-* [Development](readme_docs/DEVELOPMENT.md)
-* [Development Recipes](readme_docs/DEVELOPMENT-RECIPES.md)
-* [Testing](readme_docs/STANDARDS-TESTING.md)
-* [Deploy](readme_docs/DEPLOY.md)
 
 ## Features
 
