@@ -1,3 +1,8 @@
+## Overview
+A foundational set of web services that implement industry standard guidelines, common best practices, and the experienced insights afforded to Lighthouse Software thru decades of enterprise business software development. 
+
+If you are extending this API to build a new app, then replace this section with a detailed overview of the new app. Include as much or as little detail as necessary to convey to the developers what this project is about. Often times less is more. 
+
 ## 5 Minute Test
 Run the Voyage API and execute a JSON API request within 5 minutes
 
@@ -42,11 +47,6 @@ Run the Voyage API and execute a JSON API request within 5 minutes
    * http://localhost:8080/api/docs  
 
 7. Read [Developer Documentation](readme_docs/DEVELOPMENT.md) for more detailed instructions
-
-## Overview
-A foundational set of web services that implement industry standard guidelines, common best practices, and the experienced insights afforded to Lighthouse Software thru decades of enterprise business software development. 
-
-If you are extending this API to build a new app, then replace this section with a detailed overview of the new app. Include as much or as little detail as necessary to convey to the developers what this project is about. Often times less is more. 
 
 ## Topics
 * [Features](#features)
