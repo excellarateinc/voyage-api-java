@@ -21,6 +21,7 @@ package voyage.profile
 import com.icegreen.greenmail.util.GreenMail
 import com.icegreen.greenmail.util.ServerSetup
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -43,8 +44,14 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
     @Autowired
     private CryptoService cryptoService
 
+    @Value('${spring.mail.host}')
+    private String mailServerHost
+
+    @Value('${spring.mail.port}')
+    private int mailServerPort
+
     def setup() {
-        ServerSetup setup = new ServerSetup(3025, 'localhost', ServerSetup.PROTOCOL_SMTP)
+        ServerSetup setup = new ServerSetup(mailServerPort, mailServerHost, ServerSetup.PROTOCOL_SMTP)
         greenMailSMTP = new GreenMail(setup)
         greenMailSMTP.start()
     }
@@ -55,7 +62,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
 
     def '/api/v1/profiles/register POST - Profile create'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test1', lastName:'User', username:'ProfileControllerTest', email:'test@test.com', password:'Test@1234')
             user.phones = [new UserPhone(phoneNumber:'+16124590457', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
@@ -69,9 +76,9 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
             responseEntity.statusCode.value() == 201
             savedUser.firstName == 'Test1'
             savedUser.lastName == 'User'
-            savedUser.username == 'username'
+            savedUser.username == 'ProfileControllerTest'
             savedUser.email == 'test@test.com'
-            cryptoService.hashMatches('password', savedUser.password)
+            cryptoService.hashMatches('Test@1234', savedUser.password)
             savedUser.phones.size() == 1
             savedUser.isVerifyRequired
             savedUser.isEnabled
@@ -85,7 +92,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
 
     def '/api/v1/profiles/register POST - Profile create fails with error due to username already in use'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test1', lastName:'User', username:'ProfileControllerTest', email:'test@test.com', password:'Test@1234')
             user.phones = [new UserPhone(phoneNumber:'+1-111-111-1111', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
@@ -122,7 +129,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
 
     def '/api/v1/profiles/register POST - Profile create fails with error due to email format invalid'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username44', email:'test@', password:'password')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username44', email:'test@', password:'Test@1234')
             user.phones = [new UserPhone(phoneNumber:'+1-800-888-8888', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
@@ -137,9 +144,30 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
             responseEntity.body[0].errorDescription == 'not a well-formed email address'
     }
 
+    def '/api/v1/profiles/register POST - Profile create fails with error due to password policy violation'() {
+        given:
+            User user = new User(firstName:'Test1', lastName:'User', username:'username44', email:'test@', password:'password')
+            user.phones = [new UserPhone(phoneNumber:'+1-800-888-8888', phoneType:PhoneType.MOBILE)]
+            HttpHeaders headers = new HttpHeaders()
+            headers.setContentType(MediaType.APPLICATION_JSON)
+            HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
+
+        when:
+           ResponseEntity<List> responseEntity = POST('/api/v1/profiles/register', httpEntity, List, standardClient)
+
+        then:
+            responseEntity.statusCode.value() == 400
+            responseEntity.body[0].error == '400_weak_password'
+            responseEntity.body[0].errorDescription == 'The password does not meet the minimum requirements. ' +
+                    'Following are the Password Policy Violations: \n' +
+                    'Minimum 1 uppercase character is required.\n' +
+                    'Minimum 1 digit character is required.\n' +
+                    'Minimum 1 special character is required.'
+    }
+
     def '/api/v1/profiles/register POST - Profile create fails with error due to missing mobile phone'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username22', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username22', email:'test@test.com', password:'Test@1234')
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -155,7 +183,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
 
     def '/api/v1/profiles/register POST - Profile create fails with error due to > 5 phones'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username21', email:'test@test.com', password:'password')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username21', email:'test@test.com', password:'Test@1234')
             user.phones = [
                 new UserPhone(phoneNumber:'+1205-111-1111', phoneType:PhoneType.MOBILE),
                 new UserPhone(phoneNumber:'+1222-222-2222', phoneType:PhoneType.MOBILE),
@@ -180,7 +208,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
 
     def '/api/v1/profiles/register POST - Profile create succeeds with mixed case phone type'() {
         given:
-            String body = '{"firstName":"Tom", "lastName":"Jones", "username":"tjones", "email":"test@test.com", "password":"password", ' +
+            String body = '{"firstName":"Tom", "lastName":"Jones", "username":"tjones", "email":"test@test.com", "password":"Test@1234", ' +
                 '"phones":[{"phoneType":"MobilE", "phoneNumber":"+16124590457"}]}'
 
             HttpHeaders headers = new HttpHeaders()
@@ -196,7 +224,7 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
 
     def '/api/v1/profiles/register POST - Profile create succeeds with an invalid phone type'() {
         given:
-           String body = '{"firstName":"Tom", "lastName":"Jones", "username":"tjones123", "email":"tjones123@test.com", "password":"password", ' +
+           String body = '{"firstName":"Tom", "lastName":"Jones", "username":"tjones123", "email":"tjones123@test.com", "password":"Test@1234", ' +
                 '"phones":[{"phoneType":"BLAH", "phoneNumber":"+16124590457"}, {"phoneType":"mobile", "phoneNumber":"+16514590457"}]}'
 
             HttpHeaders headers = new HttpHeaders()

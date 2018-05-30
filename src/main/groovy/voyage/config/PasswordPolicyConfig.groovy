@@ -16,37 +16,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package voyage.security.user
+package voyage.config
 
-import spock.lang.Specification
+import org.passay.CharacterRule
+import org.passay.EnglishCharacterData
+import org.passay.LengthRule
+import org.passay.PasswordValidator
+import org.passay.Rule
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 
-class PhoneTypeSpec extends Specification {
+@Configuration
+class PasswordPolicyConfig {
 
-    def 'ofValue - converts a mixed case enum value'() {
-        when:
-            PhoneType phoneType = PhoneType.fromValue('mObilE')
-        then:
-            phoneType == PhoneType.MOBILE
+    @Bean
+    PasswordValidator passwordValidator() {
+        return new PasswordValidator(passwordPolicyRules)
     }
 
-    def 'ofValue - converts a lower case enum value'() {
-        when:
-           PhoneType phoneType = PhoneType.fromValue('mobile')
-        then:
-            phoneType == PhoneType.MOBILE
-    }
-
-    def 'ofValue - converts an upper case enum value'() {
-        when:
-           PhoneType phoneType = PhoneType.fromValue('MOBILE')
-        then:
-            phoneType == PhoneType.MOBILE
-    }
-
-    def 'ofValue - Returns OTHER if the value is not recognized'() {
-        when:
-           PhoneType phoneType = PhoneType.fromValue('BLAH')
-        then:
-            phoneType == PhoneType.OTHER
+    private static List<Rule> getPasswordPolicyRules() {
+        return [new CharacterRule(EnglishCharacterData.UpperCase, 1),
+                new CharacterRule(EnglishCharacterData.LowerCase, 1),
+                new CharacterRule(EnglishCharacterData.Digit, 1),
+                new CharacterRule(EnglishCharacterData.Special, 1),
+                new LengthRule(8, 100)]
     }
 }

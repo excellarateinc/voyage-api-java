@@ -20,6 +20,7 @@ package voyage.security.user
 
 import org.springframework.http.HttpStatus
 import voyage.core.error.AppException
+import voyage.core.error.ErrorUtils
 
 /**
  * For use within the service layer to inform the caller that too many Phones have been added to the profile.
@@ -43,6 +44,6 @@ class TooManyPhonesException extends AppException {
 
     @Override
     String getErrorCode() {
-        return HTTP_STATUS.value() + '_too_many_phones'
+        return ErrorUtils.getErrorCode(httpStatus.value(), 'too_many_phones')
     }
 }

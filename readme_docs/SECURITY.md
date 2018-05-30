@@ -14,7 +14,7 @@ Overview of the Security features and configurations that have been implemented 
   - [Disable API Consumers (Users and Clients)](#disable-api-consumers-users-and-clients)
   - [OWASP Top 10](#owasp-top-10)
   - Password Attempts Tracking
-  - Password Policy
+  - [Password Policy](#password-policy)
   - [Password Recovery](#password-recovery)
   - [User Verification](#user-verification)
 * [Security Configuration](#security-configuration)
@@ -52,7 +52,7 @@ All programmers working on this app should at least read through the reference m
 #### Overview
 OAuth2 is configured within this API to use JWT to generate tokens. By design, JWT embeds user information within the token so that the resource API can use the data to pre-load the session with an authenticated user. One of these bits of information is a token expiration date that is added to the token based on the client's max token validity time period `Client.accessTokenValiditySeconds`. The OAuth2 resource server will examine the JWT expiration date embedded within the token and reject the request if the token has exceeded the expiration date. 
 
-One down side of JWT and the default Spring Security OAuth2 resource API is that neither one support expiring the token before the expiration date is effective. If there is a security event that requires issued tokens to be expired for a given User or Client, then without an explicit way to invalidate JWT tokens the system could remain vulnerable to attack until the tokens naturally expired. 
+One downside of JWT and the default Spring Security OAuth2 resource API is that neighter one support expiring the token before the expiration date is effective. If there is a security event that requires issued tokens to be expired for a given User or Client, then without an explicit way to invalidate JWT tokens the system could remain vulnerable to attack until the tokens naturally expired. 
 
 This API implements the ability to invalidate Client or User tokens that have not reached their JWT expiration date. 
 
@@ -430,80 +430,6 @@ Given the architecture of Voyage API, no CSRF controls are built into the API. P
 
 #### References
 * [OWASP: CSRF Prevention Sheet](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Prevention_Cheat_Sheet)
-
-:arrow_up: [Back to Top](#table-of-contents)
-
-
-### Password Recovery
-
-* Can be disabled within the application.yaml file for internal applications with a centralized Password Recovery process. 
-
-Workflow
-1. User initiates the password recovery process from a link within the web app
-2. User is required to enter their username and mobile phone used to create the account
-3. Upon successful verification of the username and mobile phone number, the user is presented with a set of security questions
-4. The user must answer each question exactly as they had entered it within their account profile and submit
-5. If the answers are correct, then the user is displayed a
-
-Security Questions
-- Security questions are presented at random
-
-Technical Notes:
-* Need to do this without authenticating a user. If we authenticate a user, then they would get a token and have free reign to attempt other attacks
-
-
-1. Once a user enters a valid username and phone number, then return a Recovery Verify Token
-   - POST /recover/password { username: blah, password: ***** }
-   - Anonymous access web service
-   - > 3 attempts from for a given username (existing or not) will disable attempts for 10 minutes
-   - > 6 attempts from for a given username (existing or not) within a 60 minute period will disable attempts for the username for 24-hours
-   - Track all attempts within the action_log so that non-existing usernames can be tracked as well  
-   - The Recovery Verify Token is only good for 20 minutes (shorter?) and should be stored on the user profile for date expiration
-   - Use a long hash token that wont likely be replicated between multiple users ("account recovery" + userid + datetime)
-   - Send verification code to mobile phone on record
-     * Sets user.is_verify_required with code and expiration
-     * Next time user logs in with their username and password, they will be required to verify
-2. Accept verification code 
-   - POST /recover/verify  { recovery_verify_token: ANDJDUS*#*, code: 3423432 }
-   - anonymous access web service 
-   - > 3 attempts from for a given recovery code or IP address (existing or not) will disable attempts for 10 minutes
-   - Check that the recovery token has not expired
-   - Follows User Verification process
-   - Upon successful verification, return a Recovery Questions Token
-3. Request security questions
-   - POST /recover/questions { recovery_questions_token: EOIUWORJSDFN#373432 }
-   - Requires the account recovery token
-   - Requires user.is_verify_required = false (otherwise returns an error status code with message)
-   - > 3 attempts with an invalid account recovery token from a given IP address will ban the IP Address for 60 minutes (configurable)
-   - Returns 3 of the 5 security questions (2 canned, 1 custom / out of 3 canned and 2 custom) rotated
-   - Each question should have a question ID hash key that is generated using the question_code or the question text (and stored in the database or on-the-fly?)
-     ```
-     [
-        {"question_id": "LKSJFSDJ*#&SAAHANDL*", "question": "What is the avg airspeed velocity of an unladen swallow?", "question_code": "avg_airspeed_swallow"},
-        {"question_id": "&#$DSDJ356", "question": "What was your favorite teacher's last name?", "question_code": "favorite_teacher"},
-        {"question_id": ")(SKSDFJLH#$", "question": "When is my favorite day of the year?", "question_code": "favorite_day_of_year"}
-     ]
-     ```
-4. Verify security questions
-   - POST /recover/questions/answers { recover_questions_token: EOIUWORJSDFN#373432, questions: [ {question_id: &#$DSDJ356, answer: "my answer", question_id: ... }]
-   - Requires the account recovery token
-   - Requires user.is_verify_required = false (otherwise returns an error status code with message)
-   - > 3 attempts with an invalid account recovery token from a given IP address will ban the IP Address for 60 minutes (configurable)
-   - All questions must have exact answers that match one-way hashed answers in the database
-   - > 3 attempts with an invalid security answers will ban the recovery token for 10 minutes
-   - RETURNS a Recovery Change Password Token
-5. Change Password
-   - POST /recover/password/change { recovery_change_password_token: 34987DHKWJHWERNAHQH, new_password: "changeme" }
-   - sets user.is_credentials_expired = false (if it was set to true)
-6. Redirect user to the login page
-   - Should be able to login fine without any sort of user verification since this was handled during the extensive password recovery process. 
-
-NOTE: UserPasswordExpiredServletFilter will intercept this and force password reset process. Unauthenticated users will use this path, authenticated users will be able to change their password at any time if they provider their current password first)
-
-
-#### References
-* [Forgot Password Cheat Sheet](https://www.owasp.org/index.php/Forgot_Password_Cheat_Sheet)
-* [Choosing and Using Security Questions Cheat Sheet](https://www.owasp.org/index.php/Choosing_and_Using_Security_Questions_Cheat_Sheet)
 
 :arrow_up: [Back to Top](#table-of-contents)
 
@@ -1193,12 +1119,157 @@ This particular security vulnerability might not be applicable to an API given t
 
 :arrow_up: [Back to Top](#table-of-contents)
 
+### Password Policy
+#### Overview
+Forcing users to create complex passwords will make brute force password attacks and password guessing more difficult for hackers. When
+a new user is created or update, the password will be validated to ensure that it meets the minimum requirements set by the 
+configured password policy. Additionally, whenever a user accesses the system, the user record is checked to see if the password
+has expired and needs to be updated by the user.  
 
+#### Password Phrase Requirements
+The password phrase policy is validated using the third-party library [Passay](http://www.passay.org) with many rules
+that can be enforced (see [Passay Reference](http://www.passay.org/reference/)). Passay policy configuration is stored 
+in _/config/PasswordPolicyConfig_ with the following defaults:
+
+* Minimum of 1 uppercase letter
+* Minimum of 1 lowercase letter
+* Minimum of 1 digit
+* Minimum of 1 special character
+* Length between 8 - 100
+
+The Passay configuration for these defaults is:
+```
+@Configuration
+class PasswordPolicyConfig {
+
+    @Bean
+    PasswordValidator passwordValidator() {
+        return new PasswordValidator(passwordPolicyRules)
+    }
+
+    private static List<Rule> getPasswordPolicyRules() {
+        return [new CharacterRule(EnglishCharacterData.UpperCase, 1),
+                new CharacterRule(EnglishCharacterData.LowerCase, 1),
+                new CharacterRule(EnglishCharacterData.Digit, 1),
+                new CharacterRule(EnglishCharacterData.Special, 1),
+                new LengthRule(8, 100)]
+    }
+}
+``` 
+
+Update the PasswordPolicyConfig class with policy changes that match the requirements of the application or supporting
+organization. 
+
+#### Password Expiration
+Password policies typically include an expiration date of a password where the user is required to change their password. 
+Changing a password regularly will ensure that if someone's password is discovered, that there is only a limited amount
+of time that the hacker has access to the user's data. 
+
+To ensure that the user is required to change their password when it has expired, the system will block all access to the
+APIs until the user's password has been changed. A request filter called PasswordExpiredFilter intercepts all calls and
+validates each request to ensure the user's password has not expired. Full source of the PasswordExpiredFilter can be 
+found at `/src/main/groovy/voyage/security/user/PasswordExpiredFilter`. 
+
+Highlights of the filter:
+* 403_password_expired error is returned when a user's password has expired
+* The filter defaults to skipping examination of requests for authentication, registration, resources, etc...
+* No access is allowed to any API endpoint if a user's password is expired (except those explicitly skipped) 
+* A user's password will expired after 90 days by default (configurable in `application.yml`)
+* Flag the user's credentials as invalid by updating the User.isCredentialsExpired = true in the database. 
+
+See [Password Policy Configuration](#password-policy-configuration)
+
+#### No Reuse of Past Passwords
+At the time of this writing, reusing old passwords is permissible. A strong password policy would prevent at least the
+user from reusing the current password. In the case of highly sensitive data, it is advisable to prevent the user from
+reusing the past 3-6 passwords. 
+
+An issue has been created within this project to add in functionality to prevent users from reusing old passwords. 
+https://github.com/lssinc/voyage-api-java/issues/98 
+ 
+#### References
+* [Proper Password Strength Controls](https://www.owasp.org/index.php/Authentication_Cheat_Sheet#Implement_Proper_Password_Strength_Controls)
+* [Passay](http://www.passay.org)
+
+
+:arrow_up: [Back to Top](#table-of-contents)
+
+
+### Password Recovery
+
+* Can be disabled within the application.yaml file for internal applications with a centralized Password Recovery process. 
+
+Workflow
+1. User initiates the password recovery process from a link within the web app
+2. User is required to enter their username and mobile phone used to create the account
+3. Upon successful verification of the username and mobile phone number, the user is presented with a set of security questions
+4. The user must answer each question exactly as they had entered it within their account profile and submit
+5. If the answers are correct, then the user is displayed a
+
+Security Questions
+- Security questions are presented at random
+
+Technical Notes:
+* Need to do this without authenticating a user. If we authenticate a user, then they would get a token and have free reign to attempt other attacks
+
+1. Once a user enters a valid username and phone number, then return a Recovery Verify Token
+   - POST /recover/password { username: blah, password: ***** }
+   - Anonymous access web service
+   - > 3 attempts from for a given username (existing or not) will disable attempts for 10 minutes
+   - > 6 attempts from for a given username (existing or not) within a 60 minute period will disable attempts for the username for 24-hours
+   - Track all attempts within the action_log so that non-existing usernames can be tracked as well  
+   - The Recovery Verify Token is only good for 20 minutes (shorter?) and should be stored on the user profile for date expiration
+   - Use a long hash token that wont likely be replicated between multiple users ("account recovery" + userid + datetime)
+   - Send verification code to mobile phone on record
+     * Sets user.is_verify_required with code and expiration
+     * Next time user logs in with their username and password, they will be required to verify
+2. Accept verification code 
+   - POST /recover/verify  { recovery_verify_token: ANDJDUS*#*, code: 3423432 }
+   - anonymous access web service 
+   - > 3 attempts from for a given recovery code or IP address (existing or not) will disable attempts for 10 minutes
+   - Check that the recovery token has not expired
+   - Follows User Verification process
+   - Upon successful verification, return a Recovery Questions Token
+3. Request security questions
+   - POST /recover/questions { recovery_questions_token: EOIUWORJSDFN#373432 }
+   - Requires the account recovery token
+   - Requires user.is_verify_required = false (otherwise returns an error status code with message)
+   - > 3 attempts with an invalid account recovery token from a given IP address will ban the IP Address for 60 minutes (configurable)
+   - Returns 3 of the 5 security questions (2 canned, 1 custom / out of 3 canned and 2 custom) rotated
+   - Each question should have a question ID hash key that is generated using the question_code or the question text (and stored in the database or on-the-fly?)
+     ```
+     [
+        {"question_id": "LKSJFSDJ*#&SAAHANDL*", "question": "What is the avg airspeed velocity of an unladen swallow?", "question_code": "avg_airspeed_swallow"},
+        {"question_id": "&#$DSDJ356", "question": "What was your favorite teacher's last name?", "question_code": "favorite_teacher"},
+        {"question_id": ")(SKSDFJLH#$", "question": "When is my favorite day of the year?", "question_code": "favorite_day_of_year"}
+     ]
+     ```
+4. Verify security questions
+   - POST /recover/questions/answers { recover_questions_token: EOIUWORJSDFN#373432, questions: [ {question_id: &#$DSDJ356, answer: "my answer", question_id: ... }]
+   - Requires the account recovery token
+   - Requires user.is_verify_required = false (otherwise returns an error status code with message)
+   - > 3 attempts with an invalid account recovery token from a given IP address will ban the IP Address for 60 minutes (configurable)
+   - All questions must have exact answers that match one-way hashed answers in the database
+   - > 3 attempts with an invalid security answers will ban the recovery token for 10 minutes
+   - RETURNS a Recovery Change Password Token
+5. Change Password
+   - POST /recover/password/change { recovery_change_password_token: 34987DHKWJHWERNAHQH, new_password: "changeme" }
+   - sets user.is_credentials_expired = false (if it was set to true)
+6. Redirect user to the login page
+   - Should be able to login fine without any sort of user verification since this was handled during the extensive password recovery process. 
+
+NOTE: PasswordExpiredFilter will intercept this and force password reset process. Unauthenticated users will use this path, authenticated users will be able to change their password at any time if they provider their current password first)
+
+#### References
+* [Forgot Password Cheat Sheet](https://www.owasp.org/index.php/Forgot_Password_Cheat_Sheet)
+* [Choosing and Using Security Questions Cheat Sheet](https://www.owasp.org/index.php/Choosing_and_Using_Security_Questions_Cheat_Sheet)
+
+:arrow_up: [Back to Top](#table-of-contents)
 
 
 ### User Verification
 #### Overview 
-User Verification is a feature that will essentially block user access to the API until they have gone through a verification process. The verification process can be triggered at any time for any reason. The primary uses for the User Verification feature is to validate the user's identity after account registration or password recovery process. 
+User Verification is a feature that will essentially block user access to the API until they have gone through a verification process. The verification process can be triggered at any time for any reason. The primary uses for the User Verification is multi-factor authentication to validate the user's identity after account registration or password recovery process. 
 
 #### SMS Verification
 The only method of User Verification currently implemented is a code delivered to the user via SMS text message. When the user account is created, a mobile phone is required in order to receive SMS messages for the completion of the user verification process. 
@@ -1269,11 +1340,10 @@ Possible Results:
 #### Technical Notes
 
 ##### AWS SMS Service Integration
-By default, Voyage API integrates with Amazon [AWS SNS](http://docs.aws.amazon.com/sns/latest/dg/SMSMessages.html) as the text message provider. In order for the API 
-to facilitate SMS deliveries, an AWS account must be provided within the configuration of the API. See the [Deploy](DEPLOY) section for instructions on how to apply the AWS credentials. 
+By default, Voyage API integrates with Amazon [AWS SNS](http://docs.aws.amazon.com/sns/latest/dg/SMSMessages.html) as the text message provider. In order for the API to faciliate SMS deliveries, an AWS account must be provided within the configuration of the API. See the [Deploy](#deploy) section for instructions on how to apply the AWS credentials. 
 
-##### VerificationServletFilter
-The VerificationServletFilter located at `/src/main/groovy/voyage/security/VerificationServletFilter.groovy` intercepts incoming requests by authenticated users and examines the User account to see if the `User.isVerifyRequired` is true. If the isVerifyRequired is true, then the request is immediately stopped and an error message is returned to the consumer notifying them that the user must complete the User Verification process. 
+##### VerificationFilter
+The VerificationServletFilter located at `/src/main/groovy/voyage/security/verify/VerificationFilter.groovy` intercepts incoming requests by authenticated users and examines the User account to see if the `User.isVerifyRequired` is true. If the isVerifyRequired is true, then the request is immediately stopped and an error message is returned to the consumer notifying them that the user must complete the User Verification process. 
 
 #### References 
 * [What is Two Factor Authentication](https://www.securenvoy.com/two-factor-authentication/what-is-2fa.shtm)
@@ -1556,6 +1626,69 @@ application.yaml
 ```
 security:
   permitAll: /login, /api/hello
+```
+
+### Password Policy Configuration
+#### Minimum Password Requirements - PasswordPolicyConfig
+Minimum password phrase requirements are defined by [Passay](http://www.passay.org) within the `/src/main/groovy/voyage/config/PasswordPolicyConfig`. The default configuration is
+```
+@Configuration
+class PasswordPolicyConfig {
+
+    @Bean
+    PasswordValidator passwordValidator() {
+        return new PasswordValidator(passwordPolicyRules)
+    }
+
+    private static List<Rule> getPasswordPolicyRules() {
+        return [new CharacterRule(EnglishCharacterData.UpperCase, 1),
+                new CharacterRule(EnglishCharacterData.LowerCase, 1),
+                new CharacterRule(EnglishCharacterData.Digit, 1),
+                new CharacterRule(EnglishCharacterData.Special, 1),
+                new LengthRule(8, 100)]
+    }
+}
+```
+* Minimum 1 upper case letter `new CharacterRule(EnglishCharacterData.UpperCase, 1)`
+* Minimum 1 lower case letter `new CharacterRule(EnglishCharacterData.LowerCase, 1)`
+* Minimum 1 digit `new CharacterRule(EnglishCharacterData.Digit, 1)`
+* Minimum 1 special character `new CharacterRule(EnglishCharacterData.Special, 1)`
+* Phrase length between 8 and 100 characters
+
+Update PasswordPolicyConfig with the required password policy for your organization. Many Passay classes already exist to 
+fulfill most password policy requirements. Custom password rules can be created as well. See [Passay Reference](http://www.passay.org/reference/).
+ 
+#### Password Expired Filter
+The PasswordExpiredFilter intercepts incoming requests, checks to see if an authenticated user is available on the 
+request, and checks to see if the user (if any) has an expired password.
+
+The configuration for the filter consists of the following parameters defined in the application.yml
+```
+security:
+  password-verification:
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profiles/register
+    password-reset-days: 90
+``` 
+ 
+**Resource Exclusions**
+To exclude specific resources from being examined by this filter, add the relative path to the `application.yml` file in
+the following location: 
+
+```
+security:
+  password-verification:
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profiles/register
+``` 
+
+**Password Reset Days**
+If the user's profile `user.isCredentialsExpired` is true or the `user.passwordCreatedDate` exceeds the password reset 
+days, then an exception will be thrown and an error returned back to the consumer stating that the user needs to change 
+their password. The number of days after which the password must be reset is defined within the `application.yml` as follows:
+
+```
+security:
+  password-verification:  
+    password-reset-days: 90
 ```
 
 ### User Verification Configuration

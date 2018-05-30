@@ -18,6 +18,9 @@
  */
 package voyage.security.user
 
+import org.passay.PasswordData
+import org.passay.PasswordValidator
+import org.passay.RuleResult
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.Authentication
@@ -41,16 +44,19 @@ class UserService {
     private final CryptoService cryptoService
     private final PhoneService phoneService
     private final RoleService roleService
+    private final PasswordValidator passwordValidator
 
     @Value('${security.user-roles.default-authority}')
     private String defaultUserRoleAuthority
 
     @Autowired
-    UserService(UserRepository userRepository, CryptoService cryptoService, PhoneService phoneService, RoleService roleService) {
+    UserService(UserRepository userRepository, CryptoService cryptoService, PhoneService phoneService,
+                RoleService roleService, PasswordValidator passwordValidator) {
         this.userRepository = userRepository
         this.cryptoService = cryptoService
         this.phoneService = phoneService
         this.roleService = roleService
+        this.passwordValidator = passwordValidator
     }
 
     static String getCurrentUsername() {
@@ -126,13 +132,18 @@ class UserService {
 
             if (!user.roles) {
                 user.roles = [
-                    roleService.findByAuthority(defaultUserRoleAuthority)
+                    roleService.findByAuthority(defaultUserRoleAuthority),
                 ]
             }
         }
 
         if (userIn.password != user.password) {
+            RuleResult result = passwordValidator.validate(new PasswordData(userIn.password))
+            if (!result?.valid) {
+                throw new WeakPasswordException(result.details)
+            }
             user.password = cryptoService.hashEncode(userIn.password)
+            user.passwordCreatedDate = new Date()
         }
 
         applyPhones(user, userIn)

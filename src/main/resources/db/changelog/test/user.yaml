@@ -20,6 +20,9 @@ databaseChangeLog:
                   name: password
                   value: $2a$10$.Qa2l9VysOeG5M8HhgUbQ.h8KlTBLdMY/slPwMtL/I5OYibYUFQle
               - column:
+                  name: password_created_date
+                  valueDate: ${now}
+              - column:
                   name: email
                   value: client-super@LighthouseSoftware.com
               - column:
@@ -67,6 +70,9 @@ databaseChangeLog:
               - column:
                   name: password
                   value: $2a$10$.Qa2l9VysOeG5M8HhgUbQ.h8KlTBLdMY/slPwMtL/I5OYibYUFQle
+              - column:
+                  name: password_created_date
+                  valueDate: ${now}
               - column:
                   name: email
                   value: client-standard@user.com

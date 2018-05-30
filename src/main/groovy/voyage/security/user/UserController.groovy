@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2018 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -48,35 +48,15 @@ class UserController {
      * @apiName UserList
      * @apiGroup User
      *
+     * @apiDescription shows the list of users
+     *
+     * @apiSampleRequest http://voyage.com/api/v1/users/
+     *
      * @apiPermission api.user.list
      *
      * @apiUse AuthHeader
      *
-     * @apiSuccess {Object[]} users List of users
-     * @apiSuccess {String} users.id User ID
-     * @apiSuccess {String} users.userName Username of the user
-     * @apiSuccess {String} users.email Email
-     * @apiSuccess {String} users.firstName First name
-     * @apiSuccess {String} users.lastName Last name
-     * @apiSuccess {Object[]} users.phones User phone numbers
-     * @apiSuccess {String} users.phones.phoneNumber Phone number in E.164 format (ie +16518886021 or +1-651-888-6021 as punctuation is stripped out)
-     * @apiSuccess {String} users.phones.phoneType Phone type
-     *
-     * @apiSuccessExample Success-Response:
-     *   HTTP/1.1 200 OK
-     *   [
-     *       {
-     *           "id": "1",
-     *           "userName": "admin",
-     *           "email": "admin@admin.com",
-     *           "firstName": "Admin_First",
-     *           "lastName": "Admin_Last",
-     *           "phones": [
-     *              {"phoneNumber": "+16518886021", "phoneType": "mobile"}
-     *           ]
-     *       }
-     *   ]
-     *
+     * @apiUse UserListModel
      * @apiUse UnauthorizedError
      **/
     @GetMapping
@@ -91,6 +71,10 @@ class UserController {
      * @apiVersion 1.0.0
      * @apiName UserCreate
      * @apiGroup User
+     *
+     * @apiDescription create a new user
+     *
+     * @apiSampleRequest http://voyage.com/api/v1/users/
      *
      * @apiPermission lss.permission->api.user.create
      *
@@ -107,6 +91,9 @@ class UserController {
      * @apiUse UserSuccessModel
      * @apiUse UnauthorizedError
      * @apiUse UsernameAlreadyInUseError
+     * @apiUse MobilePhoneNumberRequiredError
+     * @apiUse TooManyPhonesError
+     * @apiUse PhoneNumberInvalidError
      **/
     @PostMapping
     @PreAuthorize("hasAuthority('api.users.create')")
@@ -123,14 +110,20 @@ class UserController {
      * @apiName UserGet
      * @apiGroup User
      *
+     * @apiDescription get user details based on User Id
+     *
+     * @apiSampleRequest http://voyage.com/api/v1/users/1
+     *
      * @apiPermission lss.permission->api.user.get
      *
      * @apiUse AuthHeader
      *
      * @apiParam {String} userId User ID
      *
+     *
      * @apiUse UserSuccessModel
      * @apiUse UnauthorizedError
+     * @apiUse UnknownIdentifierError
      **/
     @GetMapping('/{id}')
     @PreAuthorize("hasAuthority('api.users.get')")
@@ -145,6 +138,10 @@ class UserController {
      * @apiName UserDelete
      * @apiGroup User
      *
+     * @apiDescription delete the existing user
+     *
+     * @apiSampleRequest http://voyage.com/api/v1/users/1
+     *
      * @apiPermission lss.permission->api.user.delete
      *
      * @apiUse AuthHeader
@@ -156,6 +153,8 @@ class UserController {
      *
      * @apiUse UnauthorizedError
      * @apiUse BadRequestError
+     * @apiUse UnknownIdentifierError
+     * @apiUse ImmutableRecordError
      **/
     @DeleteMapping('/{id}')
     @PreAuthorize("hasAuthority('api.users.delete')")
@@ -170,6 +169,10 @@ class UserController {
      * @apiName UserUpdate
      * @apiGroup User
      *
+     * @apiDescription update the existing user details
+     *
+     * @apiSampleRequest http://voyage.com/api/v1/users
+     *
      * @apiPermission api.user.update
      *
      * @apiUse AuthHeader
@@ -177,7 +180,11 @@ class UserController {
      * @apiUse UserRequestModel
      * @apiUse UserSuccessModel
      * @apiUse UnauthorizedError
+     * @apiUse UnknownIdentifierError
      * @apiUse UsernameAlreadyInUseError
+     * @apiUse MobilePhoneNumberRequiredError
+     * @apiUse TooManyPhonesError
+     * @apiUse PhoneNumberInvalidError
      **/
     @PutMapping('/{id}')
     @PreAuthorize("hasAuthority('api.users.update')")

@@ -38,7 +38,7 @@ spring:
 
   mail:
       host: localhost
-      port: 3025
+      port: 4025
       protocol: smtp
       overrideAddress: testmsg@LighthouseSoftware.com
 
@@ -105,6 +105,10 @@ security:
   user-verification:
     exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp
     verify-code-expire-minutes: 30
+
+  password-verification:
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profiles/register
+    password-reset-days: 90
 
   test:
     clients:
