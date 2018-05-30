@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @RestController
-@Api(value = 'Errors', description = 'Errors')
+@Api(value = 'Errors', description = 'Errors', hidden = true)
 class GlobalExceptionController implements ErrorController {
     private final ErrorAttributes errorAttributes
     private final GlobalExceptionHandler globalExceptionHandler

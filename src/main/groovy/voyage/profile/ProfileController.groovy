@@ -18,22 +18,21 @@
  */
 package voyage.profile
 
+import io.swagger.annotations.Api
+import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import voyage.security.user.User
 import voyage.security.user.UserService
 import voyage.security.verify.VerifyService
 
 @RestController
-@RequestMapping(['/api/v1/profiles', '/api/v1.0/profiles'])
+@RequestMapping(['/api/v1/profiles'])
+@Api(tags = 'Profile', description = 'endpoints for registering and maintaining a user profile within the voyage platform')
 class ProfileController {
     private final ProfileService profileService
     private final VerifyService userVerifyService
@@ -47,29 +46,29 @@ class ProfileController {
     }
 
     /**
-     * @api {post} /v1/profile Create profile
+     * @api { p o s t } /v1/profile Create profile
      * @apiVersion 1.0.0
      * @apiName ProfileCreate
      * @apiGroup Profile
      *
-     * @apiDescription Creates a new user profile. All parameters are required and at least 1 mobile phone must be added.
+     * @apiDescription
      *
      * @apiPermission none
      *
      * @apiUse AuthHeader
      *
-     * @apiParam {Object} profile Profile
-     * @apiParam {String} profile.userName Username of the user
-     * @apiParam {String} profile.email Email
-     * @apiParam {String} profile.firstName First name
-     * @apiParam {String} profile.lastName Last name
-     * @apiParam {String} profile.password Password
-     * @apiParam {Object[]} profile.phones Profile phone numbers
-     * @apiParam {String} profile.phones.phoneNumber Phone number in E.164 format (ie +16518886021 or +1-651-888-6021 as punctuation is stripped out)
-     * @apiParam {String} profile.phones.phoneType Phone type (mobile, office, home, other). NOTE: At least one mobile phone is required.
+     * @apiParam { O b j e c t } profile Profile
+     * @apiParam { S t r i n g } profile.userName Username of the user
+     * @apiParam { S t r i n g } profile.email Email
+     * @apiParam { S t r i n g } profile.firstName First name
+     * @apiParam { S t r i n g } profile.lastName Last name
+     * @apiParam { S t r i n g } profile.password Password
+     * @apiParam { O b j e c t [ ] } profile.phones Profile phone numbers
+     * @apiParam { S t r i n g } profile.phones.phoneNumber Phone number in E.164 format (ie +16518886021 or +1-651-888-6021 as punctuation is stripped out)
+     * @apiParam { S t r i n g } profile.phones.phoneType Phone type (mobile, office, home, other). NOTE: At least one mobile phone is required.
      *
-     * @apiExample {json} Example body:
-     * {
+     * @apiExample { j s o n } Example body:
+     *{
      *     "firstName": "FirstName",
      *     "lastName": "LastName",
      *     "username": "FirstName3@app.com",
@@ -77,26 +76,24 @@ class ProfileController {
      *     "password": "my-secure-password",
      *     "phones":
      *     [
-     *         {
+     *{
      *             "phoneType": "MOBILE",
      *             "phoneNumber" : "+6518886021"
-     *         }
-     *     ]
-     * }
+     *}*     ]
+     *}*
+     * @apiHeader ( Response Headers ) {String} location Location of the newly created resource
      *
-     * @apiHeader (Response Headers) {String} location Location of the newly created resource
-     *
-     * @apiHeaderExample {json} New Profile Location
+     * @apiHeaderExample { j s o n } New Profile Location
      * HTTP/1.1 201: Created
-     * {
+     *{
      *     "Location": "https://my-app/api/v1/profile"
-     * }
-     *
+     *}*
      * @apiUse UsernameAlreadyInUseError
      * @apiUse MobilePhoneNumberRequiredError
-     **/
+     * */
     @PostMapping('/register')
-    ResponseEntity register(@RequestBody User userIn) {
+    @ApiOperation(value = 'Creates a new user profile. All parameters are required and at least 1 mobile phone must be added.')
+    ResponseEntity<Void> register(@RequestBody User userIn) {
         profileService.register(userIn)
         HttpHeaders headers = new HttpHeaders()
         headers.set(HttpHeaders.LOCATION, '/v1/profiles/me')
@@ -105,7 +102,8 @@ class ProfileController {
 
     @GetMapping('/me')
     @PreAuthorize("hasAuthority('api.profiles.me')")
-    ResponseEntity myProfile() {
+    @ApiOperation(value = 'Gets the current users profile.')
+    ResponseEntity<User> myProfile() {
         User user = userService.getCurrentUser()
         return new ResponseEntity(user, HttpStatus.OK)
     }
