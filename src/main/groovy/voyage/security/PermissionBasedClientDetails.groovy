@@ -21,6 +21,7 @@ package voyage.security
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.oauth2.provider.ClientDetails
 import voyage.security.client.Client
+import voyage.security.client.ClientRedirectType
 
 class PermissionBasedClientDetails implements ClientDetails {
     private final Client client
@@ -78,7 +79,9 @@ class PermissionBasedClientDetails implements ClientDetails {
     Set<String> getRegisteredRedirectUri() {
         Set<String> uris = []
         client.clientRedirects?.each { clientRedirect ->
-            uris << clientRedirect.redirectUri
+            if (ClientRedirectType.OAUTH == clientRedirect.clientRedirectType) {
+                uris << clientRedirect.redirectUri
+            }
         }
         return uris
     }

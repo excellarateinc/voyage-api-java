@@ -27,12 +27,14 @@ import org.springframework.stereotype.Service
 
 import javax.crypto.Cipher
 import java.security.KeyPair
+import java.security.SecureRandom
 
 @Service
 class CryptoService {
     public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder()
     private static final String ALGORITHM = 'RSA'
     private static final String ENCODING = 'UTF-8'
+    private final SecureRandom secureRandom = new SecureRandom()
     private final Cipher cipher
     private final KeyPair keyPair
 
@@ -66,5 +68,9 @@ class CryptoService {
             return false
         }
         return PASSWORD_ENCODER.matches(plaintext, hashValue)
+    }
+
+    String secureRandomToken() {
+        return new BigInteger(512, secureRandom).toString(16)
     }
 }

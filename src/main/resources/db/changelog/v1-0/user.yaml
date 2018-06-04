@@ -41,6 +41,16 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: password_reset_token
+                  type: nvarchar(250)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: password_reset_date
+                  type: datetime
+                  constraints:
+                    nullable: true
+              - column:
                   name: email
                   type: nvarchar(255)
                   constraints:
@@ -153,6 +163,16 @@ databaseChangeLog:
                   type: datetime
                   constraints:
                     nullable: false
+              - column:
+                  name: password_reset_token
+                  type: nvarchar(250)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: password_reset_date
+                  type: datetime
+                  constraints:
+                    nullable: true
               - column:
                   name: email
                   type: nvarchar(255)

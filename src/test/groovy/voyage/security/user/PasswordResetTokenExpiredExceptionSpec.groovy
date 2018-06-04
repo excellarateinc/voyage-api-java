@@ -18,20 +18,28 @@
  */
 package voyage.security.user
 
-import org.springframework.data.jpa.repository.Query
-import org.springframework.data.repository.CrudRepository
+import org.springframework.http.HttpStatus
+import spock.lang.Specification
 
-interface UserRepository extends CrudRepository<User, Long> {
+class PasswordResetTokenExpiredExceptionSpec extends Specification {
 
-    @Query('FROM User u WHERE u.email = ?1 AND u.isDeleted = false')
-    User findByEmail(String email)
+    def 'default exception creates a 400 Bad Request exception'() {
+        when:
+            PasswordResetTokenExpiredException ex = new PasswordResetTokenExpiredException()
 
-    @Query('FROM User u WHERE u.username = ?1 AND u.isDeleted = false')
-    User findByUsername(String username)
+        then:
+            ex.httpStatus == HttpStatus.BAD_REQUEST
+            ex.errorCode == '400_password_reset_token_expired'
+            ex.message == 'Password reset token has expired'
+    }
 
-    @Query('FROM User u WHERE u.id = ?1 AND u.isDeleted = false')
-    User findOne(Long id)
+    def 'Override the exception message only affects the description'() {
+        when:
+            PasswordResetTokenExpiredException ex = new PasswordResetTokenExpiredException('TEST MESSAGE')
 
-    @Query('FROM User u WHERE u.isDeleted = false')
-    Iterable<User> findAll()
+        then:
+            ex.httpStatus == HttpStatus.BAD_REQUEST
+            ex.errorCode == '400_password_reset_token_expired'
+            ex.message == 'TEST MESSAGE'
+    }
 }

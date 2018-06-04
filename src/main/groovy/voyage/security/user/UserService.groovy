@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -88,6 +88,10 @@ class UserService {
         return userRepository.findByUsername(username)
     }
 
+    User findByEmail(@NotNull String email) {
+        return userRepository.findByEmail(email)
+    }
+
     User get(@NotNull Long id) {
         User user = userRepository.findOne(id)
         if (!user) {
@@ -144,6 +148,8 @@ class UserService {
             }
             user.password = cryptoService.hashEncode(userIn.password)
             user.passwordCreatedDate = new Date()
+            user.passwordResetToken = null
+            user.passwordResetDate = null
         }
 
         applyPhones(user, userIn)

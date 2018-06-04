@@ -16,31 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package voyage.security.client
+package voyage.security.user
 
-import groovy.transform.EqualsAndHashCode
-import org.hibernate.envers.Audited
-import voyage.security.audit.AuditableEntity
-
-import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
-import javax.validation.constraints.NotNull
-
-@Entity
-@Audited
-@EqualsAndHashCode(includes=['client', 'redirectUrl', 'clientRedirectType'], callSuper=true)
-class ClientRedirect extends AuditableEntity {
-    @ManyToOne
-    @JoinColumn(name='client_id')
-    Client client
-
-    @NotNull
+class PasswordResetRequest {
+    String email
+    String password
+    String token
     String redirectUri
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    ClientRedirectType clientRedirectType
 }

@@ -16,31 +16,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package voyage.security.client
+package voyage.security.crypto
 
-import groovy.transform.EqualsAndHashCode
-import org.hibernate.envers.Audited
-import voyage.security.audit.AuditableEntity
+import spock.lang.Specification
 
-import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
-import javax.validation.constraints.NotNull
+class CryptoServiceSpec extends Specification {
+    KeyStoreService keyStoreService = Mock()
+    CryptoService cryptoService = new CryptoService(keyStoreService, 'test', 'test')
 
-@Entity
-@Audited
-@EqualsAndHashCode(includes=['client', 'redirectUrl', 'clientRedirectType'], callSuper=true)
-class ClientRedirect extends AuditableEntity {
-    @ManyToOne
-    @JoinColumn(name='client_id')
-    Client client
-
-    @NotNull
-    String redirectUri
-
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    ClientRedirectType clientRedirectType
+    def 'generate a secure random number'() {
+        when:
+            String random1 = cryptoService.secureRandomToken()
+            String random2 = cryptoService.secureRandomToken()
+            String random3 = cryptoService.secureRandomToken()
+        then:
+            random1.length() > 100
+            random2.length() > 100
+            random3.length() > 100
+            random1 != random2
+            random2 != random3
+    }
 }

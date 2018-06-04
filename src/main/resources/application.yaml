@@ -41,17 +41,17 @@ spring:
     hibernate:
       ddl-auto: none
 
-  datasource:
-    url: jdbc:h2:mem:voyage
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-
 #  datasource:
-#    url: jdbc:mysql://localhost:3306/voyage?useSSL=false
-#    username: voyage
-#    password: voyage
-#    driver-class-name: com.mysql.jdbc.Driver
+#    url: jdbc:h2:mem:voyage
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/voyage?useSSL=false
+    username: voyage
+    password: voyage
+    driver-class-name: com.mysql.jdbc.Driver
 
   mail:
       host: localhost
@@ -76,7 +76,7 @@ server:
 security:
 
   ignored: /resources/**, /webjars/**, /docs, /docs/**
-  permitAll: /login, /api/status, /api/**/profiles/register
+  permitAll: /login, /api/status, /api/**/password/*, /api/**/profiles/register
 
   user-roles:
     default-authority: role.standard_user
@@ -128,6 +128,7 @@ security:
   password-verification:
     exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profiles/register
     password-reset-days: 90
+    password-reset-token-expires-minutes: 45
 
   cors:
     enabled: true

@@ -60,4 +60,24 @@ class ClientService {
     Client save(@Valid Client client) {
         clientRepository.save(client)
     }
+
+    String getPasswordResetRedirectUri(String passwordResetUri = null) {
+        Client client = currentClient
+        Set<ClientRedirect> passwordClientRedirects = client?.clientRedirects?.findAll {
+            if (ClientRedirectType.PASSWORD_RESET == it.clientRedirectType) {
+                if (passwordResetUri && passwordResetUri == it.redirectUri) {
+                    return true
+                } else if (!passwordResetUri) {
+                    return true
+                }
+            }
+            return false
+        }
+
+        if (passwordClientRedirects) {
+            return passwordClientRedirects.first().redirectUri
+        }
+
+        return null
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -56,6 +56,26 @@ class UserServiceSpec extends Specification {
         then:
             userRepository.findAll() >> [user]
             1 == userList.size()
+    }
+
+    def 'findByEmail - returns a User object' () {
+        given:
+            String email = 'test@test.com'
+        when:
+            User foundUser = userService.findByEmail(email)
+        then:
+            userRepository.findByEmail(email) >> user
+            foundUser == user
+    }
+
+    def 'findByUsername - returns a User object' () {
+        given:
+            String username = 'test'
+        when:
+            User foundUser = userService.findByUsername(username)
+        then:
+            userRepository.findByUsername(username) >> user
+            foundUser == user
     }
 
     def 'save - creates new User and defaults isVerifyRequired to true'() {
@@ -218,6 +238,30 @@ class UserServiceSpec extends Specification {
             !updatedUser.isAccountExpired
             !updatedUser.isAccountLocked
             !updatedUser.isCredentialsExpired
+    }
+
+    def 'save - updating user with a new password resets the password reset token'() {
+        given:
+            user.id = 1
+            User userIn = new User(
+                    id:1,
+                    firstName:'FIRST',
+                    lastName:'LAST',
+                    username:'USERNAME',
+                    password:'Test&12346343',
+                    passwordResetToken:'1234',
+                    passwordResetDate:new Date(),
+            )
+        when:
+            User updatedUser = userService.saveDetached(userIn)
+        then:
+            userRepository.findOne(user.id) >> user
+            userRepository.save(user) >> user
+            cryptoService.hashEncode(user.password) >> user.password
+            passwordValidator.validate(_) >> validPasswordResult
+
+            !updatedUser.passwordResetToken
+            !updatedUser.passwordResetDate
     }
 
     def 'save - updating user with multiple phones saves successfully'() {
