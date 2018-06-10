@@ -18,6 +18,7 @@
  */
 package voyage.status
 
+import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
@@ -28,15 +29,16 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(value = ['/api/status'], produces = 'application/json')
+@RequestMapping(path = ['/api/v1/status'], produces = 'application/json')
+@Api(tags = 'Permission', description = 'endpoints for determining the availability of the voyage platform')
 class StatusController {
 
-    @ApiOperation(value = "Get the status of server")
+    @ApiOperation(value = 'Get the status of server')
     @ApiResponses(value = [
-            @ApiResponse(code = 200, message = "Successfully retrieved status of server")])
+            @ApiResponse(code = 200, message = 'Successfully retrieved status of server')])
     @GetMapping
     ResponseEntity<StatusResponse> get() {
-        StatusResponse response = new StatusResponse([status: 'alive', datetime: new Date()])
+        StatusResponse response = new StatusResponse([status:'alive', datetime:new Date()])
         return new ResponseEntity(response, HttpStatus.OK)
     }
 }

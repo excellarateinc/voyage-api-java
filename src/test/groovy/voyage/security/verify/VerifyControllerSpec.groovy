@@ -50,13 +50,13 @@ class VerifyControllerSpec extends Specification {
 
     def 'Test to validate verify method'() {
         when:
-            ResponseEntity response = verifyController.verify([code:'code'])
+            ResponseEntity response = verifyController.verify(new VerifyResource([code:'code']))
         then:
             1 * verifyService.verifyCurrentUser('code')
             HttpStatus.NO_CONTENT == response.statusCode
 
         when:
-            verifyController.verify([code:'code'])
+            verifyController.verify(new VerifyResource([code:'code']))
         then:
             1 * verifyService.verifyCurrentUser('code') >> { throw new Exception() }
             thrown(Exception)

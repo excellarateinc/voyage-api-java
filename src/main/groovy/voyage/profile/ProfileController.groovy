@@ -18,24 +18,23 @@
  */
 package voyage.profile
 
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
+import io.swagger.annotations.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+
+import voyage.core.error.ErrorResponse
+import voyage.security.user.MobilePhoneRequiredException
 import voyage.security.user.User
 import voyage.security.user.UserService
+import voyage.security.user.UsernameAlreadyInUseException
 import voyage.security.verify.VerifyService
 
 @RestController
-@RequestMapping(['/api/v1/profiles'])
+@RequestMapping(path=['/api/v1/profiles'], produces = 'application/json')
 @Api(tags = 'Profile', description = 'endpoints for registering and maintaining a user profile within the voyage platform')
 class ProfileController {
     private final ProfileService profileService
@@ -49,59 +48,40 @@ class ProfileController {
         this.userService = userService
     }
 
-    /**
-     * @api {post} /v1/profile Create profile
-     * @apiVersion 1.0.0
-     * @apiName ProfileCreate
-     * @apiGroup Profile
-     *
-     * @apiDescription Creates a new user profile. All parameters are required and at least 1 mobile phone must be added.
-     *
-     * @apiPermission none
-     *
-     * @apiUse AuthHeader
-     *
-     * @apiParam {Object} profile Profile
-     * @apiParam {String} profile.userName Username of the user
-     * @apiParam {String} profile.email Email
-     * @apiParam {String} profile.firstName First name
-     * @apiParam {String} profile.lastName Last name
-     * @apiParam {String} profile.password Password
-     * @apiParam {Object[]} profile.phones Profile phone numbers
-     * @apiParam {String} profile.phones.phoneNumber Phone number in E.164 format (ie +16518886021 or +1-651-888-6021 as punctuation is stripped out)
-     * @apiParam {String} profile.phones.phoneType Phone type (mobile, office, home, other). NOTE: At least one mobile phone is required.
-     *
-     * @apiExample {json} Example body:
-     * {
-     *     "firstName": "FirstName",
-     *     "lastName": "LastName",
-     *     "username": "FirstName3@app.com",
-     *     "email": "FirstName3@app.com",
-     *     "password": "my-secure-password",
-     *     "phones":
-     *     [
-     *         {
-     *             "phoneType": "MOBILE",
-     *             "phoneNumber" : "+6518886021"
-     *         }
-     *     ]
-     * }
-     *
-     * @apiHeader (Response Headers) {String} location Location of the newly created resource
-     *
-     * @apiHeaderExample {json} New Profile Location
-     * HTTP/1.1 201: Created
-     * {
-     *     "Location": "https://my-app/api/v1/profile"
-     * }
-     *
-     * @apiUse UsernameAlreadyInUseError
-     * @apiUse MobilePhoneNumberRequiredError
-     **/
     @PostMapping('/register')
     @ApiOperation(value = 'Creates a new user profile. All parameters are required and at least 1 mobile phone must be added.')
-    ResponseEntity<Void> register(@RequestBody User userIn) {
-        profileService.register(userIn)
+    @ApiResponses(value = [
+            @ApiResponse(code = 201,
+                    message = 'Craeted',
+                    responseHeaders = @ResponseHeader(name = 'Location',
+                            description = 'https://my-app/api/v1/profiles/me')),
+            @ApiResponse(code = 400,
+                    message = 'Bad Request', reference = 'ErrorResponse', response = ErrorResponse.class)
+    ])
+//    new ResponseMessageBuilder()
+//    .code(400)
+//    .message('400 Bad Request')
+//    .responseModel(new ModelRef(ERROR_RESPONSE))
+//    .build(),
+//    new ResponseMessageBuilder()
+//    .code(401)
+//    .message('401 Unauthorized')
+//    .responseModel(new ModelRef(ERROR_RESPONSE))
+//    .build(),
+//    new ResponseMessageBuilder()
+//    .code(403)
+//    .message('403 Forbidden')
+//    .responseModel(new ModelRef(ERROR_RESPONSE))
+//    .build(),
+//    new ResponseMessageBuilder()
+//    .code(404)
+//    .message('404 Not Found')
+//    .responseModel(new ModelRef(ERROR_RESPONSE))
+//    .build(),
+
+    ResponseEntity<Void> register(
+            @RequestBody User user) throws UsernameAlreadyInUseException, MobilePhoneRequiredException {
+        profileService.register(user)
         HttpHeaders headers = new HttpHeaders()
         headers.set(HttpHeaders.LOCATION, '/v1/profiles/me')
         return new ResponseEntity(headers, HttpStatus.CREATED)
@@ -110,7 +90,11 @@ class ProfileController {
     @GetMapping('/me')
     @PreAuthorize("hasAuthority('api.profiles.me')")
     @ApiOperation(value = 'Gets the current users profile.')
-    ResponseEntity myProfile() {
+    @ApiResponses(value = [
+            @ApiResponse(code = 401, message = 'Unauthorized', reference = 'ErrorResponse', response = ErrorResponse.class),
+            @ApiResponse(code = 403, message = 'Forbidden', reference = 'ErrorResponse', response = ErrorResponse.class)
+    ])
+    ResponseEntity<User> myProfile() {
         User user = userService.currentUser
         return new ResponseEntity(user, HttpStatus.OK)
     }

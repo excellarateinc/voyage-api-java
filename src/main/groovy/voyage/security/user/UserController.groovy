@@ -18,6 +18,7 @@
  */
 package voyage.security.user
 
+import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -33,7 +34,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(['/api/v1/users'])
+@RequestMapping(path=['/api/v1/users'], produces = 'application/json')
+@Api(tags = 'User', description = 'endpoints for maintaining a users within the voyage platform')
 class UserController {
     private final UserService userService
 
@@ -188,7 +190,7 @@ class UserController {
      **/
     @PutMapping('/{id}')
     @PreAuthorize("hasAuthority('api.users.update')")
-    ResponseEntity update(@RequestBody User user) {
+    ResponseEntity update(@PathVariable('id') long id, @RequestBody User user) {
         User modifiedUser = userService.saveDetached(user)
         return new ResponseEntity(modifiedUser, HttpStatus.OK)
     }

@@ -18,6 +18,7 @@
  */
 package voyage.security.role
 
+import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -33,7 +34,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(['/api/v1/roles'])
+@RequestMapping(path=['/api/v1/roles'], produces = 'application/json')
+@Api(tags = 'Role', description = 'endpoints for maintaining a user roles within the voyage platform')
 class RoleController {
     private final RoleService roleService
 
@@ -177,7 +179,7 @@ class RoleController {
      **/
     @PutMapping('/{id}')
     @PreAuthorize("hasAuthority('api.roles.update')")
-    ResponseEntity update(@RequestBody Role role) {
+    ResponseEntity update(@PathVariable('id') long id, @RequestBody Role role) {
         Role modifiedRole = roleService.saveDetached(role)
         return new ResponseEntity(modifiedRole, HttpStatus.OK)
     }

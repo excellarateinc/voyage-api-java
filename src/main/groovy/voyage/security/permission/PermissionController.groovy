@@ -18,6 +18,7 @@
  */
 package voyage.security.permission
 
+import io.swagger.annotations.Api
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
@@ -30,10 +31,12 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(['/api/v1/permissions'])
+@RequestMapping(path=['/api/v1/permissions'], produces = 'application/json')
+@Api(tags = 'Permission', description = 'endpoints for maintaining a user permissions within the voyage platform')
 class PermissionController {
     private final PermissionService permissionService
 
@@ -187,7 +190,7 @@ class PermissionController {
      **/
     @PutMapping('/{id}')
     @PreAuthorize("hasAuthority('api.permissions.update')")
-    ResponseEntity update(@RequestBody Permission permission) {
+    ResponseEntity update(@PathVariable('id') long id, @RequestBody Permission permission) {
         Permission modifiedPermission = permissionService.saveDetached(permission)
         return new ResponseEntity(modifiedPermission, HttpStatus.OK)
     }

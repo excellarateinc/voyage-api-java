@@ -20,11 +20,11 @@ package voyage.core.error
 
 import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
-import io.swagger.annotations.ApiResponse
+
 @ApiModel
 class ErrorResponse {
-    @ApiModelProperty(notes = "http error code")
+    @ApiModelProperty(notes = 'http error code')
     String error
-    @ApiModelProperty(notes = "error description")
+    @ApiModelProperty(notes = 'error description')
     String errorDescription
 }

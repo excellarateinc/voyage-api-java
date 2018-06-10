@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @RestController
-@Api(value = 'Errors', description = 'Errors', hidden = true)
+@Api(tags = 'Errors', description = 'Errors', hidden = true)
 class GlobalExceptionController implements ErrorController {
     private final ErrorAttributes errorAttributes
     private final GlobalExceptionHandler globalExceptionHandler
@@ -57,9 +57,8 @@ class GlobalExceptionController implements ErrorController {
         Map errorMap = getErrorAttributes(request, false)
         String errorCode = ErrorUtils.getErrorCode((int) errorMap.status)
         String errorMessage = "${errorMap.status} ${errorMap.error}. ${errorMap.message}"
-        ErrorResponse errorResponse = new ErrorResponse(
-                error: errorCode,
-                errorDescription: errorMessage,
+        ErrorResponse errorResponse = new ErrorResponse(error:errorCode,
+                errorDescription:errorMessage
         )
         return new ResponseEntity([errorResponse], HttpStatus.valueOf(response.status))
     }
