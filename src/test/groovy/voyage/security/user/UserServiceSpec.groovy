@@ -129,12 +129,12 @@ class UserServiceSpec extends Specification {
 
     def 'save - throws a Mobile Phone Required error because phone list does not have a mobile phone type'() {
         given:
-            user.id = 1
             user.phones[0].phoneType = PhoneType.HOME
         when:
             userService.saveDetached(user)
         then:
-            1 * userRepository.findOne(user.id) >> user
+            1 * userRepository.findByUsername(user.username) >> null
+            1 * roleService.findByAuthority(_) >> null
             0 * userRepository.save(_)
             thrown(MobilePhoneRequiredException)
     }
@@ -476,9 +476,10 @@ class UserServiceSpec extends Specification {
             1 * userRepository.save(user)
     }
 
-    def 'update password - updating password with null/blank value should give error'() {
+    def 'update password - updating password with null value should give error'() {
         given:
-            user.password = ''
+            user.password = 'test'
+            user.password = null
 
         when:
             userService.saveDetached(user)

@@ -21,6 +21,7 @@ package voyage.security.user
 import groovy.time.TimeCategory
 import spock.lang.Specification
 import voyage.core.mail.MailService
+import voyage.security.client.Client
 import voyage.security.client.ClientService
 import voyage.security.crypto.CryptoService
 
@@ -37,6 +38,7 @@ class PasswordResetServiceSpec extends Specification {
         mailService = Mock()
         cryptoService = Mock()
         passwordResetService = new PasswordResetService(clientService, userService, mailService, cryptoService)
+        passwordResetService.isTestingEnabled = true
     }
 
     def 'sendResetMessage throws exception if no redirect URI is found'() {
@@ -45,15 +47,16 @@ class PasswordResetServiceSpec extends Specification {
         when:
             passwordResetService.sendResetMessage('test', redirectUri)
         then:
-            1 * clientService.getPasswordResetRedirectUri(redirectUri) >> null
+            1 * clientService.getPasswordResetRedirectUri(_, redirectUri) >> null
             thrown(PasswordResetNotConfiguredException)
     }
 
     def 'sendResetMessage does nothing when no user found'() {
         given:
             String email = 'test'
+            Client client = new Client()
         when:
-            passwordResetService.sendResetMessageThreadTask(email, 'testUri')
+            passwordResetService.sendResetMessageThreadTask(client, email, 'testUri')
         then:
             1 * userService.findByEmail(email) >> null
             0 * userService.saveDetached(_)
@@ -64,30 +67,34 @@ class PasswordResetServiceSpec extends Specification {
         given:
             String email = 'test'
             User user = new User()
+            Client client = new Client()
         when:
-            passwordResetService.sendResetMessageThreadTask(email, 'testUri')
+            passwordResetService.sendResetMessageThreadTask(client, email, 'testUri')
         then:
             1 * userService.findByEmail(email) >> user
-            1 * cryptoService.secureRandomToken() >> 'token'
             1 * cryptoService.hashEncode(_) >> 'token'
-            1 * userService.saveDetached(user)
-            1 * clientService.getPasswordResetRedirectUri(_) >> 'redirect'
+            1 * userService.save(user)
+            1 * clientService.getPasswordResetRedirectUri(client, _) >> 'redirect'
             1 * mailService.send(_)
     }
 
     def 'getPasswordResetLink applies email and token with no existing URL params'() {
+        given:
+            Client client = new Client()
         when:
-            String link = passwordResetService.getPasswordResetLink('/test', 'test-token', 'test-email')
+            String link = passwordResetService.getPasswordResetLink(client, '/test', 'test-token', 'test-email')
         then:
-            1 * clientService.getPasswordResetRedirectUri(_) >> '/test'
+            1 * clientService.getPasswordResetRedirectUri(_, _) >> '/test'
             link == '/test?email=test-email&token=test-token'
     }
 
     def 'getPasswordResetLink applies email and token with existing URL params'() {
+        given:
+            Client client = new Client()
         when:
-           String link = passwordResetService.getPasswordResetLink('/test?test=test', 'test-token', 'test-email')
+           String link = passwordResetService.getPasswordResetLink(client, '/test?test=test', 'test-token', 'test-email')
         then:
-            1 * clientService.getPasswordResetRedirectUri(_) >> '/test?test=test'
+            1 * clientService.getPasswordResetRedirectUri(_, _) >> '/test?test=test'
             link == '/test?test=test&email=test-email&token=test-token'
     }
 
@@ -141,7 +148,7 @@ class PasswordResetServiceSpec extends Specification {
            passwordResetService.reset('email', 'token', 'new-password')
         then:
             1 * userService.findByEmail('email') >> user
-            1 * cryptoService.hashEncode(_) >> 'test'
-            1 * userService.saveDetached(user)
+            1 * cryptoService.hashMatches(_, _) >> true
+            1 * userService.save(user)
     }
 }

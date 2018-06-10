@@ -104,6 +104,27 @@ class UserService {
         return userRepository.findAll()
     }
 
+    /**
+     * Meant to be used by internal service classes that will manage changes to the User object on their own. This method
+     * will validate the username (if necessary) as well as validate and encode the password (if necessary).
+     * @param user
+     * @return Saved User object
+     */
+    User save(@Valid User user) {
+        validateUsername(user)
+        validateMobilePhone(user)
+        encodePassword(user)
+        return userRepository.save(user)
+    }
+
+    /**
+     * Meant to be used by Controllers to save detached hibernate entity objects that were marshalled from a http
+     * request by Spring Framework. Use the save(User user) method to save User entity objects that are already
+     * attached to a hibernate session (ie retrieved using list or get from this class)
+     *
+     * @param userIn User object that is not attached to a hibernate session
+     * @return User object that is saved to the database and attached to a hibernate session
+     */
     User saveDetached(@Valid User userIn) {
         User user
 
@@ -113,16 +134,16 @@ class UserService {
             user = new User()
         }
 
-        if (userIn.username != user.username) {
-            if (!isUsernameUnique(userIn.username)) {
-                throw new UsernameAlreadyInUseException()
-            }
+        if (userIn.is(user)) {
+            throw new IllegalArgumentException('The given User object is attached to a hibernate session. ' +
+                    'saveDetached(User) expects a detached hibernate User entity.')
         }
 
         user.with {
             firstName = userIn.firstName
             lastName = userIn.lastName
             username = userIn.username
+            password = userIn.password
             email = userIn.email
             isEnabled = userIn.isEnabled
             isAccountExpired = userIn.isAccountExpired
@@ -132,35 +153,18 @@ class UserService {
             failedLoginAttempts = userIn.failedLoginAttempts
 
             // Default to true for new accounts
-            isVerifyRequired = user.id ? userIn.isVerifyRequired : true
+            isVerifyRequired = id ? userIn.isVerifyRequired : true
 
-            if (!user.roles) {
-                user.roles = [
+            if (!roles) {
+                roles = [
                     roleService.findByAuthority(defaultUserRoleAuthority),
                 ]
             }
         }
 
-        if (userIn.password != user.password) {
-            RuleResult result = passwordValidator.validate(new PasswordData(userIn.password))
-            if (!result?.valid) {
-                throw new WeakPasswordException(result.details)
-            }
-            user.password = cryptoService.hashEncode(userIn.password)
-            user.passwordCreatedDate = new Date()
-            user.passwordResetToken = null
-            user.passwordResetDate = null
-        }
-
         applyPhones(user, userIn)
 
-        // Require at least one PhoneType.MOBILE phone
-        UserPhone mobilePhone = user.phones?.find { it.phoneType == PhoneType.MOBILE && !it.isDeleted }
-        if (!mobilePhone) {
-            throw new MobilePhoneRequiredException()
-        }
-
-        return userRepository.save(user)
+        return save(user)
     }
 
     boolean isUsernameUnique(String username, User user = null) {
@@ -169,6 +173,26 @@ class UserService {
             return true
         }
         return matchingUser ? false : true
+    }
+
+    private void validateUsername(User user) {
+        if (user.newUsername && !isUsernameUnique(user.username)) {
+            throw new UsernameAlreadyInUseException()
+        }
+    }
+
+    private void encodePassword(User user) {
+        if (!user.password) {
+            throw new WeakPasswordException()
+        }
+        if (user.newPassword) {
+            RuleResult result = passwordValidator.validate(new PasswordData(user.password))
+            if (!result?.valid) {
+                throw new WeakPasswordException(result.details)
+            }
+            user.password = cryptoService.hashEncode(user.password)
+            user.passwordCreatedDate = new Date()
+        }
     }
 
     private void applyPhones(User user, User userIn) {
@@ -211,6 +235,13 @@ class UserService {
         Iterable<UserPhone> phonesToDelete = getPhonesToDelete(user.phones, userIn.phones)
         phonesToDelete.each { phone ->
             phone.isDeleted = true
+        }
+    }
+
+    private void validateMobilePhone(User user) {
+        UserPhone mobilePhone = user.phones?.find { it.phoneType == PhoneType.MOBILE && !it.isDeleted }
+        if (!mobilePhone) {
+            throw new MobilePhoneRequiredException()
         }
     }
 

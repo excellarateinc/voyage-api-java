@@ -192,7 +192,7 @@ class HttpActionLogFilterIntegrationSpec extends AuthenticatedIntegrationTest {
             actionLog2.requestHeaders ==~ /.*authorization:.*/
             actionLog2.requestBody == ''
             actionLog2.responseHeaders
-            actionLog2.responseBody == '{"id":1,"firstName":"Super","lastName":"User","username":"super","email":"support@LighthouseSoftware.com",' +
+            actionLog2.responseBody == '{"id":1,"firstName":"Super","lastName":"User","email":"support@LighthouseSoftware.com","username":"super",' +
                         '"password":"$2a$10$.Qa2l9VysOeG5M8HhgUbQ.h8KlTBLdMY/slPwMtL/I5OYibYUFQle","isEnabled":true,"isAccountExpired":false,' +
                         '"isAccountLocked":false,"isCredentialsExpired":false,"phones":[{"id":1,"phoneType":"Mobile","phoneNumber":"16518886021"},' +
                         '{"id":2,"phoneType":"Office","phoneNumber":"16518886022"},{"id":3,"phoneType":"Home","phoneNumber":"16518886023"},' +
@@ -246,8 +246,8 @@ class HttpActionLogFilterIntegrationSpec extends AuthenticatedIntegrationTest {
             actionLog2.user.id == 3
             actionLog2.durationMs
             actionLog2.requestHeaders ==~ /.*authorization:.*/
-            actionLog2.requestBody == '{"id":null,"firstName":"Test1","lastName":"User","username":"username99",' +
-                    '"email":"test@test.com","password":"*********","isEnabled":true,"isAccountExpired":false,' +
+            actionLog2.requestBody == '{"id":null,"firstName":"Test1","lastName":"User","email":"test@test.com",' +
+                    '"username":"username99","password":"*********","isEnabled":true,"isAccountExpired":false,' +
                     '"isAccountLocked":false,"isCredentialsExpired":false,' +
                     '"phones":[{"id":null,"phoneType":"Mobile","phoneNumber":"+1-651-888-6021"}]}'
             actionLog2.responseHeaders ==~ /.*Location:.*/

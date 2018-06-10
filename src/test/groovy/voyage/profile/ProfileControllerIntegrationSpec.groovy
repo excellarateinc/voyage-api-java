@@ -93,7 +93,6 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
     def '/api/v1/profiles/register POST - Profile create fails with error due to username already in use'() {
         given:
             User user = new User(firstName:'Test1', lastName:'User', username:'ProfileControllerTest', email:'test@test.com', password:'Test@1234')
-            user.phones = [new UserPhone(phoneNumber:'+1-111-111-1111', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
             HttpEntity<User> httpEntity = new HttpEntity<User>(user, headers)
@@ -120,11 +119,11 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
 
         then:
             responseEntity.statusCode.value() == 400
-            responseEntity.body.size() == 4
-            responseEntity.body.find { it.error == 'password.may_not_be_empty' && it.errorDescription == 'may not be empty' }
-            responseEntity.body.find { it.error == 'firstname.may_not_be_empty' && it.errorDescription == 'may not be empty' }
-            responseEntity.body.find { it.error == 'username.may_not_be_empty' && it.errorDescription == 'may not be empty' }
-            responseEntity.body.find { it.error == 'lastname.may_not_be_empty' && it.errorDescription == 'may not be empty' }
+            responseEntity.body.size() == 1
+            responseEntity.body.find {
+                it.error == '400_weak_password' &&
+                it.errorDescription == 'The password does not meet the minimum requirements.'
+            }
     }
 
     def '/api/v1/profiles/register POST - Profile create fails with error due to email format invalid'() {

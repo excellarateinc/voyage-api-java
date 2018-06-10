@@ -18,7 +18,6 @@
  */
 package voyage.security.user
 
-import groovy.time.TimeCategory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -26,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
 import voyage.core.mail.MailMessage
 import voyage.core.mail.MailService
+import voyage.security.client.Client
 import voyage.security.client.ClientService
 import voyage.security.crypto.CryptoService
 
@@ -39,6 +39,10 @@ class PasswordResetService {
     private final UserService userService
     private final MailService mailService
     private final CryptoService cryptoService
+
+    // Used for integration testing since threading and the use of secureRandom are difficult to simulate. This variable
+    // is kept private intentionally so that tests using it will be exceeding visibility rights. See PasswordResetControllerIntegrationSpec.groovy
+    protected boolean isTestingEnabled = false
 
     @Value('${app.name}')
     private String appName
@@ -56,25 +60,44 @@ class PasswordResetService {
 
     void sendResetMessage(@NotNull String email, String passwordRedirectUri) {
         // Validate the client config outside of the thread so that an exception is returned to the consumer
-        validateClientConfig(passwordRedirectUri)
+        Client client = clientService.currentClient
+        validateClientConfig(client, passwordRedirectUri)
 
         // Spawn a new thread so that the request returns the same response time for a valid or invalid email. An attacker
         // could determine a valid email address from an invalid email by the duration of the response if the task is not
         // completed within a separate thread allowing this method to return immediately.
-        Thread.start {
-            sendResetMessageThreadTask(email, passwordRedirectUri)
+        //
+        // Skipping the thread when in testing mode due to the inability to test the actions in a separate thread
+        if (isTestingEnabled) {
+            sendResetMessageThreadTask(client, email, passwordRedirectUri)
+        } else {
+            Thread.start {
+                sendResetMessageThreadTask(client, email, passwordRedirectUri)
+            }
         }
     }
 
-    private void sendResetMessageThreadTask(String email, String passwordRedirectUri) {
+    void reset(@NotNull String email, @NotNull String token, @NotNull String password) {
+        User user = userService.findByEmail(email)
+        if (isPasswordResetTokenValid(user, token)) {
+            user.password = password
+            user.passwordResetToken = null
+            user.passwordResetDate = null
+            userService.save(user)
+        } else {
+            throw new PasswordResetTokenExpiredException()
+        }
+    }
+
+    private void sendResetMessageThreadTask(Client client, String email, String passwordRedirectUri) {
         User user = userService.findByEmail(email)
         if (user) {
             String passwordResetToken = cryptoService.secureRandomToken()
             user.passwordResetToken = cryptoService.hashEncode(passwordResetToken)
             user.passwordResetDate = new Date()
-            userService.saveDetached(user)
+            userService.save(user)
 
-            String passwordResetLink = getPasswordResetLink(passwordRedirectUri, passwordResetToken, email)
+            String passwordResetLink = getPasswordResetLink(client, passwordRedirectUri, passwordResetToken, email)
 
             MailMessage message = new MailMessage()
             message.to = email
@@ -85,26 +108,13 @@ class PasswordResetService {
         }
     }
 
-    void reset(@NotNull String email, @NotNull String token, @NotNull String password) {
-        User user = userService.findByEmail(email)
-        if (isPasswordResetTokenValid(user, token)) {
-            user.password = password
-            user.passwordCreatedDate = new Date()
-            user.isVerifyRequired = true
-            userService.saveDetached(user)
-        } else {
-            throw new PasswordResetTokenExpiredException()
-        }
-    }
-
     private boolean isPasswordResetTokenValid(User user, String token) {
         if (user?.passwordResetToken && user?.passwordResetDate) {
-            Integer minutesAgo = Integer.MAX_VALUE
-            use(TimeCategory) {
-                minutesAgo = (new Date() - user.passwordResetDate).minutes
-            }
-            if (minutesAgo < passwordResetTokenExpiresMinutes) {
-                if (user.passwordResetToken == cryptoService.hashEncode(token)) {
+            Calendar passwordResetDate = user.passwordResetDate.toCalendar()
+            Calendar expiresDate = Calendar.instance
+            expiresDate.add(Calendar.MINUTE, -passwordResetTokenExpiresMinutes)
+            if (passwordResetDate.after(expiresDate)) {
+                if (cryptoService.hashMatches(token, user.passwordResetToken)) {
                     return true
                 }
             }
@@ -112,17 +122,17 @@ class PasswordResetService {
         return false
     }
 
-    private void validateClientConfig(String passwordRedirectUri) {
-        String clientRedirectUri = clientService.getPasswordResetRedirectUri(passwordRedirectUri)
+    private void validateClientConfig(Client client, String passwordRedirectUri) {
+        String clientRedirectUri = clientService.getPasswordResetRedirectUri(client, passwordRedirectUri)
         if (!clientRedirectUri) {
             throw new PasswordResetNotConfiguredException()
         }
     }
 
-    private String getPasswordResetLink(String passwordRedirectUri, String token, String email) {
+    private String getPasswordResetLink(Client client, String passwordRedirectUri, String token, String email) {
         final String QUESTION_MARK = '?'
         final String AMPERSAND = '&'
-        String clientRedirectUri = clientService.getPasswordResetRedirectUri(passwordRedirectUri)
+        String clientRedirectUri = clientService.getPasswordResetRedirectUri(client, passwordRedirectUri)
         String redirectUri
         if (clientRedirectUri.contains(QUESTION_MARK)) {
             redirectUri = clientRedirectUri + AMPERSAND

@@ -34,23 +34,30 @@ import javax.persistence.JoinColumn
 import javax.persistence.JoinTable
 import javax.persistence.ManyToMany
 import javax.persistence.OneToMany
+import javax.persistence.Transient
 import javax.validation.constraints.NotNull
 
 @Entity
 @Audited
 @EqualsAndHashCode(includes=['firstName', 'lastName', 'username'], callSuper=true)
 class User extends AuditableEntity {
+    @Transient
+    private String oldUsername
+
+    @Transient
+    private String oldPassword
+
     @NotBlank
     String firstName
 
     @NotBlank
     String lastName
 
-    @NotBlank
-    String username
-
     @Email
     String email
+
+    @NotBlank
+    String username
 
     @NotBlank
     String password
@@ -98,4 +105,36 @@ class User extends AuditableEntity {
     @OneToMany(fetch=FetchType.EAGER, mappedBy='user', cascade=CascadeType.ALL)
     @Where(clause = 'is_deleted = 0')
     Set<UserPhone> phones
+
+    void setUsername(String newUsername) {
+        oldUsername = username
+        username = newUsername
+    }
+
+    @JsonIgnore
+    boolean isNewUsername() {
+        // Account for when hibernate loads an object from the database. Only track changes after the load.
+        if (id && oldUsername != null && oldUsername != username) {
+            return true
+        } else if (!id && username) {
+            return true
+        }
+        return false
+    }
+
+    void setPassword(String newPassword) {
+        oldPassword = password
+        password = newPassword
+    }
+
+    @JsonIgnore
+    boolean isNewPassword() {
+        // Account for when hibernate loads an object from the database. Only track changes after the load.
+        if (id && oldPassword != null && oldPassword != password) {
+            return true
+        } else if (!id && password) {
+            return true
+        }
+        return false
+    }
 }

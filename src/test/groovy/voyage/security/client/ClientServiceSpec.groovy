@@ -93,8 +93,8 @@ class ClientServiceSpec extends Specification {
                 new ClientRedirect(id:3, client:client, clientRedirectType:ClientRedirectType.PASSWORD_RESET, redirectUri:'test2'),
             ]
         when:
-            String uri = clientService.getPasswordResetRedirectUri('test')
-            String uri2 = clientService.getPasswordResetRedirectUri('test2')
+            String uri = clientService.getPasswordResetRedirectUri(client, 'test')
+            String uri2 = clientService.getPasswordResetRedirectUri(client, 'test2')
         then:
             oAuth2Request.clientId >> '1'
             clientRepository.findByClientIdentifier('1') >> client
@@ -109,7 +109,7 @@ class ClientServiceSpec extends Specification {
                 new ClientRedirect(clientRedirectType:ClientRedirectType.PASSWORD_RESET, redirectUri:'test'),
             ]
         when:
-            String uri = clientService.getPasswordResetRedirectUri('no-match')
+            String uri = clientService.getPasswordResetRedirectUri(client, 'no-match')
         then:
             oAuth2Request.clientId >> '1'
             clientRepository.findByClientIdentifier('1') >> client
@@ -125,7 +125,7 @@ class ClientServiceSpec extends Specification {
                 new ClientRedirect(clientRedirectType:ClientRedirectType.PASSWORD_RESET, redirectUri:'test2'),
             ]
         when:
-            String uri = clientService.getPasswordResetRedirectUri('test')
+            String uri = clientService.getPasswordResetRedirectUri(client, 'test')
         then:
             oAuth2Request.clientId >> '1'
             clientRepository.findByClientIdentifier('1') >> client

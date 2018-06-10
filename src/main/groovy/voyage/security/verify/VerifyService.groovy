@@ -73,7 +73,7 @@ class VerifyService {
         userPhone.verifyCodeExpiresOn = null
         user.isVerifyRequired = false
 
-        userService.saveDetached(user)
+        userService.save(user)
 
         return true
     }
@@ -97,7 +97,7 @@ class VerifyService {
             sendVerifyCodeToPhoneNumber(mobilePhone)
         }
 
-        userService.saveDetached(user)
+        userService.save(user)
     }
 
     private void sendVerifyCodeToPhoneNumber(@NotNull UserPhone mobilePhone) {
