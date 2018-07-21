@@ -136,7 +136,8 @@ class HttpActionLogFilter extends OncePerRequestFilter {
         String userPrincipal = getUserPrincipal(request)
 
         actionLog.with {
-            // Developers Note: Sometimes can be zero because of inaccurate system time, https://blogs.msdn.microsoft.com/ericlippert/2010/04/08/precision-and-accuracy-of-datetime/
+            // Developers Note: Sometimes can be zero because of inaccurate system time,
+            // https://blogs.msdn.microsoft.com/ericlippert/2010/04/08/precision-and-accuracy-of-datetime/
             durationMs = System.currentTimeMillis() - startTimeMs
             username = userPrincipal
             user = authenticatedUser
