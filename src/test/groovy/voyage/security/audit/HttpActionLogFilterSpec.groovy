@@ -410,7 +410,7 @@ class HttpActionLogFilterSpec extends Specification {
 
                 // VALIDATE THE RESPONSE SAVE
                 if (saveDetachedCount == 2) {
-                    assert actionLog.durationMs
+                    assert actionLog.durationMs != null
                     assert actionLog.username == 'test-user'
                     assert actionLog.client == currentClient
                     assert actionLog.user == currentUser
