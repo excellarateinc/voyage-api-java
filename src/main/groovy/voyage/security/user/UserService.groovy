@@ -192,6 +192,7 @@ class UserService {
             }
             user.password = cryptoService.hashEncode(user.password)
             user.passwordCreatedDate = new Date()
+            user.isVerifyRequired = true
         }
     }
 

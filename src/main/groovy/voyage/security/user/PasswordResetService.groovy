@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.validation.annotation.Validated
 import voyage.core.mail.MailMessage
 import voyage.core.mail.MailService
-import voyage.security.client.Client
 import voyage.security.client.ClientService
 import voyage.security.crypto.CryptoService
 
@@ -47,8 +46,17 @@ class PasswordResetService {
     @Value('${app.name}')
     private String appName
 
+    @Value('${app.contact-support.phone}')
+    private String appContactPhone
+
+    @Value('${app.contact-support.website}')
+    private String appContactWebsite
+
     @Value('${security.password-verification.password-reset-token-expires-minutes}')
     private int passwordResetTokenExpiresMinutes
+
+    @Value('${security.password-verification.password-reset-identity-server-redirect-url}')
+    private String passwordResetIdentityServerRedirect
 
     @Autowired
     PasswordResetService(ClientService clientService, UserService userService, MailService mailService, CryptoService cryptoService) {
@@ -58,23 +66,18 @@ class PasswordResetService {
         this.cryptoService = cryptoService
     }
 
-    void sendResetMessage(@NotNull String email, String passwordRedirectUri) {
-        // Validate the client config outside of the thread so that an exception is returned to the consumer
-        Client client = clientService.currentClient
-        validateClientConfig(client, passwordRedirectUri)
+    void sendIdentityServerResetMessage(@NotNull String email, String loginPageRedirectUri) {
+        sendResetMessage(email, passwordResetIdentityServerRedirect, loginPageRedirectUri)
+    }
 
-        // Spawn a new thread so that the request returns the same response time for a valid or invalid email. An attacker
-        // could determine a valid email address from an invalid email by the duration of the response if the task is not
-        // completed within a separate thread allowing this method to return immediately.
-        //
-        // Skipping the thread when in testing mode due to the inability to test the actions in a separate thread
-        if (isTestingEnabled) {
-            sendResetMessageThreadTask(client, email, passwordRedirectUri)
-        } else {
-            Thread.start {
-                sendResetMessageThreadTask(client, email, passwordRedirectUri)
-            }
-        }
+    void sendApiResetMessage(@NotNull String email, @NotNull String emailRedirectUri) {
+        String validatedEmailRedirectUri = findPasswordResetRedirectUri(emailRedirectUri)
+        sendResetMessage(email, validatedEmailRedirectUri)
+    }
+
+    boolean isValidToken(@NotNull String email, @NotNull String token) {
+        User user = userService.findByEmail(email)
+        return isPasswordResetTokenValid(user, token)
     }
 
     void reset(@NotNull String email, @NotNull String token, @NotNull String password) {
@@ -83,27 +86,93 @@ class PasswordResetService {
             user.password = password
             user.passwordResetToken = null
             user.passwordResetDate = null
+            user.passwordResetLoginUri = null
             userService.save(user)
+
+            MailMessage message = new MailMessage()
+            message.to = email
+            message.subject = "${appName}: Password Reset Successful"
+            message.template = 'password-success.ftl'
+            message.model = [appName:appName, website:appContactWebsite, phone:appContactPhone]
+            mailService.send(message)
+
         } else {
             throw new PasswordResetTokenExpiredException()
         }
     }
 
-    private void sendResetMessageThreadTask(Client client, String email, String passwordRedirectUri) {
+    /*
+     * Used by the API password reset workflow. This method will find all of the password redirect URIs associated with the
+     * current client and then return the "best" one. The "best" will first be the URI that matches the given redirectUri,
+     * and then will default to the first password reset URI within the list associated with the client record.
+     *
+     * An exception will be thrown if no valid password redirect URI is found because the email will not be able to be
+     * sent without a URI to redirect the user.
+     *
+     * @param redirectUri
+     * @return String URI
+     */
+    String findPasswordResetRedirectUri(String redirectUri) {
+        String validRedirectUri = clientService.getPasswordResetRedirectUri(redirectUri)
+        if (!validRedirectUri) {
+            throw new PasswordResetNotConfiguredException()
+        }
+        return validRedirectUri
+    }
+
+    /*
+     * Used by the identity server OAuth MVC password reset workflow. This method will find all of the login page edirect
+     * URIs associated with the current client and then return the "best" one. The "best" will first be the URI that matches
+     * the given redirectUri, and then will default to the first login page URI within the list associated with the
+     * client record.
+     *
+     * An exception will be thrown if the given login page URI is not null and no valid URI is found. The reason is to
+     * notify the consumer that the client login redirect URIs were not setup.
+     *
+     * @param redirectUri
+     * @return String URI
+     */
+    String findLoginPageRedirectUri(String redirectUri) {
+        String validRedirectUri = clientService.getLoginPageRedirectUri(redirectUri)
+        if (redirectUri && !validRedirectUri) {
+            throw new PasswordResetNotConfiguredException()
+        }
+        return validRedirectUri
+    }
+
+    /*
+     *  Spawn a new thread so that the request returns the same response time for a valid or invalid email. An attacker
+     *  could determine a valid email address from an invalid email by the duration of the response if the task is not
+     *  completed within a separate thread allowing this method to return immediately.
+     *
+     *  Skipping the thread when in testing mode due to the inability to test the actions in a separate thread
+     */
+    private void sendResetMessage(String email, String emailRedirectUri, String loginRedirectUri = null) {
+        if (isTestingEnabled) {
+            sendResetMessageThreadTask(email, emailRedirectUri, loginRedirectUri)
+        } else {
+            Thread.start {
+                sendResetMessageThreadTask(email, emailRedirectUri, loginRedirectUri)
+            }
+        }
+    }
+
+    private void sendResetMessageThreadTask(String email, String emailRedirectUri, String passwordResetLoginUri = null) {
         User user = userService.findByEmail(email)
         if (user) {
             String passwordResetToken = cryptoService.secureRandomToken()
             user.passwordResetToken = cryptoService.hashEncode(passwordResetToken)
             user.passwordResetDate = new Date()
+            user.passwordResetLoginUri = passwordResetLoginUri
             userService.save(user)
 
-            String passwordResetLink = getPasswordResetLink(client, passwordRedirectUri, passwordResetToken, email)
+            String passwordResetLink = getPasswordResetLink(emailRedirectUri, passwordResetToken, email)
 
             MailMessage message = new MailMessage()
             message.to = email
             message.subject = "${appName}: Password Reset"
-            message.template = 'password-reset.ftl'
-            message.model = [appName:appName, passwordResetLink:passwordResetLink]
+            message.template = 'password.ftl'
+            message.model = [appName:appName, website:appContactWebsite, phone:appContactPhone, passwordResetLink:passwordResetLink]
             mailService.send(message)
         }
     }
@@ -122,23 +191,20 @@ class PasswordResetService {
         return false
     }
 
-    private void validateClientConfig(Client client, String passwordRedirectUri) {
-        String clientRedirectUri = clientService.getPasswordResetRedirectUri(client, passwordRedirectUri)
-        if (!clientRedirectUri) {
-            throw new PasswordResetNotConfiguredException()
-        }
-    }
-
-    private String getPasswordResetLink(Client client, String passwordRedirectUri, String token, String email) {
+    private static String getPasswordResetLink(String emailRedirectUri, String token, String email) {
         final String QUESTION_MARK = '?'
         final String AMPERSAND = '&'
-        String clientRedirectUri = clientService.getPasswordResetRedirectUri(client, passwordRedirectUri)
         String redirectUri
-        if (clientRedirectUri.contains(QUESTION_MARK)) {
-            redirectUri = clientRedirectUri + AMPERSAND
+        if (emailRedirectUri.contains(QUESTION_MARK)) {
+            redirectUri = emailRedirectUri + AMPERSAND
         } else {
-            redirectUri = clientRedirectUri + QUESTION_MARK
+            redirectUri = emailRedirectUri + QUESTION_MARK
         }
-        return redirectUri + 'email=' + email + '&token=' + token
+
+        // URL encode the parameter values to ensure they are browser friendly.
+        String parameters = 'email=' + URLEncoder.encode(email, 'UTF-8')
+        parameters += '&token=' + URLEncoder.encode(token, 'UTF-8')
+
+        return redirectUri + parameters
     }
 }

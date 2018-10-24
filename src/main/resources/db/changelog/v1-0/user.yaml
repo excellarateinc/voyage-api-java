@@ -2,6 +2,7 @@ databaseChangeLog:
   - changeSet:
       id: v1.0-user-table-create
       author: Voyage
+      
       changes:
         - createTable:
             tableName: user
@@ -48,6 +49,11 @@ databaseChangeLog:
               - column:
                   name: password_reset_date
                   type: datetime
+                  constraints:
+                    nullable: true
+              - column:
+                  name: password_reset_login_uri
+                  type: nvarchar(2500)
                   constraints:
                     nullable: true
               - column:
@@ -171,6 +177,11 @@ databaseChangeLog:
               - column:
                   name: password_reset_date
                   type: datetime
+                  constraints:
+                    nullable: true
+              - column:
+                  name: password_reset_login_uri
+                  type: nvarchar(2500)
                   constraints:
                     nullable: true
               - column:

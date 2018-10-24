@@ -45,7 +45,7 @@ class PasswordResetServiceSpec extends Specification {
         given:
             String redirectUri = 'test2'
         when:
-            passwordResetService.sendResetMessage('test', redirectUri)
+            passwordResetService.sendApiResetMessage('test', redirectUri)
         then:
             1 * clientService.getPasswordResetRedirectUri(_, redirectUri) >> null
             thrown(PasswordResetNotConfiguredException)

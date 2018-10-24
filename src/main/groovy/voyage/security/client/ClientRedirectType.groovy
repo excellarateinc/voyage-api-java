@@ -19,5 +19,5 @@
 package voyage.security.client
 
 enum ClientRedirectType {
-    OAUTH, PASSWORD_RESET
+    OAUTH, PASSWORD_RESET, LOGIN_PAGE
 }

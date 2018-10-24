@@ -22,10 +22,24 @@ body {
     background-color: #eee;
 }
 
+h4 {
+    margin-top: 35px;
+    margin-bottom: 35px;
+}
+
+#logo {
+    height: 250px;
+    margin-bottom: 25px;
+}
+
 .form-signin, .text-content {
-    max-width: 330px;
+    max-width: 370px;
     padding: 15px;
     margin: 0 auto;
+}
+
+.form-signin {
+    text-align: center;
 }
 
 .form-signin .form-signin-heading,
@@ -59,6 +73,34 @@ body {
 
 .form-signin button {
     margin-top: 10px;
+}
+
+.form-signin .form-heading {
+    text-align: center;
+}
+
+.form-password {
+    text-align: center;
+}
+
+.form-password #password-requirements {
+    text-align: left;
+    padding-left: 23px;
+}
+
+.form-password #password-requirements ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.form-password #password-requirements img {
+    width: 12px;
+}
+
+.form-password #password-requirements img.invisible {
+    display: none;
 }
 
 .has-error {

@@ -61,24 +61,29 @@ class ClientService {
         clientRepository.save(client)
     }
 
-    String getPasswordResetRedirectUri(Client clientIn = null, String passwordResetUri = null) {
-        Client client = clientIn
-        if (!client) {
-            client = currentClient
-        }
-        Set<ClientRedirect> passwordClientRedirects = client?.clientRedirects?.findAll {
-            if (ClientRedirectType.PASSWORD_RESET == it.clientRedirectType) {
-                if (passwordResetUri && passwordResetUri == it.redirectUri) {
+    String getPasswordResetRedirectUri(String passwordResetUri = null) {
+        return getClientRedirectUri(ClientRedirectType.PASSWORD_RESET, passwordResetUri)
+    }
+
+    String getLoginPageRedirectUri(String passwordResetUri = null) {
+        return getClientRedirectUri(ClientRedirectType.LOGIN_PAGE, passwordResetUri)
+    }
+
+    private String getClientRedirectUri(ClientRedirectType clientRedirectType, String redirectUri = null) {
+        Client client = currentClient
+        Set<ClientRedirect> clientRedirects = client?.clientRedirects?.findAll {
+            if (clientRedirectType == it.clientRedirectType) {
+                if (redirectUri && redirectUri == it.redirectUri) {
                     return true
-                } else if (!passwordResetUri) {
+                } else if (!redirectUri) {
                     return true
                 }
             }
             return false
         }
 
-        if (passwordClientRedirects) {
-            return passwordClientRedirects.first().redirectUri
+        if (clientRedirects) {
+            return clientRedirects.first().redirectUri
         }
 
         return null

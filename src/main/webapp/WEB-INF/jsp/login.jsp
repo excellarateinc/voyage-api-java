@@ -46,7 +46,9 @@
 
     <form method="POST" action="${contextPath}/login" class="form-signin">
 
-        <h2 class="form-heading">Log in</h2>
+        <img id="logo" src="/resources/images/voyage-logo-vert-fc.png" />
+        
+        <h2 class="form-heading">Log In</h2>
 
         <div class="form-group ${param.error != null ? 'has-error' : ''}">
             <input name="username" type="text" class="form-control" placeholder="Username" autofocus="autofocus" />
@@ -54,6 +56,8 @@
             <span>${param.error != null ? 'Invalid Log In credentials. Please try again.' : ''}</span>
 
             <button class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>
+            
+            <a href="${contextPath}/oauth/password-reset-request">Forgot Password?</a>
         </div>
 
         <div id="support-footer">

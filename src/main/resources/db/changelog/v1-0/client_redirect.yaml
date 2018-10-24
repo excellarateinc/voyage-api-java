@@ -183,6 +183,33 @@ databaseChangeLog:
             columns:
               - column:
                   name: client_id
+                  valueNumeric: 1
+              - column:
+                  name: redirect_uri
+                  value: http://localhost:3001/
+              - column:
+                  name: client_redirect_type
+                  value: LOGIN_PAGE
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: client_redirect
+            columns:
+              - column:
+                  name: client_id
                   valueNumeric: 2
               - column:
                   name: redirect_uri
@@ -217,6 +244,33 @@ databaseChangeLog:
               - column:
                   name: client_redirect_type
                   value: PASSWORD_RESET
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: client_redirect
+            columns:
+              - column:
+                  name: client_id
+                  valueNumeric: 2
+              - column:
+                  name: redirect_uri
+                  value: http://localhost:3001/
+              - column:
+                  name: client_redirect_type
+                  value: LOGIN_PAGE
               - column:
                   name: created_by
                   value: super

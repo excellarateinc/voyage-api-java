@@ -32,7 +32,7 @@ class PasswordResetControllerSpec extends Specification {
         when:
             ResponseEntity response = passwordResetController.forgot(request)
         then:
-            1 * passwordResetService.sendResetMessage(request.email, request.redirectUri)
+            1 * passwordResetService.sendApiResetMessage(request.email, request.redirectUri)
             HttpStatus.OK == response.statusCode
     }
 

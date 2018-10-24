@@ -43,6 +43,9 @@
 
 <div class="container">
     <div class="text-content">
+
+        <img id="logo" src="/resources/images/voyage-logo-vert-fc.png" />
+
         <h2 class="form-heading">Authorization Error</h2>
         <p>An error occurred during the authorization process.</p>
 

@@ -110,6 +110,7 @@ security:
     exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profiles/register
     password-reset-days: 90
     password-reset-token-expires-minutes: 45
+    password-reset-identity-server-redirect-url: http://localhost:8080/oauth/password-reset
 
   test:
     clients:

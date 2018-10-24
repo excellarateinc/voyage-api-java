@@ -33,7 +33,7 @@ import voyage.core.error.ErrorUtils
  */
 class PasswordResetNotConfiguredException extends AppException {
     private static final HttpStatus HTTP_STATUS = HttpStatus.BAD_REQUEST
-    private static final String DEFAULT_MESSAGE = 'Password reset not configured for current Client'
+    private static final String DEFAULT_MESSAGE = 'Password reset redirect URIs are not configured for the current Client'
 
     PasswordResetNotConfiguredException() {
         this(DEFAULT_MESSAGE)

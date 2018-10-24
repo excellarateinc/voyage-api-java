@@ -25,6 +25,7 @@
 <spring:eval expression="@environment.getProperty('app.contact-support.phone')" var="supportPhone" />
 <spring:eval expression="@environment.getProperty('app.contact-support.website')" var="supportWebsite" />
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,7 +34,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-    <title>Grant Approval</title>
+    <title>Password Reset</title>
 
     <link href="${contextPath}/webjars/bootstrap/css/bootstrap.min.css" rel='stylesheet'>
     <link href="${contextPath}/resources/css/common.css" rel="stylesheet">
@@ -42,42 +43,37 @@
 <body>
 
 <div class="container">
-    <div class="form-signin">
+
+    <form method="POST" action="${contextPath}/oauth/password-reset-request" class="form-signin form-password">
 
         <img id="logo" src="/resources/images/voyage-logo-vert-fc.png" />
 
-        <h2 class="form-heading">Grant Approval</h2>
-        <p>Do you authorize '${authorizationRequest.clientId}' to perform the following tasks?</p>
+        <h2 class="form-heading">Reset Your Password</h2>
 
-        <div class="chips">
-            <c:forEach items="${authorizationRequest.scope}" var="scope">
-                <span class="chip">${scope}</span>
-            </c:forEach>
-        </div>
+        <c:if test="${requestConfirmed}">
+            <h4>Password reset instructions have been sent to your email</h4>
+        </c:if>
 
-        <div class="form-group">
-            <form id='confirmationForm' name='confirmationForm' action='${contextPath}/oauth/authorize' method='post'>
-                <input name='user_oauth_approval' value='true' type='hidden'/>
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Approve</button>
-            </form>
-        </div>
+        <c:if test="${expiredToken}">
+            <h4>Your password reset link has expired. </h4>
+        </c:if>
 
-        <div class="form-group">
-            <form id='denialForm' name='denialForm' action='${contextPath}/oauth/authorize' method='post'>
-                <input name='user_oauth_approval' value='false' type='hidden'/>
-                <button class="btn btn-lg btn-danger btn-block" type="submit">Deny</button>
-            </form>
-        </div>
-
+        <c:if test="${!requestConfirmed}">
+            <div class="form-group">
+                <input name="email" type="text" class="form-control" placeholder="Your e-mail" autofocus="autofocus" />
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Reset Password</button>
+            </div>
+        </c:if>
+        
         <div id="support-footer">
             For assistance, contact the ${appName} support team via
             <a href="tel:${supportPhone}">phone</a>,
             <a href="mailto:${supportEmail}">email</a>, or
             <a href="${supportWebsite}">website</a>.
         </div>
-    </div>
+    </form>
+
 </div>
 <!-- /container -->
-
 </body>
 </html>

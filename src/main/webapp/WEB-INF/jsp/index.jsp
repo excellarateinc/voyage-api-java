@@ -44,6 +44,9 @@
 <div class="container">
 
     <div class="text-content">
+
+        <img id="logo" src="/resources/images/puppy.png" />
+
         <h2 class="form-heading">I think you're lost!</h2>
 
         <p>

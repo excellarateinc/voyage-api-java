@@ -38,7 +38,7 @@ class PasswordResetController {
 
     @PostMapping('/forgot')
     ResponseEntity forgot(@RequestBody PasswordResetRequest request) {
-        passwordResetService.sendResetMessage(request.email, request.redirectUri)
+        passwordResetService.sendApiResetMessage(request.email, request.redirectUri)
         return new ResponseEntity(HttpStatus.OK)
     }
 
