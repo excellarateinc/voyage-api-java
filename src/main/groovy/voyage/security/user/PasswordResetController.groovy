@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping(['/api/v1/password'])
+@RequestMapping(['/api/v1/password', '/api/v1.0/password'])
 class PasswordResetController {
     private final PasswordResetService passwordResetService
 
@@ -36,12 +36,47 @@ class PasswordResetController {
         this.passwordResetService = passwordResetService
     }
 
+    /**
+     * @api {post} /v1/password/forgot Password Forgot
+     * @apiVersion 1.0.0
+     * @apiName PasswordForgot
+     * @apiGroup User
+     *
+     * @apiDescription Request 'forgot password' instructions sent to the given email address. A successful response is
+     * always provided regardless of a valid email address so that hack attempts have no valid feedback to determine
+     * emails that may exist in the database.
+     *
+     * @apiSampleRequest http://voyage.com/api/v1/password/forgot
+     * @apiSuccessExample Success-Response:
+     *   HTTP/1.1 200 SUCCESS
+     *
+     * @apiPermission Anonymous
+     *
+     * @apiUse UserPasswordForgotRequest
+     *
+     **/
     @PostMapping('/forgot')
     ResponseEntity forgot(@RequestBody PasswordResetRequest request) {
         passwordResetService.sendApiResetMessage(request.email, request.redirectUri)
         return new ResponseEntity(HttpStatus.OK)
     }
 
+    /**
+     * @api {post} /v1/password/reset Password Reset
+     * @apiVersion 1.0.0
+     * @apiName PasswordReset
+     * @apiGroup User
+     *
+     * @apiDescription Reset the user password using the giving request information
+     *
+     * @apiSampleRequest http://voyage.com/api/v1/password/reset
+     *
+     * @apiPermission Anonymous
+     *
+     * @apiUse UserPasswordResetRequest
+     * @apiUse WeakPasswordError
+     * @apiUse UserPasswordResetTokenExpiredError
+     **/
     @PostMapping('/reset')
     ResponseEntity reset(@RequestBody PasswordResetRequest request) {
         passwordResetService.reset(request.email, request.token, request.password)

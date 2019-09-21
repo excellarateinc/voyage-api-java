@@ -145,6 +145,25 @@
  */
 
 // ------------------------------------------------------------------------------------------
+// Weak Password Error
+// ------------------------------------------------------------------------------------------
+/**
+ *  @apiDefine WeakPasswordError
+ *
+ *  @apiError WeakPasswordException The password does not meet the minimum requirements.
+ *
+ *  @apiErrorExample Error-Response
+ *  HTTP/1.1 400: Bad Request
+ *  {
+ *      "error": "400_weak_password",
+ *      "errorDescription": "The password does not meet the minimum requirements.  Following are the Password Policy Violations:
+ *                           Minimum 1 uppercase character is required, Minimum 1 special character is required,
+ *                           Minimum 1 lowercase character is required, Minimum 1 digit character is required,
+ *                           Minimum length of 8 characters, Maximum length of 100 characters"
+ *  }
+ */
+
+// ------------------------------------------------------------------------------------------
 // Mobile Phone Number Required Error
 // ------------------------------------------------------------------------------------------
 /**
@@ -192,3 +211,52 @@
  *  }
  */
 
+// ------------------------------------------------------------------------------------------
+// Password Forgot Request Model
+// ------------------------------------------------------------------------------------------
+/**
+ * @apiDefine UserPasswordForgotRequest
+ *
+ * @apiParam {String} email The user's email address
+ * @apiParam {String} redirectUri The calling client's registered password reset redirect URI (This redirects back to the Client app)
+ *
+ * @apiExample {json} Example body:
+ * {
+ *     "email": "email@email.email",
+ *     "redirectUri": "https://example-web-app.com/passwordReset"
+ * }
+ */
+
+// ------------------------------------------------------------------------------------------
+// Password Forgot Request Model
+// ------------------------------------------------------------------------------------------
+/**
+ * @apiDefine UserPasswordResetRequest
+ *
+ * @apiParam {String} email The user's email address
+ * @apiParam {String} password The user's new password
+ * @apiParam {String} token The user's password reset token provided by /password/forgot
+ *
+ * @apiExample {json} Example body:
+ * {
+ *     "email": "email@email.email",
+ *     "password": "my-new-password",
+ *     "token": "ABC123"
+ * }
+ */
+
+// ------------------------------------------------------------------------------------------
+// Password Reset Token Expired
+// ------------------------------------------------------------------------------------------
+/**
+ *  @apiDefine UserPasswordResetTokenExpiredError
+ *
+ *  @apiError PasswordResetTokenExpired Password reset token has expired
+ *
+ *  @apiErrorExample Error-Response
+ *  HTTP/1.1 400: Bad Request
+ *  {
+ *      "error": "400_password_reset_token_expired",
+ *      "errorDescription": " Password reset token has expired"
+ *  }
+ */

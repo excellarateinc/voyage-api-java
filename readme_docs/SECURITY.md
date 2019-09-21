@@ -1200,69 +1200,37 @@ https://github.com/lssinc/voyage-api-java/issues/98
 * Can be disabled within the application.yaml file for internal applications with a centralized Password Recovery process. 
 
 Workflow
-1. User initiates the password recovery process from a link within the web app
-2. User is required to enter their username and mobile phone used to create the account
-3. Upon successful verification of the username and mobile phone number, the user is presented with a set of security questions
-4. The user must answer each question exactly as they had entered it within their account profile and submit
-5. If the answers are correct, then the user is displayed a
-
-Security Questions
-- Security questions are presented at random
+1. User initiates a password recovery process through a Client App (ie Mobile app)
+2. The Client App calls /password/forgot with user email and the Client App reset password page URL
+3. /password/forgot sends an email directly to the User with a password reset link that redirects the user to the Client App 
+4. The Client App presents a reset password page and sends the results to /password/reset
+5. /password/reset returns a response stating if the reset was successful or not
+6. The Client App redirects the User to a login page if the reset was successful (or displays the error message if unsuccessful)
 
 Technical Notes:
 * Need to do this without authenticating a user. If we authenticate a user, then they would get a token and have free reign to attempt other attacks
 
-1. Once a user enters a valid username and phone number, then return a Recovery Verify Token
-   - POST /recover/password { username: blah, password: ***** }
+1. Initiate a password reset
+   - POST /password/forgot { email: blah@blah.blah, redirectUri: ***** }
    - Anonymous access web service
-   - > 3 attempts from for a given username (existing or not) will disable attempts for 10 minutes
-   - > 6 attempts from for a given username (existing or not) within a 60 minute period will disable attempts for the username for 24-hours
-   - Track all attempts within the action_log so that non-existing usernames can be tracked as well  
-   - The Recovery Verify Token is only good for 20 minutes (shorter?) and should be stored on the user profile for date expiration
-   - Use a long hash token that wont likely be replicated between multiple users ("account recovery" + userid + datetime)
-   - Send verification code to mobile phone on record
-     * Sets user.is_verify_required with code and expiration
-     * Next time user logs in with their username and password, they will be required to verify
-2. Accept verification code 
-   - POST /recover/verify  { recovery_verify_token: ANDJDUS*#*, code: 3423432 }
-   - anonymous access web service 
-   - > 3 attempts from for a given recovery code or IP address (existing or not) will disable attempts for 10 minutes
-   - Check that the recovery token has not expired
-   - Follows User Verification process
-   - Upon successful verification, return a Recovery Questions Token
-3. Request security questions
-   - POST /recover/questions { recovery_questions_token: EOIUWORJSDFN#373432 }
-   - Requires the account recovery token
-   - Requires user.is_verify_required = false (otherwise returns an error status code with message)
-   - > 3 attempts with an invalid account recovery token from a given IP address will ban the IP Address for 60 minutes (configurable)
-   - Returns 3 of the 5 security questions (2 canned, 1 custom / out of 3 canned and 2 custom) rotated
-   - Each question should have a question ID hash key that is generated using the question_code or the question text (and stored in the database or on-the-fly?)
-     ```
-     [
-        {"question_id": "LKSJFSDJ*#&SAAHANDL*", "question": "What is the avg airspeed velocity of an unladen swallow?", "question_code": "avg_airspeed_swallow"},
-        {"question_id": "&#$DSDJ356", "question": "What was your favorite teacher's last name?", "question_code": "favorite_teacher"},
-        {"question_id": ")(SKSDFJLH#$", "question": "When is my favorite day of the year?", "question_code": "favorite_day_of_year"}
-     ]
-     ```
-4. Verify security questions
-   - POST /recover/questions/answers { recover_questions_token: EOIUWORJSDFN#373432, questions: [ {question_id: &#$DSDJ356, answer: "my answer", question_id: ... }]
-   - Requires the account recovery token
-   - Requires user.is_verify_required = false (otherwise returns an error status code with message)
-   - > 3 attempts with an invalid account recovery token from a given IP address will ban the IP Address for 60 minutes (configurable)
-   - All questions must have exact answers that match one-way hashed answers in the database
-   - > 3 attempts with an invalid security answers will ban the recovery token for 10 minutes
-   - RETURNS a Recovery Change Password Token
-5. Change Password
-   - POST /recover/password/change { recovery_change_password_token: 34987DHKWJHWERNAHQH, new_password: "changeme" }
-   - sets user.is_credentials_expired = false (if it was set to true)
-6. Redirect user to the login page
-   - Should be able to login fine without any sort of user verification since this was handled during the extensive password recovery process. 
+   - TODO: Track all attempts within the action_log so that non-existing emails can be tracked as well
+   - Verify that the email is found and the 'redirectUri' matches the client password redirect URI in the client record
+   - If valid request
+     - generate a password reset token
+     - send an email with an embedded link to the Client password redirect URI with the user email and token    
+2. Reset the password 
+   - POST /password/reset  { email: blah@blah.blah, token: ABC123, password: newPassword }
+   - anonymous access web service
+   - Verify that the email is found and matches the given token 
+   - Verify that the token has not expired
+   - Save the new password to the User record if the email and token are valid
+   - Send a password changed email directly to the user email
+   - Return back a valid response so that the Client can redirect the user to a login page
 
-NOTE: PasswordExpiredFilter will intercept this and force password reset process. Unauthenticated users will use this path, authenticated users will be able to change their password at any time if they provider their current password first)
+NOTE: The OAuth2 Authentication Server should also have a process to reset the password through its own secure interfaces. 
 
 #### References
 * [Forgot Password Cheat Sheet](https://www.owasp.org/index.php/Forgot_Password_Cheat_Sheet)
-* [Choosing and Using Security Questions Cheat Sheet](https://www.owasp.org/index.php/Choosing_and_Using_Security_Questions_Cheat_Sheet)
 
 :arrow_up: [Back to Top](#table-of-contents)
 

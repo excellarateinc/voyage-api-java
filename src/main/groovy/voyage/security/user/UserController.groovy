@@ -76,7 +76,7 @@ class UserController {
      *
      * @apiSampleRequest http://voyage.com/api/v1/users/
      *
-     * @apiPermission lss.permission->api.user.create
+     * @apiPermission api.user.create
      *
      * @apiUse AuthHeader
      *
@@ -94,6 +94,7 @@ class UserController {
      * @apiUse MobilePhoneNumberRequiredError
      * @apiUse TooManyPhonesError
      * @apiUse PhoneNumberInvalidError
+     * @apiUse WeakPasswordError
      **/
     @PostMapping
     @PreAuthorize("hasAuthority('api.users.create')")
@@ -114,7 +115,7 @@ class UserController {
      *
      * @apiSampleRequest http://voyage.com/api/v1/users/1
      *
-     * @apiPermission lss.permission->api.user.get
+     * @apiPermission api.user.get
      *
      * @apiUse AuthHeader
      *
@@ -142,7 +143,7 @@ class UserController {
      *
      * @apiSampleRequest http://voyage.com/api/v1/users/1
      *
-     * @apiPermission lss.permission->api.user.delete
+     * @apiPermission api.user.delete
      *
      * @apiUse AuthHeader
      *
@@ -185,6 +186,7 @@ class UserController {
      * @apiUse MobilePhoneNumberRequiredError
      * @apiUse TooManyPhonesError
      * @apiUse PhoneNumberInvalidError
+     * @apiUse WeakPasswordError
      **/
     @PutMapping('/{id}')
     @PreAuthorize("hasAuthority('api.users.update')")
