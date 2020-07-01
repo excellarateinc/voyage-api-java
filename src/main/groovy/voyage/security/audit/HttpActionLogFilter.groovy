@@ -93,7 +93,7 @@ class HttpActionLogFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         if (isRequestFilterable(request)) {
-            long startTime = System.currentTimeMillis()
+            long startTimeMs = System.currentTimeMillis()
             ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request)
             ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response)
 
@@ -104,7 +104,7 @@ class HttpActionLogFilter extends OncePerRequestFilter {
             filterChain.doFilter(wrappedRequest, wrappedResponse)
 
             // Save the response
-            saveResponse(wrappedRequest, wrappedResponse, actionLog, startTime)
+            saveResponse(wrappedRequest, wrappedResponse, actionLog, startTimeMs)
 
             // Copy content of response back into original response
             wrappedResponse.copyBodyToResponse()
@@ -130,13 +130,15 @@ class HttpActionLogFilter extends OncePerRequestFilter {
     }
 
     private ActionLog saveResponse(ContentCachingRequestWrapper request, ContentCachingResponseWrapper response,
-                                   ActionLog actionLog, Long startTime) {
+                                   ActionLog actionLog, Long startTimeMs) {
         User authenticatedUser = (User)request.getAttribute(USER_KEY)
         Client authenticatedClient = (Client)request.getAttribute(CLIENT_KEY)
         String userPrincipal = getUserPrincipal(request)
 
         actionLog.with {
-            durationMs = System.currentTimeMillis() - startTime
+            // Developers Note: Sometimes can be zero because of inaccurate system time,
+            // https://blogs.msdn.microsoft.com/ericlippert/2010/04/08/precision-and-accuracy-of-datetime/
+            durationMs = System.currentTimeMillis() - startTimeMs
             username = userPrincipal
             user = authenticatedUser
             client = authenticatedClient

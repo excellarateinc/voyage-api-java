@@ -65,7 +65,7 @@ class HttpActionLogFilterIntegrationSpec extends AuthenticatedIntegrationTest {
             !actionLog.username
             !actionLog.client
             !actionLog.user
-            actionLog.durationMs
+            actionLog.durationMs != null
             actionLog.requestHeaders ==~ /.*test-header:test-value.*/
             actionLog.requestBody == ''
             actionLog.responseHeaders
@@ -102,7 +102,7 @@ class HttpActionLogFilterIntegrationSpec extends AuthenticatedIntegrationTest {
             !actionLog.username
             !actionLog.client
             !actionLog.user
-            actionLog.durationMs
+            actionLog.durationMs != null
             actionLog.requestHeaders ==~ /.*test-header:test-value.*/
             actionLog.requestBody == ''
             actionLog.responseHeaders
@@ -143,7 +143,7 @@ class HttpActionLogFilterIntegrationSpec extends AuthenticatedIntegrationTest {
             actionLog.username == 'super'
             !actionLog.client
             !actionLog.user
-            actionLog.durationMs
+            actionLog.durationMs != null
             actionLog.requestHeaders
             actionLog.requestBody == 'username=super&password=*********'
             actionLog.responseHeaders ==~ '.*Location:http://localhost.*'
@@ -173,7 +173,7 @@ class HttpActionLogFilterIntegrationSpec extends AuthenticatedIntegrationTest {
             actionLog.username == 'client-super'
             actionLog.user.id == 3
             !actionLog.client
-            actionLog.durationMs
+            actionLog.durationMs != null
             actionLog.requestHeaders
             actionLog.requestBody == 'client_id=client-super&client_secret=secret&grant_type=client_credentials'
             actionLog.responseHeaders
@@ -229,7 +229,7 @@ class HttpActionLogFilterIntegrationSpec extends AuthenticatedIntegrationTest {
             actionLog.username == 'client-super'
             actionLog.user.id == 3
             !actionLog.client
-            actionLog.durationMs
+            actionLog.durationMs != null
             actionLog.requestHeaders
             actionLog.requestBody == 'client_id=client-super&client_secret=secret&grant_type=client_credentials'
             actionLog.responseHeaders
@@ -244,7 +244,7 @@ class HttpActionLogFilterIntegrationSpec extends AuthenticatedIntegrationTest {
             actionLog2.username == 'client-super'
             actionLog2.client.id == 1
             actionLog2.user.id == 3
-            actionLog2.durationMs
+            actionLog2.durationMs != null
             actionLog2.requestHeaders ==~ /.*authorization:.*/
             actionLog2.requestBody == '{"id":null,"firstName":"Test1","lastName":"User","username":"username99",' +
                     '"email":"test@test.com","password":"*********","isEnabled":true,"isAccountExpired":false,' +
