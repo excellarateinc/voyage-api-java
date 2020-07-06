@@ -36,15 +36,18 @@ class AuditConfig {
     }
 
     class SpringSecurityAuditorAware implements AuditorAware<String> {
-        String getCurrentAuditor() {
+        Optional<String> getCurrentAuditor() {
             Authentication authentication = SecurityContextHolder.context.authentication
+            String val = null
             if (authentication == null || !authentication.isAuthenticated()) {
-                return 'SYSTEM'
+                val = 'SYSTEM'
             }
             if (authentication.principal instanceof User) {
-                return ((User)authentication.principal).username
+                val = ((User)authentication.principal).username
+            } else {
+                val = authentication.principal
             }
-            return authentication.principal
+            return Optional.of(val)
         }
     }
 }

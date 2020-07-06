@@ -18,7 +18,7 @@
  */
 package voyage.core.error
 
-import org.springframework.boot.autoconfigure.web.ErrorAttributes
+import org.springframework.boot.web.servlet.error.ErrorAttributes
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.context.request.RequestAttributes
@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse
 class GlobalExceptionControllerSpec extends Specification {
     def 'handleError() processes a HttpServlet exception'() {
         given:
-            ErrorAttributes errorAttributes = Mock(ErrorAttributes)
+        ErrorAttributes errorAttributes = Mock(ErrorAttributes)
             GlobalExceptionHandler handler = new GlobalExceptionHandler()
 
             Map errorMap = [status:400, error:'test error', message:'test message']

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
+ * Copyright 2020 Lighthouse Software, Inc.   http://www.LighthouseSoftware.com
  *
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -16,182 +16,93 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-buildscript {
-    ext {
-        springBootVersion = '1.4.2.RELEASE'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-        classpath("io.spring.gradle:dependency-management-plugin:0.6.1.RELEASE")
-    }
-}
-
 plugins {
-    id 'net.saliman.cobertura' version '2.4.0'
-    id "com.moowork.node" version "1.1.0"
+    id 'org.springframework.boot' version '2.3.1.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'org.asciidoctor.convert' version '1.5.8'
+    id 'war'
+    id 'groovy'
 }
 
-apply plugin: 'war'
-apply plugin: 'groovy'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-apply plugin: 'codenarc'
-
-war {
-    baseName = 'voyage'
-    version = '1.0'
-}
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+// TODO 2020 Update
+//group = 'com.lighthousesoftware'
+//version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-
-    // Spring
-    compile group: 'org.springframework.boot',          name: 'spring-boot-starter-web',             version:"${springBootVersion}"
-    compile group: 'org.springframework.boot',          name: 'spring-boot-starter-data-jpa',        version:"${springBootVersion}"
-    compile group: 'org.springframework.boot',          name: 'spring-boot-starter-security',        version:"${springBootVersion}"
-    compile group: 'org.springframework.boot',          name: 'spring-boot-starter-mail',            version:"${springBootVersion}"
-    compile group: 'org.springframework.boot',          name: 'spring-boot-starter-freemarker',      version:"${springBootVersion}"
-    compile group: 'org.springframework.security',      name: 'spring-security-jwt',                 version:'1.0.7.RELEASE'
-    compile(group: 'org.springframework.security.oauth', name: 'spring-security-oauth2',             version:'2.0.12.RELEASE') {
-        exclude(module: 'jackson-mapper-asl') // We already have a more recent jackson via Spring Boot
-    }
-
-    // Groovy
-    compile group: 'org.codehaus.groovy', name: 'groovy-all', version:'2.4.12'
-
-    // Database
-    compile group: 'org.liquibase',     name:'liquibase-core'
-    compile group: 'com.h2database',    name: 'h2',                     version: '1.4.192'
-    compile group: 'mysql',             name: 'mysql-connector-java',   version: '5.1.44'
-    compile group: 'org.hibernate',     name: 'hibernate-envers',       version: '5.0.11.Final'
-
-    // Login Web Form
-    compile group: 'org.apache.tomcat.embed',  name: 'tomcat-embed-jasper'
-    compile group: 'javax.servlet',            name: 'jstl'
-
-    // Webjars (for css/js libs)
-    compile group: 'org.webjars',   name: 'webjars-locator',    version: '0.30'
-    compile group: 'org.webjars',   name: 'bootstrap',          version: '3.3.7'
-
-    // Amazon Web Service (AWS)
-    compile group: 'org.springframework.cloud',         name: 'spring-cloud-aws-autoconfigure',      version: '1.1.3.RELEASE'
-    compile group: 'org.springframework.cloud',         name: 'spring-cloud-aws-messaging',          version: '1.1.3.RELEASE'
-
-    // Other
-    compile group: 'org.apache.commons',            name: 'commons-lang3',  version: '3.5'
-    compile group: 'commons-codec',                 name: 'commons-codec',  version: '1.10'
-    compile group: 'org.owasp.esapi',               name: 'esapi',          version: '2.1.0.1'
-    compile group: 'com.googlecode.libphonenumber', name: 'libphonenumber', version: '8.4.0'
-    compile group: 'org.passay',                    name: 'passay',         version: '1.2.0'
-    
-    // Testing
-    testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:"${springBootVersion}") {
-        exclude(module: 'commons-logging')
-    }
-    testCompile group: 'org.spockframework', name: 'spock-core', version:'1.1-groovy-2.4-rc-3'
-    testCompile group: 'org.spockframework', name: 'spock-spring', version:'1.1-groovy-2.4-rc-3'
-    testCompile group: 'cglib', name: 'cglib-nodep', version:'3.2.4'
-    testCompile group: 'org.apache.httpcomponents', name: 'httpclient'
-    testCompile group: 'com.icegreen', name: 'greenmail', version: '1.5.2'
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+    set('springCloudVersion', "Hoxton.SR6")
 }
 
-eclipse {
-    classpath {
-        containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
-        containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-freemarker'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.security:spring-security-jwt:1.0.7.RELEASE'
+    implementation 'org.springframework.security.oauth:spring-security-oauth2:2.0.12.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-web-services'
+    implementation 'org.codehaus.groovy:groovy'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.4'
+    implementation 'org.liquibase:liquibase-core'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws-jdbc'
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws-messaging'
+    implementation 'org.springframework.session:spring-session-core'
+
+    implementation 'org.hibernate:hibernate-envers:5.0.11.Final'
+
+    // Login Web Form
+    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper:9.0.36'
+    implementation 'javax.servlet:jstl:1.2'
+
+    // Webjars (for css/js libs)
+    implementation 'org.webjars:webjars-locator:0.30'
+    implementation 'org.webjars:bootstrap:3.3.7'
+
+    // Amazon Web Service (AWS)
+    implementation 'org.springframework.cloud:spring-cloud-aws-autoconfigure:1.1.3.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-aws-messaging:1.1.3.RELEASE'
+
+    // Other
+    implementation 'org.apache.commons:commons-lang3:3.5'
+    implementation 'commons-codec:commons-codec:1.10'
+    implementation 'org.owasp.esapi:esapi:2.1.0.1'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.4.0'
+    implementation 'org.passay:passay:1.2.0'
+
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
+    providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+
+    testImplementation 'org.spockframework:spock-core:1.3-groovy-2.5'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'com.icegreen:greenmail:1.5.2'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
 
 test {
-    reports {
-        junitXml.enabled = true
-        html.enabled = true
-    }
-    filter {
-        includeTestsMatching "*Spec"
-    }
+    outputs.dir snippetsDir
+    useJUnitPlatform()
 }
 
-codenarc {
-    toolVersion = "1.1"
-
-    codenarcMain {
-        ignoreFailures false
-        configFile file('codenarc/codenarc-main.rules')
-        reports {
-            xml.enabled = true
-            html.enabled = true
-        }
-
-        maxPriority1Violations 0
-        maxPriority2Violations 0
-        maxPriority3Violations 0
-    }
-    codenarcTest {
-        ignoreFailures false
-        configFile file('codenarc/codenarc-test.rules')
-        reports {
-            xml.enabled = true
-            html.enabled = true
-        }
-
-        maxPriority1Violations 0
-        maxPriority2Violations 0
-        maxPriority3Violations 0
-    }
-}
-
-// ****************************************************************************
-// Cobertura Test Coverage Plugin Config
-// ****************************************************************************
-cobertura {
-    coverageFormats = ['html', 'xml']
-    coverageIgnoreTrivial = true
-    coverageIgnores = ['org.slf4j.Logger.*']
-    coverageReportDir = new File("$buildDir/reports/cobertura")
-}
-test.finalizedBy(project.tasks.cobertura)
-
-// ****************************************************************************
-// Gradle Wrapper Config
-// ****************************************************************************
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.3'
-}
-
-// ****************************************************************************
-// apiDoc Tasks
-// ****************************************************************************
-node {
-    version = '6.8.0'
-    download = true
-}
-task apidocInstall(type:NpmTask) {
-    workingDir = file ('./apidoc')
-    npmCommand = ['install']
-}
-
-task apidoc(type:NpmTask, dependsOn:'apidocInstall') {
-    workingDir = file('./apidoc')
-    npmCommand = ['run']
-    args = ['apidoc']
-}
-processResources.dependsOn.add(apidoc)
-
-// ****************************************************************************
-// Pass environment variables to Spring BootRun task when running from Gradle
-// ****************************************************************************
-tasks.withType(org.springframework.boot.gradle.run.BootRunTask) {
-    bootRun.systemProperties = System.properties
+asciidoctor {
+    inputs.dir snippetsDir
+    dependsOn test
 }
