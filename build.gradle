@@ -31,7 +31,8 @@ plugins {
     id 'codenarc'
 }
 
-// TODO 2020 Update
+// TODO 2020 Update - current code lives an a voyage package,
+//  should be moved to com.lighthousesoftware.voyage
 //group = 'com.lighthousesoftware'
 //version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
@@ -118,9 +119,7 @@ test {
         junitXml.enabled = true
         html.enabled = true
     }
-    filter {
-        includeTestsMatching "*Spec"
-    }
+    // TODO 2020 modernization - tests are not being run, fix detection settings
 }
 
 codenarc {
