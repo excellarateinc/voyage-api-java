@@ -20,8 +20,15 @@ plugins {
     id 'org.springframework.boot' version '2.3.1.RELEASE'
     id 'io.spring.dependency-management' version '1.0.9.RELEASE'
     id 'org.asciidoctor.convert' version '1.5.8'
+    // TODO Cobertura 3.0.1 plugin unavailable in maven repos as of 7/7/2020 added pluginManagement
+    //  settings to settings.gradle to get from another repo. remove when available in gradlePluginCentral
+    id 'net.saliman.cobertura' version '3.0.1-SNAPSHOT'
+    id "com.github.node-gradle.node" version "2.2.4"
     id 'war'
     id 'groovy'
+    id 'eclipse'
+    id 'idea'
+    id 'codenarc'
 }
 
 // TODO 2020 Update
@@ -97,12 +104,87 @@ dependencyManagement {
     }
 }
 
+eclipse {
+    classpath {
+        containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
+        containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+    }
+}
+
 test {
     outputs.dir snippetsDir
     useJUnitPlatform()
+    reports {
+        junitXml.enabled = true
+        html.enabled = true
+    }
+    filter {
+        includeTestsMatching "*Spec"
+    }
 }
 
-asciidoctor {
-    inputs.dir snippetsDir
-    dependsOn test
+codenarc {
+    toolVersion = "1.1"
+
+    codenarcMain {
+        ignoreFailures false
+        configFile file('codenarc/codenarc-main.rules')
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
+
+        maxPriority1Violations 0
+        maxPriority2Violations 0
+        maxPriority3Violations 0
+    }
+    codenarcTest {
+        ignoreFailures false
+        configFile file('codenarc/codenarc-test.rules')
+        reports {
+            xml.enabled = true
+            html.enabled = true
+        }
+
+        maxPriority1Violations 0
+        maxPriority2Violations 0
+        maxPriority3Violations 0
+    }
+}
+
+// ****************************************************************************
+// Cobertura Test Coverage Plugin Config
+// ****************************************************************************
+cobertura {
+    coverageFormats = ['html', 'xml']
+    coverageIgnoreTrivial = true
+    coverageIgnores = ['org.slf4j.Logger.*']
+    coverageReportDir = new File("$buildDir/reports/cobertura")
+}
+test.finalizedBy(project.tasks.cobertura)
+
+// ****************************************************************************
+// apiDoc Tasks
+// ****************************************************************************
+node {
+    version = '14.5.0'
+    download = true
+}
+task apidocInstall(type:NpmTask) {
+    workingDir = file ('./apidoc')
+    npmCommand = ['install']
+}
+
+task apidoc(type:NpmTask, dependsOn:'apidocInstall') {
+    workingDir = file('./apidoc')
+    npmCommand = ['run']
+    args = ['apidoc']
+}
+processResources.dependsOn.add(apidoc)
+
+// ****************************************************************************
+// Pass environment variables to Spring BootRun task when running from Gradle
+// ****************************************************************************
+bootRun {
+    bootRun.systemProperties = System.properties
 }
