@@ -18,11 +18,17 @@
  */
 package voyage.security.audit
 
-import org.hibernate.envers.DefaultRevisionEntity
 import org.hibernate.envers.RevisionEntity
+import org.hibernate.envers.RevisionNumber
+import org.hibernate.envers.RevisionTimestamp
 
 import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
 import javax.persistence.Table
+import javax.persistence.Transient
+import java.text.DateFormat
 
 /**
  * Hibernate Envers extension class that adds the username to the revision transaction table
@@ -30,7 +36,52 @@ import javax.persistence.Table
 @Entity
 @Table(name='AUD_REVISION')
 @RevisionEntity(UserRevisionListener)
-class UserRevisionEntity extends DefaultRevisionEntity {
+class UserRevisionEntity implements Serializable {
+    private static final long serialVersionUID = -8044692553450000776L
+
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @RevisionNumber
+    int id
+
+    @RevisionTimestamp
+    long timestamp
+
     String username
     Date createdDate
+
+    @Transient
+    Date getRevisionDate() {
+        return new Date( timestamp )
+    }
+
+    @Override
+    boolean equals(Object o) {
+        if (this.is(o)) {
+            return true
+        }
+        if (getClass() != o.class) {
+            return false
+        }
+
+        UserRevisionEntity that = (UserRevisionEntity) o
+
+        if (id != that.id) {
+            return false
+        }
+        return (timestamp != that.timestamp)
+    }
+
+    @Override
+    int hashCode() {
+        int result
+        result = id
+        result = 31 * result + (int) (timestamp ^ (timestamp >>> 32))
+        return result
+    }
+
+    @Override
+    String toString() {
+        return "DefaultRevisionEntity(id = ${id}, revisionDate = ${DateFormat.dateTimeInstance.format(revisionDate)} )"
+    }
 }

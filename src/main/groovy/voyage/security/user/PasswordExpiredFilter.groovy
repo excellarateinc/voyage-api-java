@@ -19,6 +19,7 @@
 package voyage.security.user
 
 import groovy.json.JsonBuilder
+import groovy.time.TimeCategory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -142,7 +143,7 @@ class PasswordExpiredFilter implements Filter {
     }
 
     private boolean isPasswordExpired(User user) {
-        Integer diffInDays = new Date() - user.passwordCreatedDate
+        Integer diffInDays = TimeCategory.minus(new Date(), user.passwordCreatedDate).days
         if (passwordResetDays == 0) {
             return false
         }

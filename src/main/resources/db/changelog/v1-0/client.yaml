@@ -220,7 +220,7 @@ databaseChangeLog:
                   value: client-super
               - column:
                   name: client_secret
-                  value: secret
+                  value: '{noop}secret'
               - column:
                   name: is_secret_required
                   valueBoolean: false
@@ -268,7 +268,7 @@ databaseChangeLog:
                   value: client-standard
               - column:
                   name: client_secret
-                  value: secret
+                  value: '{noop}secret'
               - column:
                   name: is_secret_required
                   valueBoolean: true

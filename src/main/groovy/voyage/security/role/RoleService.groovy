@@ -47,7 +47,7 @@ class RoleService {
     }
 
     Role get(@NotNull Long id) {
-        Role role = roleRepository.findOne(id)
+        Role role = roleRepository.findByIdAndIsDeletedFalse(id)
         if (!role) {
             throw new UnknownIdentifierException()
         }
@@ -55,7 +55,7 @@ class RoleService {
     }
 
     Iterable<Role> listAll() {
-        return roleRepository.findAll()
+        return roleRepository.findAllByIsDeletedFalse()
     }
 
     Role saveDetached(@Valid Role role) {
@@ -71,7 +71,7 @@ class RoleService {
     }
 
     Role findByAuthority(String authority) {
-        return roleRepository.findByAuthority(authority)
+        return roleRepository.findByAuthorityAndIsDeletedFalse(authority)
     }
 
     /**
