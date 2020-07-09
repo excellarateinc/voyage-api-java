@@ -33,7 +33,7 @@ class PermissionServiceSpec extends Specification {
 
     def 'listAll - returns a single result' () {
         setup:
-            permissionRepository.findAll() >> [permission]
+            permissionRepository.findAllByIsDeletedFalse() >> [permission]
         when:
             Iterable<Permission> permissionList = permissionService.listAll()
         then:
@@ -53,7 +53,7 @@ class PermissionServiceSpec extends Specification {
 
     def 'get - calls the permissionRepository.findOne' () {
         setup:
-            permissionRepository.findOne(_) >> permission
+            permissionRepository.findByIdAndIsDeletedFalse(_) >> permission
         when:
             Permission fetchedPermission = permissionService.get(1)
         then:
@@ -64,7 +64,7 @@ class PermissionServiceSpec extends Specification {
 
     def 'delete - verifies the object and calls permissionRepository.delete' () {
         setup:
-            permissionRepository.findOne(_) >> permission
+            permissionRepository.findByIdAndIsDeletedFalse(_) >> permission
             permissionRepository.save(_) >> permission
         when:
             permissionService.delete(1)

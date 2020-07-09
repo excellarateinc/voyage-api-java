@@ -39,7 +39,7 @@ import javax.validation.constraints.NotNull
 @EqualsAndHashCode(includes=['id'])
 class AuditableEntity {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     Long id
 
     @CreatedBy

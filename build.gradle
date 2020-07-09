@@ -65,18 +65,14 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-aws-messaging'
     implementation 'org.springframework.session:spring-session-core'
 
-//    implementation 'org.hibernate:hibernate-envers:5.0.11.Final'
     implementation 'org.hibernate:hibernate-envers:5.4.18.Final'
 
     // Login Web Form
-//    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper:9.0.36'
     implementation 'org.apache.tomcat.embed:tomcat-embed-jasper:9.0.37'
     implementation 'javax.servlet:jstl:1.2'
 
     // Webjars (for css/js libs)
-//    implementation 'org.webjars:webjars-locator:0.30'
     implementation 'org.webjars:webjars-locator:0.40'
-//    implementation 'org.webjars:bootstrap:3.3.7'
     implementation 'org.webjars:bootstrap:4.5.0'
 
     // Amazon Web Service (AWS)
@@ -84,11 +80,11 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.2.RELEASE'
 
     // Other
-    implementation 'org.apache.commons:commons-lang3:3.5'
-    implementation 'commons-codec:commons-codec:1.10'
-    implementation 'org.owasp.esapi:esapi:2.1.0.1'
-    implementation 'com.googlecode.libphonenumber:libphonenumber:8.4.0'
-    implementation 'org.passay:passay:1.2.0'
+    implementation 'org.apache.commons:commons-lang3:3.10'
+    implementation 'commons-codec:commons-codec:1.14'
+    implementation 'org.owasp.esapi:esapi:2.2.0.0'
+    implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.6'
+    implementation 'org.passay:passay:1.6.0'
 
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
@@ -100,7 +96,7 @@ dependencies {
     }
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation 'com.icegreen:greenmail:1.5.2'
+    testImplementation 'com.icegreen:greenmail:1.5.14'
 }
 
 dependencyManagement {
