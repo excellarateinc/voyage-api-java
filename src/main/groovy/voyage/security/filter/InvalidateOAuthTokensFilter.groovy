@@ -40,6 +40,8 @@ import javax.servlet.ServletException
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 import java.security.Principal
+import java.text.ParseException
+import java.text.SimpleDateFormat
 
 /**
  * Servlet filter that parses the incoming OAuth2 token for a "created" date and compares that date against a forced
@@ -148,7 +150,12 @@ class InvalidateOAuthTokensFilter extends OncePerRequestFilter  {
             Calendar tokenCreatedDate = Calendar.instance
             tokenCreatedDate.setTimeInMillis((long)tokenCreatedValue)
             if (LOG.debugEnabled) {
-                LOG.debug("getTokenCreatedDate(): Token was created on ${tokenCreatedDate.format('yyyy-MM-dd\'T\'HH:mm:ssZ')}. Toke=${token}")
+                try {
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.default)
+                    LOG.debug("getTokenCreatedDate(): Token was created on ${simpleDateFormat.format(tokenCreatedDate.time)}. Token=${token}")
+                } catch (ParseException e) {
+                    LOG.error('Failed to parse Calendar date', e)
+                }
             }
             return tokenCreatedDate.time
         }

@@ -122,6 +122,7 @@ class HttpActionLogFilter extends OncePerRequestFilter {
             httpMethod = request.method
             requestHeaders = getHeaders(request)
             url = request.requestURL
+            createdDate = new Date()
         }
         if (request.queryString) {
             actionLog.url += '?' + request.queryString

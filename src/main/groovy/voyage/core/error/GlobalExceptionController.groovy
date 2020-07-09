@@ -19,13 +19,14 @@
 package voyage.core.error
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.web.error.ErrorAttributeOptions
 import org.springframework.boot.web.servlet.error.ErrorAttributes
 import org.springframework.boot.web.servlet.error.ErrorController
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.context.request.ServletRequestAttributes
+import org.springframework.web.context.request.ServletWebRequest
 
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -63,7 +64,9 @@ class GlobalExceptionController implements ErrorController {
     }
 
     private Map<String, Object> getErrorAttributes(HttpServletRequest request, boolean includeStackTrace = false) {
-        ServletRequestAttributes requestAttributes = new ServletRequestAttributes(request)
-        return errorAttributes.getErrorAttributes(requestAttributes, includeStackTrace)
+        ServletWebRequest requestAttributes = new ServletWebRequest(request)
+        ErrorAttributeOptions errorAttributeOptions = includeStackTrace ?
+                ErrorAttributeOptions.of(ErrorAttributeOptions.Include.STACK_TRACE) : ErrorAttributeOptions.defaults()
+        return errorAttributes.getErrorAttributes(requestAttributes, errorAttributeOptions)
     }
 }

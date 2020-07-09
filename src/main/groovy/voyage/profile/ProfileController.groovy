@@ -32,7 +32,7 @@ import voyage.security.user.User
 import voyage.security.user.UserService
 import voyage.security.verify.VerifyService
 
-@RestController
+@RestController('apiProfileController')
 @RequestMapping(['/api/v1/profiles', '/api/v1.0/profiles'])
 class ProfileController {
     private final ProfileService profileService
