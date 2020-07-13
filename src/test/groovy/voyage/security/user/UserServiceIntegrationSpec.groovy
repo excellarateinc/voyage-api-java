@@ -20,6 +20,9 @@ package voyage.security.user
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
 import spock.lang.Specification
 import voyage.security.crypto.CryptoService
 
@@ -41,8 +44,16 @@ class UserServiceIntegrationSpec extends Specification {
     }
 
     def 'save - update User details with Valid Password'() {
+        given:
+        SecurityContext securityContext = Mock(SecurityContext)
+        SecurityContextHolder.context = securityContext
+        Authentication authentication = Mock(Authentication)
+        securityContext.authentication >> authentication
+        authentication.isAuthenticated() >> true
+        authentication.principal >> user
+
         when:
-            User savedUser = userService.saveDetached(user)
+        User savedUser = userService.saveDetached(user)
 
         then:
             savedUser.username == 'username'

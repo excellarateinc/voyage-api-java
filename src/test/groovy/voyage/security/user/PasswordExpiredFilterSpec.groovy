@@ -18,6 +18,7 @@
  */
 package voyage.security.user
 
+import groovy.time.TimeCategory
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
 import spock.lang.Specification
@@ -136,6 +137,10 @@ class PasswordExpiredFilterSpec extends Specification {
             Authentication userPrincipal = Mock(Authentication)
             UserDetails userDetails = Mock(UserDetails)
             PrintWriter responseWriter = Mock(PrintWriter)
+            Date passwordCreatedDate = new Date()
+            use(TimeCategory) {
+                passwordCreatedDate -= 100.days
+            }
 
         when:
             filter.doFilter(request, response, filterChain)
@@ -145,7 +150,7 @@ class PasswordExpiredFilterSpec extends Specification {
             1 * request.userPrincipal >> userPrincipal
             2 * userPrincipal.principal >> userDetails
             1 * userDetails.username >> 'test'
-            1 * userService.findByUsername('test') >> new User(isCredentialsExpired:false, passwordCreatedDate:new Date() - 100 )
+            1 * userService.findByUsername('test') >> new User(isCredentialsExpired:false, passwordCreatedDate:passwordCreatedDate )
             1 * request.pathInfo
             1 * response.writer >> responseWriter
             1 * responseWriter.append('[{"error":"403_password_expired",' +
@@ -159,7 +164,12 @@ class PasswordExpiredFilterSpec extends Specification {
         given:
             Authentication userPrincipal = Mock(Authentication)
             UserDetails userDetails = Mock(UserDetails)
-            filter.passwordResetDays = 0
+            Date passwordCreatedDate = new Date()
+            use(TimeCategory) {
+                passwordCreatedDate -= 100.days
+            }
+
+        filter.passwordResetDays = 0
 
         when:
             filter.doFilter(request, response, filterChain)
@@ -169,7 +179,7 @@ class PasswordExpiredFilterSpec extends Specification {
             1 * request.userPrincipal >> userPrincipal
             2 * userPrincipal.principal >> userDetails
             1 * userDetails.username >> 'test'
-            1 * userService.findByUsername('test') >> new User(isCredentialsExpired:false, passwordCreatedDate:new Date() - 100 )
+            1 * userService.findByUsername('test') >> new User(isCredentialsExpired:false, passwordCreatedDate:passwordCreatedDate)
             1 * request.pathInfo
             1 * filterChain.doFilter(request, response)
     }

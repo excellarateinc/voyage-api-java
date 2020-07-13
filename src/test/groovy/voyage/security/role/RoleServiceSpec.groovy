@@ -35,7 +35,7 @@ class RoleServiceSpec extends Specification {
 
     def 'listAll - returns a single result' () {
         setup:
-            roleRepository.findAll() >> [role]
+            roleRepository.findAllByIsDeletedFalse() >> [role]
         when:
             Iterable<Role> roleList = roleService.listAll()
         then:
@@ -44,7 +44,7 @@ class RoleServiceSpec extends Specification {
 
     def 'save - applies the values and calls the roleRepository' () {
         setup:
-            roleRepository.save(_) >> role
+            roleRepository.save(_ as Role) >> role
         when:
             Role savedRole = roleService.saveDetached(role)
         then:
@@ -55,9 +55,9 @@ class RoleServiceSpec extends Specification {
 
     def 'get - calls the roleRepository.findOne' () {
         setup:
-            roleRepository.findOne(_) >> role
+            roleRepository.findByIdAndIsDeletedFalse(_ as Long) >> role
         when:
-            Role fetchedRole = roleService.get(1)
+            Role fetchedRole = roleService.get(1L)
         then:
             'Super User' == fetchedRole.name
             'ROLE_SUPER' == fetchedRole.authority
@@ -66,16 +66,16 @@ class RoleServiceSpec extends Specification {
 
     def 'delete - verifies the object and calls roleRepository.delete' () {
         setup:
-            roleRepository.findOne(_) >> role
+            roleRepository.findByIdAndIsDeletedFalse(_ as Long) >> role
         when:
-            roleService.delete(1)
+            roleService.delete(1L)
         then:
             role.isDeleted
     }
 
     def 'addPermission - inserts the permission if it does not already exist'() {
         setup:
-            roleRepository.save(_) >> role
+            roleRepository.save(_ as Role) >> role
         when:
             Role savedRole = roleService.saveDetached(role)
         then:
@@ -86,7 +86,7 @@ class RoleServiceSpec extends Specification {
 
     def 'findByAuthority - passes the request to the roleRepository'() {
         setup:
-            roleRepository.findByAuthority('anything') >> role
+            roleRepository.findByAuthorityAndIsDeletedFalse('anything') >> role
         when:
             Role savedRole = roleService.findByAuthority('anything')
         then:

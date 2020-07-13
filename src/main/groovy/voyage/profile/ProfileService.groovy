@@ -37,6 +37,9 @@ class ProfileService {
     @Value('${app.name}')
     private String appName
 
+    @Value('${app.contact-support.email}')
+    private String appSupportEmail
+
     @Autowired
     ProfileService(UserService userService, MailService mailService) {
         this.userService = userService
@@ -71,9 +74,12 @@ class ProfileService {
         // Send the welcome e-mail to the email address
         if (newUser.email) {
             MailMessage message = new MailMessage()
+            message.from = appSupportEmail
             message.to = newUser.email
             message.subject = "Welcome to ${appName}"
             message.template = 'welcome.ftl'
+            message.model.put('appName', appName)
+            message.model.put('appSupportEmail', appSupportEmail)
             mailService.send(message)
         }
 
