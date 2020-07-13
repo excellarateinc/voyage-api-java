@@ -56,8 +56,8 @@ spring:
 #######################################################################################################################
 security:
 
-  ignored: /resources/**, /webjars/**
-  permitAll: /login, /api/status
+  ignored: /resources/**, /webjars/**, /docs, /docs/**
+  permitAll: /login, /api/status, /api/**/profiles/register, /actuator/**
 
   user-roles:
     default-authority: role.standard_user
@@ -103,7 +103,7 @@ security:
     store-response-body: true
 
   user-verification:
-    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profiles/register
     verify-code-expire-minutes: 30
 
   password-verification:

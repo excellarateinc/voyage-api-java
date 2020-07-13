@@ -37,7 +37,7 @@ class SecurityIntegrationSpec extends AuthenticatedIntegrationTest {
             responseEntity.statusCode.value() == 401
             responseEntity.body.size() == 1
             responseEntity.body[0].error == '401_unauthorized'
-            responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
+            responseEntity.body[0].errorDescription == '401 Unauthorized. '
     }
 
     def 'Anonymous access to "/resources/css" is valid'() {
@@ -64,7 +64,7 @@ class SecurityIntegrationSpec extends AuthenticatedIntegrationTest {
             responseEntity.statusCode.value() == 401
             responseEntity.body.size() == 1
             responseEntity.body[0].error == '401_unauthorized'
-            responseEntity.body[0].errorDescription == '401 Unauthorized. Full authentication is required to access this resource'
+            responseEntity.body[0].errorDescription == '401 Unauthorized. '
     }
 
     def 'Anonymous access to "/oauth/authorize" is redirected to the /login page'() {

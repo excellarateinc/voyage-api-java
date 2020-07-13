@@ -121,10 +121,10 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
         then:
             responseEntity.statusCode.value() == 400
             responseEntity.body.size() == 4
-            responseEntity.body.find { it.error == 'password.may_not_be_empty' && it.errorDescription == 'may not be empty' }
-            responseEntity.body.find { it.error == 'firstname.may_not_be_empty' && it.errorDescription == 'may not be empty' }
-            responseEntity.body.find { it.error == 'username.may_not_be_empty' && it.errorDescription == 'may not be empty' }
-            responseEntity.body.find { it.error == 'lastname.may_not_be_empty' && it.errorDescription == 'may not be empty' }
+            responseEntity.body.find { it.error == 'savedetached.userin.password.must_not_be_blank' && it.errorDescription == 'must not be blank' }
+            responseEntity.body.find { it.error == 'savedetached.userin.lastname.must_not_be_blank' && it.errorDescription == 'must not be blank' }
+            responseEntity.body.find { it.error == 'savedetached.userin.firstname.must_not_be_blank' && it.errorDescription == 'must not be blank' }
+            responseEntity.body.find { it.error == 'savedetached.userin.username.must_not_be_blank' && it.errorDescription == 'must not be blank' }
     }
 
     def '/api/v1/profiles/register POST - Profile create fails with error due to email format invalid'() {
@@ -140,13 +140,13 @@ class ProfileControllerIntegrationSpec extends AuthenticatedIntegrationTest {
 
         then:
             responseEntity.statusCode.value() == 400
-            responseEntity.body[0].error == 'email.not_a_well-formed_email_address'
-            responseEntity.body[0].errorDescription == 'not a well-formed email address'
+            responseEntity.body[0].error == 'savedetached.userin.email.must_be_a_well-formed_email_address'
+            responseEntity.body[0].errorDescription == 'must be a well-formed email address'
     }
 
     def '/api/v1/profiles/register POST - Profile create fails with error due to password policy violation'() {
         given:
-            User user = new User(firstName:'Test1', lastName:'User', username:'username44', email:'test@', password:'password')
+            User user = new User(firstName:'Test1', lastName:'User', username:'username44', email:'test@test.com', password:'password')
             user.phones = [new UserPhone(phoneNumber:'+1-800-888-8888', phoneType:PhoneType.MOBILE)]
             HttpHeaders headers = new HttpHeaders()
             headers.setContentType(MediaType.APPLICATION_JSON)
