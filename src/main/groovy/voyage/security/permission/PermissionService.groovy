@@ -46,7 +46,7 @@ class PermissionService {
     }
 
     Permission findByName(@NotNull String name) {
-        Permission permission = permissionRepository.findByName(name)
+        Permission permission = permissionRepository.findByNameAndIsDeletedFalse(name)
         if (!permission) {
             throw new UnknownIdentifierException("Unknown permission name given: ${name}")
         }
@@ -62,7 +62,7 @@ class PermissionService {
     }
 
     Permission get(@NotNull Long id) {
-        Permission permission = permissionRepository.findOne(id)
+        Permission permission = permissionRepository.findByIdAndIsDeletedFalse(id)
         if (!permission) {
             throw new UnknownIdentifierException()
         }
@@ -70,7 +70,7 @@ class PermissionService {
     }
 
     Iterable<Permission> listAll() {
-        return permissionRepository.findAll()
+        return permissionRepository.findAllByIsDeletedFalse()
     }
 
     Permission saveDetached(@Valid Permission permission) {

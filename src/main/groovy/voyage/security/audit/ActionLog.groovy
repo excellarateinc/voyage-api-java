@@ -29,7 +29,7 @@ import javax.validation.constraints.NotNull
 @EqualsAndHashCode
 class ActionLog {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     Long id
 
     @NotNull
@@ -73,6 +73,5 @@ class ActionLog {
     @NotNull
     Date createdDate
 
-    @NotNull
     Date lastModifiedDate
 }

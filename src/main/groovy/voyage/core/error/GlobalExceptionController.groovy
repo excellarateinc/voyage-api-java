@@ -19,6 +19,7 @@
 package voyage.core.error
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.web.error.ErrorAttributeOptions
 import org.springframework.boot.web.servlet.error.ErrorAttributes
 import org.springframework.boot.web.servlet.error.ErrorController
 import org.springframework.http.HttpStatus
@@ -63,6 +64,8 @@ class GlobalExceptionController implements ErrorController {
     }
 
     private Map<String, Object> getErrorAttributes(WebRequest request, boolean includeStackTrace = false) {
-        return errorAttributes.getErrorAttributes(request, includeStackTrace)
+        ErrorAttributeOptions errorAttributeOptions = includeStackTrace ?
+                ErrorAttributeOptions.of(ErrorAttributeOptions.Include.STACK_TRACE) : ErrorAttributeOptions.defaults()
+        return errorAttributes.getErrorAttributes(request, errorAttributeOptions)
     }
 }

@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.config.BeanIds
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
@@ -52,15 +53,20 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private PermissionBasedUserDetailsService permissionBasedUserDetailsService
 
-    @Autowired
-    void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-
             // Register the custom Permission Based User Details Service
             .userDetailsService(permissionBasedUserDetailsService)
 
             // Override the default password encoder
             .passwordEncoder(CryptoService.PASSWORD_ENCODER)
+    }
+
+    @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
+    @Override
+    AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean()
     }
 
     /**
@@ -101,9 +107,4 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(ignoredUrls)
     }
 
-    @Override
-    @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
 }

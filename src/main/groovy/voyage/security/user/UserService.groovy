@@ -85,11 +85,11 @@ class UserService {
     }
 
     User findByUsername(@NotNull String username) {
-        return userRepository.findByUsername(username)
+        return userRepository.findByUsernameAndIsDeletedFalse(username)
     }
 
     User get(@NotNull Long id) {
-        User user = userRepository.findOne(id)
+        User user = userRepository.findByIdAndIsDeletedFalse(id)
         if (!user) {
             throw new UnknownIdentifierException()
         }
@@ -97,7 +97,7 @@ class UserService {
     }
 
     Iterable<User> listAll() {
-        return userRepository.findAll()
+        return userRepository.findAllByIsDeletedFalse()
     }
 
     User saveDetached(@Valid User userIn) {
@@ -158,7 +158,7 @@ class UserService {
     }
 
     boolean isUsernameUnique(String username, User user = null) {
-        User matchingUser = userRepository.findByUsername(username)
+        User matchingUser = userRepository.findByUsernameAndIsDeletedFalse(username)
         if (matchingUser == user) {
             return true
         }

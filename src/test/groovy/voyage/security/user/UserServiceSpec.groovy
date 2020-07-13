@@ -54,7 +54,7 @@ class UserServiceSpec extends Specification {
         when:
             Iterable<User> userList = userService.listAll()
         then:
-            userRepository.findAll() >> [user]
+            userRepository.findAllByIsDeletedFalse() >> [user]
             1 == userList.size()
     }
 
@@ -114,7 +114,7 @@ class UserServiceSpec extends Specification {
         when:
             userService.saveDetached(user)
         then:
-            1 * userRepository.findOne(user.id) >> user
+            1 * userRepository.findByIdAndIsDeletedFalse(user.id) >> user
             0 * userRepository.save(_)
             thrown(MobilePhoneRequiredException)
     }
@@ -128,7 +128,7 @@ class UserServiceSpec extends Specification {
         when:
             userService.saveDetached(user)
         then:
-            1 * userRepository.findOne(existingUser.id) >> existingUser
+            1 * userRepository.findByIdAndIsDeletedFalse(existingUser.id) >> existingUser
             0 * userRepository.save(_)
             thrown(MobilePhoneRequiredException)
     }
@@ -147,7 +147,7 @@ class UserServiceSpec extends Specification {
             )
             User updatedUser = userService.saveDetached(userIn)
         then:
-            userRepository.findOne(user.id) >> user
+            userRepository.findByIdAndIsDeletedFalse(user.id) >> user
             userRepository.save(user) >> user
             passwordValidator.validate(_) >> validPasswordResult
             updatedUser.isEnabled
@@ -176,7 +176,7 @@ class UserServiceSpec extends Specification {
         when:
             User updatedUser = userService.saveDetached(userIn)
         then:
-            userRepository.findOne(user.id) >> user
+            userRepository.findByIdAndIsDeletedFalse(user.id) >> user
             userRepository.save(user) >> user
             cryptoService.hashEncode(userIn.password) >> 'Test&1234'
 
@@ -205,7 +205,7 @@ class UserServiceSpec extends Specification {
         when:
             User updatedUser = userService.saveDetached(userIn)
         then:
-            userRepository.findOne(user.id) >> user
+            userRepository.findByIdAndIsDeletedFalse(user.id) >> user
             userRepository.save(user) >> user
             0 * cryptoService.hashEncode(_) // No password encoding
 
@@ -239,7 +239,7 @@ class UserServiceSpec extends Specification {
         when:
             User updatedUser = userService.saveDetached(userIn)
         then:
-            userRepository.findOne(user.id) >> user
+            userRepository.findByIdAndIsDeletedFalse(user.id) >> user
             userRepository.save(user) >> user
             0 * cryptoService.hashEncode(_) // No password encoding
             passwordValidator.validate(_) >> validPasswordResult
@@ -281,7 +281,7 @@ class UserServiceSpec extends Specification {
             userService.saveDetached(userIn)
         then:
             thrown(TooManyPhonesException)
-            userRepository.findOne(user.id) >> user
+            userRepository.findByIdAndIsDeletedFalse(user.id) >> user
             0 * userRepository.save(user)
             0 * cryptoService.hashEncode(_) // No password encoding
     }
@@ -309,7 +309,7 @@ class UserServiceSpec extends Specification {
         when:
             userService.saveDetached(userIn)
         then:
-            userRepository.findOne(user.id) >> user
+            userRepository.findByIdAndIsDeletedFalse(user.id) >> user
             0 * userRepository.save(user) >> user
             0 * cryptoService.hashEncode(_) // No password encoding
 
@@ -339,7 +339,7 @@ class UserServiceSpec extends Specification {
         when:
             User savedUser = userService.saveDetached(userIn)
         then:
-            userRepository.findOne(user.id) >> user
+            userRepository.findByIdAndIsDeletedFalse(user.id) >> user
             1 * userRepository.save(user) >> user
             0 * cryptoService.hashEncode(_) // No password encoding
             passwordValidator.validate(_) >> validPasswordResult
@@ -370,7 +370,7 @@ class UserServiceSpec extends Specification {
         when:
             userService.saveDetached(user)
         then:
-            userRepository.findByUsername(_) >> user
+            userRepository.findByUsernameAndIsDeletedFalse(_) >> user
             thrown(UsernameAlreadyInUseException)
     }
 
@@ -379,8 +379,8 @@ class UserServiceSpec extends Specification {
             User newUser = new User(username:'newusername', firstName:'LSS', lastName:'India')
             userService.saveDetached(newUser)
         then:
-            userRepository.findOne(_) >> user
-            userRepository.findByUsername(_) >> user
+            userRepository.findByIdAndIsDeletedFalse(_) >> user
+            userRepository.findByUsernameAndIsDeletedFalse(_) >> user
             thrown(UsernameAlreadyInUseException)
     }
 
@@ -388,7 +388,7 @@ class UserServiceSpec extends Specification {
         when:
             User fetchedUser = userService.get(1)
         then:
-            userRepository.findOne(_) >> user
+            userRepository.findByIdAndIsDeletedFalse(_) >> user
             'LSS' == fetchedUser.firstName
             'India' == fetchedUser.lastName
             !fetchedUser.isDeleted
@@ -398,7 +398,7 @@ class UserServiceSpec extends Specification {
         when:
             userService.delete(user.id)
         then:
-            userRepository.findOne(_) >> user
+            userRepository.findByIdAndIsDeletedFalse(_) >> user
             user.isDeleted
     }
 
@@ -413,7 +413,7 @@ class UserServiceSpec extends Specification {
             cryptoService.encrypt('Test&1234' ) >> 'Test&1234'
             passwordValidator.validate(_) >> validPasswordResult
             1 * cryptoService.hashEncode('Efgh@5678')
-            1 * userRepository.findByUsername('username')
+            1 * userRepository.findByUsernameAndIsDeletedFalse('username')
             1 * userRepository.save(user)
     }
 
@@ -428,7 +428,7 @@ class UserServiceSpec extends Specification {
             cryptoService.encrypt('Test&1234' ) >> 'Test&1234'
             passwordValidator.validate(_) >> validPasswordResult
             0 * cryptoService.hashEncode('Efgh@5678')
-            1 * userRepository.findByUsername('username')
+            1 * userRepository.findByUsernameAndIsDeletedFalse('username')
             1 * userRepository.save(user)
     }
 

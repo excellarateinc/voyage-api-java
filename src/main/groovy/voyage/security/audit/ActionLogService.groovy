@@ -65,7 +65,6 @@ class ActionLogService {
             }
             return actionLogRepository.save(existingActionLog)
         }
-        actionLog.createdDate = new Date()
         actionLog.lastModifiedDate = new Date()
         return actionLogRepository.save(actionLog)
     }
