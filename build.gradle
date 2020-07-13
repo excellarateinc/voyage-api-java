@@ -76,8 +76,8 @@ dependencies {
     implementation 'org.webjars:bootstrap:4.5.0'
 
     // Amazon Web Service (AWS)
-    implementation 'org.springframework.cloud:spring-cloud-aws-autoconfigure:2.2.2.RELEASE'
-    implementation 'org.springframework.cloud:spring-cloud-aws-messaging:2.2.2.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-aws-autoconfigure'
+    implementation 'org.springframework.cloud:spring-cloud-aws-messaging'
 
     // Other
     implementation 'org.apache.commons:commons-lang3:3.10'

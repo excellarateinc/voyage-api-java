@@ -26,7 +26,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.context.request.ServletWebRequest
+import org.springframework.web.context.request.WebRequest
 
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
@@ -45,7 +45,7 @@ class GlobalExceptionController implements ErrorController {
     }
 
     @RequestMapping(value = '/error')
-    ResponseEntity<Iterable<ErrorResponse>> handleError(HttpServletRequest request, HttpServletResponse response) {
+    ResponseEntity<Iterable<ErrorResponse>> handleError(HttpServletRequest request, WebRequest webRequest, HttpServletResponse response) {
         // Handle AppExceptions by the definition embedded in the exception
         Exception exception = (Exception)request.getAttribute('javax.servlet.error.exception')
         if (exception instanceof AppException) {
@@ -53,7 +53,7 @@ class GlobalExceptionController implements ErrorController {
         }
 
         // Handle unknown exceptions based on the error details given
-        Map errorMap = getErrorAttributes(request, false)
+        Map errorMap = getErrorAttributes(webRequest, false)
         String errorCode = ErrorUtils.getErrorCode((int)errorMap.status)
         String errorMessage = "${errorMap.status} ${errorMap.error}. ${errorMap.message}"
         ErrorResponse errorResponse = new ErrorResponse(
@@ -63,10 +63,9 @@ class GlobalExceptionController implements ErrorController {
         return new ResponseEntity([errorResponse], HttpStatus.valueOf(response.status))
     }
 
-    private Map<String, Object> getErrorAttributes(HttpServletRequest request, boolean includeStackTrace = false) {
-        ServletWebRequest requestAttributes = new ServletWebRequest(request)
+    private Map<String, Object> getErrorAttributes(WebRequest request, boolean includeStackTrace = false) {
         ErrorAttributeOptions errorAttributeOptions = includeStackTrace ?
                 ErrorAttributeOptions.of(ErrorAttributeOptions.Include.STACK_TRACE) : ErrorAttributeOptions.defaults()
-        return errorAttributes.getErrorAttributes(requestAttributes, errorAttributeOptions)
+        return errorAttributes.getErrorAttributes(request, errorAttributeOptions)
     }
 }

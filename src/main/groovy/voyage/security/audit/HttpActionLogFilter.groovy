@@ -123,6 +123,7 @@ class HttpActionLogFilter extends OncePerRequestFilter {
             requestHeaders = getHeaders(request)
             url = request.requestURL
             createdDate = new Date()
+            lastModifiedDate = new Date()
         }
         if (request.queryString) {
             actionLog.url += '?' + request.queryString
