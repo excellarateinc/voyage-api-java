@@ -37,7 +37,7 @@ class ActionLogService {
     }
 
     ActionLog get(@NotNull Long id) {
-        ActionLog actionLog = actionLogRepository.findOne(id)
+        ActionLog actionLog = actionLogRepository.findById(id).orElse(null)
         if (!actionLog) {
             throw new UnknownIdentifierException()
         }

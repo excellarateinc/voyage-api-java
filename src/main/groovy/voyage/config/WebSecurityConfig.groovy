@@ -20,7 +20,9 @@ package voyage.config
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
@@ -75,10 +77,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             // Allow any user to access 'login' and web 'resources' like CSS/JS
             .authorizeRequests()
                 .antMatchers(permitAllUrls).permitAll()
-                .and()
-
-            // Enforce every request to be authenticated
-            .authorizeRequests()
+                // Enforce every request to be authenticated
                 .anyRequest().authenticated()
                 .and()
 
@@ -100,5 +99,11 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         web
             .ignoring()
             .antMatchers(ignoredUrls)
+    }
+
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }

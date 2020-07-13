@@ -55,6 +55,6 @@ class StatusController {
     }
 
     private static String getCurrentDate() {
-        new Date().format("yyyy-MM-dd'T'HH:mm:ssXXX")
+        new Date()
     }
 }

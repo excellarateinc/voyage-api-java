@@ -76,7 +76,7 @@ server:
 security:
 
   ignored: /resources/**, /webjars/**, /docs, /docs/**
-  permitAll: /login, /api/status, /api/**/profiles/register
+  permitAll: /login, /api/status, /api/**/profiles/register, /actuator/**
 
   user-roles:
     default-authority: role.standard_user
@@ -165,3 +165,14 @@ cloud:
     region:
       auto: true
       static: us-east-1
+
+#######################################################################################################################
+# Actuator Configuration
+#######################################################################################################################
+management:
+  endpoint:
+    health:
+      show-details: always
+  health:
+    mail:
+      enabled: false
