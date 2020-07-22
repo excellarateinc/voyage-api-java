@@ -30,7 +30,6 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import voyage.security.PermissionBasedUserDetailsService
-import voyage.security.crypto.CryptoService
 
 /**
  * General Spring Web Security configuration that defines a custom UserDetailsService for looking up and authenticating
@@ -58,9 +57,6 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth
             // Register the custom Permission Based User Details Service
             .userDetailsService(permissionBasedUserDetailsService)
-
-            // Override the default password encoder
-            .passwordEncoder(CryptoService.PASSWORD_ENCODER)
     }
 
     @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
@@ -106,5 +102,4 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .ignoring()
             .antMatchers(ignoredUrls)
     }
-
 }
