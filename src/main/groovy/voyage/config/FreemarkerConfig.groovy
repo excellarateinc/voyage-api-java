@@ -27,7 +27,8 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer
  * Overrides the default spring-boot configuration to allow adding shared variables to the freemarker context
  */
 @Configuration
-class FreemarkerConfig extends FreeMarkerAutoConfiguration.FreeMarkerWebConfiguration  {
+class FreemarkerConfig {
+        //TODO 2020 update  address extends FreeMarkerAutoConfiguration.FreeMarkerWebConfiguration  {
 
     @Value('${app.name}')
     private String appName
@@ -41,7 +42,7 @@ class FreemarkerConfig extends FreeMarkerAutoConfiguration.FreeMarkerWebConfigur
     @Value('${app.contact-support.website}')
     private String website
 
-    @Override
+    // TODO FIX @Override
     FreeMarkerConfigurer freeMarkerConfigurer() {
         FreeMarkerConfigurer configurer = super.freeMarkerConfigurer()
         Map sharedVariables = [:]

@@ -22,8 +22,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import groovy.transform.EqualsAndHashCode
 import org.hibernate.annotations.Where
 import org.hibernate.envers.Audited
-import org.hibernate.validator.constraints.Email
-import org.hibernate.validator.constraints.NotBlank
 import voyage.security.audit.AuditableEntity
 import voyage.security.role.Role
 
@@ -34,6 +32,8 @@ import javax.persistence.JoinColumn
 import javax.persistence.JoinTable
 import javax.persistence.ManyToMany
 import javax.persistence.OneToMany
+import javax.validation.constraints.Email
+import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 
 @Entity

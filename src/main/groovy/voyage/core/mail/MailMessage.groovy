@@ -25,6 +25,6 @@ class MailMessage {
     String bcc
     String subject
     String template
-    Map<String, Object> model
+    Map<String, Object> model = [:]
     String text
 }

@@ -18,10 +18,11 @@
  */
 package voyage.core.error
 
-import org.springframework.boot.autoconfigure.web.ErrorAttributes
+import org.springframework.boot.web.error.ErrorAttributeOptions
+import org.springframework.boot.web.servlet.error.ErrorAttributes
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.context.request.RequestAttributes
+import org.springframework.web.context.request.WebRequest
 import spock.lang.Specification
 
 import javax.servlet.http.HttpServletRequest
@@ -30,20 +31,21 @@ import javax.servlet.http.HttpServletResponse
 class GlobalExceptionControllerSpec extends Specification {
     def 'handleError() processes a HttpServlet exception'() {
         given:
-            ErrorAttributes errorAttributes = Mock(ErrorAttributes)
-            GlobalExceptionHandler handler = new GlobalExceptionHandler()
+            def errorAttributes = Mock(ErrorAttributes)
+            def handler = new GlobalExceptionHandler()
 
-            Map errorMap = [status:400, error:'test error', message:'test message']
-            GlobalExceptionController controller = new GlobalExceptionController(errorAttributes, handler)
+            def errorMap = [status:400, error:'test error', message:'test message']
+            def controller = new GlobalExceptionController(errorAttributes, handler)
 
             def httpServletRequest = Mock(HttpServletRequest)
             def httpServletResponse = Mock(HttpServletResponse)
+            def webRequest = Mock(WebRequest)
 
         when:
-            ResponseEntity<Iterable<ErrorResponse>> responseEntity = controller.handleError(httpServletRequest, httpServletResponse)
+            ResponseEntity<Iterable<ErrorResponse>> responseEntity = controller.handleError(httpServletRequest, webRequest, httpServletResponse)
 
         then:
-            errorAttributes.getErrorAttributes(_ as RequestAttributes, false) >> errorMap
+            errorAttributes.getErrorAttributes(webRequest, _ as ErrorAttributeOptions) >> errorMap
             httpServletResponse.status >> HttpStatus.BAD_REQUEST.value()
 
             responseEntity.statusCodeValue == 400
@@ -59,9 +61,10 @@ class GlobalExceptionControllerSpec extends Specification {
 
             def httpServletRequest = Mock(HttpServletRequest)
             def httpServletResponse = Mock(HttpServletResponse)
+            def webRequest = Mock(WebRequest)
 
         when:
-           ResponseEntity<Iterable<ErrorResponse>> responseEntity = controller.handleError(httpServletRequest, httpServletResponse)
+           ResponseEntity<Iterable<ErrorResponse>> responseEntity = controller.handleError(httpServletRequest, webRequest, httpServletResponse)
 
         then:
             httpServletRequest.getAttribute('javax.servlet.error.exception') >> new AppException(HttpStatus.BAD_REQUEST, 'Test message')

@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+import java.text.SimpleDateFormat
+
 @RestController
 @RequestMapping(['/api/status'])
 class StatusController {
@@ -55,6 +57,6 @@ class StatusController {
     }
 
     private static String getCurrentDate() {
-        new Date().format("yyyy-MM-dd'T'HH:mm:ssXXX")
+        return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.default).format(new Date())
     }
 }

@@ -64,22 +64,22 @@ databaseChangeLog:
                     nullable: true
               - column:
                   name: request_headers
-                  type: text
+                  type: clob
                   constraints:
                     nullable: true
               - column:
                   name: request_body
-                  type: text
+                  type: clob
                   constraints:
                     nullable: true
               - column:
                   name: response_headers
-                  type: text
+                  type: clob
                   constraints:
                     nullable: true
               - column:
                   name: response_body
-                  type: text
+                  type: clob
                   constraints:
                     nullable: true
               - column:

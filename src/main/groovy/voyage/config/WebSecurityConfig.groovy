@@ -20,14 +20,16 @@ package voyage.config
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.config.BeanIds
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import voyage.security.PermissionBasedUserDetailsService
-import voyage.security.crypto.CryptoService
 
 /**
  * General Spring Web Security configuration that defines a custom UserDetailsService for looking up and authenticating
@@ -50,15 +52,17 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private PermissionBasedUserDetailsService permissionBasedUserDetailsService
 
-    @Autowired
-    void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth
-
             // Register the custom Permission Based User Details Service
             .userDetailsService(permissionBasedUserDetailsService)
+    }
 
-            // Override the default password encoder
-            .passwordEncoder(CryptoService.PASSWORD_ENCODER)
+    @Bean(name = BeanIds.AUTHENTICATION_MANAGER)
+    @Override
+    AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean()
     }
 
     /**
@@ -75,10 +79,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             // Allow any user to access 'login' and web 'resources' like CSS/JS
             .authorizeRequests()
                 .antMatchers(permitAllUrls).permitAll()
-                .and()
-
-            // Enforce every request to be authenticated
-            .authorizeRequests()
+                // Enforce every request to be authenticated
                 .anyRequest().authenticated()
                 .and()
 

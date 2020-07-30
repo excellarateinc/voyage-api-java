@@ -18,6 +18,7 @@
  */
 package voyage.security.verify
 
+import groovy.time.TimeCategory
 import spock.lang.Specification
 import voyage.core.sms.AwsSmsService
 import voyage.security.crypto.CryptoService
@@ -51,7 +52,9 @@ class VerifyServiceSpec extends Specification {
         setup:
             user.isVerifyRequired = false
             user.phones[2].verifyCode = 'code'
-            user.phones[2].verifyCodeExpiresOn = new Date() + 1
+            use(TimeCategory) {
+                user.phones[2].verifyCodeExpiresOn = new Date() + 1.day
+            }
             userService.currentUser >> user
         when:
             boolean isVerifyCurrentUser = verifyService.verifyCurrentUser('code')
@@ -63,7 +66,9 @@ class VerifyServiceSpec extends Specification {
         setup:
             user.isVerifyRequired = true
             user.phones[1].verifyCode = 'code'
-            user.phones[1].verifyCodeExpiresOn = new Date() - 1
+            use(TimeCategory) {
+                user.phones[1].verifyCodeExpiresOn = new Date() - 1.day
+            }
             userService.currentUser >> user
         when:
              verifyService.verifyCurrentUser('code')
@@ -74,7 +79,9 @@ class VerifyServiceSpec extends Specification {
     def 'verifyCurrentUser - validate InvalidVerificationCodeException' () {
         setup:
             user.isVerifyRequired = true
-            user.phones[1].verifyCodeExpiresOn = new Date() + 1
+            use(TimeCategory) {
+                user.phones[1].verifyCodeExpiresOn = new Date() + 1.day
+            }
             user.phones[1].verifyCode = 'code'
             userService.currentUser >> user
         when:
@@ -101,12 +108,16 @@ class VerifyServiceSpec extends Specification {
             user.phones[1].phoneType == PhoneType.MOBILE
             user.phones[1].phoneNumber == '223-123-1233'
             user.phones[1].verifyCode
-            user.phones[1].verifyCodeExpiresOn <= new Date() + 30
+            use(TimeCategory) {
+                user.phones[1].verifyCodeExpiresOn <= new Date() + 30.days
+            }
 
             user.phones[2].phoneType == PhoneType.MOBILE
             user.phones[2].phoneNumber == '323-123-1233'
             user.phones[2].verifyCode != user.phones[1].verifyCode
-            user.phones[2].verifyCodeExpiresOn <= new Date() + 30
+            use(TimeCategory) {
+                user.phones[2].verifyCodeExpiresOn <= new Date() + 30.days
+            }
 
             2 * smsService.send(_)
     }
@@ -156,36 +167,37 @@ class VerifyServiceSpec extends Specification {
         then:
             user.isVerifyRequired
             user.phones.size() == 6
+            use(TimeCategory) {
+                user.phones[0].phoneType == PhoneType.MOBILE
+                user.phones[0].phoneNumber == '123-123-1233'
+                user.phones[0].verifyCode
+                user.phones[0].verifyCodeExpiresOn
 
-            user.phones[0].phoneType == PhoneType.MOBILE
-            user.phones[0].phoneNumber == '123-123-1233'
-            user.phones[0].verifyCode
-            user.phones[0].verifyCodeExpiresOn
+                user.phones[1].phoneType == PhoneType.MOBILE
+                user.phones[1].phoneNumber == '223-123-1233'
+                user.phones[1].verifyCode != user.phones[0].verifyCode
+                user.phones[1].verifyCodeExpiresOn <= new Date() + 30.days
 
-            user.phones[1].phoneType == PhoneType.MOBILE
-            user.phones[1].phoneNumber == '223-123-1233'
-            user.phones[1].verifyCode != user.phones[0].verifyCode
-            user.phones[1].verifyCodeExpiresOn <= new Date() + 30
+                user.phones[2].phoneType == PhoneType.MOBILE
+                user.phones[2].phoneNumber == '323-123-1233'
+                user.phones[2].verifyCode != user.phones[1].verifyCode
+                user.phones[2].verifyCodeExpiresOn <= new Date() + 30.days
 
-            user.phones[2].phoneType == PhoneType.MOBILE
-            user.phones[2].phoneNumber == '323-123-1233'
-            user.phones[2].verifyCode != user.phones[1].verifyCode
-            user.phones[2].verifyCodeExpiresOn <= new Date() + 30
+                user.phones[3].phoneType == PhoneType.MOBILE
+                user.phones[3].phoneNumber == '423-123-1233'
+                user.phones[3].verifyCode != user.phones[2].verifyCode
+                user.phones[3].verifyCodeExpiresOn <= new Date() + 30.days
 
-            user.phones[3].phoneType == PhoneType.MOBILE
-            user.phones[3].phoneNumber == '423-123-1233'
-            user.phones[3].verifyCode != user.phones[2].verifyCode
-            user.phones[3].verifyCodeExpiresOn <= new Date() + 30
+                user.phones[4].phoneType == PhoneType.MOBILE
+                user.phones[4].phoneNumber == '523-123-1233'
+                user.phones[4].verifyCode != user.phones[3].verifyCode
+                user.phones[4].verifyCodeExpiresOn <= new Date() + 30.days
 
-            user.phones[4].phoneType == PhoneType.MOBILE
-            user.phones[4].phoneNumber == '523-123-1233'
-            user.phones[4].verifyCode != user.phones[3].verifyCode
-            user.phones[4].verifyCodeExpiresOn <= new Date() + 30
-
-            user.phones[5].phoneType == PhoneType.MOBILE
-            user.phones[5].phoneNumber == '623-123-1233'
-            !user.phones[5].verifyCode
-            !user.phones[5].verifyCodeExpiresOn
+                user.phones[5].phoneType == PhoneType.MOBILE
+                user.phones[5].phoneNumber == '623-123-1233'
+                !user.phones[5].verifyCode
+                !user.phones[5].verifyCodeExpiresOn
+            }
 
             5 * smsService.send(_)
     }
@@ -212,7 +224,9 @@ class VerifyServiceSpec extends Specification {
             user.phones[1].phoneType == PhoneType.MOBILE
             user.phones[1].phoneNumber == '223-123-1233'
             user.phones[1].verifyCode != user.phones[0].verifyCode
-            user.phones[1].verifyCodeExpiresOn <= new Date() + 30
+            use(TimeCategory) {
+                user.phones[1].verifyCodeExpiresOn <= new Date() + 30.days
+            }
 
             1 * smsService.send(*_) >> { args ->
                 assert args[0].to == '123-123-1233'

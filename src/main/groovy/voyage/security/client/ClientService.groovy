@@ -54,7 +54,7 @@ class ClientService {
     }
 
     Client findByClientIdentifier(@NotNull String clientIdentifier) {
-        return clientRepository.findByClientIdentifier(clientIdentifier)
+        return clientRepository.findByClientIdentifierAndIsDeletedFalse(clientIdentifier)
     }
 
     Client save(@Valid Client client) {
