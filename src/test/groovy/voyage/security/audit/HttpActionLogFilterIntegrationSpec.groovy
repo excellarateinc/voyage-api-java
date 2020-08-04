@@ -193,10 +193,12 @@ class HttpActionLogFilterIntegrationSpec extends AuthenticatedIntegrationTest {
             actionLog2.requestBody == ''
             actionLog2.responseHeaders
             actionLog2.responseBody == '{"id":1,"firstName":"Super","lastName":"User","username":"super","email":"support@LighthouseSoftware.com",' +
-                        '"password":"$2a$10$.Qa2l9VysOeG5M8HhgUbQ.h8KlTBLdMY/slPwMtL/I5OYibYUFQle","isEnabled":true,"isAccountExpired":false,' +
-                        '"isAccountLocked":false,"isCredentialsExpired":false,"phones":[{"id":1,"phoneType":"Mobile","phoneNumber":"16518886021"},' +
-                        '{"id":2,"phoneType":"Office","phoneNumber":"16518886022"},{"id":3,"phoneType":"Home","phoneNumber":"16518886023"},' +
-                        '{"id":4,"phoneType":"Other","phoneNumber":"16518886024"}]}'
+                        '"password":"*********","isEnabled":true,"isAccountExpired":false,' +
+                        '"isAccountLocked":false,"isCredentialsExpired":false,"phones":[' +
+                        '{"id":4,"phoneType":"Other","phoneNumber":"16518886024"},' +
+                        '{"id":3,"phoneType":"Home","phoneNumber":"16518886023"},' +
+                        '{"id":2,"phoneType":"Office","phoneNumber":"16518886022"},' +
+                        '{"id":1,"phoneType":"Mobile","phoneNumber":"16518886021"}]}'
             actionLog2.createdDate
             actionLog2.lastModifiedDate
     }

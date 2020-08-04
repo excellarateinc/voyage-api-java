@@ -76,7 +76,7 @@ server:
 security:
 
   ignored: /resources/**, /webjars/**, /docs, /docs/**
-  permitAll: /login, /api/status, /api/**/profiles/register
+  permitAll: /login, /api/status, /api/**/profiles/register, /actuator/**
   applicationPath: /connectedhealth/**
 
   user-roles:
@@ -166,3 +166,14 @@ cloud:
     region:
       auto: true
       static: us-east-1
+
+#######################################################################################################################
+# Actuator Configuration
+#######################################################################################################################
+management:
+  endpoint:
+    health:
+      show-details: always
+  health:
+    mail:
+      enabled: false

@@ -36,3 +36,5 @@ bin
 
 #added application-local.yaml for developers to define their unique develop properties
 src/main/resources/application-local.yaml
+
+apidoc/package-lock.json

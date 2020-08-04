@@ -27,6 +27,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
+import javax.persistence.Lob
 import javax.persistence.ManyToOne
 import javax.validation.constraints.NotNull
 
@@ -34,7 +35,7 @@ import javax.validation.constraints.NotNull
 @EqualsAndHashCode
 class ActionLog {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     Long id
 
     @NotNull
@@ -63,17 +64,20 @@ class ActionLog {
 
     Long durationMs
 
+    @Lob
     String requestHeaders
 
+    @Lob
     String requestBody
 
+    @Lob
     String responseHeaders
 
+    @Lob
     String responseBody
 
     @NotNull
     Date createdDate
 
-    @NotNull
     Date lastModifiedDate
 }

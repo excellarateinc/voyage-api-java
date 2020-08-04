@@ -34,9 +34,9 @@ class ActionLogServiceSpec extends Specification {
 
     def 'get - calls the actionLogRepository.findOne' () {
         setup:
-            actionLogRepository.findOne(_) >> actionLog
+            actionLogRepository.findById(_ as Long) >> Optional.of(actionLog)
         when:
-            ActionLog fetchedActionLog = actionLogService.get(1)
+            ActionLog fetchedActionLog = actionLogService.get(1L)
         then:
             'http' == fetchedActionLog.clientProtocol
             '127.0.0.1' == fetchedActionLog.clientIpAddress
@@ -44,9 +44,9 @@ class ActionLogServiceSpec extends Specification {
 
     def 'get - UnknownIdentifierException' () {
         setup:
-            actionLogRepository.findOne(_) >> null
+            actionLogRepository.findById(_ as Long) >> Optional.empty()
         when:
-            actionLogService.get(1)
+            actionLogService.get(1L)
         then:
             thrown(UnknownIdentifierException)
     }

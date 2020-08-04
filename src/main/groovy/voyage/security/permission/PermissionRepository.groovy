@@ -23,11 +23,9 @@ import org.springframework.data.repository.CrudRepository
 
 interface PermissionRepository extends CrudRepository<Permission, Long> {
 
-    @Query('FROM Permission p WHERE p.id = ?1 AND p.isDeleted = false')
-    Permission findOne(Long id)
+    Permission findByIdAndIsDeletedFalse(Long id)
 
-    @Query('FROM Permission p WHERE p.isDeleted = false')
-    Iterable<Permission> findAll()
+    Iterable<Permission> findAllByIsDeletedFalse()
 
     @Query('''SELECT permission
                 FROM User as user
@@ -51,6 +49,5 @@ interface PermissionRepository extends CrudRepository<Permission, Long> {
                 ORDER BY permission.name ASC''')
     Iterable<Permission> findAllByClientId(Long id)
 
-    @Query('FROM Permission p WHERE p.name =?1 AND p.isDeleted = false')
-    Permission findByName(String name)
+    Permission findByNameAndIsDeletedFalse(String name)
 }

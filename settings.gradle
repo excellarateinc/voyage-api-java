@@ -1,0 +1,8 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        // TODO Cobertura 3.0.1 plugin unavailable in maven repos as of 7/7/2020 added pluginManagement
+        //  settings to settings.gradle to get from another repo. remove when available in gradlePluginCentral
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+    }
+}

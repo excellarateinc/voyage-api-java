@@ -18,17 +18,13 @@
  */
 package voyage.security.role
 
-import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 
 interface RoleRepository extends CrudRepository<Role, Long> {
 
-    @Query('FROM Role r WHERE r.id = ?1 AND r.isDeleted = false')
-    Role findOne(Long id)
+    Role findByIdAndIsDeletedFalse(Long id)
 
-    @Query('FROM Role r WHERE r.isDeleted = false')
-    Iterable<Role> findAll()
+    Iterable<Role> findAllByIsDeletedFalse()
 
-    @Query('FROM Role r WHERE authority = ?1 AND r.isDeleted = false')
-    Role findByAuthority(String authority)
+    Role findByAuthorityAndIsDeletedFalse(String authority)
 }
