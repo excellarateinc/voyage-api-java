@@ -1,0 +1,58 @@
+databaseChangeLog:
+  - changeSet:
+      id: v2.0-user-notification-settings-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: user-notification-settings
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    referencedTableName: user
+                    referencedColumnName: id
+              - column:
+                  name: is_email_enabled
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_sms_enabled
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_phone_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    referencedTableName: user_phone
+                    referencedColumnName: id
+  - changeSet:
+      id: v2.0-user-notification-settings-demo
+      author: Voyage
+      changes:
+        - insert:
+            tableName: user-notification-settings
+            columns:
+              - column:
+                  name: user_id
+                  valueNumeric: 1
+              - column:
+                  name: is_email_enabled
+                  valueBoolean: true
+              - column:
+                  name: is_sms_enabled
+                  valueBoolean: true
+              - column:
+                  name: user_phone_id
+                  valueNumeric: 1

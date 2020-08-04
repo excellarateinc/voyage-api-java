@@ -77,6 +77,7 @@ security:
 
   ignored: /resources/**, /webjars/**, /docs, /docs/**
   permitAll: /login, /api/status, /api/**/profiles/register
+  applicationPath: /connectedhealth/**
 
   user-roles:
     default-authority: role.standard_user

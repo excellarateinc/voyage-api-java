@@ -16,38 +16,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package voyage.core.error
+package voyage.connectedhealth.result
 
-import org.springframework.http.HttpStatus
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonValue
 
-/**
- * Basic exception that can be thrown by the application and will be caught by the DefaultExceptionHandler. This exception
- * will be translated into a general error back to the API consumer.
- */
-class AppException extends RuntimeException {
-    private final HttpStatus httpStatus
+enum ResultMethod {
+    SELF('Self'),
+    LAB('Lab'),
+    MANUAL('Manual'),
+    OTHER('Other')
 
-    AppException() {
-        super()
-        httpStatus = HttpStatus.BAD_REQUEST
+    final String code
+
+    ResultMethod(String code) {
+        this.code = code
     }
 
-    AppException(String message) {
-        super(message)
-        httpStatus = HttpStatus.BAD_REQUEST
+    @JsonValue
+    String toString() {
+        return code
     }
 
-    AppException(HttpStatus httpStatus, String message) {
-        super(message)
-        this.httpStatus = httpStatus
-    }
-
-    HttpStatus getHttpStatus() {
-        return httpStatus
-    }
-
-    String getErrorCode() {
-        ErrorUtils.getErrorCode(httpStatus.value())
+    @JsonCreator
+    static ResultMethod fromValue(String resultMethodText) {
+        try {
+            return valueOf(resultMethodText?.toUpperCase())
+        } catch (IllegalArgumentException ignored) {
+            return OTHER
+        }
     }
 }
-

@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/v2-0/health-organization.yaml
+  - include:
+      file: db/changelog/v2-0/health-organization-user.yaml
+  - include:
+      file: db/changelog/v2-0/result-type.yaml
+  - include:
+      file: db/changelog/v2-0/device.yaml
+  - include:
+      file: db/changelog/v2-0/user-device.yaml
+  - include:
+      file: db/changelog/v2-0/reminder.yaml
+  - include:
+      file: db/changelog/v2-0/result.yaml
+  - include:
+      file: db/changelog/v2-0/care-plan.yaml
+  - include:
+      file: db/changelog/v2-0/notification.yaml
+  - include:
+      file: db/changelog/v2-0/user-notification-settings.yaml

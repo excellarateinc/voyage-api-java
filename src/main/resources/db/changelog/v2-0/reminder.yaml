@@ -1,0 +1,150 @@
+databaseChangeLog:
+  - changeSet:
+      id: v2.0-reminder-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: reminder
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    referencedTableName: user
+                    referencedColumnName: id
+              - column:
+                  name: result_type_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    referencedTableName: result_type
+                    referencedColumnName: id
+              - column:
+                  name: comment
+                  type: nvarchar(200)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: hour
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: minute
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: am
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: repeat_interval
+                  type: nvarchar(5)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: repeat_count
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: days_of_week
+                  type: nvarchar(72)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: end_date
+                  type: datetime
+                  constraints:
+                    nullable: true
+              - column:
+                  name: is_notify
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v2.0-reminder-demo
+      author: Voyage
+      changes:
+        - insert:
+            tableName: reminder
+            columns:
+              - column:
+                  name: user_id
+                  valueNumeric: 1
+              - column:
+                  name: result_type_id
+                  valueNumeric: 1
+              - column:
+                  name: comment
+                  value: Coag check
+              - column:
+                  name: hour
+                  valueNumeric: 8
+              - column:
+                  name: minute
+                  valueNumeric: 0
+              - column:
+                  name: am
+                  valueBoolean: true
+              - column:
+                  name: repeat_interval
+                  value: WEEK
+              - column:
+                  name: repeat_count
+                  valueNumeric: 1
+              - column:
+                  name: days_of_week
+                  value: '["MONDAY","WEDNESDAY","FRIDAY"]'
+              - column:
+                  name: end_date
+                  valueDate: null
+              - column:
+                  name: is_notify
+                  valueBoolean: true
+        - insert:
+            tableName: reminder
+            columns:
+              - column:
+                  name: user_id
+                  valueNumeric: 1
+              - column:
+                  name: result_type_id
+                  valueNumeric: 2
+              - column:
+                  name: comment
+                  value: Glucose check
+              - column:
+                  name: hour
+                  valueNumeric: 4
+              - column:
+                  name: minute
+                  valueNumeric: 30
+              - column:
+                  name: am
+                  valueBoolean: false
+              - column:
+                  name: repeat_interval
+                  value: WEEK
+              - column:
+                  name: repeat_count
+                  valueNumeric: 1
+              - column:
+                  name: days_of_week
+                  value: '["TUESDAY","THURSDAY"]'
+              - column:
+                  name: end_date
+                  valueDate: ${future}
+              - column:
+                  name: is_notify
+                  valueBoolean: true

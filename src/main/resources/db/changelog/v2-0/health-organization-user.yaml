@@ -1,0 +1,79 @@
+databaseChangeLog:
+  - changeSet:
+      id: v2.0-health-organization-user-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: health_organization_user
+            columns:
+              - column:
+                  name: health_organization_id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    referencedTableName: health_organization
+                    referencedColumnName: id
+              - column:
+                  name: user_id
+                  type: int
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    referencedTableName: user
+                    referencedColumnName: id
+              - column:
+                  name: is_primary
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_share_data
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: as_of_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v2.0-health-organization-user-demo
+      author: Voyage
+      changes:
+        - insert:
+            tableName: health_organization_user
+            columns:
+              - column:
+                  name: health_organization_id
+                  valueNumeric: 1
+              - column:
+                  name: user_id
+                  valueNumeric: 1
+              - column:
+                  name: is_primary
+                  valueBoolean: true
+              - column:
+                  name: is_share_data
+                  valueBoolean: true
+              - column:
+                  name: as_of_date
+                  valueDate: ${now}
+        - insert:
+            tableName: health_organization_user
+            columns:
+              - column:
+                  name: health_organization_id
+                  valueNumeric: 2
+              - column:
+                  name: user_id
+                  valueNumeric: 1
+              - column:
+                  name: is_primary
+                  valueBoolean: false
+              - column:
+                  name: is_share_data
+                  valueBoolean: false
+              - column:
+                  name: as_of_date
+                  valueDate: ${now}

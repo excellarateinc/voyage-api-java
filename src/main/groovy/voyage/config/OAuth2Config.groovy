@@ -140,6 +140,9 @@ class OAuth2Config {
         @Value('${security.permitAll}')
         private String[] permitAllUrls
 
+        @Value('${security.applicationPath}')
+        private String[] applicationPath
+
         @Autowired
         private WebResponseExceptionTranslator apiWebResponseExceptionTranslator
 
@@ -151,6 +154,7 @@ class OAuth2Config {
                 // /api requests and enable the OAuth2 token filter as the only means of stateless authentication.
                 .requestMatchers()
                     .antMatchers(API_PATH)
+                    .antMatchers(applicationPath)
                     .and()
 
                 // Bypass URLs that are public endpoints, like /api/v1/forgotPassword

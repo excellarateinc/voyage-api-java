@@ -1,0 +1,82 @@
+databaseChangeLog:
+  - changeSet:
+      id: v2.0-care-plan-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: care_plan
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: result_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    referencedTableName: result
+                    referencedColumnName: id
+              - column:
+                  name: health_organization_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    referencedTableName: health_organization
+                    referencedColumnName: id
+              - column:
+                  name: plan_url
+                  type: nvarchar(500)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false              
+  - changeSet:
+      id: v2.0-care-plan-demo
+      author: Voyage
+      changes:
+        - insert:
+            tableName: care_plan
+            columns:
+              - column:
+                  name: result_id
+                  valueNumeric: 1
+              - column:
+                  name: health_organization_id
+                  valueNumeric: 1
+              - column:
+                  name: plan_url
+                  value: '/'
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}

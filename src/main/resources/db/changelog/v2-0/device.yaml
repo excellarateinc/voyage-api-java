@@ -1,0 +1,156 @@
+databaseChangeLog:
+  - changeSet:
+      id: v2.0-device-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: device
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: result_type_id
+                  type: int
+                  constraints:
+                    nullable: false
+                    referencedTableName: result_type
+                    referencedColumnName: id
+              - column:
+                  name: name
+                  type: nvarchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: model
+                  type: nvarchar(200)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: logo_url
+                  type: nvarchar(500)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_by
+                  type: nvarchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_modified_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: is_deleted
+                  type: bit(1)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v2.0-device-demo
+      author: Voyage
+      changes:
+        - insert:
+            tableName: device
+            columns:
+              - column:
+                  name: result_type_id
+                  valueNumeric: 1
+              - column:
+                  name: name
+                  value: Coag-Sense Pro
+              - column:
+                  name: model
+                  value: ABC-1
+              - column:
+                  name: logo_url
+                  value: '/'
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: device
+            columns:
+              - column:
+                  name: result_type_id
+                  valueNumeric: 2
+              - column:
+                  name: name
+                  value: Glucose Pro
+              - column:
+                  name: model
+                  value: EFG-1
+              - column:
+                  name: logo_url
+                  value: '/'
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false
+        - insert:
+            tableName: device
+            columns:
+              - column:
+                  name: result_type_id
+                  valueNumeric: 3
+              - column:
+                  name: name
+                  value: Spiro Pro
+              - column:
+                  name: model
+                  value: HIJ-1
+              - column:
+                  name: logo_url
+                  value: '/'
+              - column:
+                  name: created_by
+                  value: super
+              - column:
+                  name: created_date
+                  valueDate: ${now}
+              - column:
+                  name: last_modified_by
+                  value: super
+              - column:
+                  name: last_modified_date
+                  valueDate: ${now}
+              - column:
+                  name: is_deleted
+                  valueBoolean: false

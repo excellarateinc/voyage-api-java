@@ -94,7 +94,10 @@ dependencies {
     compile group: 'org.owasp.esapi',               name: 'esapi',          version: '2.1.0.1'
     compile group: 'com.googlecode.libphonenumber', name: 'libphonenumber', version: '8.4.0'
     compile group: 'org.passay',                    name: 'passay',         version: '1.2.0'
-    
+    compile(group: 'com.cronutils',                 name: 'cron-utils',     version: '9.1.0') {
+        exclude(module: 'slf4j-simple')
+    }
+
     // Testing
     testCompile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version:"${springBootVersion}") {
         exclude(module: 'commons-logging')
@@ -174,7 +177,7 @@ task wrapper(type: Wrapper) {
 // apiDoc Tasks
 // ****************************************************************************
 node {
-    version = '6.8.0'
+    version = '14.5.0'
     download = true
 }
 task apidocInstall(type:NpmTask) {

@@ -1,0 +1,70 @@
+databaseChangeLog:
+  - changeSet:
+      id: v2.0-result-type-table-create
+      author: Voyage
+      changes:
+        - createTable:
+            tableName: result_type
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: nvarchar(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: code
+                  type: nvarchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: unit_of_measure
+                  type: nvarchar(100)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: v2.0-result-type-demo
+      author: Voyage
+      changes:
+        - insert:
+            tableName: result_type
+            columns:
+              - column:
+                  name: name
+                  value: 'PT / INR'
+              - column:
+                  name: code
+                  value: COAG
+              - column:
+                  name: unit_of_measure
+                  value: INR
+        - insert:
+            tableName: result_type
+            columns:
+              - column:
+                  name: name
+                  value: Glucose
+              - column:
+                  name: code
+                  value: GLUCOSE
+              - column:
+                  name: unit_of_measure
+                  value: 'mg /dL'
+        - insert:
+            tableName: result_type
+            columns:
+              - column:
+                  name: name
+                  value: Spirometer
+              - column:
+                  name: code
+                  value: SPIRO
+              - column:
+                  name: unit_of_measure
+                  value: FVC
