@@ -1614,7 +1614,7 @@ Ignoring URL paths should only be used for resources that do not require a Sprin
 application.yaml
 ```
 security:
-  ignored: /resources/**, /webjars/**, /docs/**
+  ignored: /resources/**, /webjars/**, /api/docs/**
 ```
 
 #### Permit All
@@ -1666,7 +1666,7 @@ The configuration for the filter consists of the following parameters defined in
 ```
 security:
   password-verification:
-    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profiles/register
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /api/docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profiles/register
     password-reset-days: 90
 ``` 
  
@@ -1677,7 +1677,7 @@ the following location:
 ```
 security:
   password-verification:
-    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profiles/register
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /api/docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profiles/register
 ``` 
 
 **Password Reset Days**
@@ -1700,7 +1700,7 @@ Example:
 ```
 security:
   user-verification:
-    exclude-resources: /oauth/**, /resources/**, /webjars/**, /docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profile
+    exclude-resources: /oauth/**, /resources/**, /webjars/**, /api/docs/**, /login, /api/**/verify, /api/**/verify/send, /WEB-INF/jsp/**.jsp, /api/**/profile
 ```
 
 By default, authentication resources are excluded by the verification filter so that a user is able to login even tho their account requires verification. These resources include:
@@ -1715,7 +1715,7 @@ Of course, the verification endpoints are excluded so that end users are able to
 Other endpoints that are excluded by default are CSS, JS, and image resources, as well as access to the authenticated user's profile. These resources include:
 * /resources/** (embedded css, js, and imagine)
 * /webjars/** (css, js libraries)
-* /docs/** (access to the apiDoc, which is public)
+* /api/docs/** (access to the apiDoc, which is public)
 * /api/**/profile
 
 #### Verify Code Expiration
