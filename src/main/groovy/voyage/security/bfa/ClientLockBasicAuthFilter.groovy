@@ -46,8 +46,9 @@ import javax.servlet.http.HttpServletResponse
  * class to determine if a successful login occurred. By the time the response is examined by this class, the Authorization
  * object is null within the Spring SecurityContext.
  */
-@Component
-@Order(-10000)
+// TODO REMOVE
+// @Component
+// @Order(-10000)
 class ClientLockBasicAuthFilter extends BasicAuthFilter {
     private final ClientService clientService
 

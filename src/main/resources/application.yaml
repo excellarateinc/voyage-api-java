@@ -74,6 +74,11 @@ server:
 # Security
 #######################################################################################################################
 security:
+  oauth2:
+    resourceserver:
+      jwt:
+        jwk-set-uri: http://localhost:8180/auth/realms/VoyageBaseRealm/protocol/openid-connect/certs
+        issuer-uri: http://localhost:8180/auth/realms/VoyageBaseRealm
 
   ignored: /resources/**, /webjars/**, /docs, /docs/**
   permitAll: /login, /api/status, /api/**/profiles/register, /actuator/**
@@ -90,29 +95,6 @@ security:
   crypto:
     private-key-name: asymmetric
     private-key-password: changeme
-
-  # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
-  # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
-  jwt:
-    private-key-name: jwt
-    private-key-password: changeme
-
-  # FOR PRODUCTION: The following MUST be overridden to ensure secrecy of the passwords for the keystore and private
-  # See where you can override at https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html
-  oauth2:
-    resource:
-      id: voyage
-      jwt:
-        key-value: |
-          -----BEGIN PUBLIC KEY-----
-          MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAyfgFBATB9oJjCUOVtwsr
-          s8H6b8jiwl1gAuOVEHCgQbxuZPJ+YvcJad2xsEQLKbZBatbWF8gQIE0YNPW27niN
-          CrH9QKYyFih5Ko2B8M5xbDr1L/AiQUsVwiqBmyj0krswacF9zRHwKHurFoxihhP0
-          L6/NYrny8f5No8DNCC/abDYGFksqCE6gzLVB8moFGGcOk71l4CHJmlVrGS/Ec5Jj
-          ktQuBza5RwiSb62PYiHGy5mLl8owdH0m0PCaXZBO2QzPbecFp2+W/5aXfIRchcjH
-          Itcr8HKAqDO13XDo+xtqtVkFEn6hXXj5YESMkwukbWopDWOpfcGoQZStMhAEN7Xt
-          zQIDAQAB
-          -----END PUBLIC KEY-----
 
   http-audit-log:
     exclude-resources: /resources/**, /webjars/**, /docs/**
@@ -176,3 +158,13 @@ management:
   health:
     mail:
       enabled: false
+
+#######################################################################################################################
+# Keycloak Auth Server Configuration
+#######################################################################################################################
+keycloak:
+  auth-server-url: http://localhost:8180/auth
+  realm: VoyageBaseRealm
+  resource: voyage-api
+  public-client: true
+  principal-attribute: preferred_username

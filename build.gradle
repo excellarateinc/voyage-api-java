@@ -57,6 +57,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
+    implementation 'org.springframework.security:spring-security-oauth2-resource-server'
     implementation 'org.codehaus.groovy:groovy'
     implementation 'org.codehaus.groovy:groovy-all:3.0.4'
     implementation 'org.liquibase:liquibase-core'
@@ -66,10 +67,6 @@ dependencies {
     implementation 'org.springframework.session:spring-session-core'
 
     implementation 'org.hibernate:hibernate-envers:5.4.18.Final'
-
-    // Login Web Form
-    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper:9.0.37'
-    implementation 'javax.servlet:jstl:1.2'
 
     // Webjars (for css/js libs)
     implementation 'org.webjars:webjars-locator:0.40'
@@ -103,6 +100,7 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom "org.keycloak.bom:keycloak-adapter-bom:11.0.2"
     }
 }
 
