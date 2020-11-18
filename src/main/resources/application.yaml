@@ -75,7 +75,7 @@ server:
 #######################################################################################################################
 security:
 
-  ignored: /resources/**, /webjars/**, /docs, /docs/**
+  ignored: /resources/**, /webjars/**, /api/docs, /api/docs/**
   permitAll: /login, /api/status, /api/**/profiles/register, /actuator/**
 
   user-roles:
