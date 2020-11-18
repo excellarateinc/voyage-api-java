@@ -17,7 +17,7 @@ out/
 
 # apiDocs
 apidoc/node_modules
-src/main/webapp/docs
+src/main/webapp/api/docs
 
 # Exclude
 !gradle/wrapper/gradle-wrapper.jar
