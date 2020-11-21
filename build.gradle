@@ -58,6 +58,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
     implementation 'org.springframework.security:spring-security-oauth2-resource-server'
+
     implementation 'org.codehaus.groovy:groovy'
     implementation 'org.codehaus.groovy:groovy-all:3.0.4'
     implementation 'org.liquibase:liquibase-core'
@@ -83,6 +84,7 @@ dependencies {
     implementation 'com.googlecode.libphonenumber:libphonenumber:8.12.6'
     implementation 'org.passay:passay:1.6.0'
 
+    runtimeOnly 'com.nimbusds:oauth2-oidc-sdk:8.19'
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'mysql:mysql-connector-java'
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'

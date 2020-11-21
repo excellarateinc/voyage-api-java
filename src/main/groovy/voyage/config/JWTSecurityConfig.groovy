@@ -8,51 +8,55 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.oauth2.jwt.JwtDecoder
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
+import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
 
 @Configuration
 @Order(-1000)
 class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
-    private static final String API_PATH = '/api/**'
 
-    @Value('${security.oauth2.resourceserver.jwt.jwk-set-uri}')
-    private String jwkSetUri
+    @Value('${security.oauth2.resourceserver.opaque.introspection-uri}')
+    protected String introspectionUri
+
+    @Value('${security.oauth2.resourceserver.opaque.introspection-client-id}')
+    protected String clientId
+
+    @Value('${security.oauth2.resourceserver.opaque.introspection-client-secret}')
+    protected String clientSecret
 
     @Value('${security.permitAll}')
     private String[] permitAllUrls
 
+    @Bean
+    OpaqueTokenIntrospector introspector() {
+        new CustomAuthoritiesOpaqueTokenIntrospector(introspectionUri, clientId, clientSecret)
+    }
+
     @Override
-    protected void configure(HttpSecurity http) {
+    protected void configure(HttpSecurity http) throws Exception {
         http
-                .sessionManagement()
-        // Do not maintain session state between requests or support cookies.
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-
-                .authorizeRequests()
-
-        // Allow any request to access things like 'status' or 'css'
-                .antMatchers(permitAllUrls).permitAll()
-
-        // Enforce every request to be authenticated
-                .anyRequest().authenticated()
-                .and()
+               // TODO Fix .cors().and()
 
                 .exceptionHandling()
                 .accessDeniedPage(null)
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 .and()
 
-        // Disable CSRF due to this app being an API using JWT bearer token and not session based for resources.
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+
                 .csrf().disable()
 
-                .oauth2ResourceServer({ oauth2 -> oauth2.jwt() })
+                .oauth2ResourceServer()
+                .opaqueToken( { token  ->
+                    token.introspectionUri(this.introspectionUri)
+                            .introspectionClientCredentials(this.clientId, this.clientSecret)
+                })
+
+        http.authorizeRequests()
+                .antMatchers(permitAllUrls).permitAll()
+                .anyRequest().authenticated()
     }
 
-    @Bean
-    JwtDecoder jwtDecoder() {
-        return NimbusJwtDecoder.withJwkSetUri(this.jwkSetUri).build()
-    }
 }
