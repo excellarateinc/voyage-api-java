@@ -49,9 +49,10 @@ class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
 
                 .oauth2ResourceServer()
-                .opaqueToken( { token  ->
-                    token.introspectionUri(this.introspectionUri)
+                .opaqueToken( { opaqueTokenConfigurer  ->
+                    opaqueTokenConfigurer.introspectionUri(this.introspectionUri)
                             .introspectionClientCredentials(this.clientId, this.clientSecret)
+                    opaqueTokenConfigurer.introspector(introspector())
                 })
 
         http.authorizeRequests()

@@ -77,7 +77,7 @@ security:
   oauth2:
     resourceserver:
       opaque:
-        introspection-uri: http://localhost:8180/auth/realms/VoyageBaseRealm/protocol/openid-connect/introspect
+        introspection-uri: http://localhost:8180/auth/realms/VoyageBaseRealm/protocol/openid-connect/token/introspect
         introspection-client-id: voyage-base-api
         introspection-client-secret: bd069850-478a-4dc4-9307-368e9bcadd86
 
