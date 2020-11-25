@@ -35,6 +35,7 @@ import voyage.security.verify.VerifyService
 @RestController('apiProfileController')
 @RequestMapping(['/api/v1/profiles', '/api/v1.0/profiles'])
 class ProfileController {
+
     private final ProfileService profileService
     private final VerifyService userVerifyService
     private final UserService userService
@@ -79,13 +80,12 @@ class ProfileController {
         profileService.register(userIn)
         HttpHeaders headers = new HttpHeaders()
         headers.set(HttpHeaders.LOCATION, '/v1/profiles/me')
-        return new ResponseEntity(headers, HttpStatus.CREATED)
+        new ResponseEntity(headers, HttpStatus.CREATED)
     }
 
     @GetMapping('/me')
-    @PreAuthorize("hasAuthority('api.profiles.me')")
     ResponseEntity myProfile() {
         User user = userService.currentUser
-        return new ResponseEntity(user, HttpStatus.OK)
+        new ResponseEntity(user, HttpStatus.OK)
     }
 }
